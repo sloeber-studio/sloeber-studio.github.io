@@ -8,97 +8,381 @@
 <meta name="apple-mobile-web-app-title" content="Arcade">
 <title>Sloeber Studio Arcade</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👾</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0; padding: 0; font-family: 'Nunito', sans-serif;
-    background: linear-gradient(135deg, #1B2340, #2E1A47);
-    color: white; overflow: hidden;
-    -webkit-user-select: none; user-select: none;
+  :root {
+    --bg-deep: #131836;
+    --bg-mid: #231C4A;
+    --ink: #1B2340;
+    --card-bg: #FFFFFF;
+  }
+  * {
+    box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
   }
-  .container {
-    padding: env(safe-area-inset-top, 20px) 20px env(safe-area-inset-bottom, 20px);
-    height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;
-    max-width: 900px; margin: 0 auto;
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    font-family: 'Nunito', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #34286E 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: #fff;
+    overflow-x: hidden;
+    touch-action: manipulation;
   }
-  header { text-align: center; margin-bottom: 24px; }
-  h1 { font-size: 3rem; margin: 10px 0 5px; text-shadow: 0 4px 0 rgba(0,0,0,0.3); }
-  .subtitle { color: #A8B1CA; font-size: 1.2rem; margin: 0; font-weight: 700; }
-  .grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
-    flex: 1; overflow-y: auto; padding-bottom: 20px;
-  }
-  .card {
-    background: white; color: #1D2340; border-radius: 24px;
-    padding: 20px; text-decoration: none; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center;
-    box-shadow: 0 8px 0 rgba(0,0,0,0.2); transition: transform 0.1s, box-shadow 0.1s;
-  }
-  .card:active { transform: translateY(6px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-  .icon { font-size: 4.5rem; margin-bottom: 10px; line-height: 1; }
-  .card h2 { margin: 0 0 5px; font-size: 1.8rem; }
-  .card p { margin: 0; color: #56607E; font-size: 1.05rem; font-weight: 700; }
-  
-  .badge {
-    display: inline-block; padding: 4px 12px; border-radius: 12px;
-    font-size: 0.9rem; font-weight: 900; margin-bottom: 10px;
-  }
-  .badge.mika { background: #FFB3D1; color: #D6337A; }
-  .badge.miro { background: #A9DEF9; color: #1D6FE0; }
-  .badge.coop { background: #FFD6BA; color: #E63946; }
 
-  .card.paint { border: 5px solid #D6337A; }
-  .card.dragon { border: 5px solid #ff8a1f; }
-  .card.glimmer { border: 5px solid #16C5B0; }
-  .card.passport { border: 5px solid #2F6EA5; }
+  /* Floating background particles */
+  .bg-floaters {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .floater {
+    position: absolute;
+    bottom: -60px;
+    font-size: 2rem;
+    opacity: 0.14;
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0; }
+    15% { opacity: 0.16; }
+    85% { opacity: 0.16; }
+    100% { transform: translateY(-115dvh) rotate(360deg) scale(1.1); opacity: 0; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 920px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: calc(16px + env(safe-area-inset-top, 0px)) 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .studio-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(8px);
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #FFD43B;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: 'Fredoka', ui-rounded, sans-serif;
+    font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+    text-shadow: 0 5px 0 rgba(10, 12, 30, 0.55);
+  }
+  .subtitle {
+    margin: 6px 0 0;
+    color: #B8C0E0;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .mute-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  .mute-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* 2x2 Game Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background: var(--card-bg);
+    color: var(--ink);
+    border-radius: 26px;
+    border: 4px solid var(--ink);
+    box-shadow: 0 9px 0 var(--shadow-col, #0B0E24), 0 14px 24px rgba(0, 0, 0, 0.35);
+    text-decoration: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease;
+    position: relative;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+  }
+  .card:active, .card.launching {
+    transform: translateY(6px) scale(0.98);
+    box-shadow: 0 2px 0 var(--shadow-col, #0B0E24), 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Themed Card Banners */
+  .banner {
+    height: 124px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 3px solid var(--ink);
+    background: var(--banner-bg);
+  }
+  .banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.28) 2px, transparent 2.5px);
+    background-size: 18px 18px;
+    pointer-events: none;
+  }
+  .emoji-stack {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.2rem;
+    line-height: 1;
+    filter: drop-shadow(0 5px 0 rgba(27, 35, 64, 0.22));
+    animation: bob 3s ease-in-out infinite;
+  }
+  .emoji-sub {
+    font-size: 2.2rem;
+    margin-left: -10px;
+    margin-top: 22px;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+  }
+
+  /* Genre / Mode Badges */
+  .badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 2.5px solid var(--ink);
+    font-size: 0.85rem;
+    font-weight: 900;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .badge.pink { background: #FF9CEE; color: #2E1A47; }
+  .badge.orange { background: #FFD43B; color: #1B2340; }
+  .badge.teal { background: #96F2D7; color: #1B2340; }
+  .badge.blue { background: #74C0FC; color: #1B2340; }
+
+  .card-body {
+    padding: 16px 18px 18px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .card h2 {
+    font-family: 'Fredoka', ui-rounded, sans-serif;
+    margin: 0 0 4px;
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .card p {
+    margin: 0;
+    color: #525D80;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  /* Individual Game Palettes */
+  .card.paint {
+    --banner-bg: linear-gradient(135deg, #FF7EB6, #D6337A);
+    --shadow-col: #8C1D4F;
+  }
+  .card.dragon {
+    --banner-bg: linear-gradient(135deg, #FFB84D, #FF6B1A);
+    --shadow-col: #9E3D08;
+  }
+  .card.glimmer {
+    --banner-bg: linear-gradient(135deg, #4FE3C1, #139A8A);
+    --shadow-col: #0B5E54;
+  }
+  .card.passport {
+    --banner-bg: linear-gradient(135deg, #5AA9E6, #275DAD);
+    --shadow-col: #163669;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .floater, .emoji-stack { animation: none; }
+    .card { transition: none; }
+  }
 </style>
 </head>
 <body>
+  <div class="bg-floaters" id="floaters" aria-hidden="true"></div>
+
   <div class="container">
     <header>
-      <h1>👾 Sloeber Studio Arcade</h1>
-      <p class="subtitle">Tap a game to start playing!</p>
+      <button class="mute-btn" id="muteBtn" aria-label="Sound on">🔊</button>
+      <div class="studio-pill">👾 Sloeber Studio</div>
+      <h1>Family Arcade</h1>
+      <p class="subtitle">Pick a game to jump in!</p>
     </header>
-    <div class="grid">
-      <a href="paint-pals.html" class="card paint" onclick="playSfx()">
-        <span class="badge mika">Mika</span>
-        <div class="icon">🎨</div>
-        <h2>Paint Pals</h2>
-        <p>6th Grade Art & Trivia</p>
+
+    <main class="grid">
+      <a href="paint-pals.html" class="card paint">
+        <div class="banner">
+          <span class="badge pink">Art &amp; Trivia</span>
+          <div class="emoji-stack"><span>🎨</span><span class="emoji-sub">🖌️</span></div>
+        </div>
+        <div class="card-body">
+          <h2>Paint Pals</h2>
+          <p>6th Grade Art Studio &amp; Quiz</p>
+        </div>
       </a>
-      <a href="dragon-math-quest.html" class="card dragon" onclick="playSfx()">
-        <span class="badge miro">Miro</span>
-        <div class="icon">🚀</div>
-        <h2>Dragon Math Quest</h2>
-        <p>Space Math Adventure</p>
+
+      <a href="dragon-math-quest.html" class="card dragon">
+        <div class="banner">
+          <span class="badge orange">Space RPG</span>
+          <div class="emoji-stack"><span>🐉</span><span class="emoji-sub">🚀</span></div>
+        </div>
+        <div class="card-body">
+          <h2>Dragon Math Quest</h2>
+          <p>Space Flight &amp; Math Battles</p>
+        </div>
       </a>
-      <a href="glimmer-quest.html" class="card glimmer" onclick="playSfx()">
-        <span class="badge miro">Miro</span>
-        <div class="icon">💎</div>
-        <h2>Glimmer Quest</h2>
-        <p>Monster Catching</p>
+
+      <a href="glimmer-quest.html" class="card glimmer">
+        <div class="banner">
+          <span class="badge teal">Creature RPG</span>
+          <div class="emoji-stack"><span>💎</span><span class="emoji-sub">✨</span></div>
+        </div>
+        <div class="card-body">
+          <h2>Glimmer Quest</h2>
+          <p>Catch &amp; Fuse Creatures</p>
+        </div>
       </a>
-      <a href="passport-race.html" class="card passport" onclick="playSfx()">
-        <span class="badge coop">Co-op</span>
-        <div class="icon">🌍</div>
-        <h2>Passport Race</h2>
-        <p>Global Trivia Race</p>
+
+      <a href="passport-race.html" class="card passport">
+        <div class="banner">
+          <span class="badge blue">2 Players</span>
+          <div class="emoji-stack"><span>🌍</span><span class="emoji-sub">✈️</span></div>
+        </div>
+        <div class="card-body">
+          <h2>Passport Race</h2>
+          <p>World Flags &amp; Capitals Race</p>
+        </div>
       </a>
-    </div>
+    </main>
   </div>
+
   <script>
-    const ac = new (window.AudioContext || window.webkitAudioContext)();
-    function playSfx() {
-      if (ac.state === 'suspended') ac.resume();
-      const o = ac.createOscillator(), g = ac.createGain();
-      o.type = 'triangle'; o.frequency.value = 520;
-      g.gain.setValueAtTime(0, ac.currentTime);
-      g.gain.linearRampToValueAtTime(0.15, ac.currentTime + 0.05);
-      g.gain.linearRampToValueAtTime(0, ac.currentTime + 0.15);
-      o.connect(g); g.connect(ac.destination);
-      o.start(); o.stop(ac.currentTime + 0.2);
+    // Populate gentle floating background icons
+    const icons = ['🎨', '🚀', '💎', '🌍', '⭐', '✨', '🪐', '🖌️'];
+    const bg = document.getElementById('floaters');
+    for (let i = 0; i < 14; i++) {
+      const el = document.createElement('span');
+      el.className = 'floater';
+      el.textContent = icons[i % icons.length];
+      el.style.left = (Math.random() * 94 + 2) + '%';
+      el.style.animationDuration = (14 + Math.random() * 14) + 's';
+      el.style.animationDelay = (-Math.random() * 20) + 's';
+      bg.appendChild(el);
     }
+
+    // Sound toggle & arcade launch chime
+    let muted = localStorage.getItem('arcade_muted') === '1';
+    const muteBtn = document.getElementById('muteBtn');
+    const syncMute = () => {
+      muteBtn.textContent = muted ? '🔇' : '🔊';
+      muteBtn.setAttribute('aria-label', muted ? 'Sound off' : 'Sound on');
+    };
+    syncMute();
+
+    muteBtn.addEventListener('click', () => {
+      muted = !muted;
+      localStorage.setItem('arcade_muted', muted ? '1' : '0');
+      syncMute();
+      if (!muted) playChime([523, 659]);
+    });
+
+    let actx = null;
+    function playChime(notes) {
+      if (muted) return;
+      try {
+        actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+        if (actx.state === 'suspended') actx.resume();
+        const now = actx.currentTime;
+        notes.forEach((freq, idx) => {
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.0001, now + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.18, now + idx * 0.06 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.06 + 0.16);
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 0.18);
+        });
+      } catch (e) {}
+    }
+
+    // Delay navigation briefly so the launch chime plays cleanly on iPad
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', e => {
+        const href = card.getAttribute('href');
+        if (!href || e.metaKey || e.ctrlKey) return;
+        e.preventDefault();
+        card.classList.add('launching');
+        playChime([523.25, 659.25, 783.99]);
+        setTimeout(() => { window.location.href = href; }, muted ? 60 : 190);
+      });
+    });
   </script>
 </body>
 </html>
