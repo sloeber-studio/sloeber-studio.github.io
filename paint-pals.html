@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paint Pals</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFAFF; --ink:#2E1A47; --soft:#6B5A80; --marker:#D6337A; --sun:#FFC93C;
+  --mint:#2EC4A0; --sky:#4FA3F7; --lilac:#EDE6FF; --dot:#D9D0F2;
+  --wob:255px 18px 225px 18px/18px 225px 18px 255px;
+  --wob2:18px 225px 18px 255px/255px 18px 225px 18px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{
+  font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);
+  background:var(--paper);
+  background-image:radial-gradient(var(--dot) 1.3px,transparent 1.4px);background-size:22px 22px;
+  min-height:100vh;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2,h3,.hand{font-family:'Gaegu','Comic Sans MS','Chalkboard SE',cursive;font-weight:700;margin:0}
+p{margin:.3em 0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.btn{border:3px solid var(--ink);border-radius:var(--wob);background:#fff;padding:.5em 1.05em;font-weight:800;
+  box-shadow:3px 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.btn:active:not(:disabled){transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.primary{background:var(--marker);color:#fff}
+.btn.sun{background:var(--sun)}
+.btn.mint{background:var(--mint)}
+.btn.small{padding:.3em .8em;font-size:.9rem;box-shadow:2px 3px 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.sketch{border:3px solid var(--ink);border-radius:var(--wob);background:#fff}
+
+/* HUD */
+.hud{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:10px 16px;background:rgba(251,250,255,.94);backdrop-filter:blur(6px);border-bottom:3px solid var(--ink)}
+.me{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0}
+.me .char{width:44px;height:52px}
+.me span.nm{font-family:'Gaegu',cursive;font-size:1.35rem;font-weight:700}
+.logo{font-size:2rem;color:var(--marker);letter-spacing:.5px;transform:rotate(-2deg);margin-right:auto;line-height:1}
+.stats{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stat{display:flex;align-items:center;gap:6px;padding:4px 10px;border:2.5px solid var(--ink);border-radius:var(--wob2);background:#fff;font-weight:900}
+.coin{width:18px;height:18px;border-radius:50%;background:var(--sun);border:2.5px solid var(--ink);display:inline-block}
+.cells{display:flex;gap:2px}
+.cells i{display:block;width:12px;height:16px;border:2px solid var(--ink);border-radius:3px;background:#fff;position:relative;overflow:hidden}
+.cells i::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:var(--f,0%);background:var(--mint)}
+.icon-btn{border:2.5px solid var(--ink);border-radius:50%;width:38px;height:38px;background:#fff;font-size:1.1rem}
+.pulse{animation:pulse .6s}
+@keyframes pulse{40%{transform:scale(1.25)}}
+
+main{max-width:1180px;margin:0 auto;padding:16px}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.bar h2{font-size:2rem;margin-right:auto}
+
+/* TOWN */
+.town-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 10px}
+.town-head h2{font-size:2.3rem}
+.run{display:flex;align-items:center;gap:8px;font-weight:800;padding:6px 12px;border:2.5px solid var(--ink);border-radius:var(--wob);background:#fff}
+.run input{width:20px;height:20px;accent-color:var(--marker)}
+.scene{position:relative;padding:18px 10px 0;border:3px solid var(--ink);border-radius:24px 30px 20px 34px/30px 20px 34px 24px;
+  background:linear-gradient(#DFF1FF,#F6F1FF 70%);overflow:hidden}
+.sun-blob{position:absolute;right:30px;top:16px;width:62px;height:62px;border-radius:50%;background:var(--sun);border:3px solid var(--ink)}
+.bldgs{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-around;align-items:stretch;position:relative;z-index:1}
+.bldg{flex:1 1 190px;max-width:250px;display:flex;flex-direction:column;align-items:stretch;background:none;border:none;padding:0;text-align:center}
+.bldg .roof{display:block;width:100%;height:58px}
+.bldg .wall{display:flex;flex-direction:column;align-items:center;gap:8px;margin:-4px 10px 0;padding:12px 10px 0;
+  background:#fff;border:3px solid var(--ink);border-bottom:none;border-radius:6px 6px 0 0;min-height:150px;flex:1}
+.bldg .sign{font-family:'Gaegu',cursive;font-weight:700;font-size:1.45rem;line-height:1;background:var(--c);color:#fff;
+  padding:6px 12px;border:2.5px solid var(--ink);border-radius:var(--wob);text-shadow:0 1px 0 rgba(0,0,0,.25)}
+.bldg .what{font-size:.86rem;font-weight:700;color:var(--soft);min-height:2.4em}
+.bldg .door{margin-top:auto;width:46px;height:58px;background:var(--c);border:3px solid var(--ink);border-bottom:none;border-radius:24px 24px 0 0;opacity:.85}
+.bldg:hover .door{opacity:1}
+.bldg:hover .wall{background:#FFFDF2}
+.street{position:relative;height:96px;margin:0 -10px;background:#CFC6E4;border-top:3px solid var(--ink)}
+.street::before{content:"";position:absolute;left:0;right:0;top:56px;border-top:4px dashed #fff}
+.walker{position:absolute;bottom:22px;left:20px;width:70px;height:82px;transition:left 1s linear;z-index:2}
+.walker .char{width:70px;height:82px}
+.walker.flip .char{transform:scaleX(-1)}
+.walker.moving .char{animation:bob .32s infinite}
+@keyframes bob{50%{translate:0 -6px}}
+.tip{margin-top:12px;color:var(--soft);font-weight:700}
+@media (max-width:600px){.bldg{flex:1 1 40%}.bldg .wall{min-height:120px;margin:-4px 4px 0;padding:8px 4px 0}.bldg .sign{font-size:1.15rem}.bldg .what{font-size:.74rem}.bldg .roof{height:40px}.town-head h2{font-size:1.8rem}.logo{font-size:1.6rem}}
+
+/* QUIZ */
+.qwrap{max-width:720px;margin:0 auto}
+.qcard{padding:22px 22px 26px}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.subject{font-weight:900;padding:3px 10px;border-radius:999px;border:2px solid var(--ink);background:var(--lilac);font-size:.9rem}
+.streak{font-weight:900;color:var(--marker)}
+#qText{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.5rem;line-height:1.3;margin:6px 0 18px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.choices{grid-template-columns:1fr}}
+.choice{text-align:left;font-size:1.12rem;font-weight:800;padding:14px 16px;border:3px solid var(--ink);border-radius:var(--wob);background:#fff;box-shadow:3px 4px 0 var(--ink)}
+.choice:hover:not(:disabled){background:#FFF6D6}
+.choice.right{background:#C9F5E6}
+.choice.wrong{background:#FFD3DF}
+.choice:disabled{cursor:default}
+.feedback{min-height:1.6em;margin-top:16px;font-weight:700;font-size:1.05rem}
+.feedback b.good{color:#118a6b}
+.feedback b.bad{color:var(--marker)}
+.qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;flex-wrap:wrap}
+.qstats{color:var(--soft);font-weight:700}
+
+/* STUDIO */
+.studio{border:3px solid var(--ink);border-radius:20px 26px 18px 30px/26px 18px 30px 20px;padding:14px;background:var(--wall,#E9E4F7)}
+.studio-wrap{display:grid;grid-template-columns:1fr 290px;gap:14px;align-items:start}
+@media (max-width:860px){.studio-wrap{grid-template-columns:1fr}.tool-row{grid-template-columns:repeat(6,1fr)}}
+.easel{position:relative;border:4px solid var(--ink);border-radius:6px;background:#fff;box-shadow:6px 7px 0 rgba(46,26,71,.85);line-height:0}
+#paint{width:100%;height:auto;aspect-ratio:4/3;display:block;touch-action:none;cursor:crosshair;border-radius:3px}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;
+  background:rgba(251,250,255,.93);line-height:1.3;padding:20px;border-radius:3px}
+.overlay h3{font-size:2rem}
+.overlay .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.panel{background:#fff;border:3px solid var(--ink);border-radius:var(--wob);padding:12px;display:flex;flex-direction:column;gap:12px}
+.panel h3{font-size:1.35rem}
+.tool-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tool{position:relative;aspect-ratio:1;font-size:1.5rem;border:2.5px solid var(--ink);border-radius:12px;background:#fff;display:grid;place-items:center}
+.tool.on{background:var(--sun);box-shadow:inset 0 0 0 2px #fff}
+.tool.locked{opacity:.3;filter:grayscale(1);cursor:not-allowed}
+.tool .lk{position:absolute;right:2px;bottom:0;font-size:.75rem}
+.palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:6px}
+.sw{aspect-ratio:1;border-radius:50%;border:2.5px solid var(--ink);padding:0}
+.sw.on{outline:3px solid var(--marker);outline-offset:2px}
+.sizer{display:flex;align-items:center;gap:10px;font-weight:800}
+.sizer input{flex:1;accent-color:var(--marker)}
+.sizer .dotprev{width:34px;height:34px;display:grid;place-items:center}
+.sizer .dotprev i{display:block;border-radius:50%;background:var(--ink)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.acts .btn{flex:1}
+.meter{font-size:.88rem;color:var(--soft);font-weight:700;line-height:1.45}
+.room{position:relative;aspect-ratio:10/3.2;margin-bottom:14px;border:3px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--room,#CFC3EE)}
+.room .wp{position:absolute;inset:0 0 24% 0}
+.room .floor{position:absolute;left:0;right:0;bottom:0;height:24%;border-top:3px solid var(--ink);background:repeating-linear-gradient(90deg,#D4A373 0 46px,#C08A5A 46px 49px)}
+.room .dec{position:absolute;line-height:0;pointer-events:none}
+.room .dec svg{width:100%;height:auto;display:block;overflow:visible}
+.frame{position:absolute;top:25%;aspect-ratio:4/3;padding:0;z-index:2;border:4px solid #8B5A2B;outline:2px solid var(--ink);background:#fff;box-shadow:2px 3px 0 rgba(46,26,71,.35)}
+.frame img{width:100%;height:100%;object-fit:cover;display:block}
+.frame.empty{border:2.5px dashed rgba(46,26,71,.45);outline:none;background:rgba(255,255,255,.35);box-shadow:none}
+.frame:not(.empty):hover{transform:scale(1.06)}
+.ditems{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:8px}
+.ditem{border:2.5px solid var(--ink);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-weight:800;font-size:.88rem}
+.ditem .pv{height:70px;width:100%;display:grid;place-items:center;background:var(--lilac);border-radius:10px}
+.ditem .pv svg{max-height:60px;max-width:90%}
+.ditem .wpv{height:70px;width:100%;border-radius:10px;border:2px solid var(--ink)}
+.ditem .btn{width:100%}
+.ditem.owned{background:#F3FFF9}
+.hungbig{width:100%;border:6px solid #8B5A2B;outline:3px solid var(--ink);border-radius:2px;margin:8px 0}
+.studio-info{display:flex;align-items:center;gap:12px}
+.studio-info .char{width:64px;height:76px;flex:none}
+.studio-info p{font-size:.92rem;font-weight:700}
+
+/* STORE */
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.item{background:#fff;border:3px solid var(--ink);border-radius:var(--wob);padding:16px;display:flex;flex-direction:column;gap:8px}
+.item h3{font-size:1.5rem;line-height:1.05}
+.item p{color:var(--soft);font-weight:700;font-size:.92rem;flex:1}
+.item .pk{height:92px;border:3px solid var(--ink);border-radius:12px 12px 20px 20px;display:grid;place-items:center;position:relative;overflow:hidden;background:var(--pc)}
+.item .pk::before{content:"";position:absolute;left:0;right:0;top:14px;border-top:3px dashed rgba(255,255,255,.8)}
+.item .pk .char{width:64px;height:76px;position:relative}
+.item .pk .big{font-size:2.5rem;position:relative}
+.price{display:flex;align-items:center;gap:6px;font-weight:900}
+.section-title{font-size:1.7rem;margin:22px 0 10px}
+
+/* WARDROBE */
+.ward{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
+@media (max-width:760px){.ward{grid-template-columns:1fr}}
+.preview{background:#fff;border:3px solid var(--ink);border-radius:var(--wob);padding:16px;text-align:center;position:sticky;top:90px}
+.preview .char{width:180px;height:210px}
+.preview h3{font-size:1.8rem}
+.grid-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.cslot{background:#fff;border:2.5px solid var(--ink);border-radius:14px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800;font-size:.85rem}
+.cslot .char{width:72px;height:84px}
+.cslot.on{background:#FFF1C2;box-shadow:inset 0 0 0 3px var(--sun)}
+.cslot.locked{background:#F1EEF7;color:#9C93AC;cursor:default}
+.cslot.locked .char{filter:brightness(0) opacity(.18)}
+.tag{font-size:.7rem;font-weight:900;padding:1px 7px;border-radius:999px;border:1.5px solid var(--ink)}
+.r-common{background:#EDE6FF}.r-rare{background:#BFE0FF}.r-epic{background:#E3C8FF}
+.r-legendary{background:linear-gradient(120deg,#FFE27A,#FFB3D9,#B5F0FF)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(46,26,71,.55);display:grid;place-items:center;padding:16px}
+.sheet{width:min(640px,100%);max-height:90vh;overflow:auto;padding:22px;background:#fff;border:3px solid var(--ink);border-radius:var(--wob);box-shadow:6px 8px 0 var(--ink)}
+.sheet h2{font-size:2.1rem;line-height:1.05;margin-bottom:6px}
+.sheet .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.sheet input[type=text]{font:inherit;font-weight:800;font-size:1.2rem;padding:10px 12px;border:3px solid var(--ink);border-radius:12px;width:100%}
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+@media (max-width:520px){.loop{grid-template-columns:1fr 1fr}}
+.loop div{border:2.5px solid var(--ink);border-radius:var(--wob2);padding:10px 8px;text-align:center;font-weight:800;font-size:.9rem;background:var(--lilac)}
+.loop div span{display:block;font-size:1.7rem}
+.cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0;perspective:900px}
+.card{width:150px;height:200px;border:none;background:none;padding:0}
+.card .inner{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d}
+.card.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:3px solid var(--ink);border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center}
+.face.back{background:var(--marker);background-image:radial-gradient(rgba(255,255,255,.35) 2px,transparent 2.5px);background-size:16px 16px}
+.face.back span{font-family:'Gaegu',cursive;font-weight:700;font-size:4rem;color:#fff}
+.face.front{transform:rotateY(180deg);font-weight:800}
+.face .char{width:90px;height:105px}
+.face .swatch{width:72px;height:72px;border-radius:50%;border:3px solid var(--ink)}
+.face .big{font-size:3rem}
+.face small{font-size:.75rem;font-weight:900}
+.appraise{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start}
+@media (max-width:560px){.appraise{grid-template-columns:1fr}}
+.appraise img{width:100%;border:3px solid var(--ink);border-radius:6px}
+.lines{list-style:none;margin:0;padding:0;font-weight:700}
+.lines li{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:2px dotted #CFC6E4}
+.lines li.total{border-bottom:none;font-weight:900;font-size:1.25rem;color:var(--marker)}
+.buyer{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-weight:800}
+.buyer .bfav{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);display:inline-block;vertical-align:middle}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:10px}
+.gallery figure{margin:0;background:#fff;border:2.5px solid var(--ink);border-radius:8px;padding:6px}
+.gallery img{width:100%;display:block;border-radius:4px}
+.gallery figcaption{font-size:.8rem;font-weight:800;margin-top:4px}
+.setting{margin:14px 0}
+.setting label{font-weight:800}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.seg button{border:2.5px solid var(--ink);border-radius:999px;background:#fff;padding:5px 14px;font-weight:800}
+.seg button.on{background:var(--sun)}
+.checks{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-weight:700}
+.checks input{accent-color:var(--marker);width:18px;height:18px;vertical-align:-3px}
+
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;
+  background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:800;max-width:90vw;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="hud">
+  <button class="me" id="meBtn" aria-label="Change your look"><span id="hudChar"></span><span class="nm" id="hudName"></span></button>
+  <h1 class="logo">Paint Pals</h1>
+  <div class="stats">
+    <div class="stat" title="Coins"><span class="coin"></span><b id="coins">0</b></div>
+    <div class="stat" id="energyStat" title="Energy (max 300)">⚡<div class="cells" id="cells"><i></i><i></i><i></i></div><b id="energy">0</b></div>
+    <div class="stat" title="Blank canvases">🖼️<b id="canv">0</b></div>
+    <button class="icon-btn" id="gear" aria-label="Grown-up settings">⚙️</button>
+  </div>
+</header>
+
+<main>
+  <!-- TOWN -->
+  <section id="town" class="screen">
+    <div class="town-head">
+      <h2>Paint Town</h2>
+      <label class="run"><input type="checkbox" id="runToggle"> Run (faster, costs 3 ⚡ instead of 1)</label>
+    </div>
+    <div class="scene" id="scene">
+      <div class="sun-blob" aria-hidden="true"></div>
+      <div class="bldgs">
+        <button class="bldg" data-dest="quiz" style="--c:#4FA3F7">
+          <svg class="roof" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M8 58 L100 6 L192 58Z" fill="#4FA3F7" stroke="#2E1A47" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+          <span class="wall"><span class="sign">Quiz Library</span><span class="what">Answer questions to earn energy. Walking here is always free.</span><span class="door"></span></span>
+        </button>
+        <button class="bldg" data-dest="store" style="--c:#2EC4A0">
+          <svg class="roof" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M8 58 L100 6 L192 58Z" fill="#2EC4A0" stroke="#2E1A47" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+          <span class="wall"><span class="sign">Art Store</span><span class="what">Buy canvases and open packs.</span><span class="door"></span></span>
+        </button>
+        <button class="bldg" data-dest="studio" style="--c:#D6337A">
+          <svg class="roof" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M8 58 L100 6 L192 58Z" fill="#D6337A" stroke="#2E1A47" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+          <span class="wall"><span class="sign">My Studio</span><span class="what">Paint, sell paintings and upgrade your studio.</span><span class="door"></span></span>
+        </button>
+        <button class="bldg" data-dest="wardrobe" style="--c:#8F5CFF">
+          <svg class="roof" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M8 58 L100 6 L192 58Z" fill="#8F5CFF" stroke="#2E1A47" stroke-width="3" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+          <span class="wall"><span class="sign">Wardrobe</span><span class="what">Pick your character and hat.</span><span class="door"></span></span>
+        </button>
+      </div>
+      <div class="street" id="street"><div class="walker" id="walker"></div></div>
+    </div>
+    <p class="tip" id="townTip"></p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="screen" hidden>
+    <div class="bar"><h2>Quiz Library</h2><button class="btn small back">Back to town</button></div>
+    <div class="qwrap">
+      <div class="qcard sketch">
+        <div class="qmeta"><span class="subject" id="qSubject"></span><span class="streak" id="streak"></span></div>
+        <h3 id="qText"></h3>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <div class="qfoot"><span class="qstats" id="qStats"></span><button class="btn primary" id="nextQ" hidden>Next question</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO -->
+  <section id="studio" class="screen" hidden>
+    <div class="bar"><h2 id="studioTitle">My Studio</h2>
+      <button class="btn small sun" id="decorBtn">Decorate</button>
+      <button class="btn small" id="galleryBtn">Sold paintings</button>
+      <button class="btn small back">Back to town</button></div>
+    <div class="studio" id="studioBox">
+      <div class="room" id="room" aria-label="Your studio room"></div>
+      <div class="studio-wrap">
+        <div class="easel">
+          <canvas id="paint" width="1000" height="750" aria-label="Painting canvas"></canvas>
+          <div class="overlay" id="paintOverlay" hidden></div>
+        </div>
+        <aside class="panel">
+          <div class="studio-info"><span id="studioChar"></span><p id="studioInfo"></p></div>
+          <button class="btn sun small" id="upgradeBtn"></button>
+          <h3>Tools</h3>
+          <div class="tool-row" id="toolRow"></div>
+          <div class="sizer"><span>Size</span><input type="range" id="size" min="2" max="60" value="14" aria-label="Brush size"><span class="dotprev"><i id="dotPrev"></i></span></div>
+          <h3>Colors</h3>
+          <div class="palette" id="palette"></div>
+          <div class="acts"><button class="btn small" id="undoBtn">Undo</button><button class="btn primary" id="sellBtn">Sell painting</button></div>
+          <p class="meter" id="paintMeter"></p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORE -->
+  <section id="store" class="screen" hidden>
+    <div class="bar"><h2>Art Store</h2><button class="btn small back">Back to town</button></div>
+    <div id="storeBody"></div>
+  </section>
+
+  <!-- WARDROBE -->
+  <section id="wardrobe" class="screen" hidden>
+    <div class="bar"><h2>Wardrobe</h2><button class="btn small back">Back to town</button></div>
+    <div id="wardBody"></div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============================================================
+   PAINT PALS — game idea by Mika, built for Netlify (single file)
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const R = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const INK = '#2E1A47';
+const ENERGY_PER_Q = 100, ENERGY_MAX = 300;
+
+/* ---------------- CATALOGS ---------------- */
+const COLORS = [
+  {hex:'#222222',name:'Black',s:1},{hex:'#FFFFFF',name:'White',s:1},{hex:'#E63946',name:'Red',s:1},{hex:'#FFD60A',name:'Yellow',s:1},
+  {hex:'#1D6FE0',name:'Blue',s:1},{hex:'#2DB55D',name:'Green',s:1},{hex:'#8B5A2B',name:'Brown',s:1},{hex:'#FF7EB6',name:'Pink',s:1},
+  {hex:'#C8B6FF',name:'Lavender'},{hex:'#B8F2E6',name:'Mint'},{hex:'#FFD6BA',name:'Peach'},{hex:'#A9DEF9',name:'Baby Blue'},{hex:'#FFF3B0',name:'Butter'},
+  {hex:'#FF2E93',name:'Neon Pink'},{hex:'#B6FF00',name:'Lime'},{hex:'#00D9FF',name:'Electric Blue'},{hex:'#FF6B00',name:'Hot Orange'},
+  {hex:'#0FA3B1',name:'Teal'},{hex:'#1B3A6B',name:'Navy'},{hex:'#6EE7B7',name:'Seafoam'},{hex:'#FF6F61',name:'Coral'},
+  {hex:'#FF9F1C',name:'Tangerine'},{hex:'#C2185B',name:'Magenta'},{hex:'#6A1B9A',name:'Plum'},{hex:'#E9B949',name:'Gold'},
+  {hex:'#6B8E23',name:'Moss'},{hex:'#1E5631',name:'Pine'},{hex:'#5C4033',name:'Bark'},{hex:'#8BC34A',name:'Fern'},
+  {hex:'#FF9CEE',name:'Bubblegum'},{hex:'#8E44AD',name:'Grape'},{hex:'#D2042D',name:'Cherry'},{hex:'#FFF44F',name:'Lemon'},
+  {hex:'#E8C39E',name:'Sand'},{hex:'#7B4B2A',name:'Cocoa'},{hex:'#9AA0A6',name:'Gray'},{hex:'#44474E',name:'Charcoal'},
+  {hex:'#D2A679',name:'Tan'},{hex:'#A0522D',name:'Sienna'},{hex:'#87CEEB',name:'Sky'},{hex:'#3F51B5',name:'Indigo'},
+  {hex:'#8F5CFF',name:'Violet'},{hex:'#40E0D0',name:'Turquoise'}
+];
+const colorName = hex => (COLORS.find(c=>c.hex===hex)||{name:hex}).name;
+
+const TOOLS = {
+  pencil:{name:'Pencil',icon:'✏️',start:1},
+  brush:{name:'Brush',icon:'🖌️',start:1},
+  eraser:{name:'Eraser',icon:'🧽',start:1,free:1},
+  marker:{name:'Marker',icon:'🖊️',rarity:'common'},
+  crayon:{name:'Crayon',icon:'🖍️',rarity:'common'},
+  spray:{name:'Spray can',icon:'💨',rarity:'rare'},
+  bucket:{name:'Paint bucket',icon:'🪣',rarity:'rare'},
+  star:{name:'Star stamp',icon:'⭐',rarity:'rare'},
+  heart:{name:'Heart stamp',icon:'💖',rarity:'rare'},
+  glitter:{name:'Glitter',icon:'✨',rarity:'epic'},
+  rainbow:{name:'Rainbow brush',icon:'🌈',rarity:'legendary'}
+};
+
+const CHARS = {
+  blobby:{name:'Blobby',theme:'starter',rarity:'common',body:'#FFFFFF'},
+  strawberry:{name:'Berry',theme:'food',rarity:'common',body:'#F0455A'},
+  donut:{name:'Sprinkles',theme:'food',rarity:'common',body:'#E7B276'},
+  avocado:{name:'Avo',theme:'food',rarity:'rare',body:'#4E8B3A'},
+  cupcake:{name:'Cuppy',theme:'food',rarity:'epic',body:'#FFB3D1'},
+  sundae:{name:'Rainbow Sundae',theme:'food',rarity:'legendary',body:'#FFF4E0'},
+  cat:{name:'Whiskers',theme:'animal',rarity:'common',body:'#F6B65C'},
+  frog:{name:'Hopper',theme:'animal',rarity:'common',body:'#7BD06A'},
+  bunny:{name:'Clover',theme:'animal',rarity:'rare',body:'#F3EEF8'},
+  panda:{name:'Bamboo',theme:'animal',rarity:'epic',body:'#FFFFFF'},
+  unicorn:{name:'Starla',theme:'animal',rarity:'legendary',body:'#FBF4FF'},
+  pumpkin:{name:'Pumpkin',theme:'holiday',rarity:'common',body:'#F7931E'},
+  snowman:{name:'Flurry',theme:'holiday',rarity:'common',body:'#FFFFFF'},
+  reindeer:{name:'Antler',theme:'holiday',rarity:'rare',body:'#A9744F'},
+  valentine:{name:'Lovebug',theme:'holiday',rarity:'epic',body:'#FF8FB8'},
+  firework:{name:'Sparkler',theme:'holiday',rarity:'legendary',body:'#2E2F7A'},
+  striker:{name:'Striker',theme:'soccer',rarity:'common',body:'#FFE0C2',kit:'#E63946',num:9},
+  defender:{name:'Defender',theme:'soccer',rarity:'common',body:'#C68B5E',kit:'#1D6FE0',num:4},
+  keeper:{name:'Keeper',theme:'soccer',rarity:'rare',body:'#F1C7A1',kit:'#2DB55D',num:1},
+  captain:{name:'Captain',theme:'soccer',rarity:'epic',body:'#8D5A3B',kit:'#6A1B9A',num:10},
+  golden:{name:'Golden Boot',theme:'soccer',rarity:'legendary',body:'#F5C542',kit:'#FFFFFF',num:7}
+};
+const HATS = {
+  none:{name:'No hat',start:1},
+  beret:{name:'Artist beret',start:1},
+  cap:{name:'Ball cap',rarity:'common'},
+  bow:{name:'Big bow',rarity:'common'},
+  flower:{name:'Flower',rarity:'common'},
+  headphones:{name:'Headphones',rarity:'rare'},
+  shades:{name:'Sunglasses',rarity:'rare'},
+  party:{name:'Party hat',rarity:'rare'},
+  chef:{name:'Chef hat',rarity:'epic'},
+  wizard:{name:'Wizard hat',rarity:'epic'},
+  crown:{name:'Crown',rarity:'legendary'}
+};
+const THEMES = {food:'Food Friends',animal:'Animal Pals',holiday:'Holiday',soccer:'Soccer Stars'};
+const RARITY_W = {common:55,rare:30,epic:12,legendary:3};
+
+const PACKS = [
+  {id:'colors',name:'Color Pack',price:60,desc:'3 new paint colors for your palette.',pc:'#FF7EB6',icon:'🎨'},
+  {id:'supplies',name:'Supply Pack',price:50,desc:'3 blank canvases, plus a good chance at a new art tool.',pc:'#2EC4A0',icon:'🖌️'},
+  {id:'style',name:'Style Pack',price:90,desc:'A new hat or accessory for your character, plus a color.',pc:'#8F5CFF',icon:'🎩'},
+  {id:'food',name:'Food Friends Pack',price:150,theme:'food',desc:'A food character, plus a color.',pc:'#FFB3D1',show:'donut'},
+  {id:'animal',name:'Animal Pals Pack',price:150,theme:'animal',desc:'An animal character, plus a color.',pc:'#7BD06A',show:'cat'},
+  {id:'holiday',name:'Holiday Pack',price:150,theme:'holiday',desc:'A holiday character, plus a color.',pc:'#F7931E',show:'pumpkin'},
+  {id:'soccer',name:'Soccer Stars Pack',price:150,theme:'soccer',desc:'A soccer player character, plus a color.',pc:'#4FA3F7',show:'striker'}
+];
+
+const STUDIOS = [
+  {name:'Garage Corner',mult:1,cost:0,wall:'#E9E4F7',room:'#CFC3EE',slots:2,frame:'#8B5A2B'},
+  {name:'Cozy Attic',mult:1.3,cost:300,wall:'#FFE4EF',room:'#FFC6DC',slots:3,frame:'#8B5A2B'},
+  {name:'Sunny Loft',mult:1.7,cost:800,wall:'#FFF1C2',room:'#FFE08A',slots:4,frame:'#C9A227'},
+  {name:'City Gallery',mult:2.2,cost:2000,wall:'#D4F3E8',room:'#A9E8D2',slots:6,frame:'#C9A227'},
+  {name:'Grand Museum',mult:3,cost:5000,wall:'#DCE9FF',room:'#B5CFFF',slots:8,frame:'#D4AF37'}
+];
+const COZY = 0.03; // +3% sale price per decoration on display
+const SW = `stroke="#2E1A47" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+const DECOR = {
+  plant:{name:'Big plant',price:40,lvl:0,pos:'left:1%;bottom:5%;width:7%',
+    svg:`<svg viewBox="0 0 60 100"><path d="M30 60 Q8 50 6 26 Q24 30 30 56Z" fill="#3BAA4A" ${SW}/><path d="M30 60 Q52 46 54 20 Q36 28 30 56Z" fill="#2E8B57" ${SW}/><path d="M30 62 Q28 30 32 6 Q40 30 32 62Z" fill="#4CC36A" ${SW}/><path d="M14 60 H46 L42 96 H18Z" fill="#D9734E" ${SW}/><path d="M12 58 H48 V67 H12Z" fill="#E8875F" ${SW}/></svg>`},
+  rug:{name:'Round rug',price:60,lvl:0,pos:'left:30%;bottom:1%;width:40%',z:1,
+    svg:`<svg viewBox="0 0 200 24"><ellipse cx="100" cy="12" rx="96" ry="10" fill="#FF7EB6" ${SW}/><ellipse cx="100" cy="12" rx="72" ry="6" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 8"/><ellipse cx="100" cy="12" rx="36" ry="3" fill="#FFD60A"/></svg>`},
+  lamp:{name:'Floor lamp',price:70,lvl:0,pos:'left:92%;bottom:5%;width:5%',
+    svg:`<svg viewBox="0 0 40 140"><ellipse cx="20" cy="52" rx="19" ry="9" fill="#FFF3B0" opacity=".8"/><path d="M8 136 H32" ${SW} stroke-width="5"/><path d="M20 136 V40" ${SW}/><path d="M6 42 L12 10 H28 L34 42Z" fill="#FFD60A" ${SW}/></svg>`},
+  bookshelf:{name:'Bookshelf',price:120,lvl:1,pos:'left:9%;bottom:6%;width:9%',
+    svg:`<svg viewBox="0 0 60 110"><rect x="3" y="3" width="54" height="104" rx="3" fill="#8B5A2B" ${SW}/><rect x="9" y="9" width="42" height="92" fill="#6B4226"/>
+      <rect x="11" y="20" width="7" height="20" fill="#E63946"/><rect x="19" y="16" width="6" height="24" fill="#4FA3F7"/><rect x="26" y="22" width="8" height="18" fill="#FFD60A"/><rect x="36" y="18" width="6" height="22" fill="#2EC4A0"/>
+      <rect x="12" y="54" width="8" height="18" fill="#8F5CFF"/><rect x="21" y="50" width="6" height="22" fill="#FF7EB6"/><circle cx="40" cy="64" r="7" fill="#4FA3F7" ${SW} stroke-width="2"/>
+      <rect x="12" y="82" width="6" height="19" fill="#FF9F1C"/><rect x="19" y="86" width="9" height="15" fill="#2DB55D"/><rect x="30" y="80" width="6" height="21" fill="#E63946"/>
+      <path d="M9 40 H51 M9 72 H51" ${SW}/></svg>`},
+  beanbag:{name:'Beanbag',price:100,lvl:1,pos:'left:71%;bottom:3%;width:11%',
+    svg:`<svg viewBox="0 0 90 60"><path d="M10 56 Q2 30 26 16 Q46 4 66 16 Q90 30 82 56Z" fill="#8F5CFF" ${SW}/><path d="M24 36 Q44 26 66 36" fill="none" stroke="#B49CFF" stroke-width="4" stroke-linecap="round"/></svg>`},
+  lights:{name:'String lights',price:110,lvl:1,pos:'left:0;top:0;width:100%',z:4,
+    svg:`<svg viewBox="0 0 500 30"><path d="M0 6 Q31 22 62 6 Q93 22 125 6 Q156 22 187 6 Q218 22 250 6 Q281 22 312 6 Q343 22 375 6 Q406 22 437 6 Q468 22 500 6" fill="none" stroke="#2E1A47" stroke-width="2"/>${
+      [31,93,156,218,281,343,406,468].map((x,i)=>`<ellipse cx="${x}" cy="18" rx="5" ry="7" fill="${['#FFD60A','#FF7EB6','#4FA3F7','#2EC4A0'][i%4]}" stroke="#2E1A47" stroke-width="1.5"/>`).join('')}</svg>`},
+  catbed:{name:'Sleepy cat',price:160,lvl:2,pos:'left:59%;bottom:3%;width:10%',
+    svg:`<svg viewBox="0 0 80 52"><path d="M4 32 Q4 50 40 50 Q76 50 76 32Z" fill="#4FA3F7" ${SW}/><ellipse cx="40" cy="32" rx="36" ry="9" fill="#A9DEF9" ${SW}/>
+      <ellipse cx="42" cy="27" rx="20" ry="10" fill="#F6B65C" ${SW}/><path d="M18 18 L19 9 L24 15 M27 15 L31 9 L32 18" fill="#F6B65C" ${SW}/><circle cx="25" cy="23" r="9" fill="#F6B65C" ${SW}/>
+      <path d="M20 23 q2 2 4 0 M27 23 q2 2 4 0" fill="none" stroke="#2E1A47" stroke-width="2"/><text x="58" y="12" font-family="Nunito,sans-serif" font-weight="900" font-size="12" fill="#2E1A47">z</text><text x="66" y="5" font-family="Nunito,sans-serif" font-weight="900" font-size="9" fill="#2E1A47">z</text></svg>`},
+  aquarium:{name:'Fish tank',price:220,lvl:2,pos:'left:20%;bottom:5%;width:10%',
+    svg:`<svg viewBox="0 0 70 80"><rect x="8" y="50" width="54" height="28" fill="#8B5A2B" ${SW}/><rect x="4" y="10" width="62" height="40" rx="4" fill="#A9DEF9" ${SW}/>
+      <path d="M12 50 q4 -12 0 -22 M17 50 q-3 -10 2 -18" stroke="#2DB55D" stroke-width="3" fill="none"/>
+      <path d="M26 28 q8 -7 16 0 q-8 7 -16 0z M26 28 l-6 -5 v10z" fill="#FF9F1C"/><path d="M44 40 q6 -5 12 0 q-6 5 -12 0z M56 40 l5 -4 v8z" fill="#FF7EB6"/>
+      <circle cx="50" cy="22" r="2" fill="#fff"/><circle cx="54" cy="16" r="1.5" fill="#fff"/></svg>`},
+  disco:{name:'Disco ball',price:260,lvl:3,pos:'left:19.5%;top:0;width:4%',z:4,
+    svg:`<svg viewBox="0 0 40 70"><path d="M20 0 V26" stroke="#2E1A47" stroke-width="2"/><circle cx="20" cy="44" r="18" fill="#C9CFD9" ${SW}/>
+      <path d="M2 44 H38 M5 34 H35 M5 54 H35 M20 26 V62 M11 28 Q6 44 11 60 M29 28 Q34 44 29 60" fill="none" stroke="#8A93A3" stroke-width="1.5"/>
+      <path d="M12 36 l2 -5 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2z" fill="#fff"/></svg>`},
+  sculpture:{name:'Sculpture',price:320,lvl:3,pos:'left:83%;bottom:4%;width:7%',
+    svg:`<svg viewBox="0 0 50 100"><rect x="8" y="56" width="34" height="42" fill="#fff" ${SW}/><rect x="4" y="50" width="42" height="8" fill="#fff" ${SW}/>
+      <path d="M25 50 Q8 40 16 24 Q24 10 34 18 Q44 28 32 36 Q24 42 25 50Z" fill="#FF7EB6" ${SW}/><circle cx="30" cy="8" r="6" fill="#FFD60A" ${SW}/></svg>`},
+  rope:{name:'Velvet rope',price:400,lvl:4,pos:'left:33%;bottom:3%;width:26%',z:2,
+    svg:`<svg viewBox="0 0 200 50"><path d="M14 18 Q100 46 186 18" fill="none" stroke="#C1121F" stroke-width="6" stroke-linecap="round"/>
+      <rect x="5" y="14" width="10" height="34" fill="#E9B949" ${SW}/><circle cx="10" cy="12" r="7" fill="#E9B949" ${SW}/>
+      <rect x="185" y="14" width="10" height="34" fill="#E9B949" ${SW}/><circle cx="190" cy="12" r="7" fill="#E9B949" ${SW}/></svg>`},
+  chandelier:{name:'Chandelier',price:500,lvl:4,pos:'left:87%;top:0;width:9%',z:4,
+    svg:`<svg viewBox="0 0 80 50"><path d="M40 0 V14" stroke="#2E1A47" stroke-width="2"/><path d="M8 24 Q40 46 72 24" fill="none" stroke="#E9B949" stroke-width="4"/><path d="M40 14 V34" stroke="#E9B949" stroke-width="4"/>${
+      [8,24,40,56,72].map(x=>`<rect x="${x-3}" y="${x===40?26:x===24||x===56?22:16}" width="6" height="10" fill="#fff" stroke="#2E1A47" stroke-width="1.5"/><path d="M${x} ${x===40?18:x===24||x===56?14:8} q4 4 0 7 q-4 -3 0 -7z" fill="#FF9F1C"/>`).join('')}</svg>`}
+};
+const WALLPAPERS = {
+  plain:{name:'Plain',price:0,css:'none'},
+  stripes:{name:'Stripes',price:50,css:'repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 14px,transparent 14px 28px)'},
+  dots:{name:'Polka dots',price:50,css:'radial-gradient(rgba(255,255,255,.75) 3px,transparent 3.5px) 0 0/22px 22px'},
+  checks:{name:'Checkers',price:80,css:'conic-gradient(rgba(255,255,255,.45) 25%,transparent 0 50%,rgba(255,255,255,.45) 0 75%,transparent 0) 0 0/28px 28px'},
+  hearts:{name:'Hearts',price:90,css:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M16 23 C7 17 9 10 13 11 C14.5 11.5 15.5 13 16 14 C16.5 13 17.5 11.5 19 11 C23 10 25 17 16 23Z' fill='white' fill-opacity='.65'/%3E%3C/svg%3E") 0 0/32px 32px`},
+  stars:{name:'Stars',price:90,css:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34'%3E%3Cpath d='M17 8 L19.5 14 L26 14.5 L21 18.5 L22.5 25 L17 21.5 L11.5 25 L13 18.5 L8 14.5 L14.5 14Z' fill='white' fill-opacity='.65'/%3E%3C/svg%3E") 0 0/34px 34px`}
+};
+
+const BUYERS = ['Madame Brushwick','Sir Doodleton','Professor Palette','Gallery owner Lumi','Captain Canvas','Duchess Daisy',
+  'Mr. Pickles the collector','Auntie Watercolor','Señora Pinta','Baron von Sketch','DJ Splash','Coach Fernández'];
+
+/* ---------------- STATE ---------------- */
+const SAVE_KEY = 'paintpals_v1';
+function defaults(){
+  return {
+    name:'', coins:40, energy:0, canvases:3,
+    tools:Object.keys(TOOLS).filter(k=>TOOLS[k].start),
+    colors:COLORS.filter(c=>c.s).map(c=>c.hex),
+    chars:['blobby'], char:'blobby', hats:['none','beret'], hat:'beret',
+    studio:0, sold:[], wip:null, wipStats:null,
+    decor:{}, wallpaper:'plain', wallpapers:['plain'], hung:[],
+    stats:{answered:0,correct:0,paintings:0,earned:0,bestStreak:0},
+    settings:{grade:6, minutes:3, math:true, geo:true, sci:true}
+  };
+}
+let state = load();
+function load(){
+  const d = defaults();
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return d;
+    const s = JSON.parse(raw);
+    return {...d, ...s, stats:{...d.stats,...(s.stats||{})}, settings:{...d.settings,...(s.settings||{})}};
+  }catch(e){ return d; }
+}
+function save(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
+  catch(e){
+    // storage full: drop oldest sold thumbnails and try again
+    while(state.sold.length > 4){ state.sold.pop(); try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); return; }catch(_){} }
+  }
+}
+
+/* ---------------- CHARACTER ART ---------------- */
+let uid = 0;
+function charSVG(id, hat='none'){
+  const c = CHARS[id] || CHARS.blobby, B = c.body, u = 'cl'+(uid++);
+  const sw = `stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+  const body = 'M60 26 C88 26 104 46 104 72 C104 99 86 116 60 116 C34 116 16 99 16 72 C16 46 32 26 60 26Z';
+  let behind='', clipped='', over='', eyes=true, eyeCol=INK, mouthCol=INK, arm=B, foot=B, face='';
+  const ball = `<g transform="translate(103 120)"><circle r="9" fill="#fff" ${sw}/><path d="M0 -4 L4 -1 L2.5 4 L-2.5 4 L-4 -1Z" fill="${INK}"/></g>`;
+  switch(id){
+    case 'strawberry':
+      clipped = [[40,50],[78,48],[30,80],[60,98],[86,84],[48,106],[74,106],[58,44]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.2" ry="3.4" fill="#FFE066"/>`).join('');
+      over = `<path d="M38 32 L49 22 L53 33 L60 16 L67 33 L71 22 L82 32 Q60 42 38 32Z" fill="#3BAA4A" ${sw}/>`; break;
+    case 'donut':
+      clipped = `<path d="M8 18 H112 V62 Q104 74 94 62 Q86 78 76 64 Q66 80 56 64 Q46 76 38 62 Q28 76 20 62 Q14 70 8 64Z" fill="#FF8FC7"/>` +
+        [['#4FA3F7',38,42,30],['#FFD60A',56,36,-20],['#2EC4A0',74,44,50],['#fff',48,54,10],['#8F5CFF',84,56,-40],['#E63946',30,56,70],['#fff',66,52,-60]]
+        .map(([f,x,y,r])=>`<rect x="${x}" y="${y}" width="9" height="3.5" rx="1.7" fill="${f}" transform="rotate(${r} ${x+4} ${y+2})"/>`).join(''); break;
+    case 'avocado':
+      clipped = `<ellipse cx="60" cy="82" rx="31" ry="33" fill="#D9EB8C"/>`;
+      over = `<circle cx="60" cy="98" r="10" fill="#8B5A2B" ${sw}/>`; break;
+    case 'cupcake':
+      clipped = `<path d="M0 86 H120 V140 H0Z" fill="#5CC8C2"/>` + [30,44,58,72,86].map(x=>`<path d="M${x} 86 L${x+2} 120" stroke="#2E9A95" stroke-width="3"/>`).join('') +
+        `<path d="M0 86 H120" stroke="${INK}" stroke-width="3"/>`;
+      over = `<path d="M60 26 Q62 16 68 12" fill="none" ${sw}/><circle cx="60" cy="24" r="7" fill="#D2042D" ${sw}/>`; break;
+    case 'sundae':
+      clipped = `<path d="M8 18 H112 V48 Q104 60 96 48 Q88 66 80 50 Q72 62 64 48 Q56 64 48 48 Q40 60 32 46 Q24 58 8 48Z" fill="#7B4A2A"/>` +
+        [['#FF2E93',36,70],['#4FA3F7',80,66],['#FFD60A',52,96],['#2EC4A0',74,96],['#8F5CFF',30,92],['#FF6B00',88,88]]
+        .map(([f,x,y])=>`<rect x="${x}" y="${y}" width="8" height="3.5" rx="1.7" fill="${f}" transform="rotate(${R(-60,60)} ${x+4} ${y+2})"/>`).join('');
+      over = `<path d="M60 22 Q62 12 69 9" fill="none" ${sw}/><circle cx="60" cy="22" r="7" fill="#D2042D" ${sw}/>
+        <path d="M14 40 l3 -7 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3z" fill="#FFD60A" ${sw} stroke-width="2"/>`; break;
+    case 'cat':
+      behind = `<path d="M26 52 L28 14 L56 32Z" fill="${B}" ${sw}/><path d="M94 52 L92 14 L64 32Z" fill="${B}" ${sw}/>
+        <path d="M33 42 L34 24 L46 32Z" fill="#FF9FC3"/><path d="M87 42 L86 24 L74 32Z" fill="#FF9FC3"/>`;
+      clipped = `<path d="M50 26 L54 42 M60 24 L60 40 M70 26 L66 42" stroke="#D98A2B" stroke-width="5" stroke-linecap="round"/>`;
+      over = `<path d="M30 74 H14 M30 80 L16 86 M90 74 H106 M90 80 L104 86" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>`; break;
+    case 'frog':
+      behind = `<circle cx="42" cy="34" r="15" fill="${B}" ${sw}/><circle cx="78" cy="34" r="15" fill="${B}" ${sw}/>`;
+      eyes = false;
+      face = `<circle cx="42" cy="34" r="8" fill="#fff" ${sw} stroke-width="2"/><circle cx="78" cy="34" r="8" fill="#fff" ${sw} stroke-width="2"/>
+        <circle cx="43" cy="35" r="3.5" fill="${INK}"/><circle cx="79" cy="35" r="3.5" fill="${INK}"/>`; break;
+    case 'bunny':
+      behind = `<ellipse cx="45" cy="12" rx="10" ry="25" fill="${B}" ${sw}/><ellipse cx="75" cy="12" rx="10" ry="25" fill="${B}" ${sw}/>
+        <ellipse cx="45" cy="14" rx="4.5" ry="16" fill="#FF9FC3"/><ellipse cx="75" cy="14" rx="4.5" ry="16" fill="#FF9FC3"/>`;
+      over = `<ellipse cx="60" cy="74" rx="3.5" ry="2.5" fill="#FF7EB6"/>`; break;
+    case 'panda':
+      behind = `<circle cx="31" cy="34" r="13" fill="${INK}"/><circle cx="89" cy="34" r="13" fill="${INK}"/>`;
+      over = `<ellipse cx="47" cy="64" rx="10" ry="12" transform="rotate(25 47 64)" fill="${INK}"/><ellipse cx="73" cy="64" rx="10" ry="12" transform="rotate(-25 73 64)" fill="${INK}"/>`;
+      eyeCol = '#fff'; arm = INK; foot = INK; break;
+    case 'unicorn':
+      behind = `<circle cx="34" cy="36" r="11" fill="#FF9FC3" ${sw}/><circle cx="23" cy="52" r="10" fill="#C8B6FF" ${sw}/><circle cx="18" cy="68" r="9" fill="#A9DEF9" ${sw}/>`;
+      over = `<path d="M53 30 L60 -2 L67 30Z" fill="#FFD54F" ${sw}/><path d="M55 20 L65 16 M54 26 L66 22" stroke="${INK}" stroke-width="2"/>`; break;
+    case 'pumpkin':
+      clipped = `<path d="M44 26 Q30 72 44 118 M76 26 Q90 72 76 118" fill="none" stroke="#C96A0F" stroke-width="3"/>`;
+      over = `<path d="M55 30 Q54 16 62 10 L67 14 Q61 20 64 30Z" fill="#3B7A2A" ${sw}/>`; break;
+    case 'snowman':
+      clipped = `<rect x="0" y="90" width="120" height="11" fill="#E63946"/><circle cx="60" cy="110" r="2.8" fill="${INK}"/>`;
+      over = `<path d="M60 70 L77 73 L60 76Z" fill="#F7931E" ${sw} stroke-width="2"/><path d="M84 92 L92 112 L100 108 L90 92Z" fill="#E63946" ${sw} stroke-width="2"/>`; break;
+    case 'reindeer':
+      behind = `<path d="M44 34 L36 6 M39 18 L27 12 M76 34 L84 6 M81 18 L93 12" stroke="#6B4226" stroke-width="6" stroke-linecap="round" fill="none"/>`;
+      over = `<circle cx="60" cy="74" r="5.5" fill="#E63946" ${sw} stroke-width="2"/>`; break;
+    case 'valentine':
+      over = `<path d="M60 110 C40 98 44 84 53 87 C56 88 59 91 60 94 C61 91 64 88 67 87 C76 84 80 98 60 110Z" fill="#E63946" ${sw} stroke-width="2.5"/>`; break;
+    case 'firework':
+      behind = [['#FFD60A',12,28],['#FF2E93',104,32],['#00D9FF',8,96],['#B6FF00',108,92]].map(([f,x,y])=>
+        `<path d="M${x} ${y-9} L${x+3} ${y-3} L${x+9} ${y} L${x+3} ${y+3} L${x} ${y+9} L${x-3} ${y+3} L${x-9} ${y} L${x-3} ${y-3}Z" fill="${f}" ${sw} stroke-width="2"/>`).join('');
+      clipped = [[36,44],[82,50],[30,96],[88,98],[60,40],[66,108]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('');
+      eyeCol = '#fff'; mouthCol = '#fff'; break;
+    case 'striker': case 'defender': case 'keeper': case 'captain':
+      clipped = `<rect x="0" y="86" width="120" height="60" fill="${c.kit}"/><path d="M0 86 H120" stroke="${INK}" stroke-width="3"/>`;
+      over = `<text x="60" y="110" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-weight="900" font-size="17" fill="#fff" stroke="${INK}" stroke-width="1">${c.num}</text>` + ball;
+      if(id==='keeper') arm = '#FFD60A';
+      if(id==='captain') over += `<rect x="90" y="66" width="12" height="9" rx="2" fill="#FFD60A" transform="rotate(35 96 70)" ${sw} stroke-width="2"/>`;
+      break;
+    case 'golden':
+      over = `<path d="M38 104 L44 96 L50 104 L56 96 L62 104" fill="none" stroke="#B8860B" stroke-width="3" stroke-linecap="round"/>` +
+        `<g transform="translate(103 120)"><circle r="9" fill="#FFD54F" ${sw}/><path d="M0 -4 L4 -1 L2.5 4 L-2.5 4 L-4 -1Z" fill="${INK}"/></g>`;
+      foot = '#FFFFFF'; break;
+  }
+  const eyeSVG = eyes ? `<ellipse cx="48" cy="64" rx="4" ry="5.5" fill="${eyeCol}"/><ellipse cx="72" cy="64" rx="4" ry="5.5" fill="${eyeCol}"/>`
+    + (eyeCol===INK ? `<circle cx="49.5" cy="62" r="1.4" fill="#fff"/><circle cx="73.5" cy="62" r="1.4" fill="#fff"/>` : '') : '';
+  const mouth = id==='frog'
+    ? `<path d="M44 74 Q60 90 76 74" fill="none" stroke="${mouthCol}" stroke-width="3" stroke-linecap="round"/>`
+    : `<path d="M53 79 Q60 86 67 79" fill="none" stroke="${mouthCol}" stroke-width="3" stroke-linecap="round"/>`;
+  const blush = `<ellipse cx="37" cy="77" rx="6" ry="3.5" fill="#FF7EB6" opacity=".55"/><ellipse cx="83" cy="77" rx="6" ry="3.5" fill="#FF7EB6" opacity=".55"/>`;
+  return `<svg class="char" viewBox="0 0 120 142" aria-hidden="true"><g transform="translate(0 14)">
+    ${behind}
+    <ellipse cx="46" cy="117" rx="12" ry="7" fill="${foot}" ${sw}/><ellipse cx="74" cy="117" rx="12" ry="7" fill="${foot}" ${sw}/>
+    <ellipse cx="19" cy="76" rx="11" ry="8" transform="rotate(-35 19 76)" fill="${arm}" ${sw}/>
+    <ellipse cx="101" cy="76" rx="11" ry="8" transform="rotate(35 101 76)" fill="${arm}" ${sw}/>
+    <clipPath id="${u}"><path d="${body}"/></clipPath>
+    <path d="${body}" fill="${B}"/><g clip-path="url(#${u})">${clipped}</g><path d="${body}" fill="none" ${sw}/>
+    ${over}${eyeSVG}${face}${mouth}${blush}${hatSVG(hat)}
+  </g></svg>`;
+}
+function hatSVG(h){
+  const sw = `stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
+  switch(h){
+    case 'beret': return `<ellipse cx="63" cy="28" rx="28" ry="9" fill="#C1121F" ${sw}/><circle cx="66" cy="18" r="3.5" fill="#C1121F" ${sw} stroke-width="2"/>`;
+    case 'cap': return `<path d="M34 34 Q34 6 60 6 Q86 6 86 34Z" fill="#1D6FE0" ${sw}/><path d="M80 31 Q100 27 108 34 Q96 39 80 36Z" fill="#1D6FE0" ${sw}/><circle cx="60" cy="7" r="3" fill="#fff" ${sw} stroke-width="2"/>`;
+    case 'crown': return `<path d="M38 33 L36 6 L49 20 L60 0 L71 20 L84 6 L82 33Z" fill="#FFC93C" ${sw}/><circle cx="60" cy="24" r="3.5" fill="#E63946"/><circle cx="46" cy="26" r="2.5" fill="#1D6FE0"/><circle cx="74" cy="26" r="2.5" fill="#2DB55D"/>`;
+    case 'flower': return [0,72,144,216,288].map(a=>{const x=80+9*Math.cos(a*Math.PI/180), y=28+9*Math.sin(a*Math.PI/180); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5" fill="#FF9CEE" ${sw} stroke-width="2"/>`;}).join('') + `<circle cx="80" cy="28" r="5" fill="#FFD60A" ${sw} stroke-width="2"/>`;
+    case 'bow': return `<path d="M60 28 L42 16 L42 40Z M60 28 L78 16 L78 40Z" fill="#FF4FA3" ${sw}/><circle cx="60" cy="28" r="5.5" fill="#FF4FA3" ${sw}/>`;
+    case 'party': return `<path d="M46 32 L60 -10 L74 32Z" fill="#8F5CFF" ${sw}/><path d="M52 16 L68 20 M49 26 L71 30" stroke="#FFD60A" stroke-width="3.5"/><circle cx="60" cy="-11" r="5" fill="#FFD60A" ${sw} stroke-width="2"/>`;
+    case 'headphones': return `<path d="M18 66 Q16 12 60 12 Q104 12 102 66" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/><rect x="7" y="56" width="16" height="26" rx="7" fill="#FF4FA3" ${sw}/><rect x="97" y="56" width="16" height="26" rx="7" fill="#FF4FA3" ${sw}/>`;
+    case 'shades': return `<rect x="36" y="57" width="21" height="13" rx="5" fill="${INK}"/><rect x="63" y="57" width="21" height="13" rx="5" fill="${INK}"/><path d="M57 62 H63" stroke="${INK}" stroke-width="3"/><path d="M40 60 L46 60" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M67 60 L73 60" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`;
+    case 'wizard': return `<path d="M40 30 L68 -10 L80 30Z" fill="#3F51B5" ${sw}/><ellipse cx="60" cy="30" rx="31" ry="6" fill="#3F51B5" ${sw}/><path d="M60 10 l2 4 l4 1 l-4 2 l-2 4 l-2 -4 l-4 -2 l4 -1z" fill="#FFD60A"/>`;
+    case 'chef': return `<circle cx="46" cy="12" r="11" fill="#fff" ${sw}/><circle cx="74" cy="12" r="11" fill="#fff" ${sw}/><circle cx="60" cy="5" r="12" fill="#fff" ${sw}/><rect x="40" y="16" width="40" height="15" rx="3" fill="#fff" ${sw}/>`;
+    default: return '';
+  }
+}
+
+/* ---------------- QUESTIONS ---------------- */
+const gcd = (a,b) => b ? gcd(b, a%b) : Math.abs(a);
+const lcm = (a,b) => a/gcd(a,b)*b;
+const M = '−'; // proper minus sign
+function frac(n,d){
+  if(d<0){n=-n;d=-d;}
+  const g = gcd(Math.abs(n),d)||1; n/=g; d/=g;
+  if(d===1) return (n<0?M:'')+Math.abs(n);
+  const neg = n<0; n = Math.abs(n);
+  const w = Math.floor(n/d), r = n%d;
+  return (neg?M:'') + (w ? w+' ' : '') + r+'/'+d;
+}
+function num(x){ x = Math.round(x*1000)/1000; return (x<0?M:'') + String(Math.abs(x)); }
+function money(x){ return '$'+(Math.round(x*100)/100).toFixed(2).replace(/\.00$/,''); }
+function mc(q, a, wrongs, explain){
+  const set = new Set([a]), ch = [a];
+  for(const w of wrongs){ if(ch.length>=4) break; if(w!=null && w!=='' && !set.has(w)){ set.add(w); ch.push(w); } }
+  let k = 2; while(ch.length<4){ const w = a+' '.repeat(k++); if(!set.has(w)){set.add(w);ch.push(w);} } // safety, never really hit
+  return {q, a, choices:shuffle(ch), explain};
+}
+function nums(ans, extra=[], fmt=num){
+  const base = [ans+1, ans-1, ans+2, ans*2, ans+10, ans-2, ans+5];
+  return extra.concat(base).map(v=> typeof v==='number' ? fmt(v) : v);
+}
+const sg = n => n<0 ? `(${M}${Math.abs(n)})` : String(n);
+
+const MATH = {
+  fracAddSub(s){
+    const ds = s===1 ? [2,3,4,5,6,8,10] : [2,3,4,5,6,8,9,10,12];
+    let d1=pick(ds), d2=pick(ds), n1=R(1,d1-1), n2=R(1,d2-1), add = Math.random()<.55;
+    if(!add && n1/d1 < n2/d2){ [n1,n2]=[n2,n1]; [d1,d2]=[d2,d1]; }
+    if(!add && n1*d2===n2*d1) add = true;
+    const L = lcm(d1,d2), a1 = n1*L/d1, a2 = n2*L/d2, N = add ? a1+a2 : a1-a2, op = add ? '+' : M;
+    return mc(`${n1}/${d1} ${op} ${n2}/${d2} = ?`, frac(N,L),
+      [frac(add?n1+n2:Math.abs(n1-n2), d1+d2), frac(N+1,L), frac(Math.max(1,N-1),L), frac(add?n1+n2:Math.abs(n1-n2), L), frac(N, L*2)],
+      `Use a common denominator of ${L}: ${a1}/${L} ${op} ${a2}/${L} = ${N}/${L}, which simplifies to ${frac(N,L)}.`);
+  },
+  fracOf(s){
+    const d = pick([3,4,5,6,8,10]), n = R(1,d-1), k = R(2, 4+3*s), w = d*k, ans = n*k;
+    return mc(`What is ${n}/${d} of ${w}?`, num(ans), nums(ans,[k, w-ans, ans+k, w*n]),
+      `${w} ÷ ${d} = ${k}, then ${k} × ${n} = ${ans}.`);
+  },
+  fracDiv(s){
+    if(s===1){ const w=R(2,9), d=pick([2,3,4,5]); const ans=w*d;
+      return mc(`${w} ÷ 1/${d} = ?`, num(ans), nums(ans,[w, frac(w,d), ans+d]), `How many 1/${d}s fit in ${w}? ${w} × ${d} = ${ans}.`); }
+    const b=pick([2,3,4,5,6,8]), a=R(1,b-1), d=pick([2,3,4,5,6,8,10]), c=R(1,d-1);
+    return mc(`${a}/${b} ÷ ${c}/${d} = ?`, frac(a*d,b*c), [frac(a*c,b*d), frac(b*c,a*d), frac(a*d+1,b*c), frac(a*d,b*c*2)],
+      `Flip the second fraction and multiply: ${a}/${b} × ${d}/${c} = ${a*d}/${b*c} = ${frac(a*d,b*c)}.`);
+  },
+  decMul(s){
+    const A = R(11, s===1?49:99), B = R(2, s===3?29:19), ans = A*B/100;
+    return mc(`${A/10} × ${B/10} = ?`, num(ans), [num(A*B/10), num(A*B/1000), num(ans+0.1), num(ans+1), num(A/10+B/10)],
+      `${A} × ${B} = ${A*B}. There are 2 digits after the decimal points in total, so the answer is ${num(ans)}.`);
+  },
+  percent(s){
+    const p = pick(s===1 ? [10,20,25,50] : [5,10,15,20,25,30,40,60,75]);
+    const step = 100/gcd(p,100), n = step*R(1, s===1?8:12), ans = p*n/100;
+    return mc(`What is ${p}% of ${n}?`, num(ans), nums(ans,[ans*10, n-ans, num(p*n/10), ans+step]),
+      `${p}% means ${p} out of 100: ${n} × ${p}/100 = ${ans}.`);
+  },
+  unitRate(s){
+    const item = pick(['paint tubes','sketchbooks','brushes','markers','canvases','jars of glitter']);
+    const cents = s===1 ? R(1,9)*100 : R(2,16)*50, per = cents/100;
+    const n1 = R(2,6); let n2 = R(3,12); if(n2===n1) n2++;
+    const ans = per*n2;
+    return mc(`${n1} ${item} cost ${money(per*n1)}. How much do ${n2} cost?`, money(ans),
+      [money(per*(n2+1)), money(per*(n2-1)), money(per*n1+n2), money(ans*2), money(ans+per/2)],
+      `One costs ${money(per*n1)} ÷ ${n1} = ${money(per)}. Then ${money(per)} × ${n2} = ${money(ans)}.`);
+  },
+  negatives(s){
+    const a = R(-15,15) || -4, b = R(-12,12) || 5, t = s>=2 ? R(0,2) : R(0,1);
+    let q, ans, ex;
+    if(t===0){ ans=a+b; q=`${num(a)} + ${sg(b)} = ?`; ex=`Start at ${num(a)} and move ${Math.abs(b)} ${b<0?'left':'right'} on the number line: ${num(ans)}.`; }
+    else if(t===1){ ans=a-b; q=`${num(a)} ${M} ${sg(b)} = ?`; ex=`Subtracting is adding the opposite: ${num(a)} + ${sg(-b)} = ${num(ans)}.`; }
+    else { ans=a*b; q=`${num(a)} × ${sg(b)} = ?`; ex=`${Math.abs(a)} × ${Math.abs(b)} = ${Math.abs(ans)}. ${(a<0)!==(b<0)?'Different signs make a negative.':'Same signs make a positive.'}`; }
+    return mc(q, num(ans), nums(ans,[-ans, Math.abs(a)+Math.abs(b), ans+2, ans-2].filter(v=>v!==ans)), ex);
+  },
+  orderOps(s){
+    const a=R(2,9), b=R(2,9), c=R(2,6), d=R(1,9), t = R(0, s>=2 ? 3 : 1);
+    let q, ans, wrong, ex;
+    if(t===0){ q=`${a} + ${b} × ${c} = ?`; ans=a+b*c; wrong=(a+b)*c; ex=`Multiply first: ${b} × ${c} = ${b*c}, then add ${a}.`; }
+    else if(t===1){ q=`(${a} + ${b}) × ${c} ${M} ${d} = ?`; ans=(a+b)*c-d; wrong=(a+b)*(c-d); ex=`Parentheses first: ${a+b}. Then × ${c} = ${(a+b)*c}, then ${M} ${d}.`; }
+    else if(t===2){ q=`${c}² + ${a} × ${b} = ?`; ans=c*c+a*b; wrong=(c*c+a)*b; ex=`Exponent first: ${c}² = ${c*c}. Then ${a} × ${b} = ${a*b}. Add them.`; }
+    else { const k=R(2,6); q=`${a} × ${b} ${M} ${c*k} ÷ ${c} = ?`; ans=a*b-k; wrong=(a*b-c*k)/c; ex=`Do × and ÷ first: ${a*b} and ${k}. Then ${a*b} ${M} ${k} = ${ans}.`; }
+    return mc(q, num(ans), nums(ans,[wrong, c*2+a*b, ans+c].filter(v=>v!==ans)), ex);
+  },
+  area(s){
+    const t = R(0, s>=3 ? 2 : 1);
+    if(t===0){ let b=R(4,20), h=R(3,15); if((b*h)%2) b++; const ans=b*h/2;
+      return mc(`A triangle has a base of ${b} cm and a height of ${h} cm. What is its area?`, `${ans} sq cm`,
+        [`${b*h} sq cm`, `${b+h} sq cm`, `${2*(b+h)} sq cm`, `${ans+b} sq cm`], `Triangle area = ½ × base × height = ½ × ${b} × ${h} = ${ans} sq cm.`); }
+    if(t===1){ const b=R(4,18), h=R(3,12), ans=b*h;
+      return mc(`A parallelogram has a base of ${b} m and a height of ${h} m. What is its area?`, `${ans} sq m`,
+        [`${ans/2} sq m`, `${2*(b+h)} sq m`, `${b+h} sq m`, `${ans+h} sq m`], `Parallelogram area = base × height = ${b} × ${h} = ${ans} sq m.`); }
+    let b1=R(4,12), b2=R(b1+2,20), h=R(2,10); if(((b1+b2)*h)%2) h++; const ans=(b1+b2)*h/2;
+    return mc(`A trapezoid has bases ${b1} in and ${b2} in, and a height of ${h} in. What is its area?`, `${ans} sq in`,
+      [`${(b1+b2)*h} sq in`, `${b1*b2} sq in`, `${b2*h} sq in`, `${ans+h} sq in`], `Trapezoid area = (b₁ + b₂) ÷ 2 × h = ${b1+b2} ÷ 2 × ${h} = ${ans} sq in.`);
+  },
+  equation(s){
+    const a=R(2,9), x=R(2,12); let b=R(1,20); if(s===3 && Math.random()<.5) b=-b;
+    const c=a*x+b, sign = b<0 ? `${M} ${-b}` : `+ ${b}`;
+    if(s===1){ const y=R(3,20), k=R(2,9); return mc(`${k} × n = ${k*y}. What is n?`, num(y), nums(y,[k*y-k, y*k]), `Divide both sides by ${k}: n = ${k*y} ÷ ${k} = ${y}.`); }
+    return mc(`${a}x ${sign} = ${c}. What is x?`, num(x), nums(x,[Math.round((c+b)/a), c-b, Math.round(c/a)]),
+      `${b<0?'Add':'Subtract'} ${Math.abs(b)} on both sides: ${a}x = ${c-b}. Then divide by ${a}: x = ${x}.`);
+  },
+  gcfLcm(s){
+    if(Math.random()<.5){
+      const g=R(2,9); let m1=R(2,7), m2=R(2,7); while(m1===m2 || gcd(m1,m2)!==1){ m1=R(2,7); m2=R(2,7); }
+      const A=g*m1, B=g*m2;
+      return mc(`What is the greatest common factor (GCF) of ${A} and ${B}?`, num(g), nums(g,[lcm(A,B), g*2, Math.min(A,B), m1*m2]),
+        `${A} = ${g} × ${m1} and ${B} = ${g} × ${m2}. The biggest number that divides both is ${g}.`);
+    }
+    let A=pick([4,6,8,9,10,12,15]), B=pick([3,4,6,8,10,12,14]); if(A===B) B+=2;
+    const L=lcm(A,B);
+    return mc(`What is the least common multiple (LCM) of ${A} and ${B}?`, num(L), nums(L,[A*B===L?L+A:A*B, gcd(A,B), L*2, L+B]),
+      `Count by ${A}s and ${B}s until they meet: the first shared number is ${L}.`);
+  },
+  mean(s){
+    for(;;){
+      const m=R(10,40), xs=[R(m-10,m+10),R(m-10,m+10),R(m-10,m+10),R(m-10,m+10)];
+      const last = 5*m - xs.reduce((p,v)=>p+v,0); if(last<1 || last>99) continue;
+      xs.push(last); shuffle(xs); const sorted=[...xs].sort((p,q)=>p-q);
+      return mc(`What is the mean (average) of ${xs.join(', ')}?`, num(m), nums(m,[sorted[2], 5*m, m+3, m-3]),
+        `Add them up: ${5*m}. Divide by 5 numbers: ${5*m} ÷ 5 = ${m}.`);
+    }
+  },
+  ratio(s){
+    let a=R(1,5), b=R(2,7); while(a===b || gcd(a,b)!==1){ a=R(1,5); b=R(2,7); }
+    const k=R(2,8), ans=a*k;
+    return mc(`The ratio of red paint to blue paint is ${a}:${b}. If you use ${b*k} cups of blue, how many cups of red do you need?`,
+      num(ans), nums(ans,[b*k, a+k, ans+a, b*k-(b-a)]), `${b*k} ÷ ${b} = ${k} batches, and ${a} × ${k} = ${ans} cups of red.`);
+  },
+  volume(s){
+    const l=R(2,9), w=R(2,8), h=R(2,7), ans=l*w*h;
+    return mc(`A box is ${l} cm long, ${w} cm wide and ${h} cm tall. What is its volume?`, `${ans} cubic cm`,
+      [`${l+w+h} cubic cm`, `${l*w} cubic cm`, `${2*(l*w+l*h+w*h)} cubic cm`, `${ans+l} cubic cm`], `Volume = length × width × height = ${l} × ${w} × ${h} = ${ans} cubic cm.`);
+  }
+};
+const MATH_BY_GRADE = {
+  1:['fracAddSub','fracOf','fracDiv','decMul','percent','orderOps','area','volume','mean','equation','unitRate'],
+  2:['fracAddSub','fracOf','fracDiv','decMul','percent','unitRate','negatives','orderOps','area','equation','gcfLcm','mean','ratio','volume'],
+  3:['fracAddSub','fracDiv','decMul','percent','unitRate','negatives','orderOps','area','equation','gcfLcm','mean','ratio','volume']
+};
+
+const CAPITALS = [
+  ['France','Paris',1],['Japan','Tokyo',1],['Italy','Rome',1],['Spain','Madrid',1],['Germany','Berlin',1],['the United Kingdom','London',1],
+  ['Canada','Ottawa',1],['Mexico','Mexico City',1],['China','Beijing',1],['Egypt','Cairo',1],['Russia','Moscow',1],['Belgium','Brussels',1],
+  ['the Netherlands','Amsterdam',1],['Greece','Athens',1],['Ireland','Dublin',1],['Portugal','Lisbon',1],['Brazil','Brasília',1],
+  ['Argentina','Buenos Aires',1],['India','New Delhi',1],['South Korea','Seoul',1],['Australia','Canberra',1],['the United States','Washington, D.C.',1],
+  ['Norway','Oslo',2],['Sweden','Stockholm',2],['Denmark','Copenhagen',2],['Finland','Helsinki',2],['Poland','Warsaw',2],['Austria','Vienna',2],
+  ['Switzerland','Bern',2],['Turkey','Ankara',2],['Kenya','Nairobi',2],['Peru','Lima',2],['Chile','Santiago',2],['Colombia','Bogotá',2],
+  ['Thailand','Bangkok',2],['Vietnam','Hanoi',2],['the Philippines','Manila',2],['Indonesia','Jakarta',2],['New Zealand','Wellington',2],
+  ['Cuba','Havana',2],['Morocco','Rabat',2],['Nigeria','Abuja',2],['Iceland','Reykjavík',2],['Czechia','Prague',2],['Hungary','Budapest',2],['Saudi Arabia','Riyadh',2],
+  ['Mongolia','Ulaanbaatar',3],['Kazakhstan','Astana',3],['Ethiopia','Addis Ababa',3],['Ghana','Accra',3],['Venezuela','Caracas',3],
+  ['Ecuador','Quito',3],['Uruguay','Montevideo',3],['Paraguay','Asunción',3],['Pakistan','Islamabad',3],['Bangladesh','Dhaka',3],
+  ['Nepal','Kathmandu',3],['Malaysia','Kuala Lumpur',3],['Croatia','Zagreb',3],['Romania','Bucharest',3],['Ukraine','Kyiv',3],
+  ['Jamaica','Kingston',3],['Senegal','Dakar',3],['Fiji','Suva',3]
+];
+const GEO_FACTS = [
+  ['Which is the largest ocean on Earth?','Pacific Ocean',['Atlantic Ocean','Indian Ocean','Arctic Ocean'],'The Pacific is bigger than all the land on Earth put together.'],
+  ['Which is the largest continent by area?','Asia',['Africa','North America','Antarctica'],'Asia covers about 30% of Earth’s land.'],
+  ['What is the tallest mountain above sea level?','Mount Everest',['K2','Mount Kilimanjaro','Mount Rainier'],'Everest, in the Himalayas, is about 8,849 m tall.'],
+  ['Which river is usually called the longest in Africa?','Nile',['Congo','Niger','Zambezi'],'The Nile flows north through 11 countries to the Mediterranean Sea.'],
+  ['Which continent has the most countries?','Africa',['Europe','Asia','South America'],'Africa has 54 countries.'],
+  ['The equator splits Earth into which two halves?','Northern and Southern Hemispheres',['Eastern and Western Hemispheres','Day side and night side','Land and sea halves'],'The equator is 0° latitude.'],
+  ['Which country is shaped like a boot?','Italy',['Greece','Chile','Portugal'],'Italy’s boot even looks like it is kicking Sicily.'],
+  ['The Great Barrier Reef is off the coast of which country?','Australia',['Brazil','Indonesia','South Africa'],'It is the largest coral reef system in the world.'],
+  ['The Andes mountains are on which continent?','South America',['Africa','Asia','Europe'],'The Andes are the longest mountain range on land.'],
+  ['What is the largest country by area?','Russia',['Canada','China','the United States'],'Russia spans 11 time zones.'],
+  ['Which is the coldest continent?','Antarctica',['Asia','Europe','North America'],'Antarctica holds about 70% of Earth’s fresh water as ice.'],
+  ['Which ocean lies between Africa and Australia?','Indian Ocean',['Atlantic Ocean','Pacific Ocean','Southern Ocean'],'The Indian Ocean is the third-largest ocean.'],
+  ['What is the capital of Washington State?','Olympia',['Seattle','Spokane','Tacoma'],'Seattle is the biggest city, but Olympia is the capital.'],
+  ['What kind of mountain is Mount Rainier?','A volcano',['A plateau','A sand dune','A coral reef'],'Rainier is an active volcano covered in glaciers.'],
+  ['Which language is NOT an official language of Belgium?','Spanish',['Dutch','French','German'],'Belgium has three official languages: Dutch, French and German.'],
+  ['Lines of latitude run in which direction?','East to west',['North to south','Diagonally','In circles around the poles only'],'Latitude lines are parallel to the equator.'],
+  ['The Panama Canal connects which two oceans?','Atlantic and Pacific',['Atlantic and Indian','Pacific and Arctic','Indian and Pacific'],'Ships save thousands of miles by not sailing around South America.'],
+  ['Which river flows through Paris?','Seine',['Thames','Danube','Rhine'],'The Thames is in London and the Danube runs through Vienna and Budapest.'],
+  ['The Sahara Desert is on which continent?','Africa',['Asia','Australia','South America'],'The Sahara is the largest hot desert in the world.'],
+  ['Which country has the most people?','India',['China','the United States','Indonesia'],'India passed China as the most populated country in 2023.'],
+  ['Which mountains are between France and Spain?','Pyrenees',['Alps','Andes','Rockies'],'The tiny country of Andorra sits in the Pyrenees.'],
+  ['Which continent is also a single country?','Australia',['Greenland','Antarctica','Madagascar'],'Australia is both a country and a continent.'],
+  ['Which country won the 2022 men’s soccer World Cup?','Argentina',['France','Brazil','Croatia'],'Argentina beat France on penalties in Qatar.'],
+  ['The Amazon rainforest is mostly in which country?','Brazil',['Peru','Colombia','Mexico'],'About 60% of the Amazon is in Brazil.']
+];
+const SCIENCE = [
+  ['What is the basic unit of life?','Cell',['Atom','Organ','Tissue'],'All living things are made of one or more cells.'],
+  ['Which part of the cell makes energy for the cell?','Mitochondria',['Nucleus','Cell wall','Vacuole'],'Mitochondria are called the powerhouse of the cell.'],
+  ['Which part is found in plant cells but NOT animal cells?','Cell wall',['Nucleus','Cell membrane','Mitochondria'],'Plant cells also have chloroplasts.'],
+  ['What process do plants use to make food from sunlight?','Photosynthesis',['Respiration','Digestion','Evaporation'],'Plants use light, water and carbon dioxide to make sugar.'],
+  ['Which gas do plants take in from the air?','Carbon dioxide',['Oxygen','Nitrogen','Helium'],'Plants take in CO₂ and give off oxygen.'],
+  ['When water vapor turns into liquid water, it is called…','Condensation',['Evaporation','Melting','Freezing'],'That is how clouds and dew form.'],
+  ['When a solid turns into a liquid, it is called…','Melting',['Freezing','Condensation','Boiling'],'Ice melts into water at 0 °C.'],
+  ['At what temperature does water boil at sea level?','100 °C',['50 °C','0 °C','212 °C'],'100 °C is the same as 212 °F.'],
+  ['Which planet is closest to the Sun?','Mercury',['Venus','Earth','Mars'],'Mercury goes around the Sun in just 88 days.'],
+  ['Which is the largest planet in our solar system?','Jupiter',['Saturn','Neptune','Earth'],'More than 1,300 Earths could fit inside Jupiter.'],
+  ['Which planet is called the Red Planet?','Mars',['Venus','Jupiter','Mercury'],'Rusty iron in its soil makes Mars look red.'],
+  ['What causes Earth’s seasons?','The tilt of Earth’s axis',['Earth’s distance from the Sun','The Moon’s phases','Clouds blocking the Sun'],'When your half of Earth tilts toward the Sun, it is summer.'],
+  ['How long does Earth take to orbit the Sun?','About 365 days',['24 hours','About 30 days','About 100 days'],'That is one year. One spin on its axis takes about 24 hours.'],
+  ['Which layer of Earth do we live on?','Crust',['Mantle','Outer core','Inner core'],'The crust is the thin, rocky outer layer.'],
+  ['Rock that forms when lava cools is called…','Igneous rock',['Sedimentary rock','Metamorphic rock','Fossil rock'],'Igneous comes from the Latin word for fire.'],
+  ['Rock made from layers of sand and mud pressed together is…','Sedimentary rock',['Igneous rock','Metamorphic rock','Volcanic glass'],'Fossils are often found in sedimentary rock.'],
+  ['What force pulls objects toward Earth?','Gravity',['Friction','Magnetism','Air resistance'],'Gravity is why a dropped paintbrush falls down.'],
+  ['The energy of a moving object is called…','Kinetic energy',['Potential energy','Chemical energy','Nuclear energy'],'A kicked soccer ball has kinetic energy.'],
+  ['Which is a renewable energy source?','Wind',['Coal','Oil','Natural gas'],'Wind will not run out, but fossil fuels can.'],
+  ['In a food chain, which is a producer?','Grass',['Rabbit','Hawk','Mushroom'],'Producers make their own food from sunlight.'],
+  ['Which living thing is a decomposer?','Mushroom',['Oak tree','Deer','Eagle'],'Decomposers break down dead things and return nutrients to the soil.'],
+  ['Which organ pumps blood through your body?','Heart',['Lungs','Liver','Stomach'],'Your heart beats about 100,000 times a day.'],
+  ['How many bones does an adult human have?','206',['106','300','52'],'Babies are born with about 270 bones that fuse together.'],
+  ['Which material is a good conductor of electricity?','Copper',['Rubber','Wood','Plastic'],'That is why wires are made of copper and covered in rubber or plastic.'],
+  ['What is the smallest particle of an element?','Atom',['Cell','Molecule','Crystal'],'Atoms are made of protons, neutrons and electrons.'],
+  ['H₂O is the chemical formula for…','Water',['Salt','Oxygen','Sugar'],'Two hydrogen atoms and one oxygen atom.'],
+  ['What is the name of our galaxy?','The Milky Way',['Andromeda','The Solar System','Orion'],'The Milky Way has hundreds of billions of stars.'],
+  ['Which travels faster?','Light',['Sound','A jet plane','A cheetah'],'That is why you see lightning before you hear thunder.'],
+  ['What causes most earthquakes?','Moving tectonic plates',['Strong winds','The Moon’s phases','Ocean waves'],'Plates slowly push, pull and slide past each other.'],
+  ['Water moving up from roots and escaping from leaves is called…','Transpiration',['Condensation','Precipitation','Erosion'],'It is part of the water cycle.']
+];
+
+function makeQuestion(){
+  const st = state.settings, s = st.grade - 4; // grade 5→1, 6→2, 7→3
+  const pool = [];
+  if(st.math) pool.push('math','math');
+  if(st.geo) pool.push('geo');
+  if(st.sci) pool.push('sci');
+  if(!pool.length) pool.push('math');
+  const subj = pick(pool);
+  if(subj==='math'){ const g = pick(MATH_BY_GRADE[s]); return {...MATH[g](s), subject:'Math'}; }
+  if(subj==='geo'){
+    if(Math.random()<.55){
+      const tierMax = s===1 ? 2 : 3, list = CAPITALS.filter(c=>c[2]<=tierMax), it = pick(list);
+      const others = shuffle(list.filter(c=>c!==it)).slice(0,3);
+      if(Math.random()<.7) return {...mc(`What is the capital of ${it[0]}?`, it[1], others.map(o=>o[1]), `${it[1]} is the capital of ${it[0]}.`), subject:'Capitals'};
+      const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+      return {...mc(`${it[1]} is the capital of which country?`, cap(it[0]), others.map(o=>cap(o[0])), `${it[1]} is the capital of ${it[0]}.`), subject:'Capitals'};
+    }
+    const f = pick(GEO_FACTS); return {...mc(f[0], f[1], f[2], f[3]), subject:'Geography'};
+  }
+  const f = pick(SCIENCE); return {...mc(f[0], f[1], f[2], f[3]), subject:'Science'};
+}
+
+/* ---------------- UI HELPERS ---------------- */
+let toastTimer;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.hidden=true, 2800);
+}
+function openModal(html){ $('#sheet').innerHTML = html; $('#modal').hidden = false; }
+function closeModal(){ $('#modal').hidden = true; $('#sheet').innerHTML=''; }
+function bump(sel){ const el=$(sel); el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse'); }
+
+function renderHUD(){
+  $('#coins').textContent = Math.floor(state.coins);
+  $('#energy').textContent = Math.floor(state.energy);
+  $('#canv').textContent = state.canvases;
+  $$('#cells i').forEach((c,i)=>{ const f = Math.max(0, Math.min(100, state.energy - i*100)); c.style.setProperty('--f', f+'%'); });
+  $('#hudChar').innerHTML = charSVG(state.char, state.hat);
+  $('#hudName').textContent = state.name || '';
+}
+
+/* ---------------- NAVIGATION ---------------- */
+let current = 'town';
+function show(name){
+  if(current==='studio' && name!=='studio') saveWip(true);
+  current = name;
+  $$('.screen').forEach(s=>s.hidden = s.id!==name);
+  window.scrollTo({top:0});
+  if(name==='town') renderTown();
+  if(name==='quiz') nextQuestion();
+  if(name==='studio') enterStudio();
+  if(name==='store') renderStore();
+  if(name==='wardrobe') renderWardrobe();
+  renderHUD();
+}
+$$('.back').forEach(b=>b.addEventListener('click', ()=>show('town')));
+$('#meBtn').addEventListener('click', ()=>show('wardrobe'));
+
+/* ---------------- TOWN ---------------- */
+let townSpot = null, walking = false;
+function renderTown(){
+  $('#walker').innerHTML = charSVG(state.char, state.hat);
+  placeWalker(townSpot, false);
+  const tips = [
+    state.energy < 1 ? 'You’re out of energy. Visit the Quiz Library to power up.' : null,
+    state.canvases < 1 && !state.wip ? 'No blank canvases left. The Art Store sells them.' : null,
+    state.wip ? 'You have a painting in progress in your studio.' : null
+  ].filter(Boolean);
+  $('#townTip').textContent = tips[0] || 'Every correct answer gives you 100 energy. Energy lets you walk, run and paint.';
+}
+function bldgX(dest){
+  const st = $('#street').getBoundingClientRect(), b = $(`.bldg[data-dest="${dest}"] .door`).getBoundingClientRect();
+  return b.left - st.left + b.width/2 - 35;
+}
+function placeWalker(dest, animate){
+  const w = $('#walker');
+  w.style.transition = animate ? w.style.transition : 'none';
+  w.style.left = (dest ? bldgX(dest) : 20) + 'px';
+  if(!animate) requestAnimationFrame(()=>w.style.transition='');
+}
+$$('.bldg').forEach(b=>b.addEventListener('click', ()=>walkTo(b.dataset.dest)));
+function walkTo(dest){
+  if(walking) return;
+  const run = $('#runToggle').checked, cost = run ? 3 : 1, free = dest==='quiz';
+  if(!free && state.energy < cost){
+    toast(state.energy < 1 ? 'You need energy to walk there. Answer questions at the Quiz Library first.' : 'Not enough energy to run. Uncheck Run to walk instead.');
+    bump('#energyStat'); return;
+  }
+  if(state.energy >= cost){ state.energy -= cost; save(); renderHUD(); }
+  const w = $('#walker'), from = parseFloat(w.style.left)||20, to = bldgX(dest), dist = Math.abs(to-from);
+  const speed = run ? 700 : 320, dur = Math.max(.25, dist/speed);
+  w.classList.toggle('flip', to < from);
+  w.classList.add('moving');
+  w.style.transition = `left ${dur}s linear`;
+  w.style.left = to+'px';
+  walking = true;
+  setTimeout(()=>{ walking=false; w.classList.remove('moving'); townSpot = dest; show(dest); }, dur*1000 + 120);
+}
+window.addEventListener('resize', ()=>{ if(current==='town') placeWalker(townSpot,false); });
+
+/* ---------------- QUIZ ---------------- */
+let curQ = null, streak = 0;
+function nextQuestion(){
+  curQ = makeQuestion();
+  $('#qSubject').textContent = curQ.subject;
+  $('#qText').textContent = curQ.q;
+  $('#feedback').innerHTML = '';
+  $('#nextQ').hidden = true;
+  $('#streak').textContent = streak>=2 ? `Streak: ${streak} in a row` : '';
+  const st = state.stats;
+  $('#qStats').textContent = st.answered ? `${st.correct} of ${st.answered} right so far` : 'Each right answer = 100 energy';
+  const box = $('#choices'); box.innerHTML = '';
+  curQ.choices.forEach(c=>{
+    const b = document.createElement('button'); b.className='choice'; b.textContent=c;
+    b.addEventListener('click', ()=>answer(b, c)); box.appendChild(b);
+  });
+}
+function answer(btn, choice){
+  $$('.choice').forEach(b=>{ b.disabled = true; if(b.textContent===curQ.a) b.classList.add('right'); });
+  state.stats.answered++;
+  const fb = $('#feedback');
+  if(choice===curQ.a){
+    streak++; state.stats.correct++; state.stats.bestStreak = Math.max(state.stats.bestStreak, streak);
+    let gain = ENERGY_PER_Q, bonus = '';
+    if(streak % 5 === 0){ gain += 50; bonus = ` Streak bonus: +50 for ${streak} in a row!`; }
+    const before = state.energy;
+    state.energy = Math.min(ENERGY_MAX, state.energy + gain);
+    const got = Math.round(state.energy - before);
+    fb.innerHTML = got>0 ? `<b class="good">Correct! +${got} energy.</b>${bonus}` : `<b class="good">Correct!</b> Your energy is full (300 max). Time to go paint!`;
+    bump('#energyStat');
+  } else {
+    streak = 0; btn.classList.add('wrong');
+    fb.innerHTML = `<b class="bad">Not quite.</b> The answer is <b>${esc(curQ.a)}</b>. ${esc(curQ.explain)}`;
+  }
+  save(); renderHUD();
+  $('#nextQ').hidden = false; $('#nextQ').focus({preventScroll:true});
+  $('#streak').textContent = streak>=2 ? `Streak: ${streak} in a row` : '';
+}
+$('#nextQ').addEventListener('click', nextQuestion);
+
+/* ---------------- STUDIO / PAINTING ---------------- */
+const cv = $('#paint'), ctx = cv.getContext('2d', {willReadFrequently:true});
+const W = cv.width, H = cv.height;
+let tool = 'brush', color = '#222222', size = 14, painting = false;
+let drawing = false, last = null, lastActive = 0, stampAcc = 0, hue = 0;
+let undoStack = [];
+let pStats = freshStats();
+function freshStats(){ return {colors:new Set(), tools:new Set(), strokes:0, seconds:0}; }
+function clearCanvas(){ ctx.save(); ctx.globalAlpha=1; ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H); ctx.restore(); }
+clearCanvas();
+
+function enterStudio(){
+  const S = STUDIOS[state.studio];
+  $('#studioBox').style.setProperty('--wall', S.wall);
+  $('#studioBox').style.setProperty('--room', S.room);
+  renderRoom();
+  $('#studioTitle').textContent = `My Studio: ${S.name}`;
+  $('#studioChar').innerHTML = charSVG(state.char, state.hat);
+  $('#studioInfo').textContent = `Paintings sell for ×${S.mult} here, plus ${Math.round(COZY*100)}% for each decoration. Wall: ${state.hung.length} of ${S.slots} spots filled.`;
+  const nx = STUDIOS[state.studio+1];
+  const ub = $('#upgradeBtn');
+  if(nx){ ub.textContent = `Upgrade to ${nx.name} (×${nx.mult}, ${nx.slots} wall spots) for ${nx.cost} coins`; ub.disabled = false; ub.hidden = false; }
+  else { ub.hidden = true; }
+  if(!state.tools.includes(tool)) tool = 'brush';
+  if(!state.colors.includes(color)) color = state.colors[0];
+  renderTools(); renderPalette(); updateSizePreview();
+  if(painting){ refreshOverlay(); return; }
+  if(state.wip){
+    const img = new Image();
+    img.onload = ()=>{ clearCanvas(); ctx.drawImage(img,0,0,W,H); };
+    img.src = state.wip;
+    const ws = state.wipStats || {};
+    pStats = {colors:new Set(ws.colors||[]), tools:new Set(ws.tools||[]), strokes:ws.strokes||0, seconds:ws.seconds||0};
+    painting = true; undoStack = [];
+  }
+  refreshOverlay();
+}
+function refreshOverlay(){
+  const ov = $('#paintOverlay');
+  updateMeter();
+  if(!painting){
+    ov.hidden = false;
+    if(state.canvases > 0){
+      ov.innerHTML = `<h3>Ready for a new painting?</h3><p>This uses 1 of your ${state.canvases} blank canvas${state.canvases>1?'es':''}.</p>
+        <div class="row"><button class="btn primary" id="newPaint">Start painting</button></div>`;
+      $('#newPaint').onclick = startPainting;
+    } else {
+      ov.innerHTML = `<h3>No blank canvases</h3><p>Buy more canvases at the Art Store, or get some in a Supply Pack.</p>
+        <div class="row"><button class="btn mint" id="goStore">Go to the Art Store</button></div>`;
+      $('#goStore').onclick = ()=>{ townSpot='store'; show('store'); };
+    }
+    return;
+  }
+  if(state.energy <= 0){
+    ov.hidden = false;
+    ov.innerHTML = `<h3>Out of energy!</h3><p>Answer questions to keep painting. Your painting will wait for you.</p>
+      <div class="row"><button class="btn primary" id="goQuiz">Answer questions</button><button class="btn" id="sellNow">Sell it as it is</button></div>`;
+    $('#goQuiz').onclick = ()=>{ townSpot='quiz'; show('quiz'); };
+    $('#sellNow').onclick = startSell;
+    return;
+  }
+  ov.hidden = true;
+}
+function startPainting(){
+  if(state.canvases < 1) return;
+  state.canvases--; painting = true; clearCanvas(); pStats = freshStats(); undoStack = [];
+  saveWip(true); renderHUD(); refreshOverlay();
+  if(state.stats.paintings===0 && state.energy>0) toast('Draw with your finger or mouse. Energy drains while you paint.');
+}
+
+function renderTools(){
+  const row = $('#toolRow'); row.innerHTML = '';
+  Object.entries(TOOLS).forEach(([k,t])=>{
+    const owned = state.tools.includes(k) || t.free;
+    const b = document.createElement('button');
+    b.className = 'tool' + (k===tool?' on':'') + (owned?'':' locked');
+    b.innerHTML = `${t.icon}${owned?'':'<span class="lk">🔒</span>'}`;
+    b.title = owned ? t.name : `${t.name} (find it in a Supply Pack)`;
+    b.setAttribute('aria-label', b.title);
+    b.onclick = ()=>{ if(!owned){ toast(`${t.name} is locked. Find it in a Supply Pack at the Art Store.`); return; } tool = k; renderTools(); };
+    row.appendChild(b);
+  });
+}
+function renderPalette(){
+  const p = $('#palette'); p.innerHTML = '';
+  COLORS.filter(c=>state.colors.includes(c.hex)).forEach(c=>{
+    const b = document.createElement('button');
+    b.className = 'sw' + (c.hex===color?' on':''); b.style.background = c.hex; b.title = c.name; b.setAttribute('aria-label', c.name);
+    b.onclick = ()=>{ color = c.hex; if(tool==='eraser') tool='brush'; renderPalette(); renderTools(); };
+    p.appendChild(b);
+  });
+}
+$('#size').addEventListener('input', e=>{ size = +e.target.value; updateSizePreview(); });
+function updateSizePreview(){ const d = Math.max(4, Math.min(34, size*0.6)); const i = $('#dotPrev'); i.style.width = i.style.height = d+'px'; }
+
+function pos(e){ const r = cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*W/r.width, y:(e.clientY-r.top)*H/r.height}; }
+function snapshot(){ undoStack.push(ctx.getImageData(0,0,W,H)); if(undoStack.length>12) undoStack.shift(); }
+$('#undoBtn').addEventListener('click', ()=>{ if(!painting) return; const s = undoStack.pop(); if(s){ ctx.putImageData(s,0,0); saveWip(); } else toast('Nothing to undo.'); });
+
+cv.addEventListener('pointerdown', e=>{
+  if(!painting) return;
+  if(state.energy <= 0){ refreshOverlay(); return; }
+  e.preventDefault(); cv.setPointerCapture(e.pointerId);
+  snapshot(); drawing = true; last = pos(e); stampAcc = 0; lastActive = performance.now();
+  pStats.strokes++; if(tool!=='eraser'){ pStats.tools.add(tool); pStats.colors.add(tool==='rainbow' ? 'rainbow' : color); }
+  if(tool==='bucket'){ floodFill(last.x, last.y, color); drawing = false; saveWip(); updateMeter(); return; }
+  if(tool==='star' || tool==='heart'){ stamp(last.x,last.y); }
+  else drawSeg(last, last);
+});
+cv.addEventListener('pointermove', e=>{
+  if(!drawing) return;
+  const p = pos(e); drawSeg(last, p); last = p; lastActive = performance.now();
+});
+const endStroke = ()=>{ if(drawing){ drawing=false; saveWip(); updateMeter(); } };
+cv.addEventListener('pointerup', endStroke);
+cv.addEventListener('pointercancel', endStroke);
+
+function line(a,b,width,style,cap='round',alpha=1){
+  ctx.save(); ctx.globalAlpha=alpha; ctx.strokeStyle=style; ctx.lineWidth=width; ctx.lineCap=cap; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.restore();
+}
+function along(a,b,stepPx,fn){
+  const d = Math.hypot(b.x-a.x, b.y-a.y), n = Math.max(1, Math.ceil(d/stepPx));
+  for(let i=0;i<=n;i++){ const t=i/n; fn(a.x+(b.x-a.x)*t, a.y+(b.y-a.y)*t); }
+}
+function drawSeg(a,b){
+  switch(tool){
+    case 'pencil': line(a,b,Math.max(1.5,size*0.3),color); break;
+    case 'brush': line(a,b,size,color); break;
+    case 'eraser': line(a,b,size*1.6,'#FFFFFF'); break;
+    case 'marker': line(a,b,size*1.7,color,'square',0.28); break;
+    case 'rainbow': hue=(hue+5)%360; line(a,b,size,`hsl(${hue} 90% 58%)`); break;
+    case 'crayon':
+      ctx.save(); ctx.fillStyle=color;
+      along(a,b,2,(x,y)=>{ for(let i=0;i<5;i++){ ctx.globalAlpha=.35+Math.random()*.5; const r=size/2; ctx.fillRect(x+(Math.random()-.5)*r*2, y+(Math.random()-.5)*r*2, 2, 2); } });
+      ctx.restore(); break;
+    case 'spray':
+      ctx.save(); ctx.fillStyle=color;
+      along(a,b,6,(x,y)=>{ const r=size*1.4; for(let i=0;i<size*1.2;i++){ const ang=Math.random()*Math.PI*2, d=Math.random()*r; ctx.globalAlpha=.6; ctx.fillRect(x+Math.cos(ang)*d, y+Math.sin(ang)*d, 1.6, 1.6); } });
+      ctx.restore(); break;
+    case 'glitter': {
+      const cols=[color,'#FFD60A','#FFFFFF','#FF9CEE','#00D9FF','#E9B949'];
+      ctx.save();
+      along(a,b,8,(x,y)=>{ for(let i=0;i<3;i++){ const px=x+(Math.random()-.5)*size*2, py=y+(Math.random()-.5)*size*2, r=1+Math.random()*3.5;
+        ctx.fillStyle=pick(cols); ctx.globalAlpha=.9; sparkle(px,py,r); } });
+      ctx.restore(); break; }
+    case 'star': case 'heart': {
+      const d = Math.hypot(b.x-a.x,b.y-a.y); stampAcc += d;
+      const gap = Math.max(18, size*2.2);
+      if(stampAcc >= gap){ stampAcc = 0; stamp(b.x,b.y); }
+      break; }
+  }
+}
+function sparkle(x,y,r){
+  ctx.beginPath(); ctx.moveTo(x,y-r*2); ctx.lineTo(x+r*.6,y-r*.6); ctx.lineTo(x+r*2,y); ctx.lineTo(x+r*.6,y+r*.6);
+  ctx.lineTo(x,y+r*2); ctx.lineTo(x-r*.6,y+r*.6); ctx.lineTo(x-r*2,y); ctx.lineTo(x-r*.6,y-r*.6); ctx.closePath(); ctx.fill();
+}
+function stamp(x,y){
+  const r = Math.max(8, size*1.1);
+  ctx.save(); ctx.fillStyle=color; ctx.strokeStyle=INK; ctx.lineWidth=Math.max(1.5,r/9);
+  ctx.beginPath();
+  if(tool==='star'){
+    for(let i=0;i<10;i++){ const ang=-Math.PI/2+i*Math.PI/5, rr=i%2?r*.45:r; ctx.lineTo(x+Math.cos(ang)*rr, y+Math.sin(ang)*rr); }
+  } else {
+    ctx.moveTo(x, y+r*.9);
+    ctx.bezierCurveTo(x-r*1.4, y-r*.1, x-r*.7, y-r*1.1, x, y-r*.35);
+    ctx.bezierCurveTo(x+r*.7, y-r*1.1, x+r*1.4, y-r*.1, x, y+r*.9);
+  }
+  ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+}
+function hexRGB(h){ const n=parseInt(h.slice(1),16); return [n>>16&255, n>>8&255, n&255]; }
+function floodFill(x0,y0,hex){
+  x0=Math.floor(x0); y0=Math.floor(y0); if(x0<0||y0<0||x0>=W||y0>=H) return;
+  const img = ctx.getImageData(0,0,W,H), d = img.data, i0=(y0*W+x0)*4;
+  const tr=d[i0], tg=d[i0+1], tb=d[i0+2], [fr,fg,fb]=hexRGB(hex);
+  if(Math.abs(tr-fr)<6 && Math.abs(tg-fg)<6 && Math.abs(tb-fb)<6) return;
+  const tol=48, seen=new Uint8Array(W*H);
+  const match = p => { const i=p*4; return Math.abs(d[i]-tr)<=tol && Math.abs(d[i+1]-tg)<=tol && Math.abs(d[i+2]-tb)<=tol; };
+  const stack=[[x0,y0]];
+  while(stack.length){
+    let [x,y]=stack.pop(), p=y*W+x;
+    while(x>=0 && !seen[p] && match(p)){ x--; p--; }
+    x++; p++;
+    let up=false, down=false;
+    while(x<W && !seen[p] && match(p)){
+      seen[p]=1; const i=p*4; d[i]=fr; d[i+1]=fg; d[i+2]=fb; d[i+3]=255;
+      if(y>0){ const q=p-W; if(!seen[q] && match(q)){ if(!up){ stack.push([x,y-1]); up=true; } } else up=false; }
+      if(y<H-1){ const q=p+W; if(!seen[q] && match(q)){ if(!down){ stack.push([x,y+1]); down=true; } } else down=false; }
+      x++; p++;
+    }
+  }
+  ctx.putImageData(img,0,0);
+}
+
+let wipTimer;
+function saveWip(now){
+  if(!painting) return;
+  const doit = ()=>{
+    state.wip = cv.toDataURL('image/jpeg', .88);
+    state.wipStats = {colors:[...pStats.colors], tools:[...pStats.tools], strokes:pStats.strokes, seconds:Math.round(pStats.seconds)};
+    save();
+  };
+  clearTimeout(wipTimer);
+  if(now) doit(); else wipTimer = setTimeout(doit, 700);
+}
+function updateMeter(){
+  if(!painting){ $('#paintMeter').textContent=''; return; }
+  const secs = Math.round(pStats.seconds), mins = state.settings.minutes;
+  const left = Math.floor(state.energy / (100/(mins*60)));
+  $('#paintMeter').innerHTML = `Colors used: ${pStats.colors.size} · Tools used: ${pStats.tools.size} · Time painting: ${fmtTime(secs)}<br>
+    Energy left for about ${fmtTime(left)} of painting.`;
+}
+function fmtTime(s){ s=Math.max(0,Math.round(s)); const m=Math.floor(s/60); return m ? `${m}m ${s%60}s` : `${s}s`; }
+
+// Energy drains while you are actively painting (it pauses when you stop for a moment)
+let prevTick = performance.now(), meterTick = 0;
+setInterval(()=>{
+  const now = performance.now(), dt = (now - prevTick)/1000; prevTick = now;
+  if(current!=='studio' || !painting) return;
+  const active = drawing || (now - lastActive < 1200);
+  if(!active || state.energy<=0) return;
+  const rate = 100 / (state.settings.minutes*60);
+  state.energy = Math.max(0, state.energy - rate*dt);
+  pStats.seconds += dt;
+  renderEnergyOnly();
+  if(++meterTick % 5 === 0) updateMeter();
+  if(state.energy <= 0){ drawing = false; saveWip(true); refreshOverlay(); toast('Out of energy! Answer questions to keep painting.'); }
+}, 200);
+function renderEnergyOnly(){
+  $('#energy').textContent = Math.floor(state.energy);
+  $$('#cells i').forEach((c,i)=>{ const f=Math.max(0,Math.min(100,state.energy-i*100)); c.style.setProperty('--f', f+'%'); });
+}
+
+/* ---------- Selling ---------- */
+function coverage(){
+  const d = ctx.getImageData(0,0,W,H).data; let n=0, t=0;
+  for(let y=0;y<H;y+=5) for(let x=0;x<W;x+=5){ const i=(y*W+x)*4; t++; if(d[i]+d[i+1]+d[i+2] < 735) n++; }
+  return n/t;
+}
+let offer = null;
+function startSell(){
+  if(!painting){ toast('Start a painting first.'); return; }
+  const cov = coverage();
+  if(pStats.strokes < 4 || cov < 0.02 || pStats.seconds < 20){ toast('Buyers want to see a bit more. Keep painting for at least 20 seconds!'); return; }
+  const S = STUDIOS[state.studio];
+  const nColors = Math.min(12, pStats.colors.size), nTools = pStats.tools.size, secs = Math.round(pStats.seconds);
+  const lines = [
+    ['Base price', 15],
+    [`Colors used: ${nColors} × 6`, nColors*6],
+    [`Tools used: ${nTools} × 8`, nTools*8],
+    [`Canvas covered: ${Math.round(cov*100)}%`, Math.round(cov*40)],
+    [`Time spent painting: ${fmtTime(secs)} (max 2 min)`, Math.min(60, Math.round(secs/2))]
+  ];
+  let sub = lines.reduce((p,l)=>p+l[1],0);
+  const buyer = pick(BUYERS);
+  const favPool = state.colors.filter(h=>h!=='#FFFFFF');
+  const fav = Math.random()<.5 && pStats.colors.size ? pick([...pStats.colors].filter(c=>c!=='rainbow').concat(favPool)) : pick(favPool);
+  const mood = Math.round((0.9 + Math.random()*0.25)*100)/100;
+  const nDecor = shownDecor().length;
+  offer = {lines, sub, buyer, fav, favHit: pStats.colors.has(fav), mult:S.mult, nDecor, cozy: Math.round((1+COZY*nDecor)*100)/100, studioName:S.name, mood, haggled:false, img: cv.toDataURL('image/jpeg',.8)};
+  calcOffer(); renderSell();
+}
+function calcOffer(){
+  let v = offer.sub * offer.mult * offer.cozy; if(offer.favHit) v *= 1.25; v *= offer.mood; if(offer.haggle) v *= offer.haggle;
+  offer.price = Math.max(5, Math.round(v));
+}
+function renderSell(note=''){
+  const o = offer;
+  const rows = o.lines.map(l=>`<li><span>${esc(l[0])}</span><span>+${l[1]}</span></li>`).join('') +
+    `<li><span>Subtotal</span><span>${o.sub}</span></li>` +
+    `<li><span>${esc(o.studioName)} bonus</span><span>×${o.mult}</span></li>` +
+    (o.nDecor ? `<li><span>Cozy studio (${o.nDecor} decoration${o.nDecor>1?'s':''})</span><span>×${o.cozy}</span></li>` : '') +
+    (o.favHit ? `<li><span>You used their favorite color!</span><span>×1.25</span></li>` : '') +
+    `<li><span>Buyer’s mood today</span><span>×${o.mood}</span></li>` +
+    (o.haggle ? `<li><span>After asking for more</span><span>×${o.haggle}</span></li>` : '') +
+    `<li class="total"><span>Offer</span><span>${o.price} coins</span></li>`;
+  openModal(`<h2>${esc(o.buyer)} wants your painting!</h2>
+    <div class="buyer">Their favorite color: <span class="bfav" style="background:${o.fav}"></span> ${esc(colorName(o.fav))} ${o.favHit?'(you used it!)':''}</div>
+    <div class="appraise"><img src="${o.img}" alt="Your painting"><ul class="lines">${rows}</ul></div>
+    ${note?`<p style="margin-top:10px;font-weight:800">${note}</p>`:''}
+    <div class="row"><button class="btn primary" id="sellYes">Sell for ${o.price} coins</button>
+      <button class="btn sun" id="haggle" ${o.haggled?'disabled':''}>Ask for more</button>
+      <button class="btn" id="sellNo">Keep painting</button></div>
+    <div class="row" style="margin-top:10px;align-items:center"><button class="btn mint" id="hangIt" ${wallFull()?'disabled':''}>Hang it on my wall instead</button>
+      <span style="font-weight:700;color:var(--soft)">${wallFull() ? 'Your wall is full. Sell or take down a painting first, or upgrade your studio for more spots.' : `You can sell it from your wall later for ${o.price} coins.`}</span></div>`);
+  $('#hangIt').onclick = hangPainting;
+  $('#sellYes').onclick = completeSale;
+  $('#sellNo').onclick = ()=>{ closeModal(); refreshOverlay(); };
+  $('#haggle').onclick = ()=>{
+    offer.haggled = true;
+    if(Math.random() < .55){ offer.haggle = 1.25; calcOffer(); renderSell(`${o.buyer} agreed to pay more!`); }
+    else { offer.haggle = 0.85; calcOffer(); renderSell(`${o.buyer} was a little grumpy and lowered the offer.`); }
+  };
+}
+function thumb(w,h,q){ const t=document.createElement('canvas'); t.width=w; t.height=h; t.getContext('2d').drawImage(cv,0,0,w,h); return t.toDataURL('image/jpeg',q); }
+function finishPainting(){ painting = false; state.wip = null; state.wipStats = null; pStats = freshStats(); undoStack = []; clearCanvas(); }
+function recordSale(img, price, buyer){
+  state.sold.unshift({img, price, buyer, t:Date.now()});
+  if(state.sold.length>24) state.sold.length = 24;
+  state.coins += price; state.stats.paintings++; state.stats.earned += price;
+}
+function completeSale(){
+  const o = offer;
+  recordSale(thumb(240,180,.72), o.price, o.buyer);
+  finishPainting(); save(); renderHUD();
+  openModal(`<h2>Sold!</h2><p style="font-size:1.15rem;font-weight:800">${esc(o.buyer)} paid <b>${o.price} coins</b> for your painting.</p>
+    <p>You’ve earned ${state.stats.earned} coins from ${state.stats.paintings} painting${state.stats.paintings>1?'s':''}.</p>
+    <div class="row"><button class="btn primary" id="okSold">Back to the studio</button></div>`);
+  $('#okSold').onclick = ()=>{ closeModal(); enterStudio(); };
+  bump('#coins');
+}
+$('#sellBtn').addEventListener('click', startSell);
+
+/* ---------- Wall & decorations ---------- */
+const wallFull = () => state.hung.length >= STUDIOS[state.studio].slots;
+const shownDecor = () => Object.keys(DECOR).filter(k=>state.decor[k]===true);
+function hangPainting(){
+  if(wallFull()) return;
+  state.hung.push({img:thumb(320,240,.8), value:offer.price, t:Date.now()});
+  finishPainting(); save(); renderHUD(); closeModal(); enterStudio();
+  toast('Your painting is hanging on your wall! Tap it any time to sell it.');
+}
+function renderRoom(){
+  const S = STUDIOS[state.studio], n = S.slots, fw = Math.min(10, 60/n - 1.6), x0 = 24, span = 60;
+  let frames = '';
+  for(let i=0;i<n;i++){
+    const left = (x0 + span*(i+.5)/n - fw/2).toFixed(2), p = state.hung[i];
+    frames += p ? `<button class="frame" data-hung="${i}" style="left:${left}%;width:${fw}%;border-color:${S.frame}" aria-label="Painting on your wall, worth ${p.value} coins"><img src="${p.img}" alt=""></button>`
+                : `<span class="frame empty" style="left:${left}%;width:${fw}%" title="Empty spot on your wall"></span>`;
+  }
+  const decs = shownDecor().map(k=>`<div class="dec" style="${DECOR[k].pos};z-index:${DECOR[k].z||3}">${DECOR[k].svg}</div>`).join('');
+  const wp = WALLPAPERS[state.wallpaper] || WALLPAPERS.plain;
+  $('#room').innerHTML = `<div class="wp"></div><div class="floor"></div>${frames}${decs}
+    <div class="dec" style="left:46%;bottom:4%;width:7%;z-index:5">${charSVG(state.char, state.hat)}</div>`;
+  $('#room .wp').style.background = wp.css;
+  $$('#room [data-hung]').forEach(b=>b.onclick = ()=>openHung(+b.dataset.hung));
+}
+function openHung(i){
+  const p = state.hung[i]; if(!p) return;
+  openModal(`<h2>On your wall</h2><img class="hungbig" src="${p.img}" alt="Your painting" style="border-color:${STUDIOS[state.studio].frame}">
+    <p style="font-weight:800">A collector will pay ${p.value} coins for this one.</p>
+    <div class="row"><button class="btn primary" id="hSell">Sell for ${p.value} coins</button><button class="btn" id="hDown">Take it down</button><button class="btn" id="hClose">Keep it up</button></div>`);
+  $('#hClose').onclick = closeModal;
+  $('#hSell').onclick = ()=>{
+    const buyer = pick(BUYERS); recordSale(p.img, p.value, buyer); state.hung.splice(i,1); save(); renderHUD(); closeModal(); enterStudio();
+    toast(`${buyer} bought it for ${p.value} coins!`); bump('#coins');
+  };
+  $('#hDown').onclick = ()=>{ if(confirm('Take this painting down? It will be gone for good.')){ state.hung.splice(i,1); save(); closeModal(); enterStudio(); } };
+}
+$('#decorBtn').addEventListener('click', openDecorate);
+function openDecorate(){
+  const lvl = state.studio;
+  const dItems = Object.entries(DECOR).map(([k,d])=>{
+    const owned = state.decor[k] !== undefined, shown = state.decor[k] === true;
+    let btn;
+    if(owned) btn = `<button class="btn small" data-toggle="${k}">${shown?'Put away':'Show it'}</button>`;
+    else if(lvl < d.lvl) btn = `<button class="btn small" disabled>Needs ${STUDIOS[d.lvl].name}</button>`;
+    else btn = `<button class="btn small primary" data-buy="${k}" ${state.coins<d.price?'disabled':''}>Buy for ${d.price}</button>`;
+    return `<div class="ditem ${owned?'owned':''}"><div class="pv">${d.svg}</div><span>${d.name}</span>${btn}</div>`;
+  }).join('');
+  const wItems = Object.entries(WALLPAPERS).map(([k,w])=>{
+    const owned = state.wallpapers.includes(k), on = state.wallpaper===k;
+    const btn = on ? `<button class="btn small" disabled>On the wall</button>`
+      : owned ? `<button class="btn small" data-wp="${k}">Use it</button>`
+      : `<button class="btn small primary" data-buywp="${k}" ${state.coins<w.price?'disabled':''}>Buy for ${w.price}</button>`;
+    return `<div class="ditem ${owned?'owned':''}"><div class="wpv" data-wpk="${k}"></div><span>${w.name}</span>${btn}</div>`;
+  }).join('');
+  openModal(`<h2>Decorate your studio</h2>
+    <p>Every decoration on display makes your paintings sell for ${Math.round(COZY*100)}% more. You have <b>${Math.floor(state.coins)} coins</b>.</p>
+    <h3 class="section-title">Decorations</h3><div class="ditems">${dItems}</div>
+    <h3 class="section-title">Wallpaper</h3><div class="ditems">${wItems}</div>
+    <div class="row"><button class="btn" id="decDone">Done</button></div>`);
+  $$('[data-wpk]').forEach(d=>{ d.style.background = WALLPAPERS[d.dataset.wpk].css; d.style.backgroundColor = STUDIOS[lvl].room; });
+  const redo = ()=>{ save(); renderHUD(); enterStudio(); const y=$('#sheet').scrollTop; openDecorate(); $('#sheet').scrollTop=y; };
+  $$('[data-buy]').forEach(b=>b.onclick = ()=>{ const d=DECOR[b.dataset.buy]; if(state.coins<d.price) return; state.coins-=d.price; state.decor[b.dataset.buy]=true; toast(`${d.name} added to your studio!`); redo(); });
+  $$('[data-toggle]').forEach(b=>b.onclick = ()=>{ const k=b.dataset.toggle; state.decor[k] = !state.decor[k]; redo(); });
+  $$('[data-buywp]').forEach(b=>b.onclick = ()=>{ const k=b.dataset.buywp, w=WALLPAPERS[k]; if(state.coins<w.price) return; state.coins-=w.price; state.wallpapers.push(k); state.wallpaper=k; redo(); });
+  $$('[data-wp]').forEach(b=>b.onclick = ()=>{ state.wallpaper=b.dataset.wp; redo(); });
+  $('#decDone').onclick = closeModal;
+}
+$('#galleryBtn').addEventListener('click', ()=>{
+  const s = state.sold;
+  openModal(`<h2>Sold paintings</h2>${s.length ? `<p>Your ${s.length} most recent sales.</p><div class="gallery">${s.map(p=>`<figure><img src="${p.img}" alt="Sold painting"><figcaption>${p.price} coins · ${esc(p.buyer)}</figcaption></figure>`).join('')}</div>` : '<p>No sales yet. Finish a painting and press Sell painting.</p>'}
+    <div class="row"><button class="btn" id="closeG">Close</button></div>`);
+  $('#closeG').onclick = closeModal;
+});
+$('#upgradeBtn').addEventListener('click', ()=>{
+  const nx = STUDIOS[state.studio+1]; if(!nx) return;
+  if(state.coins < nx.cost){ toast(`You need ${nx.cost - Math.floor(state.coins)} more coins to upgrade.`); bump('#coins'); return; }
+  state.coins -= nx.cost; state.studio++; save(); renderHUD(); enterStudio();
+  toast(`Welcome to your ${nx.name}! Paintings now sell for ×${nx.mult}.`);
+});
+
+/* ---------------- STORE & PACKS ---------------- */
+function renderStore(){
+  const can = (p)=> state.coins >= p;
+  const packCards = PACKS.map(p=>`<div class="item">
+      <div class="pk" style="--pc:${p.pc}">${p.show ? charSVG(p.show,'none') : `<span class="big">${p.icon}</span>`}</div>
+      <h3>${p.name}</h3><p>${p.desc}</p>
+      <div class="price"><span class="coin"></span>${p.price}</div>
+      <button class="btn primary" data-pack="${p.id}" ${can(p.price)?'':'disabled'}>Open pack</button></div>`).join('');
+  $('#storeBody').innerHTML = `
+    <h3 class="section-title">Blank canvases</h3>
+    <div class="shop">
+      <div class="item"><div class="pk" style="--pc:#FFF3B0"><span class="big">🖼️</span></div><h3>1 canvas</h3><p>One blank canvas for one painting.</p>
+        <div class="price"><span class="coin"></span>12</div><button class="btn mint" data-canvas="1" data-cost="12" ${can(12)?'':'disabled'}>Buy</button></div>
+      <div class="item"><div class="pk" style="--pc:#FFD6BA"><span class="big">🖼️🖼️</span></div><h3>5 canvases</h3><p>A bundle of five. Saves you 10 coins.</p>
+        <div class="price"><span class="coin"></span>50</div><button class="btn mint" data-canvas="5" data-cost="50" ${can(50)?'':'disabled'}>Buy</button></div>
+    </div>
+    <h3 class="section-title">Packs</h3>
+    <div class="shop">${packCards}</div>`;
+  $$('[data-canvas]').forEach(b=>b.onclick = ()=>{
+    const n=+b.dataset.canvas, c=+b.dataset.cost; if(state.coins<c) return;
+    state.coins-=c; state.canvases+=n; save(); renderHUD(); renderStore(); toast(`Bought ${n} canvas${n>1?'es':''}.`);
+  });
+  $$('[data-pack]').forEach(b=>b.onclick = ()=>openPack(b.dataset.pack));
+}
+function rollRarity(){ let r=Math.random()*100; for(const [k,w] of Object.entries(RARITY_W)){ if((r-=w)<0) return k; } return 'common'; }
+function newColors(n){
+  const left = shuffle(COLORS.filter(c=>!state.colors.includes(c.hex)));
+  const out = [];
+  for(let i=0;i<n;i++){
+    const c = left[i];
+    if(c){ state.colors.push(c.hex); out.push({kind:'color', hex:c.hex, name:c.name}); }
+    else { state.coins+=25; out.push({kind:'coins', n:25, why:'You have every color!'}); }
+  }
+  return out;
+}
+function rarityPick(keys, cat){
+  const want = rollRarity(), order = ['legendary','epic','rare','common'];
+  for(let i=order.indexOf(want); i<order.length; i++){ const opts = keys.filter(k=>cat[k].rarity===order[i]); if(opts.length) return pick(opts); }
+  return pick(keys);
+}
+function openPack(id){
+  const P = PACKS.find(p=>p.id===id); if(state.coins < P.price) return;
+  state.coins -= P.price;
+  let rewards = [];
+  if(id==='colors') rewards = newColors(3);
+  else if(id==='supplies'){
+    state.canvases += 3; rewards.push({kind:'canvas', n:3});
+    const left = Object.keys(TOOLS).filter(k=>!state.tools.includes(k) && !TOOLS[k].free);
+    if(left.length && Math.random() < .5){ const k = rarityPick(left, TOOLS); state.tools.push(k); rewards.push({kind:'tool', id:k, rarity:TOOLS[k].rarity}); }
+    else rewards.push({kind:'coins', n:15, why:'Bonus coins'});
+  }
+  else if(id==='style'){
+    const k = rarityPick(Object.keys(HATS).filter(h=>!HATS[h].start), HATS);
+    if(state.hats.includes(k)){ state.coins+=30; rewards.push({kind:'dupe', hat:k, n:30, rarity:HATS[k].rarity}); }
+    else { state.hats.push(k); rewards.push({kind:'hat', id:k, rarity:HATS[k].rarity}); }
+    rewards.push(...newColors(1));
+  }
+  else {
+    const keys = Object.keys(CHARS).filter(c=>CHARS[c].theme===P.theme), k = rarityPick(keys, CHARS);
+    if(state.chars.includes(k)){ state.coins+=40; rewards.push({kind:'dupe', char:k, n:40, rarity:CHARS[k].rarity}); }
+    else { state.chars.push(k); rewards.push({kind:'char', id:k, rarity:CHARS[k].rarity}); }
+    rewards.push(...newColors(1));
+  }
+  save(); renderHUD();
+  showRewards(P.name, rewards);
+}
+function rewardFace(r){
+  const tag = r.rarity ? `<span class="tag r-${r.rarity}">${r.rarity}</span>` : '';
+  switch(r.kind){
+    case 'color': return `<span class="swatch" style="background:${r.hex}"></span><b>${esc(r.name)}</b><small>New color</small>`;
+    case 'canvas': return `<span class="big">🖼️</span><b>${r.n} canvases</b><small>Blank canvases</small>`;
+    case 'tool': return `<span class="big">${TOOLS[r.id].icon}</span><b>${TOOLS[r.id].name}</b>${tag}<small>New tool!</small>`;
+    case 'char': return `${charSVG(r.id,'none')}<b>${CHARS[r.id].name}</b>${tag}<small>New character!</small>`;
+    case 'hat': return `${charSVG(state.char, r.id)}<b>${HATS[r.id].name}</b>${tag}<small>New look!</small>`;
+    case 'dupe': return `${r.char ? charSVG(r.char,'none') : charSVG(state.char, r.hat)}<b>${r.char?CHARS[r.char].name:HATS[r.hat].name}</b><small>Already have it: +${r.n} coins</small>`;
+    case 'coins': return `<span class="coin" style="width:56px;height:56px;border-width:4px"></span><b>+${r.n} coins</b><small>${esc(r.why||'')}</small>`;
+  }
+  return '';
+}
+function showRewards(title, rewards){
+  openModal(`<h2>${esc(title)}</h2><p>Tap each card to flip it.</p>
+    <div class="cards">${rewards.map((r,i)=>`<button class="card" data-i="${i}" aria-label="Flip card ${i+1}"><div class="inner">
+      <div class="face back"><span>?</span></div><div class="face front ${r.rarity?'r-'+r.rarity:'r-common'}">${rewardFace(r)}</div></div></button>`).join('')}</div>
+    <div class="row"><button class="btn primary" id="collect">Collect</button><button class="btn" id="again">Back to the store</button></div>`);
+  $$('.card').forEach(c=>c.onclick = ()=>c.classList.add('flipped'));
+  const done = ()=>{ $$('.card').forEach(c=>c.classList.add('flipped')); closeModal(); renderStore(); };
+  $('#collect').onclick = done; $('#again').onclick = done;
+}
+
+/* ---------------- WARDROBE ---------------- */
+function renderWardrobe(){
+  const total = Object.keys(CHARS).length;
+  const charSlots = Object.entries(CHARS).map(([k,c])=>{
+    const own = state.chars.includes(k);
+    return `<button class="cslot ${own?'':'locked'} ${state.char===k?'on':''}" ${own?`data-char="${k}"`:'disabled'}>
+      ${charSVG(k,'none')}<span>${own?c.name:'???'}</span><span class="tag r-${c.rarity}">${own?c.rarity:(THEMES[c.theme]||'')}</span></button>`;
+  }).join('');
+  const hatSlots = Object.entries(HATS).map(([k,h])=>{
+    const own = state.hats.includes(k);
+    return `<button class="cslot ${own?'':'locked'} ${state.hat===k?'on':''}" ${own?`data-hat="${k}"`:'disabled'}>
+      ${charSVG(state.char, k)}<span>${own?h.name:'???'}</span>${h.rarity?`<span class="tag r-${h.rarity}">${own?h.rarity:'Style Pack'}</span>`:''}</button>`;
+  }).join('');
+  $('#wardBody').innerHTML = `<div class="ward">
+    <div class="preview">${charSVG(state.char, state.hat)}<h3>${esc(state.name||'You')} as ${CHARS[state.char].name}</h3>
+      <p style="font-weight:700;color:var(--soft)">${state.chars.length} of ${total} characters collected</p></div>
+    <div><h3 class="section-title" style="margin-top:0">Characters</h3><div class="grid-c">${charSlots}</div>
+      <h3 class="section-title">Hats and accessories</h3><div class="grid-c">${hatSlots}</div></div></div>`;
+  $$('[data-char]').forEach(b=>b.onclick = ()=>{ state.char=b.dataset.char; save(); renderHUD(); renderWardrobe(); });
+  $$('[data-hat]').forEach(b=>b.onclick = ()=>{ state.hat=b.dataset.hat; save(); renderHUD(); renderWardrobe(); });
+}
+
+/* ---------------- SETTINGS (grown-ups) ---------------- */
+$('#gear').addEventListener('click', openSettings);
+function openSettings(){
+  const st = state.settings;
+  const seg = (key, vals, label) => vals.map(v=>`<button data-k="${key}" data-v="${v}" class="${st[key]==v?'on':''}">${label(v)}</button>`).join('');
+  openModal(`<h2>Grown-up settings</h2>
+    <div class="setting"><label>Question level</label><div class="seg">${seg('grade',[5,6,7],v=>`Grade ${v}`)}</div></div>
+    <div class="setting"><label>Subjects</label><div class="checks">
+      <label><input type="checkbox" data-sub="math" ${st.math?'checked':''}> Math</label>
+      <label><input type="checkbox" data-sub="geo" ${st.geo?'checked':''}> Geography and capitals</label>
+      <label><input type="checkbox" data-sub="sci" ${st.sci?'checked':''}> Science</label></div></div>
+    <div class="setting"><label>100 energy lasts for</label><div class="seg">${seg('minutes',[3,5],v=>`${v} minutes of painting`)}</div></div>
+    <div class="setting"><label>Artist name</label><input type="text" id="nameIn" maxlength="16" value="${esc(state.name)}"></div>
+    <p style="color:var(--soft);font-weight:700;margin-top:10px">Progress so far: ${state.stats.correct} of ${state.stats.answered} questions right, best streak ${state.stats.bestStreak}, ${state.stats.paintings} paintings sold.</p>
+    <div class="row"><button class="btn primary" id="setDone">Done</button><button class="btn" id="resetBtn">Start over</button></div>`);
+  $$('.seg button').forEach(b=>b.onclick = ()=>{ st[b.dataset.k] = +b.dataset.v; save(); openSettings(); });
+  $$('[data-sub]').forEach(c=>c.onchange = ()=>{ st[c.dataset.sub] = c.checked; save(); });
+  $('#setDone').onclick = ()=>{ const n = $('#nameIn').value.trim(); if(n) state.name = n; save(); renderHUD(); closeModal(); if(current==='quiz') nextQuestion(); };
+  $('#resetBtn').onclick = ()=>{
+    if(confirm('Start over? This erases all coins, paintings, characters and colors.')){
+      localStorage.removeItem(SAVE_KEY); state = defaults(); painting=false; clearCanvas(); closeModal(); welcome();
+    }
+  };
+}
+
+/* ---------------- WELCOME ---------------- */
+function welcome(){
+  openModal(`<h2>Welcome to Paint Pals!</h2>
+    <p>Earn coins by making paintings and selling them.</p>
+    <div class="loop">
+      <div><span>📚</span>Answer questions to get energy</div>
+      <div><span>🎨</span>Use energy to paint</div>
+      <div><span>🪙</span>Sell paintings for coins</div>
+      <div><span>🎁</span>Spend coins on packs and upgrades</div>
+    </div>
+    <p>You start with 3 blank canvases, a pencil, a brush and 8 colors.</p>
+    <div class="setting"><label for="nameIn">What’s your artist name?</label><input type="text" id="nameIn" maxlength="16" placeholder="Type your name"></div>
+    <div class="row"><button class="btn primary" id="startBtn">Let’s paint!</button></div>`);
+  const go = ()=>{ state.name = $('#nameIn').value.trim() || 'Artist'; save(); closeModal(); show('town'); };
+  $('#startBtn').onclick = go;
+  $('#nameIn').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
+  setTimeout(()=>$('#nameIn').focus(), 50);
+}
+$('#modal').addEventListener('click', e=>{ if(e.target.id==='modal' && state.name) closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#modal').hidden && state.name) closeModal(); });
+window.addEventListener('beforeunload', ()=>{ if(current==='studio') saveWip(true); else save(); });
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden){ if(current==='studio') saveWip(true); else save(); } });
+
+/* ---------------- START ---------------- */
+show('town');
+if(!state.name) welcome();
+</script>
+</body>
+</html>

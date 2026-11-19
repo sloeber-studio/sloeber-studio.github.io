@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#BFEAFF">
+<title>Glimmer Quest</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#BFEAFF; --bg2:#E6F7FF; --surface:#FFFFFF; --ink:#1D2340; --text:#1D2340; --muted:#4F5A82;
+  --gem:#16C5B0; --sun:#FFCF3F; --good:#22A866; --bad:#EF4B55;
+  --leaf:#3BB273; --ember:#FF6B35; --tide:#2E86DE; --storm:#8E5CF7; --crystal:#E84FB0;
+  --display:'Baloo 2', ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --body:'Nunito', ui-rounded, 'SF Pro Rounded', system-ui, -apple-system, sans-serif;
+  color-scheme:light;
+  box-sizing:border-box; height:100%;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#18204A; --bg2:#202A5E; --surface:#2C3672; --ink:#090C24; --text:#F2F4FF; --muted:#B8BFEA; color-scheme:dark; }
+}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:var(--body);font-weight:600;color:var(--text);background:var(--bg);
+  background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1.6px,transparent 1.7px);background-size:24px 24px;
+  overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:1.05;margin:0}
+p{margin:.4em 0;line-height:1.4}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gem);outline-offset:3px}
+[hidden]{display:none!important}
+
+#app{display:flex;flex-direction:column;height:100%;max-width:860px;margin:0 auto}
+.top{display:flex;align-items:center;gap:12px;padding:10px 14px 6px}
+.buddy-dot{width:52px;height:52px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:30px;
+  background:color-mix(in srgb,var(--el) 40%,var(--surface));box-shadow:2px 3px 0 var(--ink);padding:0;cursor:pointer}
+.who b{font-family:var(--display);font-size:20px;display:block;line-height:1.1}
+.who small{color:var(--muted);font-size:13px}
+.gems{margin-left:auto;font:800 22px/1 var(--display);background:var(--surface);border:3px solid var(--ink);border-radius:999px;padding:7px 14px 5px;box-shadow:3px 3px 0 var(--ink)}
+.gems.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.2)}}
+.icon-btn{width:46px;height:46px;border-radius:14px;border:3px solid var(--ink);background:var(--surface);box-shadow:3px 3px 0 var(--ink);font-size:22px;cursor:pointer;padding:0}
+#view{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:24px;overscroll-behavior:contain}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:8px 12px 12px}
+.nav button{position:relative;font:800 17px/1 var(--display);padding:10px 4px 8px;border:3px solid var(--ink);border-radius:16px;background:var(--surface);box-shadow:3px 3px 0 var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.nav button span{font-size:24px}
+.nav button[aria-current="true"]{background:var(--sun);color:#1D2340}
+.dot{position:absolute;top:6px;right:10px;width:14px;height:14px;border-radius:50%;background:var(--bad);border:2px solid var(--ink)}
+
+.btn{font:800 19px/1 var(--display);padding:13px 20px 11px;border:3px solid var(--ink);border-radius:14px;background:var(--surface);color:var(--text);box-shadow:3px 3px 0 var(--ink);cursor:pointer}
+.btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.go{background:var(--sun);color:#1D2340}
+.btn.small{font-size:15px;padding:8px 12px 6px;border-radius:11px}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.page-head{padding:14px 18px 4px}
+.page-head h1{font-size:30px}
+.page-head p{color:var(--muted);margin:2px 0 0}
+
+/* Map */
+.region{margin:18px 14px 26px;border:3px solid var(--ink);border-radius:26px;background:color-mix(in srgb,var(--el) 18%,var(--surface));box-shadow:5px 5px 0 var(--ink);overflow:hidden}
+.region-head{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--el);color:#fff;border-bottom:3px solid var(--ink)}
+.region-head h2{font-size:25px;text-shadow:2px 2px 0 var(--ink)}
+.region-head p{margin:0;font-size:14px;font-weight:800}
+.region-icon{font-size:32px}
+.region-badge{margin-left:auto;font-size:30px}
+.trail{position:relative}
+.trail svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.trail path{fill:none;stroke:var(--ink);stroke-width:5;stroke-dasharray:1 13;stroke-linecap:round;opacity:.4}
+.node{position:absolute;transform:translate(-50%,-50%);width:86px;height:86px;border-radius:50%;border:3px solid var(--ink);background:var(--surface);box-shadow:3px 4px 0 var(--ink);font-size:42px;display:grid;place-items:center;cursor:pointer;padding:0;line-height:1}
+.node.gym{width:104px;height:104px;border-radius:30px;font-size:50px}
+.node.done{background:color-mix(in srgb,var(--el) 50%,var(--surface))}
+.node.locked{background:color-mix(in srgb,var(--ink) 14%,var(--surface));font-size:28px;box-shadow:none}
+.node.current::after{content:'';position:absolute;inset:-11px;border-radius:inherit;border:5px solid var(--sun);animation:ring 1.5s ease-out infinite;pointer-events:none}
+@keyframes ring{from{transform:scale(.88);opacity:1}to{transform:scale(1.3);opacity:0}}
+.node-label{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:7px;white-space:nowrap;font:800 14px/1.15 var(--display);background:var(--surface);border:2px solid var(--ink);border-radius:10px;padding:3px 9px 1px;text-align:center}
+.stars{display:block;color:#F2A300;font-size:13px;letter-spacing:1px}
+.fog{padding:26px 18px;text-align:center;font-weight:800;color:var(--muted)}
+.fog span{font-size:40px;display:block;filter:grayscale(1);opacity:.6}
+
+/* Packs */
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:22px;padding:16px 18px}
+.pack-item{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.pack{aspect-ratio:3/4.1;border:3px solid var(--ink);border-radius:16px;position:relative;overflow:hidden;color:#fff;padding:0;cursor:pointer;
+  background:linear-gradient(125deg,var(--el) 0 30%,color-mix(in srgb,var(--el) 45%,#fff) 46%,var(--el) 60%,color-mix(in srgb,var(--el) 70%,#000));
+  box-shadow:4px 5px 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%}
+.pack::before,.pack::after{content:'';position:absolute;left:0;right:0;height:14px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 6px,transparent 6px 12px)}
+.pack::before{top:0}.pack::after{bottom:0}
+.pack.pk-rainbow{background:conic-gradient(from 210deg at 50% 45%,var(--leaf),var(--tide),var(--storm),var(--crystal),var(--ember),var(--sun),var(--leaf))}
+.pack.pk-mega{background:linear-gradient(135deg,#5B2FD6,#C94FE0 50%,#FF8A3D)}
+.pack.pk-legend{background:linear-gradient(135deg,#123E8C,#5CB8FF 50%,#123E8C)}
+.pack.pk-shiny{background:linear-gradient(125deg,#C98A00,#FFE27A 35%,#FFFBE6 48%,#F2B705 62%,#A86F00)}
+.pack small{text-align:center;line-height:1.25}
+.pack .p-icon{font-size:58px;filter:drop-shadow(2px 3px 0 rgba(0,0,0,.35))}
+.pack b{font:800 21px/1 var(--display);text-shadow:2px 2px 0 var(--ink)}
+.pack small{font-weight:800;text-shadow:1px 1px 0 var(--ink)}
+.pack.locked{filter:grayscale(1) brightness(.85);cursor:default}
+.shop-note{margin:0 18px;padding:12px 14px;border:3px dashed color-mix(in srgb,var(--ink) 35%,transparent);border-radius:16px;color:var(--muted)}
+
+/* Cards */
+.mcard{width:100%;height:100%;border:3px solid var(--ink);border-radius:16px;position:relative;overflow:hidden;color:#1D2340;padding:8px 6px;text-align:center;
+  background:linear-gradient(165deg,color-mix(in srgb,var(--el) 28%,#fff),color-mix(in srgb,var(--el) 70%,#fff));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.mcard .m-emoji{font-size:clamp(38px,9vw,62px);line-height:1.1;position:relative;z-index:1}
+.mcard b{font:800 clamp(14px,3.2vw,19px)/1.05 var(--display);position:relative;z-index:1}
+.mcard .m-rar{font-size:11px;font-weight:800;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:1px 8px;position:relative;z-index:1;white-space:nowrap}
+.mcard.r3::after,.mcard.r4::after,.mcard.r5::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.65) 45%,transparent 55%,transparent 70%,rgba(255,255,255,.35) 78%,transparent 85%)}
+.mcard.r4{background:linear-gradient(165deg,#FFF3B0,#FFC93C 55%,#F29E1F);border-color:#7A4B00}
+.mcard.r5{background:conic-gradient(from 0deg,#FFB3E6,#B3D9FF,#C9FFD6,#FFF1A8,#FFB3E6)}
+.mcard.shard{background:linear-gradient(165deg,#E9F4FF,#9FD0FF)}
+.mcard.shiny{background:linear-gradient(160deg,#FFFBE6,#FFE27A 50%,color-mix(in srgb,var(--el) 45%,#F2B705));border-color:#8A5A00;box-shadow:inset 0 0 0 3px #FFF3B0}
+.mcard.shiny::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.8) 42%,transparent 52%,transparent 68%,rgba(255,255,255,.5) 76%,transparent 84%)}
+.shiny-mark{position:absolute;top:5px;left:7px;font-size:20px;z-index:2}
+.missing .mcard.shiny{background:color-mix(in srgb,#F2B705 18%,var(--surface))}
+.album-tabs{display:flex;gap:10px;padding:10px 18px 0}
+.album-tabs .btn[aria-pressed="true"]{background:var(--sun);color:#1D2340}
+.new{position:absolute;top:6px;right:6px;z-index:2;background:var(--bad);color:#fff;font:800 13px/1 var(--display);border:2px solid var(--ink);border-radius:8px;padding:4px 6px 2px;transform:rotate(8deg);font-style:normal}
+.missing .mcard{background:color-mix(in srgb,var(--ink) 9%,var(--surface));color:var(--muted)}
+.missing .mcard::after{display:none}
+.missing .m-emoji{filter:brightness(0);opacity:.22}
+.dark-silhouette .m-emoji{filter:brightness(0)}
+
+/* Album */
+.album-sec{margin:12px 16px 22px}
+.album-sec h2{font-size:22px;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.album-sec h2 small{font:800 14px var(--body);color:var(--muted);margin-left:auto}
+.album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:14px}
+.slot{aspect-ratio:3/4;padding:0;border:0;background:none;cursor:pointer;position:relative}
+.count{position:absolute;bottom:-7px;right:-7px;z-index:3;background:var(--sun);color:#1D2340;border:2px solid var(--ink);border-radius:999px;font:800 14px/1 var(--display);padding:4px 8px 2px}
+.buddy-tag{position:absolute;top:-8px;left:-6px;z-index:3;background:var(--gem);color:#fff;border:2px solid var(--ink);border-radius:8px;font:800 12px/1 var(--display);padding:4px 6px 2px}
+.progress{margin:8px 18px 0}
+.bar{height:18px;border:3px solid var(--ink);border-radius:999px;background:var(--surface);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gem);transition:width .6s}
+
+/* Lab */
+.lab-sec{margin:14px 14px 22px;border:3px solid var(--ink);border-radius:22px;background:color-mix(in srgb,var(--el) 14%,var(--surface));box-shadow:4px 4px 0 var(--ink);padding:12px}
+.lab-sec h2{font-size:22px;margin:2px 4px 8px}
+.line{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;margin-bottom:12px}
+.tile{aspect-ratio:3/4;position:relative;max-width:110px;width:100%;justify-self:center}
+.fuse{font:800 14px/1.05 var(--display);border:3px solid var(--ink);border-radius:12px;background:var(--surface);box-shadow:2px 2px 0 var(--ink);padding:7px 6px 5px;cursor:pointer;min-width:58px}
+.fuse:not(:disabled){background:var(--sun);color:#1D2340;animation:nudge 1.6s ease-in-out infinite}
+.fuse:disabled{opacity:.45;cursor:default}
+@keyframes nudge{50%{transform:scale(1.08)}}
+.shards{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 4px}
+.pips{display:flex;gap:6px}
+.pips i{width:26px;height:26px;border-radius:7px;border:3px solid var(--ink);background:var(--surface);transform:rotate(45deg)}
+.pips i.on{background:#5CB8FF}
+
+/* Overlays */
+.ov{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 14px);overflow-y:auto}
+.battle-ov{background:var(--bg2);justify-content:flex-start}
+.pack-ov{background:radial-gradient(circle at 50% 38%,#4535A8,#141A40 70%);color:#fff}
+.pack-ov h2{font-size:30px;text-shadow:2px 2px 0 #000;text-align:center}
+.pack-ov p{text-align:center;opacity:.9}
+.big-pack{width:min(58vw,250px);font-size:inherit}
+.big-pack .p-icon{font-size:90px}
+.big-pack b{font-size:28px}
+.wiggle{animation:wiggle 1.1s ease-in-out infinite}
+@keyframes wiggle{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-5deg) scale(1.03)}80%{transform:rotate(5deg) scale(1.03)}90%{transform:rotate(-3deg)}}
+.burst{animation:burst .55s forwards}
+@keyframes burst{to{transform:scale(1.35);opacity:0;filter:brightness(2)}}
+.reveal{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:820px;margin:18px 0}
+.reveal.many .flip{width:min(21vw,130px)}
+.flip{width:min(27vw,158px);aspect-ratio:3/4;perspective:900px;background:none;border:0;padding:0;cursor:pointer;animation:deal .45s backwards}
+@keyframes deal{from{transform:translateY(60px) scale(.6);opacity:0}}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .65s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
+.flip.open .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px}
+.face.back{border:3px solid #fff;display:grid;place-items:center;font-size:44px;color:#fff;
+  background:repeating-conic-gradient(from 0deg,#5A48C8 0 15deg,#6E5CE0 15deg 30deg)}
+.face.back.g2{box-shadow:0 0 22px 6px #57C7FF}
+.face.back.g3{box-shadow:0 0 26px 8px #C77DFF}
+.face.back.g4{box-shadow:0 0 30px 10px #FFD23F}
+.face.front{transform:rotateY(180deg)}
+
+.arena{width:100%;max-width:780px;position:relative;border:3px solid var(--ink);border-radius:24px;box-shadow:5px 5px 0 var(--ink);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--en) 28%,var(--surface)) 0 50%,color-mix(in srgb,var(--me) 28%,var(--surface)) 50%);
+  display:grid;grid-template-rows:1fr 1fr;padding:14px 16px;height:min(44vh,360px);flex:none}
+.side{display:flex;align-items:center;gap:16px;position:relative}
+.side.enemy{justify-content:flex-end}
+.mon{font-size:clamp(66px,15vw,112px);line-height:1;padding:0 6px 12px;
+  background:radial-gradient(ellipse 50% 14% at 50% 92%,rgba(0,0,0,.2) 0 70%,transparent 72%)}
+.plate{background:var(--surface);border:3px solid var(--ink);border-radius:14px;padding:8px 12px;min-width:min(46vw,210px);box-shadow:3px 3px 0 var(--ink)}
+.plate b{font-family:var(--display);font-size:18px;display:block;line-height:1.1}
+.plate small{font-weight:800;color:var(--muted)}
+.hp{height:14px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:color-mix(in srgb,var(--ink) 12%,var(--surface));margin:5px 0 2px}
+.hp i{display:block;height:100%;background:var(--good);transition:width .45s}
+.hp i.low{background:var(--bad)}
+.hearts{font-size:20px;letter-spacing:1px;margin:3px 0}
+.leave{position:absolute;top:12px;left:12px;z-index:2}
+.dmg{position:absolute;font:800 34px var(--display);color:var(--bad);text-shadow:2px 2px 0 #fff;animation:rise .9s forwards;pointer-events:none;right:40px;top:0}
+@keyframes rise{to{transform:translateY(-50px);opacity:0}}
+.lunge-me{animation:lungeMe .45s}
+@keyframes lungeMe{45%{transform:translate(40px,-34px) scale(1.1)}}
+.lunge-en{animation:lungeEn .45s}
+@keyframes lungeEn{45%{transform:translate(-40px,34px) scale(1.1)}}
+.hit{animation:hit .45s}
+@keyframes hit{20%,60%{transform:translateX(-12px);filter:brightness(2)}40%,80%{transform:translateX(12px)}}
+.faint{animation:faint .7s forwards}
+@keyframes faint{to{transform:translateY(40px) scale(.4);opacity:0}}
+.qcard{width:100%;max-width:780px;margin-top:14px;padding:14px 16px 16px;background:var(--surface);border:3px solid var(--ink);border-radius:22px;box-shadow:5px 5px 0 var(--ink)}
+.q-subj{font:800 14px var(--display);color:var(--muted)}
+.q-text{font:800 clamp(21px,4.6vw,30px)/1.22 var(--display);margin:4px 0 14px;text-wrap:balance;-webkit-user-select:text;user-select:text}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ans{min-height:66px;font:800 clamp(19px,4vw,26px)/1.1 var(--display);padding:10px;border:3px solid var(--ink);border-radius:16px;background:var(--bg2);color:var(--text);box-shadow:3px 3px 0 var(--ink);cursor:pointer}
+.ans:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.ans.right{background:var(--good);color:#fff}
+.ans.wrong{background:var(--bad);color:#fff}
+.ans:disabled{cursor:default}
+.feedback{min-height:30px;margin-top:12px;font-weight:800;font-size:18px;text-align:center}
+.feedback .btn{margin-top:10px}
+.gem-gain{color:var(--gem)}
+.result{text-align:center}
+.result h2{font-size:38px}
+.big-stars{font-size:46px;color:#F2A300;letter-spacing:4px;margin:4px 0}
+.result ul{list-style:none;padding:0;margin:10px 0;font-weight:800}
+.result li{margin:3px 0}
+.total{font:800 26px var(--display);color:var(--gem)}
+.reward-big{font:800 22px/1.2 var(--display);margin:10px 0;padding:10px;border:3px solid var(--ink);border-radius:14px;background:var(--sun);color:#1D2340}
+
+/* Modal */
+.modal-wrap{position:fixed;inset:0;z-index:60;background:rgba(18,22,58,.55);display:grid;place-items:center;padding:20px}
+.modal{max-width:470px;width:100%;max-height:88vh;overflow:auto;padding:22px;text-align:center;background:var(--surface);border:3px solid var(--ink);border-radius:24px;box-shadow:6px 6px 0 var(--ink);animation:pop .3s}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+.modal h3{font-size:27px;margin-bottom:6px}
+.vs{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0}
+.vs .tile{width:118px}
+.vs-word{font:800 26px var(--display)}
+.adv{font-weight:800;padding:8px 12px;border-radius:12px;border:2px solid var(--ink)}
+.adv.strong{background:color-mix(in srgb,var(--good) 30%,var(--surface))}
+.adv.weak{background:color-mix(in srgb,var(--bad) 25%,var(--surface))}
+.adv.even{background:var(--bg2)}
+.leader{font-size:64px;line-height:1}
+.detail-card{width:170px;aspect-ratio:3/4;margin:6px auto 12px}
+.fuse-show{font-size:54px;margin:10px 0;line-height:1.2}
+
+/* Parent */
+.hold{position:relative;overflow:hidden;width:100%;font:800 20px var(--display);padding:16px;border:3px solid var(--ink);border-radius:16px;background:var(--bg2);cursor:pointer;margin-top:10px;touch-action:none}
+.hold i{position:absolute;inset:0;width:0;background:var(--sun);transition:width 0s}
+.hold.go i{width:100%;transition:width 2s linear}
+.hold span{position:relative}
+.levels{display:grid;gap:10px;text-align:left;margin:12px 0}
+.levels label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:3px solid var(--ink);border-radius:14px;cursor:pointer}
+.levels label:has(input:checked){background:color-mix(in srgb,var(--sun) 55%,var(--surface))}
+.levels input{width:22px;height:22px;margin-top:2px;flex:none}
+.levels b{font-family:var(--display);font-size:18px}
+.levels small{display:block;color:var(--muted)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.stat-grid div{border:2px solid var(--ink);border-radius:12px;padding:8px 4px}
+.stat-grid b{font:800 22px var(--display);display:block}
+.setting{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 4px;border-top:2px dashed color-mix(in srgb,var(--ink) 25%,transparent);text-align:left}
+
+/* Intro */
+.intro{background:var(--bg);background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1.6px,transparent 1.7px);background-size:24px 24px}
+.intro-inner{max-width:620px;width:100%;text-align:center}
+.logo{font:800 clamp(52px,13vw,96px)/.9 var(--display);color:var(--sun);letter-spacing:-1px;
+  text-shadow:3px 3px 0 var(--ink),-3px 3px 0 var(--ink),3px -3px 0 var(--ink),-3px -3px 0 var(--ink),0 3px 0 var(--ink),3px 0 0 var(--ink),-3px 0 0 var(--ink),0 -3px 0 var(--ink),7px 8px 0 var(--ink)}
+.logo span{display:block;color:#fff;font-size:.62em}
+.floaters{font-size:44px;margin:8px 0 4px;display:flex;justify-content:center;gap:16px}
+.floaters span{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+.floaters span:nth-child(2){animation-delay:.3s}.floaters span:nth-child(3){animation-delay:.6s}.floaters span:nth-child(4){animation-delay:.9s}.floaters span:nth-child(5){animation-delay:1.2s}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.tagline{font-size:19px;font-weight:800}
+.name-in{font:800 24px var(--display);width:100%;max-width:340px;padding:12px 16px 9px;border:3px solid var(--ink);border-radius:14px;text-align:center;background:var(--surface);color:var(--text);box-shadow:3px 3px 0 var(--ink);-webkit-user-select:text;user-select:text}
+.starters{display:flex;gap:14px;justify-content:center;margin:12px 0 18px}
+.starters .slot{width:min(28vw,140px)}
+.starters .slot.picked .mcard{outline:5px solid var(--sun);outline-offset:3px}
+.step-label{font:800 20px var(--display);margin:18px 0 8px}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 104px);transform:translateX(-50%);z-index:90;max-width:90vw;
+  background:var(--ink);color:#fff;font-weight:800;padding:12px 18px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);animation:pop .3s;text-align:center}
+
+@media (max-width:520px){
+  .answers{gap:9px}.ans{min-height:58px}
+  .nav button{font-size:14px}
+  .line{grid-template-columns:1fr auto 1fr auto 1fr;gap:3px}
+  .fuse{min-width:46px;font-size:12px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top" id="top"></header>
+  <main id="view"></main>
+  <nav class="nav" id="nav"></nav>
+</div>
+<div id="intro" class="ov intro" hidden></div>
+<div id="battle" class="ov battle-ov" hidden></div>
+<div id="packov" class="ov pack-ov" hidden></div>
+<div id="modal" class="modal-wrap" hidden></div>
+
+<script>
+'use strict';
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const rand = n => Math.floor(Math.random() * n);
+const r = (a, b) => a + rand(b - a + 1);
+const pick = a => a[rand(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rand(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nf = n => n.toLocaleString('en-US');
+
+/* ---------- world data ---------- */
+const ELEMENTS = {
+  leaf:   { name: 'Leaf',    icon: '🌿' },
+  ember:  { name: 'Ember',   icon: '🔥' },
+  tide:   { name: 'Tide',    icon: '🌊' },
+  storm:  { name: 'Storm',   icon: '⚡' },
+  crystal:{ name: 'Crystal', icon: '💎' }
+};
+// each element beats the next one in the circle: Storm → Tide → Ember → Leaf → Storm
+const BEATS = { storm: 'tide', tide: 'ember', ember: 'leaf', leaf: 'storm' };
+const WHY = { storm: 'lightning zaps water', tide: 'water puts out fire', ember: 'fire burns leaves', leaf: 'trees ground the lightning' };
+
+const LINES = {
+  leaf:  [[['sproutle','Sproutle','🌱'],['budwick','Budwick','🪴'],['oakenroar','Oakenroar','🌳']],
+          [['nibblet','Nibblet','🐛'],['buzzleaf','Buzzleaf','🐝'],['monarcha','Monarcha','🦋']],
+          [['peeplily','Peeplily','🐸'],['shellmoss','Shellmoss','🐢'],['ferndon','Ferndon','🦕']]],
+  ember: [[['magmite','Magmite','🦎'],['lavagator','Lavagator','🐊'],['lavarex','Lavarex','🦖']],
+          [['toastie','Toastie','🐹'],['fizzfox','Fizzfox','🦊'],['blazemane','Blazemane','🦁']],
+          [['smoldersnail','Smoldersnail','🐌'],['cinderhog','Cinderhog','🦔'],['charhorn','Charhorn','🦏']]],
+  tide:  [[['splishy','Splishy','🐟'],['wavedash','Wavedash','🐬'],['leviatide','Leviatide','🐋']],
+          [['shrimpkin','Shrimpkin','🦐'],['snapcrab','Snapcrab','🦀'],['admirlob','Admirlob','🦞']],
+          [['pebbleguin','Pebbleguin','🐧'],['sealsy','Sealsy','🦭'],['glacibear','Glacibear','🐻‍❄️']]],
+  storm: [[['zappip','Zappip','🐭'],['boltbun','Boltbun','🐰'],['thunderoo','Thunderoo','🦘']],
+          [['gustbat','Gustbat','🦇'],['owlstrike','Owlstrike','🦉'],['skyraptor','Skyraptor','🦅']],
+          [['fluffcloud','Fluffcloud','🐑'],['rambolt','Rambolt','🐐'],['skyhorn','Skyhorn','🦄']]]
+};
+const LEGEND = { leaf: 'elderstag', ember: 'solgaron', tide: 'abyssalon', storm: 'raijura' };
+const MON = {}, MON_ORDER = [];
+for (const el of Object.keys(LINES)) {
+  LINES[el].forEach(line => line.forEach(([id, name, emoji], si) => {
+    MON[id] = { id, name, emoji, el, stage: si + 1, next: line[si + 1] ? line[si + 1][0] : null, prev: si ? line[si - 1][0] : null };
+    MON_ORDER.push(id);
+  }));
+}
+[['elderstag','Elderstag','🦌','leaf'],['solgaron','Solgaron','🐉','ember'],['abyssalon','Abyssalon','🐳','tide'],['raijura','Raijura','🐯','storm']]
+  .forEach(([id, name, emoji, el]) => { MON[id] = { id, name, emoji, el, stage: 4 }; MON_ORDER.push(id); });
+MON.prismara = { id: 'prismara', name: 'Prismara', emoji: '🐲', el: 'crystal', stage: 5 };
+MON_ORDER.push('prismara');
+// shiny versions of every Glimmer: same creature, golden card, +1 gem per right answer
+for (const id of MON_ORDER) { const b = MON[id]; MON[id + '_s'] = { ...b, id: id + '_s', shiny: true, base: id, next: b.next ? b.next + '_s' : null, prev: b.prev ? b.prev + '_s' : null }; }
+const SHINY_ORDER = MON_ORDER.map(id => id + '_s');
+const RARITY = ['', 'Common', 'Rare', 'Epic', 'Legendary', 'Mythic'];
+
+const SUBJ = { math: { label: 'Math', icon: '🔢' }, sci: { label: 'Science', icon: '🔬' }, geo: { label: 'Geography', icon: '🌍' } };
+
+const REGIONS = [
+  { id: 'leaf', name: 'Sprout Meadow', subj: 'math', blurb: 'Mostly math',
+    leader: { name: 'Coach Fern', emoji: '👩‍🌾' },
+    stations: [{ name: 'Clover Path', enemy: 'sproutle' }, { name: 'Bug Hollow', enemy: 'nibblet' }, { name: 'Lily Pond', enemy: 'shellmoss' }, { name: 'Meadow Gym', enemy: 'oakenroar', gym: true }] },
+  { id: 'ember', name: 'Ember Volcano', subj: 'sci', blurb: 'Mostly science',
+    leader: { name: 'Professor Blaze', emoji: '👨‍🔬' },
+    stations: [{ name: 'Ash Trail', enemy: 'magmite' }, { name: 'Toasty Tunnel', enemy: 'toastie' }, { name: 'Smoke Ridge', enemy: 'cinderhog' }, { name: 'Volcano Gym', enemy: 'lavarex', gym: true }] },
+  { id: 'tide', name: 'Tide Coast', subj: 'geo', blurb: 'Mostly geography',
+    leader: { name: 'Captain Marina', emoji: '👩‍✈️' },
+    stations: [{ name: 'Shell Beach', enemy: 'shrimpkin' }, { name: 'Kelp Cove', enemy: 'splishy' }, { name: 'Iceberg Bay', enemy: 'sealsy' }, { name: 'Harbor Gym', enemy: 'leviatide', gym: true }] },
+  { id: 'storm', name: 'Storm Peaks', subj: 'mix', blurb: 'Math, science & geography',
+    leader: { name: 'Ranger Volt', emoji: '🧗' },
+    stations: [{ name: 'Windy Ledge', enemy: 'zappip' }, { name: 'Echo Cave', enemy: 'gustbat' }, { name: 'Cloud Bridge', enemy: 'rambolt' }, { name: 'Thunder Gym', enemy: 'skyhorn', gym: true }] },
+  { id: 'crystal', name: 'Crystal Summit', subj: 'mix', blurb: 'The final challenge',
+    leader: { name: 'The Crystal Keeper', emoji: '🧙' },
+    stations: [{ name: 'Glow Cave', enemy: 'blazemane' }, { name: 'Shimmer Stair', enemy: 'glacibear' }, { name: 'Crystal Throne', enemy: 'prismara', gym: true, final: true }] }
+];
+const STATIONS = [];
+REGIONS.forEach((reg, ri) => reg.stations.forEach((s, si) => STATIONS.push({ ...s, id: reg.id + '-' + si, region: reg, ri, si, idx: STATIONS.length })));
+
+const PACKS = [
+  { id: 'leaf',  name: 'Meadow Pack',  el: 'leaf',  cost: 12, count: 4 },
+  { id: 'ember', name: 'Volcano Pack', el: 'ember', cost: 12, count: 4 },
+  { id: 'tide',  name: 'Coast Pack',   el: 'tide',  cost: 12, count: 4 },
+  { id: 'storm', name: 'Peak Pack',    el: 'storm', cost: 12, count: 4 },
+  { id: 'rainbow', name: 'Rainbow Pack', el: 'any', icon: '🌈', cost: 30, count: 5, unlock: () => badgeCount() >= 1, lockText: 'Win 1 badge', note: 'All elements, better odds' },
+  { id: 'mega',    name: 'Mega Pack',    el: 'any', icon: '🎆', cost: 55, count: 8, guarantee: 3, unlock: () => badgeCount() >= 2, lockText: 'Win 2 badges', note: '8 cards, 1 Epic for sure' },
+  { id: 'legend',  name: 'Legend Pack',  el: 'any', icon: '🔷', cost: 45, count: 3, legendShard: true, unlock: () => badgeCount() >= 3, lockText: 'Win 3 badges', note: 'A Legend shard for sure' },
+  { id: 'shiny',   name: 'Shiny Pack',   el: 'any', icon: '✨', cost: 70, count: 4, shinyPack: true, unlock: () => S.heart, lockText: 'Win the Crystal Heart', note: 'Lots of golden shinies' }
+];
+
+/* ---------- question banks: [question, answer, wrong, wrong, wrong, fun fact] ---------- */
+const SCI = [
+ [ // level 1
+  ['Which planet is closest to the Sun?','Mercury','Venus','Earth','Mars','A year on Mercury is only 88 Earth days.'],
+  ['What do plants need to make their food?','Sunlight','Moonlight','Sand','Salt','Leaves catch sunlight like tiny solar panels.'],
+  ['Ice melting into water changes from…','Solid to liquid','Liquid to gas','Gas to solid','Liquid to solid',''],
+  ['Which animal is a mammal?','Dolphin','Shark','Salmon','Frog','Dolphins breathe air and feed their babies milk.'],
+  ['What is the biggest planet in our solar system?','Jupiter','Saturn','Earth','Neptune','More than 1,000 Earths could fit inside Jupiter.'],
+  ['A magnet will pick up a…','Iron nail','Wooden spoon','Plastic cup','Glass marble','Magnets pull on iron, nickel and cobalt.'],
+  ['Which gas do we breathe in to stay alive?','Oxygen','Helium','Smoke','Carbon dioxide',''],
+  ['How many legs does an insect have?','6','8','4','10','Spiders have 8 legs, so they are not insects.'],
+  ['What causes day and night?','Earth spinning','The Sun moving around Earth','Clouds','The Moon blocking the Sun','Earth spins all the way around once every 24 hours.'],
+  ['What is the Sun?','A star','A planet','A moon','A comet','The Sun is the closest star to Earth.'],
+  ['Which part of a plant drinks water from the soil?','Roots','Petals','Leaves','Seeds',''],
+  ['Water drops forming on a cold glass is called…','Condensation','Evaporation','Melting','Freezing',''],
+  ['Which planet is called the Red Planet?','Mars','Venus','Jupiter','Mercury','Mars is red because its dirt has rust in it.'],
+  ['Baby frogs are called…','Tadpoles','Chicks','Caterpillars','Cubs',''],
+  ['A push or a pull is called a…','Force','Shadow','Liquid','Planet',''],
+  ['Which of these is a liquid?','Milk','Rock','Steam','Ice','']
+ ],
+ [ // level 2
+  ['Animals that eat only plants are called…','Herbivores','Carnivores','Omnivores','Predators',''],
+  ['What is the hardest natural material?','Diamond','Gold','Granite','Iron','Diamonds are made of carbon squeezed deep underground.'],
+  ['Which layer of Earth do we live on?','Crust','Mantle','Outer core','Inner core',''],
+  ['How long does Earth take to go around the Sun?','About 365 days','24 hours','30 days','100 days','That trip is why we have years.'],
+  ['Which organ pumps blood around your body?','Heart','Lungs','Brain','Stomach','Your heart beats about 100,000 times a day.'],
+  ['Which planet has the most famous rings?','Saturn','Mars','Mercury','Venus','Saturn’s rings are made of ice and rock.'],
+  ['Lightning is a giant spark of…','Electricity','Wind','Sound','Water','Lightning is hotter than the surface of the Sun.'],
+  ['At what temperature does water boil (Celsius)?','100°C','50°C','0°C','212°C','In Fahrenheit, that is 212°F.'],
+  ['Rock that forms from cooled lava is called…','Igneous','Sedimentary','Metamorphic','Chalk',''],
+  ['In a food chain, plants are called…','Producers','Consumers','Decomposers','Predators','They produce food from sunlight.'],
+  ['What does a thermometer measure?','Temperature','Weight','Speed','Length',''],
+  ['Which planet is farthest from the Sun?','Neptune','Uranus','Saturn','Jupiter','Neptune has the fastest winds in the solar system.'],
+  ['Sound travels as…','Vibrations','Light beams','Bubbles','Magnets',''],
+  ['Which animal is cold-blooded?','Snake','Bear','Eagle','Whale',''],
+  ['Mushrooms and worms that break down dead plants are…','Decomposers','Producers','Herbivores','Pollinators',''],
+  ['How many bones does an adult human have?','206','106','56','506','Babies are born with about 300; some join together.']
+ ],
+ [ // level 3
+  ['What is the center of an atom called?','Nucleus','Electron','Molecule','Cell wall',''],
+  ['Which gas do plants take in from the air?','Carbon dioxide','Oxygen','Helium','Nitrogen',''],
+  ['What force keeps the planets orbiting the Sun?','Gravity','Magnetism','Friction','Wind',''],
+  ['Which part of a cell holds its DNA?','Nucleus','Membrane','Cytoplasm','Vacuole',''],
+  ['About how fast does light travel?','300,000 km per second','300 km per hour','3,000 km per second','30 km per second','Sunlight takes about 8 minutes to reach Earth.'],
+  ['What is H₂O?','Water','Salt','Sugar','Helium',''],
+  ['Which planet spins on its side?','Uranus','Venus','Mars','Saturn',''],
+  ['Blood vessels that carry blood away from the heart are…','Arteries','Veins','Capillaries','Nerves',''],
+  ['How plants make food from sunlight is called…','Photosynthesis','Respiration','Digestion','Evaporation',''],
+  ['A ramp is which simple machine?','Inclined plane','Lever','Pulley','Wheel and axle',''],
+  ['Which is NOT a renewable energy source?','Coal','Wind','Solar','Hydropower','Coal took millions of years to form.'],
+  ['Which planet has the hottest surface?','Venus','Mercury','Mars','Jupiter','Its thick clouds trap heat like a blanket.'],
+  ['Tectonic plates slipping suddenly cause…','Earthquakes','Tornadoes','Rainbows','Tides',''],
+  ['What is the largest organ of the human body?','Skin','Liver','Brain','Lungs',''],
+  ['The path a planet takes around the Sun is its…','Orbit','Axis','Equator','Eclipse',''],
+  ['Which travels fastest?','Light','Sound','A cheetah','A jet plane','That is why you see lightning before you hear thunder.']
+ ]
+];
+const GEO = [
+ [ // level 1
+  ['How many continents are there?','7','5','6','9',''],
+  ['What is the biggest ocean?','Pacific','Atlantic','Indian','Arctic','The Pacific is bigger than all the land on Earth put together.'],
+  ['On a compass, what is opposite North?','South','East','West','Up',''],
+  ['Which continent is the coldest?','Antarctica','Europe','Asia','North America',''],
+  ['Which is the largest country by area?','Russia','Canada','China','USA','Russia has 11 time zones.'],
+  ['Which country is famous for kangaroos?','Australia','Brazil','India','Canada',''],
+  ['The Amazon rainforest is mostly in which country?','Brazil','Mexico','Egypt','Spain',''],
+  ['Which ocean lies between North America and Europe?','Atlantic','Pacific','Indian','Southern',''],
+  ['Mount Rainier is in which state?','Washington','Oregon','Colorado','Alaska','Mount Rainier is a volcano.'],
+  ['Which is the biggest continent?','Asia','Africa','Europe','Antarctica','More than half of all people live in Asia.'],
+  ['Which direction does the Sun set in?','West','East','North','South',''],
+  ['Land with water all the way around it is called…','An island','A mountain','A valley','A desert',''],
+  ['Seattle is in which state?','Washington','Oregon','California','Idaho',''],
+  ['Which country is right next to the USA in the north?','Canada','Mexico','Russia','Greenland',''],
+  ['Which country is right next to the USA in the south?','Mexico','Canada','Brazil','Cuba',''],
+  ['The box that explains the symbols on a map is called the…','Key','Title','Scale','Grid',''],
+  ['The Statue of Liberty is in which city?','New York City','Washington, D.C.','Boston','Chicago',''],
+  ['Which ocean is closest to Seattle?','Pacific','Atlantic','Indian','Arctic','']
+ ],
+ [ // level 2
+  ['Which river is usually called the longest in the world?','Nile','Mississippi','Thames','Danube','Some scientists say the Amazon is a little longer.'],
+  ['What is the tallest mountain on Earth?','Mount Everest','K2','Kilimanjaro','Mount Rainier','Everest is about 8,849 meters tall.'],
+  ['Which US state is the biggest?','Alaska','Texas','California','Montana',''],
+  ['The Sahara desert is on which continent?','Africa','Asia','Australia','South America',''],
+  ['The line at 0° latitude around the middle of Earth is the…','Equator','Prime Meridian','Arctic Circle','Tropic of Cancer',''],
+  ['What is the capital of Washington state?','Olympia','Seattle','Spokane','Tacoma',''],
+  ['Which country has the most people?','India','USA','Brazil','Russia','India passed China in 2023.'],
+  ['The Great Barrier Reef is near which country?','Australia','Japan','Mexico','Egypt','It is so big you can see it from space.'],
+  ['Machu Picchu is in which country?','Peru','Chile','Mexico','Spain',''],
+  ['Which direction does the Sun rise from?','East','West','North','South',''],
+  ['A peninsula is land with water on…','Three sides','All four sides','No sides','The top only','Florida is a peninsula.'],
+  ['Which mountains run through Washington state?','Cascades','Rockies','Alps','Andes',''],
+  ['The Eiffel Tower is in which city?','Paris','London','Rome','Brussels',''],
+  ['Which big river forms much of the border between Washington and Oregon?','Columbia','Mississippi','Hudson','Snake',''],
+  ['How many states are in the USA?','50','48','52','45',''],
+  ['The Alps are mountains on which continent?','Europe','Asia','Africa','South America',''],
+  ['The Great Wall is in which country?','China','Japan','India','Mongolia',''],
+  ['Which is the longest river in the USA?','Missouri','Columbia','Hudson','Rio Grande','The Missouri flows into the Mississippi.']
+ ],
+ [ // level 3
+  ['What is the smallest country in the world?','Vatican City','Monaco','Luxembourg','Malta',''],
+  ['Mount Kilimanjaro is in which country?','Tanzania','Kenya','Egypt','Peru',''],
+  ['Lines that run from the North Pole to the South Pole are lines of…','Longitude','Latitude','The Equator','Contour',''],
+  ['Which country is partly in Europe and partly in Asia?','Turkey','Spain','Egypt','Japan',''],
+  ['What is the largest desert on Earth?','Antarctica','Sahara','Gobi','Arabian','A desert means very little rain or snow, not heat.'],
+  ['The Danube river ends in which sea?','Black Sea','North Sea','Red Sea','Baltic Sea',''],
+  ['Which US state is made of islands in the Pacific?','Hawaii','Florida','Alaska','Maine',''],
+  ['What is the deepest place in the ocean?','Mariana Trench','Grand Canyon','Dead Sea','Puget Sound','It is deeper than Mount Everest is tall.'],
+  ['The city of Timbuktu is in which country?','Mali','Morocco','Kenya','Peru',''],
+  ['The Andes mountains run along which continent?','South America','Africa','Asia','Europe','They are the longest mountain range above water.'],
+  ['Which line splits Earth into Eastern and Western halves?','Prime Meridian','Equator','Tropic of Capricorn','Arctic Circle','It runs through Greenwich, London.'],
+  ['Which lake is so salty that people float easily?','Dead Sea','Lake Superior','Lake Victoria','Lake Tahoe',''],
+  ['What is the largest island in the world?','Greenland','Australia','Madagascar','Iceland','Australia counts as a continent, not an island.'],
+  ['The Ring of Fire is a ring of volcanoes around which ocean?','Pacific','Atlantic','Indian','Arctic','Mount Rainier is part of it!'],
+  ['Which river carved the Grand Canyon?','Colorado','Columbia','Mississippi','Missouri',''],
+  ['The deepest lake in the world, Lake Baikal, is in…','Russia','Canada','USA','Norway',''],
+  ['Which country has the most volcanoes?','Indonesia','Italy','Iceland','Japan',''],
+  ['What is the largest country in South America?','Brazil','Argentina','Peru','Colombia','']
+ ]
+];
+// country facts: name, capital, flag, continent (null = spans two), difficulty, tricky wrong capital
+const COUNTRIES = [
+ ['the United States','Washington, D.C.','🇺🇸','North America',1,'New York City'],['Mexico','Mexico City','🇲🇽','North America',1],
+ ['France','Paris','🇫🇷','Europe',1],['the United Kingdom','London','🇬🇧','Europe',1],['Italy','Rome','🇮🇹','Europe',1],
+ ['Spain','Madrid','🇪🇸','Europe',1,'Barcelona'],['Japan','Tokyo','🇯🇵','Asia',1],['China','Beijing','🇨🇳','Asia',1,'Shanghai'],
+ ['Belgium','Brussels','🇧🇪','Europe',1],['Germany','Berlin','🇩🇪','Europe',1],['Egypt','Cairo','🇪🇬','Africa',1],
+ ['Russia','Moscow','🇷🇺',null,1],['Greece','Athens','🇬🇷','Europe',1],['Ireland','Dublin','🇮🇪','Europe',1],
+ ['Canada','Ottawa','🇨🇦','North America',2,'Toronto'],['the Netherlands','Amsterdam','🇳🇱','Europe',2],['Portugal','Lisbon','🇵🇹','Europe',2],
+ ['India','New Delhi','🇮🇳','Asia',2,'Mumbai'],['South Korea','Seoul','🇰🇷','Asia',2],['Argentina','Buenos Aires','🇦🇷','South America',2],
+ ['Norway','Oslo','🇳🇴','Europe',2],['Sweden','Stockholm','🇸🇪','Europe',2],['Kenya','Nairobi','🇰🇪','Africa',2],
+ ['Peru','Lima','🇵🇪','South America',2],['Thailand','Bangkok','🇹🇭','Asia',2],['Austria','Vienna','🇦🇹','Europe',2],
+ ['Denmark','Copenhagen','🇩🇰','Europe',2],['Poland','Warsaw','🇵🇱','Europe',2],['Chile','Santiago','🇨🇱','South America',2],
+ ['the Philippines','Manila','🇵🇭','Asia',2],['Cuba','Havana','🇨🇺','North America',2],
+ ['Australia','Canberra','🇦🇺','Australia & Oceania',3,'Sydney'],['Brazil','Brasília','🇧🇷','South America',3,'Rio de Janeiro'],
+ ['Turkey','Ankara','🇹🇷',null,3,'Istanbul'],['Switzerland','Bern','🇨🇭','Europe',3,'Zurich'],['Nigeria','Abuja','🇳🇬','Africa',3,'Lagos'],
+ ['Morocco','Rabat','🇲🇦','Africa',3,'Casablanca'],['New Zealand','Wellington','🇳🇿','Australia & Oceania',3,'Auckland'],
+ ['Vietnam','Hanoi','🇻🇳','Asia',3,'Ho Chi Minh City'],['Colombia','Bogotá','🇨🇴','South America',3],['Finland','Helsinki','🇫🇮','Europe',3],
+ ['Indonesia','Jakarta','🇮🇩','Asia',3],['Pakistan','Islamabad','🇵🇰','Asia',3,'Karachi'],['Iceland','Reykjavík','🇮🇸','Europe',3],
+ ['Ghana','Accra','🇬🇭','Africa',3],['Ethiopia','Addis Ababa','🇪🇹','Africa',3],['Saudi Arabia','Riyadh','🇸🇦','Asia',3],
+ ['Jamaica','Kingston','🇯🇲','North America',3],['Hungary','Budapest','🇭🇺','Europe',3],['Czechia','Prague','🇨🇿','Europe',3],
+ ['Mongolia','Ulaanbaatar','🇲🇳','Asia',3],['Tanzania','Dodoma','🇹🇿','Africa',3,'Dar es Salaam']
+];
+const CONTINENTS = ['North America','South America','Europe','Asia','Africa','Australia & Oceania','Antarctica'];
+const cap = s => s.replace(/^the /, 'The ');
+// animals: name, group, difficulty
+const ANIMALS = [
+ ['dog','Mammal',1],['eagle','Bird',1],['snake','Reptile',1],['frog','Amphibian',1],['salmon','Fish',1],['ant','Insect',1],
+ ['cow','Mammal',1],['owl','Bird',1],['turtle','Reptile',1],['butterfly','Insect',1],['shark','Fish',1],['lizard','Reptile',1],
+ ['horse','Mammal',1],['parrot','Bird',1],['bee','Insect',1],['goldfish','Fish',1],
+ ['whale','Mammal',2],['penguin','Bird',2],['bat','Mammal',2],['salamander','Amphibian',2],['crocodile','Reptile',2],['dolphin','Mammal',2],
+ ['ostrich','Bird',2],['toad','Amphibian',2],['ladybug','Insect',2],['seahorse','Fish',2],['spider','Arachnid',2],['alligator','Reptile',2],
+ ['kiwi bird','Bird',2],['beetle','Insect',2],['eel','Fish',2],['scorpion','Arachnid',2],
+ ['platypus','Mammal',3],['axolotl','Amphibian',3],['newt','Amphibian',3],['Komodo dragon','Reptile',3],['emu','Bird',3],['manta ray','Fish',3],
+ ['dragonfly','Insect',3],['tick','Arachnid',3],['manatee','Mammal',3],['pangolin','Mammal',3],['flying fish','Fish',3],['cassowary','Bird',3],
+ ['grasshopper','Insect',3],['sea turtle','Reptile',3],['hedgehog','Mammal',3],['tarantula','Arachnid',3]
+];
+const GROUP_TIP = { Mammal: 'Mammals have hair or fur and feed their babies milk.', Bird: 'Birds have feathers and lay eggs.', Reptile: 'Reptiles have dry, scaly skin.',
+  Amphibian: 'Amphibians start life in water and later live on land too.', Fish: 'Fish breathe underwater with gills.', Insect: 'Insects have 6 legs and 3 body parts.', Arachnid: 'Arachnids have 8 legs.' };
+const PLANETS = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
+const ORD = ['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+
+/* ---------- math generators ---------- */
+SCI[0].push(
+  ['What do bees make?','Honey','Milk','Silk','Juice',''],
+  ['Which sense do you use your nose for?','Smell','Taste','Hearing','Touch',''],
+  ['Most birds lay their eggs in a…','Nest','Burrow','Web','Hive',''],
+  ['Which season comes after winter?','Spring','Summer','Fall','Winter again',''],
+  ['What shape is Earth?','A ball (sphere)','A cube','A flat circle','A pyramid',''],
+  ['Which body part helps you breathe?','Lungs','Stomach','Bones','Ears',''],
+  ['What does a seed grow into?','A plant','A rock','A cloud','An egg',''],
+  ['What do we call the Moon when we see all of it lit up?','Full moon','New moon','Half moon','Blue moon','']
+);
+SCI[1].push(
+  ['What is the closest star to Earth?','The Sun','Polaris','Sirius','The Moon',''],
+  ['Which part of a plant makes seeds?','Flower','Root','Stem','Bark',''],
+  ['Water turning into vapor (gas) is called…','Evaporation','Condensation','Freezing','Melting',''],
+  ['Which tool makes tiny things look bigger?','Microscope','Telescope','Thermometer','Compass',''],
+  ['What protects your brain?','Skull','Ribs','Spine','Kneecap',''],
+  ['Rain, snow and hail are all kinds of…','Precipitation','Evaporation','Erosion','Gravity',''],
+  ['Which animal can change color to hide?','Chameleon','Elephant','Zebra','Owl',''],
+  ['How many planets are in our solar system?','8','9','7','10','Pluto is now called a dwarf planet.']
+);
+SCI[2].push(
+  ['What is the smallest unit of life?','Cell','Atom','Organ','Tissue',''],
+  ['Which gas makes up most of the air?','Nitrogen','Oxygen','Carbon dioxide','Helium','About 78% of air is nitrogen.'],
+  ['Sunlight helps your body make which vitamin?','Vitamin D','Vitamin C','Vitamin A','Vitamin K',''],
+  ['A scientist who studies rocks is a…','Geologist','Biologist','Astronomer','Chemist',''],
+  ['At what temperature does water freeze in Fahrenheit?','32°F','0°F','100°F','212°F',''],
+  ['Which planet has a giant storm called the Great Red Spot?','Jupiter','Mars','Saturn','Neptune','The storm is bigger than Earth.'],
+  ['Which gas do plants give off?','Oxygen','Carbon dioxide','Helium','Smoke',''],
+  ['Energy stored in food is…','Chemical energy','Sound energy','Light energy','Magnetic energy','']
+);
+const NAMES = ['Maya','Leo','Sam','Ava','Noah','Zoe','Kai','Lena'];
+const THINGS = ['gems','stickers','cards','marbles','shells','berries'];
+function tm(mins) { mins = ((mins % 720) + 720) % 720; let h = Math.floor(mins / 60); if (h === 0) h = 12; return h + ':' + String(mins % 60).padStart(2, '0'); }
+function numQ(q, ans, cands, tip, unit = '') {
+  const set = new Set([ans]), wrong = [];
+  for (const c of shuffle(cands)) { if (Number.isFinite(c) && c >= 0 && !set.has(c)) { set.add(c); wrong.push(c); } if (wrong.length === 3) break; }
+  let k = 1;
+  while (wrong.length < 3) { const c = ans + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * Math.max(1, Math.round(ans * 0.1)); if (c >= 0 && !set.has(c)) { set.add(c); wrong.push(c); } k++; }
+  const f = v => nf(v) + unit;
+  return { q, a: f(ans), wrong: wrong.map(f), tip };
+}
+function strQ(q, ans, cands, tip) { return { q, a: ans, wrong: [...new Set(cands.filter(c => c !== ans))].slice(0, 3), tip }; }
+const PLACES = ['ones','tens','hundreds','thousands','ten thousands'];
+const MATH = [
+ [ // level 1: high 3rd grade
+  () => { const a = r(2,10), b = r(2,10), p = a*b; return numQ(`${a} × ${b} = ?`, p, [p+a,p-a,p+b,p-b,a+b,(a+1)*b], `${a} groups of ${b} make ${p}.`); },
+  () => { const b = r(2,10), q = r(2,10), p = b*q; return numQ(`${p} ÷ ${b} = ?`, q, [q+1,q-1,q+2,p-b,b+q], `${b} × ${q} = ${p}, so ${p} ÷ ${b} = ${q}.`); },
+  () => { const a = r(2,10), b = r(2,10); return numQ(`${a} × ? = ${a*b}`, b, [b+1,b-1,b+2,a*b-a], `${a} × ${b} = ${a*b}.`); },
+  () => { const a = r(120,580), b = r(110,399), s = a+b; return numQ(`${a} + ${b} = ?`, s, [s+10,s-10,s+100,s-100,s+1], 'Add ones, then tens, then hundreds. Carry when a column reaches 10.'); },
+  () => { const a = r(400,950), b = r(120,a-150), d = a-b; return numQ(`${a} − ${b} = ?`, d, [d+10,d-10,d+100,d-100,d+1], `Check it: ${d} + ${b} = ${a}.`); },
+  () => { const n = r(101,989), to = pick([10,100]), ans = Math.round(n/to)*to, other = Math.floor(n/to)*to === ans ? Math.ceil(n/to)*to : Math.floor(n/to)*to;
+          return numQ(`Round ${n} to the nearest ${to}.`, ans, [ans+to, ans-to, other, Math.round(n/(110-to))*(110-to)], to === 10 ? 'Look at the ones digit: 5 or more rounds up.' : 'Look at the tens digit: 5 or more rounds up.'); },
+  () => { const w = r(3,9), h = r(2,8); return numQ(`A rectangle is ${w} squares long and ${h} squares wide. What is its area?`, w*h, [2*(w+h), w+h, w*h+w, w*h-h], `Area = length × width = ${w} × ${h}.`, ' sq units'); },
+  () => { const w = r(3,12), h = r(2,9); return numQ(`A garden is ${w} m long and ${h} m wide. How far is it all the way around (the perimeter)?`, 2*(w+h), [w*h, w+h, 2*w+h, 2*(w+h)+2], `Add all four sides: ${w} + ${h} + ${w} + ${h}.`, ' m'); },
+  () => { const n = pick(NAMES), t = pick(THINGS), a = r(3,9), b = r(3,9); return numQ(`${n} has ${a} bags with ${b} ${t} in each bag. How many ${t} in all?`, a*b, [a+b, a*b+b, a*b-a, a*(b+1)], `${a} bags × ${b} each = ${a*b}.`); },
+  () => { const t = pick(THINGS), b = r(2,9), q = r(3,10), p = b*q; return numQ(`${p} ${t} are shared equally by ${b} friends. How many does each friend get?`, q, [q+1, q-1, p-b, q+2], `${p} ÷ ${b} = ${q}.`); },
+  () => { const st = r(1,10)*60 + pick([0,15,30,45]), add = pick([15,30,45,60,75,90]), e = st+add;
+          return strQ(`A soccer game starts at ${tm(st)} and lasts ${add} minutes. What time does it end?`, tm(e), [tm(e+15), tm(e-15), tm(e+60), tm(e+30)], `Count on ${add} minutes from ${tm(st)}.`); },
+  () => { const ds = shuffle([2,3,4,5,6,8,10,12]).slice(0,4), min = Math.min(...ds);
+          return strQ('Which fraction is the biggest?', `1/${min}`, ds.filter(d => d !== min).map(d => `1/${d}`), 'When the top number is 1, a smaller bottom number means bigger pieces.'); }
+ ],
+ [ // level 2: 4th grade
+  () => { const a = r(12,99), b = r(3,9), p = a*b, t = Math.floor(a/10)*10; return numQ(`${a} × ${b} = ?`, p, [p+10,p-10,p+b,p-b,a*(b-1)], `${t} × ${b} = ${t*b}, plus ${a%10} × ${b} = ${(a%10)*b}.`); },
+  () => { const b = r(3,9), q = r(12,99), p = b*q; return numQ(`${p} ÷ ${b} = ?`, q, [q+1,q-1,q+10,q-10], `Check: ${q} × ${b} = ${p}.`); },
+  () => { const a = r(1200,7800), b = r(350,1999), s = a+b; return numQ(`${nf(a)} + ${nf(b)} = ?`, s, [s+100,s-100,s+1000,s+10], 'Line up the places and carry carefully.'); },
+  () => { const a = r(3000,9500), b = r(400,a-1000), d = a-b; return numQ(`${nf(a)} − ${nf(b)} = ?`, d, [d+100,d-100,d+1000,d+10], `Check: ${nf(d)} + ${nf(b)} = ${nf(a)}.`); },
+  () => { const d = r(2,6), n = r(1,d-1), k = r(2,4); return numQ(`${n}/${d} = ?/${d*k}`, n*k, [n*k+1, n*k-1, n+k, d*k-n*k, n*k+k], `Multiply the top and bottom by ${k}.`); },
+  () => { const d = r(5,12), a = r(1,d-2), b = r(1,d-1-a); return strQ(`${a}/${d} + ${b}/${d} = ?`, `${a+b}/${d}`, [`${a+b}/${d*2}`, `${a+b+1}/${d}`, `${a+b-1}/${d}`, `${a*b}/${d}`], `Same bottom number? Add the tops: ${a} + ${b} = ${a+b}.`); },
+  () => { const N = pick([12,18,20,24,30,36,40,42,48,56,60]), f = [], nof = []; for (let i = 2; i <= 13; i++) (N % i === 0 ? f : nof).push(i);
+          const ans = pick(f); return numQ(`Which number is a factor of ${N}?`, ans, nof, `${N} ÷ ${ans} = ${N/ans} with nothing left over.`); },
+  () => { const ds = shuffle([1,2,3,4,5,6,7,8,9]).slice(0,5), n = +ds.join(''), p = r(0,4), d = ds[4-p], v = d*10**p;
+          return numQ(`In ${nf(n)}, what is the value of the digit ${d}?`, v, [d*10**((p+1)%5), d*10**((p+4)%5), d*10**((p+2)%5), d], `The ${d} is in the ${PLACES[p]} place.`); },
+  () => { const n = pick(NAMES), a = r(4,9), b = r(3,8), c = r(2,a*b-5); return numQ(`A pack has ${a} cards. ${n} buys ${b} packs and gives away ${c} cards. How many cards are left?`, a*b-c, [a*b+c, a*b, a+b-c, a*b-c+a], `${a} × ${b} = ${a*b}, then ${a*b} − ${c} = ${a*b-c}.`); },
+  () => { const L = r(6,15), W = r(2,L-1), P = 2*(L+W); return numQ(`A rectangle has a perimeter of ${P} cm. Its length is ${L} cm. How wide is it?`, W, [P-L, P/2, L, W+2, P-2*L], `Half the perimeter is ${P/2}. ${P/2} − ${L} = ${W}.`, ' cm'); }
+ ],
+ [ // level 3: 5th grade
+  () => { const a = r(12,49), b = r(11,29), p = a*b, t = b - b%10; return numQ(`${a} × ${b} = ?`, p, [p+10,p-10,p+a,p-b,a*(b-10)], `${a} × ${t} = ${a*t}, plus ${a} × ${b%10} = ${a*(b%10)}.`); },
+  () => { const b = r(11,19), q = r(4,25), p = b*q; return numQ(`${p} ÷ ${b} = ?`, q, [q+1,q-1,q+2,q+10], `Check: ${b} × ${q} = ${p}.`); },
+  () => { const x = r(110,899), y = r(105,799), s = x+y, f = v => '$' + (v/100).toFixed(2); return strQ(`${f(x)} + ${f(y)} = ?`, f(s), [f(s+10), f(s-10), f(s+100), f(s+1)], 'Line up the decimal points, then add.'); },
+  () => { const d = pick([2,3,4,5,10]), n = r(1,d-1), N = d*r(2,12), ans = N/d*n; return numQ(`What is ${n}/${d} of ${N}?`, ans, [N/d, ans+N/d, N-ans, ans+1, N], `${N} ÷ ${d} = ${N/d}, then × ${n} = ${ans}.`); },
+  () => { const a = r(2,9), b = r(2,9), c = r(2,9); return numQ(`${a} + ${b} × ${c} = ?`, a+b*c, [(a+b)*c, a*b+c, a+b+c, a*b*c], `Multiply first: ${b} × ${c} = ${b*c}, then add ${a}.`); },
+  () => { const l = r(2,9), w = r(2,9), h = r(2,9); return numQ(`A box is ${l} cm long, ${w} cm wide and ${h} cm tall. What is its volume?`, l*w*h, [l+w+h, l*w, l*w*h+l*w, 2*(l*w+w*h+l*h)], `Volume = ${l} × ${w} × ${h}.`, ' cm³'); },
+  () => { const n = r(3,15); return numQ(`What is ${n}² (${n} squared)?`, n*n, [2*n, n*n+n, n*n-n, n+2], `${n}² means ${n} × ${n}.`); },
+  () => { const p = pick([10,25,50,75]), N = 20*r(1,10); return numQ(`What is ${p}% of ${N}?`, N*p/100, [p, N/2, N*p/100+5, N-N*p/100, N/10], `${p}% means ${p} out of every 100.`); },
+  () => { const t = r(3,15), d = r(t+2,t+15); return strQ(`It is ${t}°F outside. The temperature drops ${d} degrees overnight. What is it now?`, `${t-d}°F`, [`${d-t}°F`, `${t+d}°F`, `${t-d-1}°F`, `${t-d+2}°F`], 'Dropping below zero gives a negative number.'); }
+ ]
+];
+
+function levelFor(level, hard) { return (!hard && level > 1 && Math.random() < 0.35) ? r(1, level - 1) : level; }
+function bankItem(row) { const [q, a, w1, w2, w3, tip] = row; return { key: q, make: () => ({ q, a, wrong: [w1, w2, w3], tip: tip || '' }) }; }
+function others(list, ans, n = 3) { return shuffle(list.filter(x => x !== ans)).slice(0, n); }
+// every question gets a stable key so the game can remember what it has already asked
+const POOLS = { sci: [[], [], []], geo: [[], [], []] };
+SCI.forEach((lv, i) => lv.forEach(row => POOLS.sci[i].push(bankItem(row))));
+GEO.forEach((lv, i) => lv.forEach(row => POOLS.geo[i].push(bankItem(row))));
+ANIMALS.forEach(([name, group, L]) => {
+  const groups = Object.keys(GROUP_TIP).filter(g => L > 1 || g !== 'Arachnid');
+  POOLS.sci[L - 1].push({ key: 'animal:' + name, make: () => ({ q: `What kind of animal is a ${name}?`, a: group, wrong: others(groups, group), tip: GROUP_TIP[group] }) });
+});
+PLANETS.forEach((pl, i) => {
+  POOLS.sci[1].push({ key: 'planet-order:' + pl, make: () => ({ q: `Which planet is ${ORD[i]} from the Sun?`, a: pl, wrong: others(PLANETS, pl), tip: 'My Very Educated Mother Just Served Us Nachos: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.' }) });
+  if (i < 7) POOLS.sci[2].push({ key: 'planet-next:' + pl, make: () => ({ q: `Going outward from the Sun, which planet comes right after ${pl}?`, a: PLANETS[i + 1], wrong: others(PLANETS.filter(x => x !== pl), PLANETS[i + 1]), tip: 'Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.' }) });
+});
+COUNTRIES.forEach(([name, capital, flag, cont, L, trap]) => {
+  const easy = Math.max(1, L - 1);
+  const sameCont = COUNTRIES.filter(c => c[3] === cont && c[0] !== name);
+  const capWrong = () => { const pool = (sameCont.length >= 3 ? sameCont : COUNTRIES.filter(c => c[0] !== name)).map(c => c[1]); return trap ? [trap, ...others(pool, capital, 2)] : others(pool, capital); };
+  POOLS.geo[L - 1].push({ key: 'capital:' + name, make: () => ({ q: `What is the capital of ${name}?`, a: capital, wrong: capWrong(), tip: trap ? `${trap} is bigger, but ${capital} is the capital.` : '' }) });
+  POOLS.geo[L - 1].push({ key: 'capital-of:' + name, make: () => ({ q: `${capital} is the capital of which country?`, a: cap(name), wrong: others((sameCont.length >= 3 ? sameCont : COUNTRIES).map(c => cap(c[0])), cap(name)), tip: '' }) });
+  POOLS.geo[easy - 1].push({ key: 'flag:' + name, make: () => ({ q: `Which country has this flag? ${flag}`, a: cap(name), wrong: others((sameCont.length >= 3 ? sameCont : COUNTRIES).map(c => cap(c[0])), cap(name)), tip: '' }) });
+  if (cont) POOLS.geo[easy - 1].push({ key: 'continent:' + name, make: () => ({ q: `Which continent is ${name} in?`, a: cont, wrong: others(CONTINENTS, cont), tip: '' }) });
+});
+function genBank(subj, level, hard) {
+  const pool = POOLS[subj][levelFor(level, hard) - 1];
+  const asked = S.asked[subj] || (S.asked[subj] = {});
+  let fresh = pool.filter(it => !asked[it.key]);
+  if (!fresh.length) { pool.forEach(it => { delete asked[it.key]; }); fresh = pool; } // all used up: start a new round
+  const it = pick(fresh); asked[it.key] = 1;
+  return it.make();
+}
+function genMath(level, hard) {
+  const seen = new Set(S.mathSeen);
+  let q, key;
+  for (let t = 0; t < 60; t++) { q = pick(MATH[levelFor(level, hard) - 1])(); key = q.q + '|' + q.a; if (!seen.has(key)) break; }
+  S.mathSeen.push(key); if (S.mathSeen.length > 500) S.mathSeen.splice(0, S.mathSeen.length - 500);
+  return q;
+}
+function pickSubj(rs) {
+  const all = ['math', 'sci', 'geo'];
+  if (rs === 'mix') return pick(all);
+  return Math.random() < 0.7 ? rs : pick(all.filter(s => s !== rs));
+}
+function genQ(rs, hard) {
+  const subj = pickSubj(rs);
+  const raw = subj === 'math' ? genMath(S.level, hard) : genBank(subj, S.level, hard);
+  return { ...raw, subj, options: shuffle([raw.a, ...raw.wrong]) };
+}
+
+/* ---------- save state ---------- */
+const KEY = 'glimmerquest_v1';
+function defaultState() {
+  return { v: 1, started: false, name: '', gems: 0, level: 1, sound: true, cleared: {}, col: {}, seen: {},
+    shards: { leaf: 0, ember: 0, tide: 0, storm: 0 }, pity: { leaf: 0, ember: 0, tide: 0, storm: 0 },
+    badges: {}, heart: false, buddy: null, lastDaily: '', packsOpened: 0, asked: { sci: {}, geo: {} }, mathSeen: [],
+    stats: { math: { c: 0, n: 0 }, sci: { c: 0, n: 0 }, geo: { c: 0, n: 0 } } };
+}
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { const d = defaultState(); return { ...d, ...s, stats: { ...d.stats, ...s.stats }, shards: { ...d.shards, ...s.shards }, pity: { ...d.pity, ...s.pity }, asked: { ...d.asked, ...(s.asked || {}) }, mathSeen: s.mathSeen || [] }; } } catch (e) {}
+  return null;
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+let S = load() || defaultState();
+
+/* ---------- sound ---------- */
+let ac = null;
+const SFX = { good: [[660,0,.12],[880,.1,.2]], bad: [[200,0,.3]], win: [[523,0,.15],[659,.13,.15],[784,.26,.15],[1047,.4,.35]],
+  flip: [[900,0,.07]], rare: [[784,0,.1],[988,.09,.1],[1319,.18,.35]], tear: [[260,0,.08],[520,.06,.12]], fuse: [[392,0,.1],[523,.1,.1],[659,.2,.1],[1047,.32,.4]] };
+function sfx(name) {
+  if (!S.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+    SFX[name].forEach(([f, t, d]) => {
+      const o = ac.createOscillator(), g = ac.createGain(), now = ac.currentTime + t;
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.18, now + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, now + d);
+      o.connect(g).connect(ac.destination); o.start(now); o.stop(now + d + 0.05);
+    });
+  } catch (e) {}
+}
+
+/* ---------- game rules ---------- */
+const owned = id => (S.col[id] || 0) > 0;
+const isUnlocked = idx => idx === 0 || !!S.cleared[STATIONS[idx - 1].id];
+const regionReached = ri => isUnlocked(STATIONS.find(s => s.ri === ri).idx);
+const badgeCount = () => Object.keys(S.badges).length;
+function matchup(a, b) { if (a === 'crystal') return 'strong'; if (BEATS[a] === b) return 'strong'; if (BEATS[b] === a) return 'weak'; return 'even'; }
+function heartsFor(me, en) { const m = matchup(me.el, en.el); return Math.max(2, 2 + me.stage + (m === 'strong' ? 1 : 0) - (m === 'weak' ? 1 : 0)); }
+const maxHearts = mon => 2 + mon.stage;
+function hitsNeeded(st) { return st.final ? 9 : st.gym ? 7 : 5; }
+function labReady() {
+  if ([...MON_ORDER, ...SHINY_ORDER].some(id => MON[id].next && (S.col[id] || 0) >= 3)) return true;
+  if (Object.keys(LEGEND).some(el => S.shards[el] >= 4 && !owned(LEGEND[el]))) return true;
+  return mythicReady() || shinyMythicReady();
+}
+const mythicReady = () => S.heart && !owned('prismara') && Object.values(LEGEND).every(owned);
+const shinyMythicReady = () => !owned('prismara_s') && Object.values(LEGEND).every(id => owned(id + '_s'));
+function discovered(list = MON_ORDER) { return list.filter(id => S.seen[id]).length; }
+function today() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function addMon(id) { const isNew = !S.seen[id]; S.seen[id] = true; S.col[id] = (S.col[id] || 0) + 1; return isNew; }
+
+/* ---------- UI bits ---------- */
+let albumMode = 'normal', tab = 'map', battle = null, packOv = null, introPick = null, scrolledOnce = false;
+function stars(n, max = 3) { return '★'.repeat(n) + '☆'.repeat(max - n); }
+function card(id, opts = {}) {
+  const m = MON[id];
+  const hide = opts.hidden;
+  return `<div class="mcard r${m.stage}${m.shiny ? ' shiny' : ''}${opts.silhouette ? ' dark-silhouette' : ''}" style="--el:var(--${m.el})">
+    ${m.shiny && !hide ? '<span class="shiny-mark" aria-hidden="true">✨</span>' : ''}
+    <span class="m-emoji">${m.emoji}</span><b>${hide ? '???' : m.name}</b>
+    <span class="m-rar">${hide ? 'Not found yet' : ELEMENTS[m.el].icon + ' ' + (m.shiny ? 'Shiny ' : '') + RARITY[m.stage]}</span>
+    ${opts.isNew ? '<i class="new">New!</i>' : ''}</div>`;
+}
+function shardCard(el, n) {
+  return `<div class="mcard shard" style="--el:var(--${el})"><span class="m-emoji">🔷</span><b>${MON[LEGEND[el]].name} shard</b><span class="m-rar">${n}/4 found</span></div>`;
+}
+function toast(msg, ms = 2600) {
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), ms);
+}
+function showModal(html) { const m = $('#modal'); m.innerHTML = `<div class="modal" role="dialog" aria-modal="true">${html}</div>`; m.hidden = false; }
+function closeModal() { $('#modal').hidden = true; $('#modal').innerHTML = ''; }
+function anim(sel, cls) { const el = $(sel); if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+function bumpGems() { const g = $('.gems'); if (g) { g.classList.remove('bump'); void g.offsetWidth; g.classList.add('bump'); } }
+
+/* ---------- top & nav ---------- */
+function renderTop() {
+  const b = MON[S.buddy];
+  $('#top').innerHTML = `
+    <button class="buddy-dot" style="--el:var(--${b.el})" data-act="buddyInfo" aria-label="Your buddy ${b.name}">${b.emoji}</button>
+    <div class="who"><b>${esc(S.name)}</b><small>Buddy: ${b.name} · ${badgeCount() + (S.heart ? 1 : 0)} of 5 badges</small></div>
+    <span class="gems" aria-label="${S.gems} gems">💎 ${S.gems}</span>
+    <button class="icon-btn" data-act="parent" aria-label="Parent settings">⚙️</button>`;
+}
+function renderNav() {
+  const items = [['map', '🗺️', 'Map'], ['packs', '🎁', 'Packs'], ['album', '📖', 'Album'], ['lab', '⚗️', 'Lab']];
+  $('#nav').innerHTML = items.map(([id, ic, label]) => `<button data-act="tab" data-tab="${id}" aria-current="${tab === id}"><span>${ic}</span>${label}${id === 'lab' && labReady() ? '<i class="dot" aria-label="Something to fuse"></i>' : ''}</button>`).join('');
+}
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+function render() {
+  renderTop(); renderNav();
+  const v = $('#view');
+  v.innerHTML = tab === 'map' ? viewMap() : tab === 'packs' ? viewPacks() : tab === 'album' ? viewAlbum() : viewLab();
+  if (tab === 'map' && !scrolledOnce) { scrolledOnce = true; const cur = v.querySelector('.node.current'); if (cur) cur.scrollIntoView({ block: 'center' }); }
+}
+
+/* ---------- map ---------- */
+function viewMap() {
+  const xs = [26, 70, 34, 72, 30];
+  return REGIONS.map((reg, ri) => {
+    const sts = STATIONS.filter(s => s.ri === ri);
+    const reached = regionReached(ri);
+    let body;
+    if (!reached) {
+      const prev = REGIONS[ri - 1];
+      body = `<div class="fog"><span>${ELEMENTS[reg.id].icon}</span>Beat ${prev.leader.name} at the ${prev.stations[prev.stations.length - 1].name} to reach this land.</div>`;
+    } else {
+      const H = sts.length * 130 + 40;
+      const pts = sts.map((s, i) => [xs[(i + ri) % xs.length], 70 + i * 130]);
+      let d = `M${pts[0][0]},${pts[0][1]}`;
+      for (let i = 1; i < pts.length; i++) d += ` C${pts[i - 1][0]},${pts[i - 1][1] + 70} ${pts[i][0]},${pts[i][1] - 70} ${pts[i][0]},${pts[i][1]}`;
+      const nodes = sts.map((s, i) => {
+        const un = isUnlocked(s.idx), done = S.cleared[s.id];
+        const cur = un && !done;
+        const cls = ['node', s.gym ? 'gym' : '', done ? 'done' : '', un ? '' : 'locked', cur ? 'current' : ''].join(' ');
+        const face = !un ? '🔒' : s.gym ? reg.leader.emoji : MON[s.enemy].emoji;
+        return `<button class="${cls}" style="left:${pts[i][0]}%;top:${pts[i][1]}px" data-act="station" data-i="${s.idx}" aria-label="${s.name}${un ? '' : ', locked'}">${face}
+          <span class="node-label">${s.name}${done ? `<span class="stars">${stars(done)}</span>` : ''}</span></button>`;
+      }).join('');
+      body = `<div class="trail" style="height:${H}px"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" vector-effect="non-scaling-stroke"/></svg>${nodes}</div>`;
+    }
+    return `<section class="region" style="--el:var(--${reg.id})">
+      <header class="region-head"><span class="region-icon">${ELEMENTS[reg.id].icon}</span><div><h2>${reg.name}</h2><p>${reg.blurb}</p></div>${S.badges[reg.id] || (reg.id === 'crystal' && S.heart) ? '<span class="region-badge" aria-label="Badge earned">🏅</span>' : ''}</header>
+      ${body}</section>`;
+  }).join('');
+}
+function openStation(idx) {
+  const st = STATIONS[idx];
+  if (!isUnlocked(idx)) return toast('Win the station before this one to unlock it.');
+  const en = MON[st.enemy], me = MON[S.buddy], m = matchup(me.el, en.el);
+  const hideEnemy = st.final && !owned('prismara');
+  const advText = en.el === 'crystal' && me.el !== 'crystal' ? 'Crystal Glimmers have no weakness. Bring your strongest buddy!'
+    : m === 'strong' ? `${ELEMENTS[me.el].name} beats ${ELEMENTS[en.el].name} (${WHY[me.el] || 'crystal power'})! Your buddy gets an extra heart and +1 💎 for every hit.`
+    : m === 'weak' ? `${ELEMENTS[en.el].name} beats ${ELEMENTS[me.el].name}. Your buddy has one heart less here. Try a different buddy?`
+    : 'An even match.';
+  const subjLabel = st.region.subj === 'mix' ? '🎲 Math, science & geography' : `${SUBJ[st.region.subj].icon} Mostly ${SUBJ[st.region.subj].label.toLowerCase()}`;
+  showModal(`
+    ${st.gym ? `<div class="leader">${st.region.leader.emoji}</div><h3>${st.region.leader.name} challenges you!</h3>` : `<h3>A wild ${en.name} appeared!</h3>`}
+    <div class="vs"><div class="tile">${card(me.id)}</div><span class="vs-word">vs</span><div class="tile">${card(en.id, { hidden: hideEnemy, silhouette: hideEnemy })}</div></div>
+    <p class="adv ${m}">${advText}</p>
+    <p>${subjLabel} · ${hitsNeeded(st)} right answers to win${st.gym ? ', and gym leaders ask tougher questions' : ''}. You have ${heartsFor(me, en)} hearts.</p>
+    <div class="row"><button class="btn" data-act="changeBuddy">Change buddy</button><button class="btn go" data-act="fight" data-i="${idx}">Battle!</button></div>`);
+}
+
+/* ---------- battle ---------- */
+function startBattle(idx) {
+  closeModal();
+  const st = STATIONS[idx], en = MON[st.enemy], me = MON[S.buddy], hp = hitsNeeded(st), h = heartsFor(me, en);
+  battle = { st, en, me, hp, max: hp, hearts: h, maxH: h, earned: 0, mistakes: 0, streak: 0, lock: false, over: false, q: null };
+  const ov = $('#battle'); ov.hidden = false;
+  const hideEnemy = st.final && !owned('prismara');
+  ov.innerHTML = `
+    <div class="arena" style="--en:var(--${en.el});--me:var(--${me.el})">
+      <button class="btn small leave" data-act="leave">Leave</button>
+      <div class="side enemy"><div class="plate"><b>${st.gym ? st.region.leader.name + '’s ' : 'Wild '}${hideEnemy ? '???' : en.name}</b><div class="hp"><i id="enHp"></i></div><small id="enHpTxt"></small></div><div class="mon${hideEnemy ? ' dark-silhouette' : ''}" id="enMon"><span class="m-emoji">${en.emoji}</span></div></div>
+      <div class="side me"><div class="mon" id="meMon">${me.emoji}</div><div class="plate"><b>${me.name}</b><div class="hearts" id="hearts"></div><small id="earned"></small></div></div>
+    </div>
+    <div class="qcard" id="bq" aria-live="polite"></div>`;
+  updateBars(); nextQ();
+}
+function updateBars() {
+  const b = battle, pct = Math.max(0, b.hp / b.max * 100);
+  const bar = $('#enHp'); bar.style.width = pct + '%'; bar.classList.toggle('low', pct <= 30);
+  $('#enHpTxt').textContent = `${b.hp} more right ${b.hp === 1 ? 'answer' : 'answers'} to win`;
+  $('#hearts').textContent = '❤️'.repeat(Math.max(0, b.hearts)) + '🤍'.repeat(b.maxH - Math.max(0, b.hearts));
+  $('#earned').textContent = `💎 +${b.earned} this battle`;
+}
+function nextQ() {
+  const b = battle; b.lock = false;
+  b.q = genQ(b.st.region.subj, !!b.st.gym);
+  const q = b.q, s = SUBJ[q.subj];
+  $('#bq').innerHTML = `<div class="q-subj">${s.icon} ${s.label}</div><p class="q-text">${q.q}</p>
+    <div class="answers">${q.options.map((o, i) => `<button class="ans" data-act="ans" data-i="${i}">${o}</button>`).join('')}</div>
+    <div class="feedback" id="fb"></div>`;
+}
+const PRAISE = ['Nice!', 'Great hit!', 'Yes!', 'Boom!', 'Awesome!', 'Correct!', 'Wham!'];
+function answer(i) {
+  const b = battle; if (!b || b.lock || b.over) return; b.lock = true;
+  const q = b.q, ok = q.options[i] === q.a;
+  S.stats[q.subj].n++; if (ok) S.stats[q.subj].c++; save();
+  document.querySelectorAll('.ans').forEach((el, j) => { el.disabled = true; if (q.options[j] === q.a) el.classList.add('right'); else if (j === i) el.classList.add('wrong'); });
+  const fb = $('#fb');
+  if (ok) {
+    b.streak++;
+    const m = matchup(b.me.el, b.en.el);
+    const g = 3 + (b.streak >= 3 ? 1 : 0) + (m === 'strong' ? 1 : 0) + (b.me.shiny ? 1 : 0); b.earned += g;
+    const dmg = 1; b.hp = Math.max(0, b.hp - dmg);
+    sfx('good'); anim('#meMon', 'lunge-me');
+    setTimeout(() => { anim('#enMon', 'hit'); const d = document.createElement('span'); d.className = 'dmg'; d.textContent = '−' + dmg; $('.side.enemy').appendChild(d); setTimeout(() => d.remove(), 900); updateBars(); }, 220);
+    fb.innerHTML = `${pick(PRAISE)} ${b.streak >= 3 ? `🔥 ${b.streak} in a row!` : ''} ${m === 'strong' ? 'Super effective!' : ''} <span class="gem-gain">+${g} 💎</span>`;
+    setTimeout(() => { if (b.hp <= 0) win(); else nextQ(); }, 1400);
+  } else {
+    b.streak = 0; b.mistakes++; b.hearts--;
+    sfx('bad'); anim('#enMon', 'lunge-en'); setTimeout(() => { anim('#meMon', 'hit'); updateBars(); }, 220);
+    fb.innerHTML = `The answer is <b>${q.a}</b>. ${q.tip ? esc(q.tip) : ''}<br><button class="btn go" data-act="${b.hearts <= 0 ? 'lose' : 'next'}">${b.hearts <= 0 ? 'See what happened' : 'Next question'}</button>`;
+  }
+}
+function win() {
+  const b = battle; b.over = true; anim('#enMon', 'faint'); sfx('win');
+  const st = b.st, first = !S.cleared[st.id];
+  const st_ = b.mistakes === 0 ? 3 : b.mistakes <= 2 ? 2 : 1;
+  const bonus = st.final ? 60 : st.gym ? 25 : 10, total = b.earned + bonus + (first ? 15 : 0);
+  S.gems += total; S.cleared[st.id] = Math.max(S.cleared[st.id] || 0, st_);
+  let extra = '';
+  if (st.gym && !st.final && first) {
+    const el = st.region.id; S.badges[el] = true;
+    if (!owned(LEGEND[el]) && S.shards[el] < 4) { S.shards[el]++; extra += `<div class="reward-big">🔷 You found a ${MON[LEGEND[el]].name} shard!</div>`; }
+    extra += `<div class="reward-big">🏅 ${st.region.name} badge!</div>`;
+    const nx = REGIONS[st.ri + 1];
+    if (nx) extra += `<p>New land unlocked: <b>${nx.name}</b>.${PACKS.find(p => p.el === nx.id) ? ' A new pack is waiting in the shop.' : ''}</p>`;
+  }
+  if (st.final && first) { S.heart = true; extra += `<div class="reward-big">💗 You won the Crystal Heart! Take it to the Lab.</div>`; }
+  save();
+  setTimeout(() => {
+    $('#bq').innerHTML = `<div class="result"><h2>You won!</h2><div class="big-stars">${stars(st_)}</div>${extra}
+      <ul><li>Right answers: +${b.earned} 💎</li><li>Victory: +${bonus} 💎</li>${first ? '<li>First win here: +15 💎</li>' : ''}</ul>
+      <p class="total">+${total} 💎</p>
+      ${st_ < 3 ? '<p>Win with no mistakes for 3 stars.</p>' : ''}
+      <button class="btn go" data-act="endBattle">Back to map</button></div>`;
+  }, 700);
+}
+function lose() {
+  const b = battle; b.over = true; S.gems += b.earned; save();
+  $('#bq').innerHTML = `<div class="result"><h2>${b.me.name} needs a rest</h2><p>You keep the <b>+${b.earned} 💎</b> you earned.</p>
+    <p>Bigger Glimmers have more hearts. Fuse 3 of the same Glimmer in the Lab, or pick a buddy whose element beats ${ELEMENTS[b.en.el].name}.</p>
+    <div class="row"><button class="btn" data-act="endBattle">Back to map</button><button class="btn go" data-act="retry" data-i="${b.st.idx}">Try again</button></div></div>`;
+}
+function endBattle() {
+  if (battle && !battle.over) { S.gems += battle.earned; save(); }
+  battle = null; $('#battle').hidden = true; $('#battle').innerHTML = ''; render(); bumpGems();
+}
+
+/* ---------- packs ---------- */
+function packUnlocked(p) { return p.unlock ? !!p.unlock() : regionReached(REGIONS.findIndex(x => x.id === p.el)); }
+const packIcon = p => p.icon || ELEMENTS[p.el].icon;
+const packClass = p => p.el === 'any' ? 'pk-' + p.id : '';
+function viewPacks() {
+  return `<div class="page-head"><h1>Pack shop</h1><p>Spend gems to open packs. Glowing cards are rare, and golden ones are shiny.</p></div>
+  <div class="shelf">${PACKS.map(p => {
+    const un = packUnlocked(p), can = S.gems >= p.cost;
+    const style = p.el === 'any' ? '' : `style="--el:var(--${p.el})"`;
+    return `<div class="pack-item">
+      <button class="pack ${packClass(p)} ${un ? '' : 'locked'}" ${style} data-act="buyPack" data-id="${p.id}" ${un ? '' : 'disabled'} aria-label="${p.name}">
+        <span class="p-icon">${un ? packIcon(p) : '🔒'}</span><b>${p.name}</b><small>${p.count} cards${p.note ? '<br>' + p.note : ''}</small></button>
+      <button class="btn ${un && can ? 'go' : ''}" data-act="buyPack" data-id="${p.id}" ${un && can ? '' : 'disabled'}>${!un ? (p.lockText || 'Reach this land') : can ? `Open · 💎 ${p.cost}` : `Need 💎 ${p.cost}`}</button>
+    </div>`;
+  }).join('')}</div>
+  <p class="shop-note">Legend shards 🔷 hide in packs. Find 4 shards of one element to build a Legendary in the Lab. Shiny Glimmers ✨ are golden and give +1 💎 on every right answer when they are your buddy.</p>`;
+}
+function rollCard(p, forceStage) {
+  const e = p.el === 'any' ? pick(Object.keys(LINES)) : p.el;
+  const shardOk = !owned(LEGEND[e]) && S.shards[e] < 4;
+  if (!forceStage && shardOk && Math.random() < (p.el === 'any' ? 0.1 : 0.08)) return { shard: e };
+  if (p.shinyPack && !forceStage && Math.random() < 0.06) return { mon: LEGEND[e] + '_s' };
+  const x = Math.random();
+  const stage = forceStage || (p.el === 'any' ? (x < .55 ? 1 : x < .87 ? 2 : 3) : (x < .72 ? 1 : x < .94 ? 2 : 3));
+  const shiny = Math.random() < (p.shinyPack ? 0.35 : 0.03);
+  const id = pick(LINES[e])[stage - 1][0];
+  return { mon: shiny ? id + '_s' : id };
+}
+function buyPack(id) {
+  const p = PACKS.find(x => x.id === id);
+  if (!packUnlocked(p) || S.gems < p.cost) return;
+  const cards = [];
+  for (let i = 0; i < p.count; i++) cards.push(rollCard(p));
+  const last = cards.length - 1;
+  if (p.guarantee && !cards.some(c => c.mon && MON[c.mon].stage >= p.guarantee)) cards[last] = rollCard(p, p.guarantee);
+  if (p.legendShard) {
+    const need = Object.keys(LEGEND).filter(el => !owned(LEGEND[el]) && S.shards[el] < 4);
+    cards[0] = need.length ? { shard: pick(need) } : rollCard(p, 3);
+  }
+  if (p.shinyPack && !cards.some(c => c.mon && MON[c.mon].shiny)) { const c = rollCard(p, r(1, 3)); cards[last] = { mon: MON[c.mon].shiny ? c.mon : c.mon + '_s' }; }
+  if (p.el !== 'any') {
+    const e = p.el;
+    if (cards.some(c => c.shard)) S.pity[e] = 0;
+    else if (!owned(LEGEND[e]) && S.shards[e] < 4) { S.pity[e]++; if (S.pity[e] >= 6) { cards[last] = { shard: e }; S.pity[e] = 0; } }
+  }
+  S.gems -= p.cost; S.packsOpened++;
+  cards.forEach((c, i) => {
+    if (c.shard && (owned(LEGEND[c.shard]) || S.shards[c.shard] >= 4)) { cards[i] = c = { mon: pick(LINES[c.shard])[2][0] }; } // spare shard becomes an Epic
+    if (c.shard) { S.shards[c.shard]++; c.n = S.shards[c.shard]; c.glow = 4; }
+    else { c.isNew = addMon(c.mon); c.glow = MON[c.mon].shiny ? 4 : MON[c.mon].stage; }
+  });
+  save();
+  packOv = { p, cards, opened: new Set(), torn: false };
+  renderPackOv();
+}
+function renderPackOv() {
+  const o = packOv, ov = $('#packov'); ov.hidden = false;
+  const p = o.p, style = p.el === 'any' ? '' : `style="--el:var(--${p.el})"`, pc = packClass(p);
+  if (!o.torn) {
+    ov.innerHTML = `<h2>${p.name}</h2>
+      <button class="pack big-pack wiggle ${pc}" ${style} data-act="tear" id="bigPack" aria-label="Open the pack">
+        <span class="p-icon">${packIcon(p)}</span><b>${p.name}</b></button>
+      <p>Tap the pack to rip it open!</p>`;
+    return;
+  }
+  const all = o.opened.size === o.cards.length;
+  ov.innerHTML = `<h2>${all ? 'Look what you got!' : 'Tap each card to flip it'}</h2>
+    <div class="reveal ${o.cards.length > 5 ? 'many' : ''}">${o.cards.map((c, i) => `
+      <button class="flip ${o.opened.has(i) ? 'open' : ''}" data-act="flip" data-i="${i}" style="animation-delay:${i * 0.09}s" aria-label="${o.opened.has(i) ? (c.shard ? 'Legend shard' : MON[c.mon].name) : 'Hidden card'}">
+        <div class="flip-inner"><div class="face back ${c.glow > 1 ? 'g' + Math.min(c.glow, 4) : ''}">${c.mon && MON[c.mon].shiny ? '✨' : '✦'}</div>
+        <div class="face front">${c.shard ? shardCard(c.shard, c.n) : card(c.mon, { isNew: c.isNew })}</div></div></button>`).join('')}</div>
+    <div class="row">${all ? `<button class="btn go" data-act="closePack">Put them in my album</button>` : `<button class="btn" data-act="flipAll">Flip all</button>`}</div>`;
+}
+function flipCard(i) {
+  const o = packOv; if (o.opened.has(i)) return;
+  o.opened.add(i);
+  const c = o.cards[i];
+  const btn = document.querySelector(`.flip[data-i="${i}"]`); if (btn) btn.classList.add('open');
+  sfx(c.glow >= 2 ? 'rare' : 'flip');
+  if (o.opened.size === o.cards.length) setTimeout(renderPackOv, 650);
+}
+function closePack() { packOv = null; $('#packov').hidden = true; $('#packov').innerHTML = ''; render(); }
+
+/* ---------- album ---------- */
+function viewAlbum() {
+  const shiny = albumMode === 'shiny', sfx_ = shiny ? '_s' : '';
+  const list = shiny ? SHINY_ORDER : MON_ORDER, total = list.length, got = discovered(list);
+  const secs = [...Object.keys(LINES).map(el => ({ title: `${ELEMENTS[el].icon} ${ELEMENTS[el].name}`, ids: LINES[el].flat().map(x => x[0] + sfx_) })),
+    { title: '✨ Legends', ids: [...Object.values(LEGEND), 'prismara'].map(id => id + sfx_) }];
+  return `<div class="page-head"><h1>${shiny ? 'Shiny album' : 'Glimmer album'}</h1><p>${got} of ${total} found. Tap a Glimmer you own to make it your buddy.</p></div>
+    <div class="album-tabs"><button class="btn small" data-act="albumMode" data-mode="normal" aria-pressed="${!shiny}">Glimmers ${discovered(MON_ORDER)}/${MON_ORDER.length}</button>
+      <button class="btn small" data-act="albumMode" data-mode="shiny" aria-pressed="${shiny}">✨ Shiny ${discovered(SHINY_ORDER)}/${SHINY_ORDER.length}</button></div>
+    <div class="progress"><div class="bar" role="progressbar" aria-valuenow="${got}" aria-valuemax="${total}"><i style="width:${got / total * 100}%${shiny ? ';background:#F2B705' : ''}"></i></div></div>
+    ${secs.map(sec => `<section class="album-sec"><h2>${sec.title}<small>${sec.ids.filter(id => S.seen[id]).length}/${sec.ids.length}</small></h2>
+      <div class="album-grid">${sec.ids.map(id => {
+        const have = S.col[id] || 0, seen = S.seen[id];
+        return `<button class="slot ${seen ? '' : 'missing'}" data-act="monInfo" data-id="${id}" aria-label="${seen ? MON[id].name : 'Unknown Glimmer'}">
+          ${card(id, { hidden: !seen })}${have > 1 ? `<span class="count">×${have}</span>` : ''}${S.buddy === id ? '<span class="buddy-tag">Buddy</span>' : ''}</button>`;
+      }).join('')}</div></section>`).join('')}`;
+}
+function howToGet(m) {
+  if (m.shiny) {
+    if (m.stage === 5) return 'Collect all 4 shiny Legends, then awaken it in the Lab.';
+    if (m.stage === 4) return 'Only found in the Shiny Pack, and it is very rare.';
+    return `Shiny Glimmers are rare in every pack, and common in the Shiny Pack.${m.prev ? ` You can also fuse 3 shiny ${MON[m.prev].name}.` : ''}`;
+  }
+  if (m.stage === 5) return 'Build all 4 Legends, then win the Crystal Heart at the top of Crystal Summit.';
+  if (m.stage === 4) return `Collect 4 ${m.name} shards from packs and gym wins, then build it in the Lab.`;
+  const pack = PACKS.find(p => p.el === m.el).name;
+  return m.stage === 1 ? `Found in the ${pack}.` : `Found in the ${pack}, or fuse 3 ${MON[m.prev].name} in the Lab.`;
+}
+function monInfo(id) {
+  const m = MON[id], seen = S.seen[id], have = S.col[id] || 0;
+  if (!seen) {
+    showModal(`<h3>Not found yet</h3><div class="detail-card missing">${card(id, { hidden: true })}</div><p>${howToGet(m)}</p><div class="row"><button class="btn go" data-act="close">OK</button></div>`);
+    return;
+  }
+  const strong = m.el === 'crystal' ? 'Strong against every element.' : `Strong against ${ELEMENTS[BEATS[m.el]].name}. Weak against ${ELEMENTS[Object.keys(BEATS).find(k => BEATS[k] === m.el)].name}.`;
+  showModal(`<h3>${m.name}</h3><div class="detail-card">${card(id)}</div>
+    <p>${strong}<br>Hearts: ${maxHearts(m)}${have ? ` · You have ${have}` : ''}${m.shiny ? '<br>✨ Shiny bonus: +1 💎 on every right answer.' : ''}</p>
+    ${m.next && have ? `<p>Fuse 3 to make ${S.seen[m.next] ? MON[m.next].name : 'something new'}.</p>` : ''}
+    <div class="row"><button class="btn" data-act="close">Close</button>${have && S.buddy !== id ? `<button class="btn go" data-act="setBuddy" data-id="${id}">Make buddy</button>` : ''}</div>`);
+}
+
+/* ---------- lab ---------- */
+function viewLab() {
+  const secs = Object.keys(LINES).map(el => {
+    const lines = LINES[el].map(line => {
+      const ids = line.map(x => x[0]);
+      const tile = id => `<div class="tile ${S.seen[id] ? '' : 'missing'}">${card(id, { hidden: !S.seen[id] })}${(S.col[id] || 0) > 0 ? `<span class="count">×${S.col[id]}</span>` : ''}</div>`;
+      const fuseBtn = id => `<button class="fuse" data-act="fuse" data-id="${id}" ${(S.col[id] || 0) >= 3 ? '' : 'disabled'} aria-label="Fuse 3 ${MON[id].name}">3 → 1<br>Fuse</button>`;
+      return `<div class="line">${tile(ids[0])}${fuseBtn(ids[0])}${tile(ids[1])}${fuseBtn(ids[1])}${tile(ids[2])}</div>`;
+    }).join('');
+    const lg = LEGEND[el], n = S.shards[el];
+    const legendRow = owned(lg)
+      ? `<div class="shards"><b>✨ ${MON[lg].name} built!</b></div>`
+      : `<div class="shards"><b>${S.seen[lg] ? MON[lg].name : 'Legend'} shards</b><span class="pips">${[0, 1, 2, 3].map(i => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</span>
+         <button class="btn small ${n >= 4 ? 'go' : ''}" data-act="assemble" data-el="${el}" ${n >= 4 ? '' : 'disabled'}>Build Legend</button></div>`;
+    return `<section class="lab-sec" style="--el:var(--${el})"><h2>${ELEMENTS[el].icon} ${ELEMENTS[el].name}</h2>${lines}${legendRow}</section>`;
+  }).join('');
+  const legendsOwned = Object.values(LEGEND).filter(owned).length;
+  const myth = owned('prismara') ? `<p><b>Prismara is yours. You finished the whole album!</b></p>`
+    : `<p>Build all 4 Legends (${legendsOwned}/4) and win the Crystal Heart ${S.heart ? '(✅ you have it)' : '(🔒 top of Crystal Summit)'} to awaken the Mythic Glimmer.</p>
+       <button class="btn ${mythicReady() ? 'go' : ''}" data-act="mythic" ${mythicReady() ? '' : 'disabled'}>Awaken the Mythic</button>`;
+  const shinyLines = Object.keys(LINES).flatMap(el => LINES[el].map(line => line.map(x => x[0] + '_s'))).filter(ids => ids.some(id => S.seen[id]));
+  const shinyLegends = Object.values(LEGEND).filter(id => owned(id + '_s')).length;
+  const shinySec = (shinyLines.length || shinyLegends) ? `<section class="lab-sec" style="--el:#F2B705"><h2>✨ Shiny fusion</h2>
+    ${shinyLines.map(ids => {
+      const tile = id => `<div class="tile ${S.seen[id] ? '' : 'missing'}">${card(id, { hidden: !S.seen[id] })}${(S.col[id] || 0) > 0 ? `<span class="count">×${S.col[id]}</span>` : ''}</div>`;
+      const fuseBtn = id => `<button class="fuse" data-act="fuse" data-id="${id}" ${(S.col[id] || 0) >= 3 ? '' : 'disabled'} aria-label="Fuse 3 ${MON[id].name}">3 → 1<br>Fuse</button>`;
+      return `<div class="line">${tile(ids[0])}${fuseBtn(ids[0])}${tile(ids[1])}${fuseBtn(ids[1])}${tile(ids[2])}</div>`;
+    }).join('')}
+    <p>${owned('prismara_s') ? '<b>Shiny Prismara is yours!</b>' : `Shiny Legends found: ${shinyLegends}/4. Find all 4 in Shiny Packs to awaken Shiny Prismara.`}</p>
+    ${owned('prismara_s') ? '' : `<button class="btn ${shinyMythicReady() ? 'go' : ''}" data-act="shinyMythic" ${shinyMythicReady() ? '' : 'disabled'}>Awaken Shiny Prismara</button>`}
+  </section>` : '';
+  return `<div class="page-head"><h1>Fusion lab</h1><p>Put 3 of the same Glimmer together to make a bigger, stronger one.</p></div>
+    ${secs}<section class="lab-sec" style="--el:var(--crystal)"><h2>💎 The Mythic</h2>${myth}</section>${shinySec}`;
+}
+function fuse(id) {
+  const m = MON[id]; if (!m.next || (S.col[id] || 0) < 3) return;
+  S.col[id] -= 3; const isNew = addMon(m.next);
+  let buddyMsg = '';
+  if (S.buddy === id && !S.col[id]) { S.buddy = m.next; buddyMsg = '<p>Your buddy evolved!</p>'; }
+  save(); sfx('fuse');
+  const n = MON[m.next];
+  showModal(`<h3>${isNew ? 'New Glimmer!' : 'Fusion complete!'}</h3><div class="fuse-show">${m.emoji}${m.emoji}${m.emoji} ➜ ${n.emoji}</div>
+    <div class="detail-card">${card(n.id, { isNew })}</div><p>Three ${m.shiny ? 'shiny ' : ''}${m.name} became a ${n.shiny ? 'shiny ' : ''}${n.name}.</p>${buddyMsg}
+    <div class="row"><button class="btn" data-act="close">Nice!</button>${S.buddy !== n.id ? `<button class="btn go" data-act="setBuddy" data-id="${n.id}">Make buddy</button>` : ''}</div>`);
+  render();
+}
+function assemble(el) {
+  if (S.shards[el] < 4 || owned(LEGEND[el])) return;
+  S.shards[el] = 0; addMon(LEGEND[el]); save(); sfx('win');
+  const m = MON[LEGEND[el]];
+  showModal(`<h3>A Legend appears!</h3><div class="fuse-show">🔷🔷🔷🔷 ➜ ${m.emoji}</div><div class="detail-card">${card(m.id, { isNew: true })}</div>
+    <p>${m.name} joined your team. It hits for 5 and has 6 hearts.</p>
+    <div class="row"><button class="btn" data-act="close">Wow</button><button class="btn go" data-act="setBuddy" data-id="${m.id}">Make buddy</button></div>`);
+  render();
+}
+function awakenShiny() {
+  if (!shinyMythicReady()) return;
+  addMon('prismara_s'); save(); sfx('win');
+  showModal(`<h3>Shiny Prismara awakens!</h3><div class="detail-card">${card('prismara_s', { isNew: true })}</div>
+    <p>The rarest Glimmer of all. Incredible, ${esc(S.name)}!</p>
+    <div class="row"><button class="btn go" data-act="setBuddy" data-id="prismara_s">Make buddy</button></div>`);
+  render();
+}
+function awaken() {
+  if (!mythicReady()) return;
+  addMon('prismara'); save(); sfx('win');
+  showModal(`<h3>Prismara awakens!</h3><div class="detail-card">${card('prismara', { isNew: true })}</div>
+    <p>You collected every Glimmer and beat every gym. Amazing work, ${esc(S.name)}!</p>
+    <div class="row"><button class="btn go" data-act="setBuddy" data-id="prismara">Make buddy</button></div>`);
+  render();
+}
+
+/* ---------- parent area ---------- */
+const LEVELS = [
+  [1, 'Grade 3+', 'Times tables, 3-digit add and subtract, rounding, area, perimeter, time, unit fractions'],
+  [2, 'Grade 4', '2-digit × 1-digit, division with bigger numbers, equivalent fractions, factors, place value, two-step word problems'],
+  [3, 'Grade 5', '2-digit × 2-digit, decimals, fractions of a number, order of operations, volume, percents, negatives']
+];
+let holdTimer = null;
+function openParentGate() {
+  showModal(`<h3>Grown-ups only</h3><p>Press and hold the button for 2 seconds.</p>
+    <button class="hold" id="hold"><i></i><span>Hold to open settings</span></button>
+    <div class="row"><button class="btn" data-act="close">Cancel</button></div>`);
+  const h = $('#hold');
+  const start = e => { e.preventDefault(); h.classList.add('go'); holdTimer = setTimeout(parentSettings, 2000); };
+  const stop = () => { h.classList.remove('go'); clearTimeout(holdTimer); };
+  h.addEventListener('pointerdown', start); h.addEventListener('pointerup', stop); h.addEventListener('pointerleave', stop); h.addEventListener('pointercancel', stop);
+  h.addEventListener('contextmenu', e => e.preventDefault());
+}
+function parentSettings() {
+  const pc = s => S.stats[s].n ? Math.round(S.stats[s].c / S.stats[s].n * 100) + '%' : '–';
+  showModal(`<h3>Parent settings</h3>
+    <p style="text-align:left"><b>Challenge level</b> (math, science and geography all follow this)</p>
+    <div class="levels">${LEVELS.map(([v, t, d]) => `<label><input type="radio" name="lvl" value="${v}" ${S.level === v ? 'checked' : ''} data-act="setLevel"><span><b>${t}</b><small>${d}</small></span></label>`).join('')}</div>
+    <p style="text-align:left"><b>Right answers so far</b></p>
+    <div class="stat-grid">${Object.keys(SUBJ).map(s => `<div><b>${pc(s)}</b>${SUBJ[s].label}<br><small>${S.stats[s].c}/${S.stats[s].n}</small></div>`).join('')}</div>
+    <div class="setting"><span>Sound effects</span><button class="btn small" data-act="toggleSound">${S.sound ? 'On' : 'Off'}</button></div>
+    <div class="setting"><span>Give a reward of 50 gems</span><button class="btn small" data-act="gift">+50 💎</button></div>
+    <div class="setting"><span>Start over (erases all progress)</span><button class="btn small" data-act="reset" id="resetBtn">Reset</button></div>
+    <div class="row"><button class="btn go" data-act="close">Done</button></div>`);
+}
+
+/* ---------- intro ---------- */
+function showIntro() {
+  const ov = $('#intro'); ov.hidden = false;
+  const starters = ['sproutle', 'magmite', 'splishy'];
+  ov.innerHTML = `<div class="intro-inner">
+    <h1 class="logo">Glimmer<span>Quest</span></h1>
+    <div class="floaters" aria-hidden="true"><span>🌱</span><span>🦎</span><span>💎</span><span>🐟</span><span>🐭</span></div>
+    <p class="tagline">Solve puzzles. Earn gems. Open packs. Collect every Glimmer.</p>
+    <p class="step-label">What’s your trainer name?</p>
+    <input class="name-in" id="nameIn" maxlength="14" autocomplete="off" placeholder="Your name" value="${esc(S.name)}">
+    <p class="step-label">Pick your first buddy</p>
+    <div class="starters">${starters.map(id => `<button class="slot ${introPick === id ? 'picked' : ''}" data-act="pickStarter" data-id="${id}" aria-label="${MON[id].name}">${card(id)}</button>`).join('')}</div>
+    <button class="btn go" data-act="begin" id="beginBtn">Start the adventure</button>
+  </div>`;
+  $('#nameIn').addEventListener('input', e => { S.name = e.target.value; });
+}
+function begin() {
+  const name = ($('#nameIn').value || '').trim();
+  if (!name) return toast('Type your trainer name first.');
+  if (!introPick) return toast('Pick a buddy to start.');
+  S.name = name; S.started = true; S.gems = 25; S.lastDaily = today();
+  addMon(introPick); S.buddy = introPick; save();
+  $('#intro').hidden = true; $('#intro').innerHTML = '';
+  tab = 'map'; render();
+  toast(`You got 25 gems! Win battles for more, then open packs in the shop.`, 4200);
+}
+
+/* ---------- actions ---------- */
+const ACTIONS = {
+  tab: b => { tab = b.dataset.tab; closeModal(); render(); $('#view').scrollTop = 0; },
+  station: b => openStation(+b.dataset.i),
+  fight: b => startBattle(+b.dataset.i),
+  retry: b => { const i = +b.dataset.i; battle = null; startBattle(i); },
+  changeBuddy: () => { closeModal(); tab = 'album'; render(); toast('Tap a Glimmer you own, then press Make buddy.'); },
+  ans: b => answer(+b.dataset.i),
+  next: () => nextQ(),
+  lose: () => lose(),
+  leave: () => endBattle(),
+  endBattle: () => endBattle(),
+  buyPack: b => buyPack(b.dataset.id),
+  tear: () => { sfx('tear'); const bp = $('#bigPack'); bp.classList.remove('wiggle'); bp.classList.add('burst'); setTimeout(() => { packOv.torn = true; renderPackOv(); }, 450); },
+  flip: b => flipCard(+b.dataset.i),
+  flipAll: () => packOv.cards.forEach((c, i) => setTimeout(() => flipCard(i), i * 160)),
+  closePack: () => closePack(),
+  monInfo: b => monInfo(b.dataset.id),
+  buddyInfo: () => monInfo(S.buddy),
+  setBuddy: b => { S.buddy = b.dataset.id; save(); closeModal(); render(); toast(`${MON[S.buddy].name} is your buddy now!`); },
+  fuse: b => fuse(b.dataset.id),
+  assemble: b => assemble(b.dataset.el),
+  mythic: () => awaken(),
+  shinyMythic: () => awakenShiny(),
+  albumMode: b => { albumMode = b.dataset.mode; render(); $('#view').scrollTop = 0; },
+  close: () => closeModal(),
+  parent: () => openParentGate(),
+  setLevel: b => { S.level = +b.value; save(); setTimeout(parentSettings, 50); },
+  toggleSound: () => { S.sound = !S.sound; save(); parentSettings(); },
+  gift: () => { S.gems += 50; save(); render(); bumpGems(); toast('+50 gems added.'); },
+  reset: b => {
+    if (b.dataset.confirm !== '1') { b.dataset.confirm = '1'; b.textContent = 'Tap again to erase'; b.style.background = 'var(--bad)'; b.style.color = '#fff'; return; }
+    S = defaultState(); save(); closeModal(); introPick = null; scrolledOnce = false; showIntro();
+  },
+  pickStarter: b => { introPick = b.dataset.id; document.querySelectorAll('.starters .slot').forEach(s => s.classList.toggle('picked', s.dataset.id === introPick)); sfx('flip'); },
+  begin: () => begin()
+};
+function boot() {
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+    const fn = ACTIONS[b.dataset.act]; if (fn) fn(b);
+  });
+  $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+  if (!S.started || !S.buddy) { showIntro(); return; }
+  render();
+  if (S.lastDaily !== today()) { S.lastDaily = today(); S.gems += 20; save(); renderTop(); bumpGems(); setTimeout(() => toast('🎁 Daily gift: +20 gems! Come back tomorrow for more.', 3600), 400); }
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

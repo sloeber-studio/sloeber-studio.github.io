@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dragon Math Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#d9dcff; --sky2:#fff1dc; --card:#ffffff; --card2:#f1efff; --ink:#22205a; --muted:#5d5a8c; --line:#dcdaf2;
+  --fire:#ff8a1f; --fire-deep:#d0640a; --grape:#6c4cf1; --grape-deep:#4d2fd0; --mint:#14a874; --bad:#e23d5a; --sun:#ffc928;
+  --cheese:#ffc23d; --cheese-plain:#fff0c4; --crust:#d58a3c; --pep:#cf3333; --shadow:0 6px 0 rgba(34,32,90,.13);
+  color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sky:#0f1336; --sky2:#2a1d52; --card:#222a5a; --card2:#2c3470; --ink:#f4f3ff; --muted:#b9b6e6; --line:#3b4384;
+    --cheese-plain:#7a6532; --shadow:0 6px 0 rgba(0,0,0,.35); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --sky:#0f1336; --sky2:#2a1d52; --card:#222a5a; --card2:#2c3470; --ink:#f4f3ff; --muted:#b9b6e6; --line:#3b4384;
+  --cheese-plain:#7a6532; --shadow:0 6px 0 rgba(0,0,0,.35); color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;font-family:'Fredoka',ui-rounded,'Arial Rounded MT Bold','Segoe UI',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 100%);background-attachment:fixed;font-size:18px;line-height:1.4}
+button{font:inherit;color:inherit}
+:focus-visible{outline:4px solid var(--grape);outline-offset:3px}
+[hidden]{display:none!important}
+.app{max-width:960px;margin:0 auto;padding:16px 16px 40px}
+.card{background:var(--card);border-radius:26px;box-shadow:var(--shadow);border:2px solid var(--line);padding:18px}
+.muted{color:var(--muted)} .tiny{font-size:.85rem;color:var(--muted)}
+
+.btn{font-weight:600;font-size:1.15rem;border:0;border-radius:18px;padding:12px 22px;background:var(--fire);color:#fff;
+  box-shadow:0 5px 0 var(--fire-deep);cursor:pointer;min-height:56px;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--fire-deep)}
+.btn.violet{background:var(--grape);box-shadow:0 5px 0 var(--grape-deep)}
+.btn.violet:active{box-shadow:0 1px 0 var(--grape-deep)}
+.btn.ghost{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:var(--shadow)}
+.btn.small{min-height:46px;padding:8px 14px;font-size:1rem}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:10px;font-size:1rem}
+
+/* ---------- planets (pure CSS) ---------- */
+.orb{display:inline-block;font-size:76px;width:1em;height:1em;border-radius:50%;position:relative;flex:none;box-shadow:inset -.13em -.1em 0 rgba(0,0,0,.18)}
+.orb.big{font-size:120px}.orb.mini{font-size:30px;vertical-align:middle;margin-right:8px}
+.orb.moon{background:radial-gradient(circle at 30% 38%,#c3c3ce 0 7%,transparent 8%),radial-gradient(circle at 66% 62%,#b3b3c0 0 11%,transparent 12%),radial-gradient(circle at 58% 26%,#c5c5cf 0 5%,transparent 6%),radial-gradient(circle at 35% 30%,#fbfbfd,#a7a7b4 72%)}
+.orb.mars{background:radial-gradient(circle at 62% 42%,#a83a1c 0 9%,transparent 10%),radial-gradient(circle at 35% 30%,#ffb38a,#d9542b 60%,#9b3215)}
+.orb.jupiter{background:radial-gradient(ellipse 15% 9% at 62% 63%,#c7462d 60%,transparent 63%),repeating-linear-gradient(180deg,#ecd0ad 0 9%,#c08957 9% 15%,#f4e1c6 15% 22%,#b47a4a 22% 26%)}
+.orb.saturn{background:radial-gradient(circle at 35% 30%,#fbecc4,#d8b56c 72%)}
+.orb.saturn::before{content:'';position:absolute;left:-24%;right:-24%;top:38%;height:24%;border:.06em solid #e2c886;border-radius:50%;transform:rotate(-16deg)}
+.orb.neptune{background:radial-gradient(circle at 35% 30%,#a6ccff,#3360dd 60%,#1b3a8f)}
+.orb.pluto{background:radial-gradient(circle at 35% 30%,#fbf0e2,#c9a47d 72%)}
+.orb.pluto::after{content:'♥';position:absolute;left:44%;top:34%;font-size:.38em;line-height:1;color:#fff8ee}
+.orb.sun{background:radial-gradient(circle at 40% 40%,#fff6b0,#ffc928 55%,#ff8a1f);box-shadow:0 0 .2em rgba(255,180,40,.6)}
+
+/* ---------- title ---------- */
+.title-wrap{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;position:relative}
+h1.logo{font-size:clamp(2.6rem,9vw,4.6rem);line-height:.95;margin:0;font-weight:700}
+h1.logo .l2{display:block;color:var(--fire);font-size:1.15em;text-shadow:0 5px 0 var(--fire-deep)}
+.sub{margin:0;font-size:1.2rem;color:var(--muted);max-width:28em}
+.bigegg{font-size:110px;line-height:1;animation:wobble 2.4s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes wobble{0%,60%,100%{transform:rotate(0)}68%{transform:rotate(-9deg)}76%{transform:rotate(8deg)}84%{transform:rotate(-5deg)}92%{transform:rotate(3deg)}}
+.form{display:flex;flex-direction:column;gap:14px;width:min(420px,100%);text-align:left}
+.form label{display:flex;flex-direction:column;gap:6px;font-weight:600}
+.form input{font:inherit;font-size:1.3rem;padding:12px 14px;border-radius:14px;border:3px solid var(--line);background:var(--card2);color:var(--ink)}
+.form input:focus{border-color:var(--grape);outline:none}
+.floaty{position:absolute;font-weight:700;color:var(--grape);opacity:.2;font-size:2.4rem;pointer-events:none;animation:drift 9s ease-in-out infinite}
+@keyframes drift{50%{transform:translateY(-22px) rotate(8deg)}}
+
+/* ---------- dragon ---------- */
+.dragon{position:relative;display:inline-block;line-height:1}
+.dragon .hat{position:absolute;top:-.36em;left:50%;transform:translateX(-50%) rotate(-12deg);font-size:.5em}
+.dragon.egg .dbody{display:inline-block;animation:wobble 2.4s ease-in-out infinite;transform-origin:50% 90%}
+
+/* ---------- map ---------- */
+.maphead{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+.mapdragon{width:110px;height:110px;display:grid;place-items:center;background:var(--card2);border-radius:50%}
+.mapinfo h2{margin:0;font-size:1.5rem}
+.xpbar{height:16px;background:var(--card2);border-radius:99px;overflow:hidden;margin:8px 0 4px;border:2px solid var(--line)}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--sun),var(--fire));border-radius:99px;transition:width .6s}
+.mapstats{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.mapbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.coins{font-size:1.3rem;font-weight:600;white-space:nowrap}
+.section-title{font-size:1.4rem;margin:26px 4px 12px}
+.planets{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.planet{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;text-align:left;cursor:pointer;
+  background:var(--card);border:2px solid var(--line);border-radius:26px;padding:16px;box-shadow:var(--shadow);transition:transform .12s}
+.planet:hover:not(:disabled){transform:translateY(-3px) rotate(-.5deg)}
+.planet:disabled{cursor:not-allowed;opacity:.62}
+.planet .orbwrap{display:grid;place-items:center;height:96px}
+.planet h3{margin:0;font-size:1.35rem}
+.planet p{margin:0 0 4px;color:var(--muted);font-size:.95rem}
+.stars{color:var(--sun);font-size:1.25rem;letter-spacing:2px;text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.stars .off{color:var(--line)}
+.foeline{font-size:.9rem;color:var(--muted)}
+.here{display:inline-block;font-size:.8rem;font-weight:600;background:var(--mint);color:#fff;border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+.mapfoot{display:flex;justify-content:space-between;margin-top:26px}
+
+/* ---------- flight ---------- */
+.flighthud{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.flighthud h2{margin:0;font-size:1.3rem;flex:1}
+.flightbar{height:14px;background:var(--card);border:2px solid var(--line);border-radius:99px;overflow:hidden;margin-bottom:10px}
+.flightbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--grape),var(--fire));border-radius:99px}
+.flightwrap{position:relative;height:min(64vh,540px);border-radius:26px;overflow:hidden;border:2px solid var(--line);touch-action:none;background:#0b0e2e;cursor:crosshair}
+.flightwrap canvas{width:100%;height:100%;display:block}
+.flighthelp{text-align:center;margin:10px 0 0}
+
+/* ---------- battle ---------- */
+.hud{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.hearts{font-size:1.6rem;letter-spacing:2px}
+.streak{font-weight:700;font-size:1.2rem;padding:4px 12px;border-radius:99px;background:var(--card);border:2px solid var(--line)}
+.streak.hot{background:var(--fire);color:#fff;border-color:var(--fire-deep)}
+.hud .coins{margin-left:auto}
+.arena{position:relative;height:clamp(200px,30vw,250px);border-radius:28px;overflow:hidden;display:flex;justify-content:space-between;align-items:flex-end;
+  padding:12px clamp(16px,6vw,60px) 14px;border:2px solid var(--line);
+  background:
+   radial-gradient(130% 70% at 50% 128%,var(--ground) 62%,transparent 63%),
+   radial-gradient(1.6px 1.6px at 12% 18%,#fff 60%,transparent 62%),radial-gradient(1.4px 1.4px at 28% 42%,#fff 60%,transparent 62%),
+   radial-gradient(2px 2px at 46% 12%,#fff 60%,transparent 62%),radial-gradient(1.4px 1.4px at 63% 34%,#fff 60%,transparent 62%),
+   radial-gradient(1.8px 1.8px at 81% 16%,#fff 60%,transparent 62%),radial-gradient(1.3px 1.3px at 92% 46%,#fff 60%,transparent 62%),
+   radial-gradient(1.3px 1.3px at 6% 52%,#fff 60%,transparent 62%),radial-gradient(1.5px 1.5px at 72% 6%,#fff 60%,transparent 62%),
+   linear-gradient(180deg,#0b0e2e,#2a2266)}
+.fighter{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;z-index:1}
+.fighter .sprite{font-size:clamp(64px,13vw,96px);line-height:1}
+.foe .sprite{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+.foe.boss .sprite{font-size:clamp(84px,17vw,124px)}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.fname{font-weight:600;font-size:.95rem;background:var(--card);padding:2px 10px;border-radius:99px;border:2px solid var(--line);white-space:nowrap}
+.hpbar{width:120px;height:14px;background:var(--card);border:2px solid var(--line);border-radius:99px;overflow:hidden;margin-bottom:4px}
+.hpbar i{display:block;height:100%;background:var(--bad);transition:width .35s}
+.say{position:absolute;left:clamp(110px,22vw,190px);top:18px;background:var(--card);border:2px solid var(--line);border-radius:18px 18px 18px 4px;
+  padding:6px 14px;font-weight:700;font-size:1.1rem;z-index:2}
+.proj{position:absolute;left:0;top:0;margin:-.5em 0 0 -.5em;font-size:46px;pointer-events:none;z-index:3}
+.hit{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-10px) rotate(-6deg)}40%{transform:translateX(9px) rotate(5deg)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.floattxt{position:absolute;font-weight:700;font-size:1.5rem;pointer-events:none;z-index:4;animation:floatUp 1.1s forwards;white-space:nowrap;text-shadow:0 2px 0 #0b0e2e}
+@keyframes floatUp{to{transform:translateY(-60px);opacity:0}}
+
+.qcard{margin-top:14px;text-align:center;position:relative}
+.qtools{display:flex;justify-content:space-between;gap:8px}
+.tool{background:var(--card2);border:2px solid var(--line);border-radius:14px;padding:8px 14px;font-weight:600;cursor:pointer;min-height:46px}
+.qvisual{display:flex;justify-content:center;margin-top:8px}
+.qvisual:empty{display:none}
+.mc{background:var(--grape);color:#fff;border-radius:16px;padding:8px 16px;font-weight:600;animation:pulse 1.2s ease-in-out 2}
+@keyframes pulse{50%{transform:scale(1.04)}}
+.qtext{font-size:clamp(2rem,7vw,3rem);font-weight:700;margin:10px 0 6px;line-height:1.2}
+.qtext.story{font-size:clamp(1.25rem,3.6vw,1.55rem);font-weight:500;max-width:34em;margin-left:auto;margin-right:auto;text-align:left;line-height:1.45}
+.hint{background:#fff6d1;color:#4a3a00;border:2px solid var(--sun);border-radius:16px;padding:10px 14px;margin:8px auto;max-width:520px;font-weight:500}
+.answerbox{min-width:170px;display:inline-block;font-size:2.6rem;font-weight:700;padding:4px 20px;margin:8px auto 12px;border:3px dashed var(--line);border-radius:18px;background:var(--card2)}
+.answerbox.empty{color:var(--muted)}
+.answerbox.good{border-color:var(--mint);border-style:solid;color:var(--mint)}
+.answerbox.badbox{border-color:var(--bad);border-style:solid;animation:shake .4s}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:340px;margin:0 auto}
+.key{font-size:1.8rem;font-weight:600;min-height:64px;border-radius:18px;border:2px solid var(--line);background:var(--card2);cursor:pointer;box-shadow:0 4px 0 var(--line)}
+.key:active{transform:translateY(3px);box-shadow:none}
+.key.go{background:var(--mint);color:#fff;border-color:var(--mint);box-shadow:0 4px 0 #0b7a54}
+.choices{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:6px 0}
+.choice{min-width:110px;min-height:96px;font-size:2rem;font-weight:700;border-radius:20px;border:3px solid var(--line);background:var(--card2);cursor:pointer;box-shadow:0 4px 0 var(--line);padding:8px 16px}
+.choice.text{font-size:1.15rem;font-weight:600;min-height:64px;flex:1 1 220px;max-width:300px}
+.choice:disabled{opacity:.35;text-decoration:line-through}
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05;vertical-align:middle;font-weight:700;margin:0 .1em}
+.frac>span:first-child{border-bottom:.09em solid currentColor;padding:0 .15em}
+
+/* ---------- modal & explanations ---------- */
+.overlay{position:fixed;inset:0;background:rgba(14,12,40,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{width:min(640px,100%);max-height:88vh;overflow:auto;text-align:left}
+.modal h2{margin:0 0 6px;font-size:1.6rem}
+.modal .eq{font-size:1.6rem;font-weight:700;text-align:center;margin:6px 0 10px}
+.modal .eq.story{font-size:1.1rem;font-weight:500;text-align:left}
+.mbtns{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.answer-reveal{background:var(--card2);border-radius:16px;padding:10px 14px;font-size:1.3rem;font-weight:600;text-align:center;margin-top:12px}
+.planetcard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0}
+.planetcard div{background:var(--card2);border-radius:14px;padding:10px;text-align:center}
+.planetcard span{display:block;font-size:.85rem;color:var(--muted)}
+.dotgrid{display:flex;flex-direction:column;gap:5px;margin:10px 0;align-items:flex-start;overflow-x:auto}
+.dotrow{display:flex;align-items:center;gap:5px}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--grape);display:inline-block}
+.dotrow:nth-child(even) .dot{background:var(--fire)}
+.rowlabel{margin-left:10px;font-weight:700;color:var(--fire-deep);min-width:2em}
+.groups{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.group{border:3px dashed var(--grape);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:4px;max-width:96px;align-content:flex-start}
+.pv{background:var(--card2);border-radius:12px;padding:8px 12px;margin:6px 0;font-size:1.15rem}
+.pv .pvl{display:inline-block;min-width:6.5em;color:var(--muted);font-weight:600}
+.hops{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.hop{display:flex;flex-direction:column;align-items:center;background:var(--card2);border-radius:14px;padding:6px 12px}
+.hop .plus{font-weight:700;color:var(--mint);font-size:1.2rem}
+.tip{background:#fff6d1;color:#4a3a00;border-radius:14px;padding:10px 14px;margin-top:10px}
+.pizzas{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.pizzas figure{margin:0;text-align:center;font-size:1.4rem}
+.nline{width:100%;max-width:360px;display:block;margin:6px auto}
+.tilegrid{display:grid;gap:3px;margin:10px 0}
+.tilegrid i{width:22px;height:22px;background:var(--mint);border-radius:4px;display:block}
+
+/* ---------- lair, book, parents ---------- */
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.orb.uranus{background:radial-gradient(circle at 35% 30%,#d8fbfb,#62c3cf 65%,#2f8a99)}
+.orb.uranus::before{content:'';position:absolute;top:-24%;bottom:-24%;left:40%;width:20%;border:.04em solid rgba(220,250,255,.85);border-radius:50%;transform:rotate(8deg)}
+.paper{color:var(--muted);font-size:1rem;margin:-2px 0 4px}
+.ordwrap{width:100%;display:flex;flex-direction:column;gap:14px;align-items:center}
+.slots,.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.tile{min-width:84px;min-height:60px;padding:6px 12px;font-size:1.5rem;font-weight:700;border-radius:16px;border:3px solid var(--line);background:var(--card2);cursor:pointer;box-shadow:0 4px 0 var(--line)}
+.tile.placed{border-color:var(--grape)}
+.slot{display:inline-block;min-width:84px;height:60px;border:3px dashed var(--line);border-radius:16px}
+.lt{font-weight:700;font-size:1.4rem;color:var(--muted)}
+.ordbtns{display:flex;gap:10px}
+.coltable{border-collapse:collapse;margin:10px auto;font-size:1.6rem;font-weight:600;font-variant-numeric:tabular-nums}
+.coltable td{width:1.2em;text-align:center;padding:0 2px}
+.coltable .carry td{font-size:.9rem;color:var(--fire-deep);height:1.1em}
+.coltable .total td{border-top:3px solid var(--ink);color:var(--mint)}
+.seqrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;justify-content:center;margin:10px 0}
+.seqn{background:var(--card2);border-radius:12px;padding:6px 12px;font-weight:700;font-size:1.3rem}
+.seqd{color:var(--mint);font-weight:700;font-size:.95rem}
+.steps li{margin:6px 0}
+.lairtop{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:10px}
+.shopitem{border:2px solid var(--line);background:var(--card);border-radius:20px;padding:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:130px}
+.shopitem.on{border-color:var(--mint);box-shadow:0 0 0 3px var(--mint) inset}
+.shopitem .big{font-size:44px;line-height:1.1}
+.bookgroup{margin-top:22px}
+.bookgroup h3{display:flex;align-items:center;gap:6px;margin:0 0 10px;font-size:1.3rem}
+.factgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.fact{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow)}
+.fact.locked{color:var(--muted);background:var(--card2);box-shadow:none;border-style:dashed}
+.ptable{width:100%;border-collapse:collapse;margin-top:10px}
+.ptable th,.ptable td{text-align:left;padding:10px 8px;border-bottom:2px solid var(--line)}
+.lvlctl{display:inline-flex;align-items:center;gap:8px}
+.lvlctl button{width:38px;height:38px;border-radius:10px;border:2px solid var(--line);background:var(--card2);cursor:pointer;font-weight:700}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:2px solid var(--line)}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:14px;overflow:hidden}
+.seg button{border:0;background:var(--card2);padding:8px 14px;cursor:pointer;font-weight:600;min-height:44px}
+.seg button.on{background:var(--grape);color:#fff}
+.scroll{overflow-x:auto}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+#confetti span{position:absolute;top:-40px;font-size:28px;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+
+@media (max-width:640px){
+  .maphead{grid-template-columns:auto 1fr}
+  .mapstats{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center}
+  .mapdragon{width:88px;height:88px}
+  .planet{grid-template-columns:80px 1fr}
+  .planet .orb{font-size:64px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TITLE -->
+<section id="s-title">
+  <div class="title-wrap">
+    <span class="floaty" style="left:6%;top:12%">7×8</span>
+    <span class="floaty" style="right:8%;top:18%;animation-delay:-3s">🪐</span>
+    <span class="floaty" style="left:12%;bottom:16%;animation-delay:-5s">250+</span>
+    <span class="floaty" style="right:10%;bottom:12%;animation-delay:-2s">☄️</span>
+    <div class="bigegg" aria-hidden="true">🥚</div>
+    <h1 class="logo">Dragon<span class="l2">Math Quest</span></h1>
+    <p class="sub">Fly a dragon across the solar system. Beat math monsters. Collect real space facts.</p>
+    <div id="titleNew" class="card form">
+      <label>What’s your name, space hero?<input id="inName" maxlength="14" autocomplete="off"></label>
+      <label>Name your dragon egg<input id="inDragon" maxlength="14" autocomplete="off" placeholder="Sparky"></label>
+      <button class="btn" id="btnStart">Start the adventure</button>
+    </div>
+    <div id="titleBack" class="card form" hidden>
+      <p id="welcomeBack" style="margin:0;font-size:1.3rem;font-weight:600;text-align:center"></p>
+      <button class="btn" id="btnContinue">Keep playing</button>
+      <button class="link" id="btnNewPlayer">New player</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section id="s-map" hidden>
+  <header class="maphead card">
+    <div id="mapDragon" class="mapdragon"></div>
+    <div class="mapinfo">
+      <h2 id="mapTitle"></h2>
+      <div id="mapStage" class="muted"></div>
+      <div class="xpbar" aria-hidden="true"><i id="xpFill"></i></div>
+      <div id="xpText" class="tiny"></div>
+    </div>
+    <div class="mapstats">
+      <div class="coins">🪙 <b id="mapCoins">0</b></div>
+      <div class="mapbtns">
+        <button class="btn violet small" id="btnBook">📖 Space Book</button>
+        <button class="btn violet small" id="btnLair">🏠 Lair</button>
+      </div>
+    </div>
+  </header>
+  <h2 class="section-title">Pick a planet to fly to</h2>
+  <div id="planets" class="planets"></div>
+  <footer class="mapfoot">
+    <button class="link" id="btnMute"></button>
+    <button class="link" id="btnParent">Grown-ups corner</button>
+  </footer>
+</section>
+
+<!-- FLIGHT -->
+<section id="s-flight" hidden>
+  <div class="flighthud">
+    <h2 id="flightTo"></h2>
+    <div class="coins">⭐ <b id="flightStars">0</b></div>
+    <button class="btn ghost small" id="btnSkipFlight">Skip trip</button>
+  </div>
+  <div class="flightbar" aria-hidden="true"><i id="flightFill"></i></div>
+  <div class="flightwrap" id="flightWrap"><canvas id="flightCanvas" aria-label="Flying game: steer the dragon to catch stars and dodge space rocks"></canvas></div>
+  <p class="flighthelp muted">Move your finger or mouse up and down to steer (or use the ↑ ↓ keys). Catch ⭐, dodge 🪨!</p>
+</section>
+
+<!-- BATTLE -->
+<section id="s-battle" hidden>
+  <div class="hud">
+    <button class="btn ghost small" id="btnFlee">⬅ Map</button>
+    <div id="hudHearts" class="hearts"></div>
+    <div id="hudStreak" class="streak"></div>
+    <div class="coins">🪙 <b id="hudCoins"></b></div>
+  </div>
+  <div id="arena" class="arena">
+    <div class="fighter me"><div id="meSprite" class="sprite"></div><div id="meName" class="fname"></div></div>
+    <div id="sayBubble" class="say" hidden></div>
+    <div class="fighter foe" id="foeBox">
+      <div class="hpbar"><i id="hpFill"></i></div>
+      <div id="foeSprite" class="sprite"></div>
+      <div id="foeName" class="fname"></div>
+    </div>
+  </div>
+  <div class="qcard card">
+    <div class="qtools">
+      <button class="tool" id="btnSpeak">🔊 Read it to me</button>
+      <button class="tool" id="btnHint">💡 Hint</button>
+    </div>
+    <div id="qvisual" class="qvisual"></div>
+    <div id="qtext" class="qtext" aria-live="polite"></div>
+    <div id="paperNote" class="paper" hidden>✏️ Grab paper, work it out, then type your answer.</div>
+    <div id="hintBubble" class="hint" hidden></div>
+    <div><div id="answerBox" class="answerbox empty">?</div></div>
+    <div id="choices" class="choices" hidden></div>
+    <div id="numpad" class="numpad"></div>
+  </div>
+</section>
+
+<!-- LAIR -->
+<section id="s-lair" hidden>
+  <div class="hud"><button class="btn ghost small" data-go="map">⬅ Map</button><div class="coins" style="margin-left:auto">🪙 <b id="lairCoins"></b></div></div>
+  <div class="card lairtop">
+    <div id="lairDragon"></div>
+    <h2 id="lairName" style="margin:0"></h2>
+    <div id="lairNote" class="muted"></div>
+  </div>
+  <h2 class="section-title">Dragon colors</h2>
+  <div id="shopColors" class="shopgrid"></div>
+  <h2 class="section-title">Hats</h2>
+  <div id="shopHats" class="shopgrid"></div>
+</section>
+
+<!-- SPACE BOOK -->
+<section id="s-book" hidden>
+  <div class="hud"><button class="btn ghost small" data-go="map">⬅ Map</button></div>
+  <div class="card">
+    <h2 style="margin:0">📖 Space Book</h2>
+    <p class="muted" style="margin:4px 0 0" id="bookCount"></p>
+    <p class="tiny" style="margin:4px 0 0">Answer Mission Control’s questions during battles to fill your book. Every 5 facts earns a coin bonus!</p>
+  </div>
+  <div id="bookBody"></div>
+</section>
+
+<!-- PARENTS -->
+<section id="s-parent" hidden>
+  <div class="hud"><button class="btn ghost small" data-go="map">⬅ Map</button></div>
+  <div class="card">
+    <h2 style="margin-top:0">Grown-ups corner</h2>
+    <p class="muted" style="max-width:42em">Each planet levels up when your kid gets about 3 out of 4 questions right on the first try. Math levels go from 2-digit sums up to three 3-digit numbers, with paper-friendly column explanations. Level 5 is a boss fight. About 30% of questions come from the level below, so earlier skills keep getting practice. Use − and + to skip ahead if it feels too easy.</p>
+    <div class="scroll"><table class="ptable" id="ptable"></table></div>
+    <h3 style="margin:24px 0 4px">Game settings</h3>
+    <div class="setrow"><span>Flying game between planets</span><div class="seg" id="segFlight"><button data-v="off">Off</button><button data-v="short">Short</button><button data-v="normal">Normal</button></div></div>
+    <div class="setrow"><span>Science question in each battle</span><div class="seg" id="segSci"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+    <p class="muted" id="pextra"></p>
+    <button class="btn ghost small" id="btnReset">Reset all progress</button>
+  </div>
+</section>
+</div>
+
+<div id="overlay" class="overlay" hidden><div class="modal card" id="modal" role="dialog" aria-modal="true"></div></div>
+<div id="confetti" aria-hidden="true"></div>
+
+<script>
+/* ================= setup ================= */
+const $=id=>document.getElementById(id);
+const RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[R(0,a.length-1)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const EMOJI_FONT='"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+
+const SAVE_KEY='dragonMathQuest.v1';
+const ORDER=['add','mul','div','frac','logic','round','riddle'];
+const SKILLS={
+  add:{planet:'The Moon',orb:'moon',station:'Crater Camp',desc:'Adding and subtracting',foe:'👾',foeName:'Crater Gobbler',ground:'#8d8d9c',zap:'💫',
+    stats:[['What it is','Earth’s only moon'],['Gravity','about 1/6 of Earth’s'],['Distance from Earth','about 384,000 km']]},
+  mul:{planet:'Mars',orb:'mars',station:'Red Rover Base',desc:'Multiplication',foe:'🤖',foeName:'Rust-Bot',ground:'#c4532d',zap:'⚡',
+    stats:[['Moons','2'],['One day','about 24½ hours'],['One year','687 Earth days']]},
+  div:{planet:'Jupiter',orb:'jupiter',station:'Storm Station',desc:'Division',foe:'🛸',foeName:'Storm Saucer',ground:'#c79566',zap:'🌀',
+    stats:[['Moons','more than 90'],['One day','about 10 hours'],['One year','about 12 Earth years']]},
+  frac:{planet:'Saturn',orb:'saturn',station:'Ring Pizzeria',desc:'Fractions',foe:'🐙',foeName:'Ring Squid',ground:'#d4b673',zap:'🧊',
+    stats:[['Moons','more than 100'],['One day','about 10½ hours'],['One year','about 29 Earth years']]},
+  logic:{planet:'Uranus',orb:'uranus',station:'Logic Lab',desc:'Patterns and number puzzles',foe:'👻',foeName:'Pattern Phantom',ground:'#57b9c6',zap:'🔮',
+    stats:[['Moons','more than 25'],['One day','about 17 hours'],['One year','about 84 Earth years']]},
+  round:{planet:'Neptune',orb:'neptune',station:'Wind Rapids',desc:'Rounding numbers',foe:'🦑',foeName:'Ice Kraken',ground:'#3d63d1',zap:'❄️',
+    stats:[['Moons','more than 10'],['One day','about 16 hours'],['One year','about 165 Earth years']]},
+  riddle:{planet:'Pluto',orb:'pluto',station:'Heart Base',desc:'Story puzzles',foe:'👽',foeName:'Puzzle Alien',ground:'#d6b894',zap:'❓',unlock:9,
+    stats:[['What it is','a dwarf planet'],['Moons','5'],['One year','about 248 Earth years']]}
+};
+const PCOL={moon:['#fbfbfd','#8f8f9e'],mars:['#ffb38a','#a8381a'],jupiter:['#f4e1c6','#b47a4a'],saturn:['#fbecc4','#c9a35a'],neptune:['#a6ccff','#1f3d9a'],uranus:['#d8fbfb','#2f8a99'],pluto:['#fbf0e2','#b8916a']};
+const STAGES=[{min:0,e:'🦎',n:'Baby Dragon'},{min:40,e:'🐲',n:'Young Dragon'},{min:120,e:'🐉',n:'Mighty Dragon'},{min:300,e:'🐉',n:'Legendary Dragon',legend:true}];
+const COLORS=[{h:0,n:'Forest',cost:0},{h:60,n:'Ocean',cost:20},{h:140,n:'Galaxy',cost:25},{h:200,n:'Bubblegum',cost:30},{h:280,n:'Lava',cost:40}];
+const HATS=[{e:'',n:'No hat',cost:0},{e:'🧢',n:'Cap',cost:25},{e:'🎩',n:'Top hat',cost:40},{e:'🎓',n:'Smarty cap',cost:50},{e:'🌟',n:'Star',cost:60},{e:'🛰️',n:'Satellite',cost:70},{e:'👑',n:'Crown',cost:90}];
+
+/* ================= science facts (first choice is the right one) ================= */
+const SCI=[
+ {id:'mo1',p:'add',q:'How does the Moon shine at night?',c:['It reflects light from the Sun','It has its own fire inside','It glows from hot lava'],f:'The Moon makes no light of its own. It works like a giant mirror, bouncing sunlight back to us.'},
+ {id:'mo2',p:'add',q:'Why do astronaut footprints stay on the Moon for millions of years?',c:['There’s no wind or rain to wipe them away','Moon dust is sticky like glue','Robots guard them'],f:'The Moon has no air, so there’s no wind or rain. Footprints from 1969 are probably still there!'},
+ {id:'mo3',p:'add',q:'How many people have walked on the Moon?',c:['12','3','100'],f:'12 astronauts walked on the Moon between 1969 and 1972. Neil Armstrong was the first.'},
+ {id:'mo4',p:'add',q:'If you jumped on the Moon, you could jump about…',c:['6 times higher than on Earth','the same as on Earth','half as high as on Earth'],f:'Gravity on the Moon is only about 1/6 as strong as on Earth, so you’d bounce way up high!'},
+ {id:'mo5',p:'add',q:'About how long does the Moon take to go around Earth?',c:['About a month','One day','One year'],f:'The Moon circles Earth in about 27 days. The word “month” even comes from “moon”!'},
+ {id:'ma1',p:'mul',q:'Why does Mars look red?',c:['Its dust is rusty','It is very hot','It is covered in strawberries'],f:'Mars dirt has lots of iron in it that has rusted, just like an old bike left out in the rain.'},
+ {id:'ma2',p:'mul',q:'How many moons does Mars have?',c:['2','0','10'],f:'Mars has 2 small, lumpy moons called Phobos and Deimos. They look a bit like potatoes!'},
+ {id:'ma3',p:'mul',q:'Where is the tallest volcano in the solar system?',c:['On Mars','On Earth','On the Moon'],f:'Olympus Mons on Mars is about 22 km tall, around 2½ times taller than Mount Everest!'},
+ {id:'ma4',p:'mul',q:'In 2021, something flew through the air on Mars for the very first time. What was it?',c:['A tiny helicopter','A jumbo jet','A hot-air balloon'],f:'The helicopter Ingenuity rode to Mars with the Perseverance rover and made the first powered flight on another planet.'},
+ {id:'ma5',p:'mul',q:'One year on Mars lasts about…',c:['2 Earth years','1 Earth week','1 Earth day'],f:'Mars takes 687 Earth days to go around the Sun, almost 2 of our years. Birthdays would come half as often!'},
+ {id:'ju1',p:'div',q:'Which planet is the biggest?',c:['Jupiter','Earth','Mars'],f:'Jupiter is so big that more than 1,000 Earths could fit inside it!'},
+ {id:'ju2',p:'div',q:'What is Jupiter’s Great Red Spot?',c:['A giant storm','A huge volcano','A red ocean'],f:'The Great Red Spot is a storm bigger than planet Earth, and people have watched it spin for more than 150 years.'},
+ {id:'ju3',p:'div',q:'Could you stand on Jupiter?',c:['No, it’s mostly gas','Yes, it’s rocky','Yes, but only at night'],f:'Jupiter is a gas giant. There’s no solid ground to land on, just thicker and thicker clouds.'},
+ {id:'ju4',p:'div',q:'How long is one day on Jupiter?',c:['About 10 hours','About 24 hours','About 100 hours'],f:'Jupiter spins faster than any other planet. A whole day and night take only about 10 hours!'},
+ {id:'ju5',p:'div',q:'Jupiter’s moon Ganymede is special because…',c:['It’s the biggest moon in the solar system','It’s made of cheese','It’s smaller than a car'],f:'Ganymede is the biggest moon in the solar system. It’s even bigger than the planet Mercury!'},
+ {id:'sa1',p:'frac',q:'What are Saturn’s rings made of?',c:['Chunks of ice and rock','Gold','Rainbow light'],f:'Saturn’s rings are billions of ice and rock pieces, some as small as sand and some as big as a house.'},
+ {id:'sa2',p:'frac',q:'If you had a bathtub big enough, Saturn would…',c:['Float','Sink','Melt'],f:'Saturn is made mostly of very light gases, so it’s less dense than water. It would float!'},
+ {id:'sa3',p:'frac',q:'Which planet has the most moons?',c:['Saturn','Earth','Mars'],f:'Saturn has well over 100 moons, more than any other planet, and scientists keep finding new ones.'},
+ {id:'sa4',p:'frac',q:'Saturn’s moon Titan has lakes made of…',c:['Liquid methane','Orange juice','Hot lava'],f:'Titan is so cold that methane, a gas here on Earth, turns into liquid. It fills lakes and even falls as rain!'},
+ {id:'sa5',p:'frac',q:'Is Saturn the only planet with rings?',c:['No, all 4 giant planets have rings','Yes, only Saturn','Earth has rings too'],f:'Jupiter, Uranus and Neptune have rings too. Saturn’s are just the biggest and brightest.'},
+ {id:'ne1',p:'round',q:'Which planet is farthest from the Sun?',c:['Neptune','Jupiter','Mars'],f:'Neptune is about 30 times farther from the Sun than Earth is. It’s dark and freezing out there!'},
+ {id:'ne2',p:'round',q:'How did scientists first find Neptune in 1846?',c:['They used math to work out where it was','A dog barked at it','A rocket bumped into it'],f:'Scientists saw Uranus being tugged off course and used MATH to figure out where another planet must be. They looked there and found Neptune!'},
+ {id:'ne3',p:'round',q:'Neptune has the fastest what in the solar system?',c:['Winds','Rivers','Race cars'],f:'Winds on Neptune blow over 2,000 km per hour (about 1,200 mph). That’s faster than a fighter jet!'},
+ {id:'ne4',p:'round',q:'Why is Neptune blue?',c:['A gas called methane in its air','It’s covered in oceans','It’s painted blue'],f:'Methane gas in Neptune’s air soaks up red light, so the planet looks deep blue.'},
+ {id:'ne5',p:'round',q:'One year on Neptune lasts about…',c:['165 Earth years','1 Earth year','10 Earth days'],f:'Neptune takes about 165 Earth years to go around the Sun. Since it was discovered, it has finished just one trip!'},
+ {id:'pl1',p:'riddle',q:'What kind of world is Pluto?',c:['A dwarf planet','A giant planet','A star'],f:'In 2006, scientists decided Pluto is a dwarf planet: round, but too small to clear its path around the Sun.'},
+ {id:'pl2',p:'riddle',q:'Pluto has a giant icy area shaped like a…',c:['Heart','Smiley face','Star'],f:'When the New Horizons spacecraft flew past Pluto in 2015, it found a huge heart-shaped plain of ice.'},
+ {id:'pl3',p:'riddle',q:'How big is Pluto?',c:['Smaller than our Moon','Bigger than Earth','Bigger than Jupiter'],f:'Pluto is smaller than Earth’s Moon, only about half as wide as the United States.'},
+ {id:'pl4',p:'riddle',q:'One year on Pluto lasts about…',c:['248 Earth years','2 Earth years','1 Earth month'],f:'Pluto takes about 248 Earth years to go around the Sun. Nobody alive has seen it finish one trip!'},
+ {id:'pl5',p:'riddle',q:'How many moons does Pluto have?',c:['5','0','50'],f:'Pluto has 5 moons. The biggest, Charon, is so large that Pluto and Charon swing around each other like dance partners.'},
+ {id:'ur1',p:'logic',q:'What’s strange about the way Uranus spins?',c:['It spins on its side, like a rolling ball','It spins upside down only on Sundays','It doesn’t spin at all'],f:'Uranus is tipped over so far that it spins on its side. Scientists think something huge crashed into it long ago.'},
+ {id:'ur2',p:'logic',q:'Uranus was the first planet ever discovered using…',c:['A telescope','A rocket','A magnifying glass'],f:'In 1781, William Herschel spotted Uranus with a telescope. The planets closer to us can all be seen with just your eyes.'},
+ {id:'ur3',p:'logic',q:'Which planet has the coldest air ever measured?',c:['Uranus','Mars','Venus'],f:'The air on Uranus has dropped to about −224 °C (−371 °F), colder than any other planet, even Neptune!'},
+ {id:'ur4',p:'logic',q:'Many of Uranus’s moons are named after characters from…',c:['Plays by William Shakespeare','Cartoons','Pizza toppings'],f:'Moons like Miranda, Titania and Oberon are named after characters from Shakespeare’s plays.'},
+ {id:'ur5',p:'logic',q:'One year on Uranus lasts about…',c:['84 Earth years','1 Earth year','8 Earth days'],f:'Because Uranus is tipped on its side, each pole gets about 42 years of sunshine, then about 42 years of darkness!'},
+ {id:'g1',p:'sci',q:'Which planet is the hottest?',c:['Venus','Mercury','Mars'],f:'Venus is even hotter than Mercury, though Mercury is closer to the Sun. Venus’s thick clouds trap heat like a blanket.'},
+ {id:'g2',p:'sci',q:'The Sun is a…',c:['Star','Planet','Moon'],f:'The Sun is a star, the closest one to us. About 100 Earths could line up side by side across it!'},
+ {id:'g3',p:'sci',q:'How long does sunlight take to reach Earth?',c:['About 8 minutes','About 1 second','About 1 year'],f:'Light is super fast, but the Sun is far away. The sunlight you see left the Sun about 8 minutes ago!'},
+ {id:'g4',p:'sci',q:'Can sound travel through space?',c:['No, there’s no air to carry it','Yes, even louder','Only music can'],f:'Sound needs air (or water, or something) to travel through. Space is almost empty, so it’s totally silent.'},
+ {id:'g5',p:'sci',q:'What makes day and night?',c:['Earth spinning around','The Sun switching off','Clouds covering the Sun'],f:'Earth spins once every 24 hours. When your side faces the Sun it’s day; when it faces away it’s night.'},
+ {id:'g6',p:'sci',q:'How long does Earth take to go around the Sun?',c:['About 365 days','1 day','1 month'],f:'One trip around the Sun takes about 365 days. That’s a year, so every birthday you’ve done another lap!'},
+ {id:'g7',p:'sci',q:'What do plants need to make their own food?',c:['Sunlight, water and air','Pizza and juice','Total darkness'],f:'Plants use sunlight, water and a gas from the air to make sugar. As a bonus, they give off the oxygen we breathe!'},
+ {id:'g8',p:'sci',q:'Water freezes into ice at…',c:['0 °C (32 °F)','100 °C (212 °F)','50 °C (122 °F)'],f:'Water freezes at 0 °C (32 °F) and boils at 100 °C (212 °F).'},
+ {id:'g9',p:'sci',q:'Ice, liquid water and steam are…',c:['The same stuff in 3 different forms','3 totally different things','All made of sugar'],f:'Ice (solid), water (liquid) and steam (gas) are all water. Heating or cooling it changes which form it’s in.'},
+ {id:'g10',p:'sci',q:'Which of these will a magnet pick up?',c:['A steel paperclip','A wooden pencil','A plastic cup'],f:'Magnets pull on iron and steel. Wood, plastic and paper don’t stick at all.'},
+ {id:'g11',p:'sci',q:'What force pulls things down to the ground?',c:['Gravity','Magnetism','Wind'],f:'Gravity pulls everything toward Earth. It also keeps the Moon going around Earth and Earth going around the Sun.'},
+ {id:'g12',p:'sci',q:'How many planets are in our solar system?',c:['8','5','12'],f:'There are 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune.'},
+ {id:'g13',p:'sci',q:'Which planet is closest to the Sun?',c:['Mercury','Earth','Neptune'],f:'Mercury is closest to the Sun, and it’s the smallest planet. A year there lasts only 88 days!'},
+ {id:'g14',p:'sci',q:'Why does Earth have seasons?',c:['Earth is tilted','Earth gets closer to and farther from the Sun','The Sun gets bigger in summer'],f:'Earth is tilted. When your half leans toward the Sun you get summer; when it leans away you get winter.'},
+ {id:'g15',p:'sci',q:'How do bats find bugs in the dark?',c:['They listen to echoes','They use flashlights','They only use smell'],f:'Bats make squeaks and listen for the echoes bouncing back. It’s called echolocation.'}
+];
+
+function fresh(){return{name:'',dragon:'',coins:0,xp:0,wins:0,hue:0,hat:'',ownedHues:[0],ownedHats:[''],bestStreak:0,muted:false,
+  facts:[],lastPlanet:'',settings:{flight:'normal',science:true},
+  skills:Object.fromEntries(ORDER.map(k=>[k,{lvl:1,seen:0,first:0,mastered:false}]))}}
+function load(){try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const s=JSON.parse(raw),f=fresh();
+  return{...f,...s,settings:{...f.settings,...(s.settings||{})},facts:s.facts||[],skills:{...f.skills,...(s.skills||{})}}}}catch(e){}return fresh()}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch(e){}}
+let S=load();
+
+/* ================= sound & speech ================= */
+let actx=null;
+function tone(freqs,dur=0.11,type='sine',vol=0.18){
+  if(S.muted)return;
+  try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const t=actx.currentTime;
+    freqs.forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.value=f;
+      const st=t+i*dur;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(vol,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+dur);
+      o.connect(g).connect(actx.destination);o.start(st);o.stop(st+dur+0.05)})}catch(e){}
+}
+const SFX={tap:()=>tone([520],0.05,'triangle',0.08),good:()=>tone([660,880]),super:()=>tone([440,660,880,1175],0.09),
+  bad:()=>tone([260,200],0.14,'triangle',0.15),win:()=>tone([523,659,784,1047],0.14),buy:()=>tone([880,1320],0.08),
+  star:()=>tone([988],0.06,'triangle',0.1),bonk:()=>tone([180,140],0.1,'square',0.08)};
+function speak(t){if(S.muted||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=0.9;u.pitch=1.05;speechSynthesis.speak(u)}catch(e){}}
+function speakEq(t){return t.replace(/<[^>]+>/g,' ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/=/g,' equals ').replace(/\?/g,' what ').replace(/\s+/g,' ').trim()}
+
+/* ================= dragon ================= */
+function stage(){
+  if(S.wins===0)return{e:'🥚',n:'Dragon Egg',idx:-1};
+  let i=0;STAGES.forEach((s,j)=>{if(S.xp>=s.min)i=j});
+  return{...STAGES[i],idx:i,cur:STAGES[i].min,next:STAGES[i+1]?STAGES[i+1].min:null};
+}
+function dragonHTML(size,hue=S.hue,hat=S.hat){
+  const st=stage();const glow=st.legend?' drop-shadow(0 0 14px #ffc928)':'';
+  return `<span class="dragon ${st.idx<0?'egg':''}" style="font-size:${size}px"><span class="dbody" style="filter:hue-rotate(${hue}deg)${glow}">${st.e}</span>${hat&&st.idx>=0?`<span class="hat">${hat}</span>`:''}</span>`;
+}
+
+/* ================= visual helpers for explanations ================= */
+const fracHTML=s=>{const[a,b]=String(s).split('/');return `<span class="frac"><span>${a}</span><span>${b}</span></span>`};
+function pizzaSVG(n,k,size=140){
+  const c=size/2,r=size/2-9;let s=`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="pizza with ${n} slices, ${k} with pepperoni"><circle cx="${c}" cy="${c}" r="${r+6}" style="fill:var(--crust)"/>`;
+  for(let i=0;i<n;i++){
+    const a0=i/n*2*Math.PI-Math.PI/2,a1=(i+1)/n*2*Math.PI-Math.PI/2,on=i<k,fill=on?'var(--cheese)':'var(--cheese-plain)';
+    if(n===1)s+=`<circle cx="${c}" cy="${c}" r="${r}" style="fill:${fill}"/>`;
+    else{const x0=c+r*Math.cos(a0),y0=c+r*Math.sin(a0),x1=c+r*Math.cos(a1),y1=c+r*Math.sin(a1);
+      s+=`<path d="M${c},${c} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${(a1-a0)>Math.PI?1:0} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" style="fill:${fill};stroke:var(--crust);stroke-width:3"/>`}
+    if(on){const am=(a0+a1)/2,pr=Math.max(5,r/(n>4?6.5:5.5));
+      [0.64,n<=4?0.32:0].forEach(f=>{if(f)s+=`<circle cx="${(c+r*f*Math.cos(am)).toFixed(1)}" cy="${(c+r*f*Math.sin(am)).toFixed(1)}" r="${pr.toFixed(1)}" style="fill:var(--pep)"/>`})}
+  }
+  return s+'</svg>';
+}
+function hopsHTML(from,to){
+  const js=[];let c=from;const go=n=>{if(n>c&&n<=to){js.push([c,n]);c=n}};
+  go(Math.ceil(c/10)*10);go(Math.ceil(c/100)*100);go(Math.floor(to/100)*100);go(Math.floor(to/10)*10);go(to);
+  return `<div class="hops">${js.map(([a,b])=>`<div class="hop"><span class="plus">+${b-a}</span><span>${a} ➜ ${b}</span></div>`).join('')}</div>
+  <div class="pv">Add up the jumps: ${js.map(([a,b])=>b-a).join(' + ')} = <b>${to-from}</b></div>`;
+}
+function addExplain(a,b){
+  const P=n=>({h:Math.floor(n/100)*100,t:Math.floor(n%100/10)*10,o:n%10});const A=P(a),B=P(b);
+  const row=(l,x,y)=>`<div class="pv"><span class="pvl">${l}</span>${x} + ${y} = <b>${x+y}</b></div>`;
+  let h='<p>Split each number into its parts, add matching parts, then put it all back together:</p>';
+  if(a>=100||b>=100)h+=row('Hundreds',A.h,B.h);
+  h+=row('Tens',A.t,B.t)+row('Ones',A.o,B.o);
+  const parts=[(a>=100||b>=100)?A.h+B.h:null,A.t+B.t,A.o+B.o].filter(x=>x!==null);
+  return h+`<div class="pv"><span class="pvl">Together</span>${parts.join(' + ')} = <b>${a+b}</b></div>`;
+}
+function mulTip(a,b){
+  const has=x=>a===x||b===x,o=x=>a===x?b:a;
+  if(has(10))return `×10 trick: just stick a 0 on the end! ${o(10)} ➜ ${o(10)*10}`;
+  if(has(9))return `×9 trick: do 10 × ${o(9)} = ${10*o(9)}, then take away ${o(9)} ➜ ${9*o(9)}.`;
+  if(has(5))return 'Counting by 5s always lands on numbers ending in 0 or 5.';
+  if(has(2))return `×2 is just doubling! Double ${o(2)} is ${2*o(2)}.`;
+  if(has(4))return `×4 = double, then double again: ${o(4)} ➜ ${2*o(4)} ➜ ${4*o(4)}.`;
+  if(has(11)&&o(11)<10)return `×11 trick for small numbers: write the digit twice! 11 × ${o(11)} = ${11*o(11)}.`;
+  if(a!==b)return `Flip trick: ${a} × ${b} is the same as ${b} × ${a}. Pick the one that’s easier to count!`;
+  return 'A number times itself is called a square number. It makes a perfect square of dots!';
+}
+function placeParts(n){const out=[];let p=1;while(p<=n){const d=Math.floor(n/p)%10;if(d)out.unshift(d*p);p*=10}return out}
+const PLACES=['Ones','Tens','Hundreds','Thousands','Ten-thousands'];
+const padDigits=(n,W)=>String(n).padStart(W,' ').split('');
+function colAdd(nums){
+  const sum=nums.reduce((x,y)=>x+y,0),W=String(sum).length,maxLen=Math.max(...nums.map(n=>String(n).length));
+  const carries=Array(W).fill('');let carry=0;const steps=[];
+  for(let i=0;i<maxLen;i++){
+    const ds=nums.filter(n=>n>=10**i).map(n=>Math.floor(n/10**i)%10),tot=ds.reduce((x,y)=>x+y,0)+carry;
+    const parts=ds.join(' + ')+(carry?` + ${carry} (carried)`:'');
+    if(i===maxLen-1||tot<10){steps.push(`<b>${PLACES[i]}:</b> ${parts} = ${tot} ➜ write <b>${i===maxLen-1?tot:tot}</b>`);carry=0}
+    else{steps.push(`<b>${PLACES[i]}:</b> ${parts} = ${tot} ➜ write <b>${tot%10}</b>, carry <b>${Math.floor(tot/10)}</b>`);carry=Math.floor(tot/10);carries[W-2-i]=carry}
+  }
+  let h='<table class="coltable" aria-hidden="true"><tr class="carry"><td></td>'+carries.map(c=>`<td>${c}</td>`).join('')+'</tr>';
+  nums.forEach((n,j)=>{h+=`<tr><td>${j===nums.length-1?'+':''}</td>${padDigits(n,W).map(c=>`<td>${c}</td>`).join('')}</tr>`});
+  h+=`<tr class="total"><td></td>${padDigits(sum,W).map(c=>`<td>${c}</td>`).join('')}</tr></table>`;
+  return `<p>Line the numbers up (ones under ones, tens under tens) and add one column at a time, starting with the ones. The little orange numbers are carries.</p>${h}<ol class="steps">${steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+}
+function colSub(a,b){
+  const W=String(a).length,res=a-b,steps=[];let lent=0;
+  for(let i=0;i<W;i++){
+    const ad=Math.floor(a/10**i)%10,bd=b>=10**i?Math.floor(b/10**i)%10:0,next=(PLACES[i+1]||'').toLowerCase();
+    let top=ad,txt=`<b>${PLACES[i]}:</b> `,borrow=0;
+    if(lent&&ad===0){txt+=`This 0 has to lend 1 but has nothing, so it borrows from the ${next} first and becomes 9. `;top=9;borrow=1}
+    else if(lent){top=ad-1;txt+=`${ad} lent 1 to the right, so it’s now ${top}. `}
+    if(top<bd){txt+=`${top} is smaller than ${bd}, so borrow 1 from the ${next} ➜ ${top+10}. `;top+=10;borrow=1}
+    if(b<10**i&&!borrow){txt+=top===0&&i===W-1?'Nothing left here, so no digit to write.':`Nothing to take away ➜ bring down <b>${top}</b>`}
+    else txt+=`${top} − ${bd} = <b>${top-bd}</b>`;
+    steps.push(txt);lent=borrow;
+  }
+  const row=(n,sign)=>`<tr><td>${sign}</td>${padDigits(n,W).map(c=>`<td>${c}</td>`).join('')}</tr>`;
+  const tbl=`<table class="coltable" aria-hidden="true">${row(a,'')}${row(b,'−')}<tr class="total"><td></td>${padDigits(res,W).map(c=>`<td>${c}</td>`).join('')}</tr></table>`;
+  return `<p>Line them up and subtract one column at a time, starting with the ones:</p>${tbl}<ol class="steps">${steps.map(s=>`<li>${s}</li>`).join('')}</ol><div class="tip">✅ Check it: ${res} + ${b} = ${a}</div>`;
+}
+function mulExplain(a,b){
+  if(a<=12&&b<=12){
+    let h=`<p><b>${a} × ${b}</b> means <b>${a} groups of ${b}</b>.</p><div class="dotgrid">`;
+    for(let i=1;i<=a;i++)h+=`<div class="dotrow">${'<i class="dot"></i>'.repeat(b)}<span class="rowlabel">${i*b}</span></div>`;
+    return h+`</div><p>Skip count down the rows: ${Array.from({length:a},(_,i)=>(i+1)*b).join(', ')} ✨</p><div class="tip">💡 ${mulTip(a,b)}</div>`;
+  }
+  const big=Math.max(a,b),sm=Math.min(a,b);
+  if(sm<10){const ps=placeParts(big);
+    return `<p>Break <b>${big}</b> into ${ps.join(' + ')}, then multiply each piece by ${sm}:</p>`+ps.map(p=>`<div class="pv">${p} × ${sm} = <b>${p*sm}</b></div>`).join('')+
+      `<div class="pv">Add them up: ${ps.map(p=>p*sm).join(' + ')} = <b>${a*b}</b></div><div class="tip">💡 Times a tens or hundreds piece? Multiply the digit, then add the zeros back: ${ps[0]} × ${sm} ➜ ${String(ps[0])[0]} × ${sm} = ${Number(String(ps[0])[0])*sm}, then add ${String(ps[0]).length-1} zero${String(ps[0]).length>2?'s':''}.</div>`}
+  const t=Math.floor(b/10)*10,o=b%10;
+  return `<p>Split <b>${b}</b> into <b>${t}</b> and <b>${o}</b>, multiply ${a} by each, then add:</p>
+    <div class="pv">${a} × ${t} = ${a} × ${t/10}, then add a 0 = <b>${a*t}</b></div><div class="pv">${a} × ${o} = <b>${a*o}</b></div><div class="pv">${a*t} + ${a*o} = <b>${a*b}</b></div>
+    <div class="tip">💡 That’s exactly how long multiplication works on paper: one row for the ones, one row for the tens, then add the rows.</div>`;
+}
+function divExplain(a,d,q){
+  if(d<=12&&q<=12)return `<p><b>${a} ÷ ${d}</b> means: share ${a} into <b>${d} equal groups</b>. How many land in each group?</p><div class="groups">${Array.from({length:d},()=>`<div class="group">${'<i class="dot"></i>'.repeat(q)}</div>`).join('')}</div><p>Each group gets <b>${q}</b>. Check it: ${d} × ${q} = ${a} ✅</p><div class="tip">💡 Division is multiplication backwards. Ask yourself: “${d} times what makes ${a}?”</div>`;
+  const ps=placeParts(q);
+  return `<p><b>${a} ÷ ${d}</b>: split ${a} into pieces that are easy to divide by ${d}:</p><div class="pv">${a} = ${ps.map(p=>p*d).join(' + ')}</div>`+
+    ps.map(p=>`<div class="pv">${p*d} ÷ ${d} = <b>${p}</b></div>`).join('')+`<div class="pv">Add the answers: ${ps.join(' + ')} = <b>${q}</b></div><div class="tip">✅ Check it: ${d} × ${q} = ${a}</div>`;
+}
+function numberLine(lo,hi,n,ans){
+  const x=v=>20+(v-lo)/(hi-lo)*300;let s=`<svg class="nline" viewBox="0 0 340 92" role="img" aria-label="number line from ${lo} to ${hi}">`;
+  s+=`<line x1="${x(n)}" y1="58" x2="${x(ans)}" y2="58" style="stroke:var(--mint);stroke-width:10;stroke-linecap:round;opacity:.55"/>`;
+  s+=`<line x1="20" y1="58" x2="320" y2="58" style="stroke:var(--ink);stroke-width:3"/>`;
+  for(let i=0;i<=10;i++){const v=lo+(hi-lo)*i/10,X=x(v),big=i%5===0;s+=`<line x1="${X}" y1="${big?46:52}" x2="${X}" y2="${big?70:64}" style="stroke:var(--ink);stroke-width:${big?3:2}"/>`;
+    if(big)s+=`<text x="${X}" y="88" text-anchor="middle" style="fill:var(--ink);font:600 13px Fredoka,sans-serif">${v}</text>`}
+  s+=`<circle cx="${x(n)}" cy="58" r="8" style="fill:var(--fire)"/><text x="${x(n)}" y="30" text-anchor="middle" style="fill:var(--fire-deep);font:700 16px Fredoka,sans-serif">${n}</text>`;
+  return s+'</svg>';
+}
+const gridHTML=(w,h)=>`<div class="tilegrid" style="grid-template-columns:repeat(${w},22px)">${'<i></i>'.repeat(w*h)}</div>`;
+
+/* ================= question generators ================= */
+const NAMES=['Maya','Leo','Sam','Zoe','Kai','Ava','Omar','Lily','Noah','Mia','Theo','Nora'];
+function eq(text,answer,extra){return{kind:'num',html:text,speak:speakEq(text),answer,...extra}}
+function mkAdd(nums){return eq(`${nums.join(' + ')} = ?`,nums.reduce((x,y)=>x+y,0),{paper:true,fast:60,hint:'Line the numbers up on paper: ones under ones, tens under tens. Add the ones first, and don’t forget to carry!',explain:()=>colAdd(nums)})}
+function mkSub(a,b){return eq(`${a} − ${b} = ?`,a-b,{paper:true,fast:60,hint:'Line them up on paper and start with the ones. If the top digit is too small, borrow from the next column!',explain:()=>colSub(a,b)})}
+function mkSub3(a,b,c){return eq(`${a} − ${b} − ${c} = ?`,a-b-c,{paper:true,fast:75,hint:`Two steps! First do ${a} − ${b}. Then take ${c} away from that answer.`,
+  explain:()=>`<p>Two steps: first <b>${a} − ${b}</b>, then take away <b>${c}</b>.</p><h3>Step 1: ${a} − ${b} = ${a-b}</h3>${colSub(a,b)}<h3>Step 2: ${a-b} − ${c} = ${a-b-c}</h3>${colSub(a-b,c)}`})}
+const hasCarry=ns=>{for(let i=0;i<4;i++)if(ns.reduce((s,n)=>s+Math.floor(n/10**i)%10,0)>=10)return true;return false};
+const hasBorrow=(x,y)=>{for(let i=0;i<4;i++)if(Math.floor(x/10**i)%10<Math.floor(y/10**i)%10)return true;return false};
+const ICONS=['🚀','⭐','🪐','👽','🌙','☄️','🛸'];
+function seqParts(l){
+  const k=pick({1:['add'],2:['add','sub'],3:['add','sub','double','alt'],4:['grow','triple','alt','add'],5:['fib','square','grow','double']}[l]);
+  const five=f=>[0,1,2,3,4].map(f);let s,rule;
+  if(k==='add'){const d=l===1?pick([2,3,4,5,10]):l===2?R(3,9):pick([11,12,15,20,25,50]),a=R(1,l>=4?300:40);s=five(i=>a+i*d);rule=`Each number goes up by ${d}.`}
+  else if(k==='sub'){const d=R(3,l>=3?15:9),a=d*5+R(5,60);s=five(i=>a-i*d);rule=`Each number goes down by ${d}.`}
+  else if(k==='double'){const a=R(1,l>=5?7:5);s=five(i=>a*2**i);rule='Each number is double the one before it (times 2).'}
+  else if(k==='triple'){const a=R(1,3);s=five(i=>a*3**i);rule='Each number is 3 times the one before it.'}
+  else if(k==='alt'){const u=R(4,9),dn=R(1,u-2);let v=R(5,30);s=[v];for(let i=1;i<6;i++){v+=i%2?u:-dn;s.push(v)}rule=`It goes up ${u}, then down ${dn}, then up ${u}, then down ${dn}…`}
+  else if(k==='grow'){let v=R(1,10);const st=R(1,3);s=[v];for(let i=0;i<4;i++){v+=st+i;s.push(v)}rule=`The jumps grow by 1 each time: +${st}, +${st+1}, +${st+2}, +${st+3}.`}
+  else if(k==='fib'){const a=R(1,4),b=R(a,a+4);s=[a,b];while(s.length<6)s.push(s[s.length-1]+s[s.length-2]);rule='Each number is the two numbers before it added together!'}
+  else{const o=R(1,3);s=five(i=>(i+o)**2);rule=`They’re square numbers: ${o} × ${o}, ${o+1} × ${o+1}, ${o+2} × ${o+2}… (a number times itself).`}
+  return{s,rule};
+}
+const seqHTML=s=>'<div class="seqrow">'+s.map((v,i)=>(i?`<span class="seqd">${s[i]-s[i-1]>=0?'+':'−'}${Math.abs(s[i]-s[i-1])}</span>`:'')+`<span class="seqn">${v}</span>`).join('')+'</div>';
+const ODD_TESTS=[n=>n%2===0,n=>n%2===1,n=>n%5===0,n=>n%10===0,n=>n%3===0,n=>n%4===0,n=>n%6===0,n=>n%7===0,n=>n%8===0,n=>n%9===0,n=>n%11===0];
+function oddAmbiguous(nums,odd){return ODD_TESTS.some(f=>{const out=nums.filter(n=>!f(n)),inn=nums.filter(f);return(out.length===1&&out[0]!==odd)||(inn.length===1&&inn[0]!==odd)})}
+function logicGen(l){
+  const t=pick({1:['seq','seq','big','order','odd'],2:['seq','gap','emoji','order','riddle2'],3:['seq','gap','order','compare','big','emoji','riddle2'],4:['seq','gap','emoji','riddle3','order','odd','compare'],5:['seq','gap','emoji','riddle3','order','big','compare']}[l]);
+  if(t==='seq'||t==='gap'){
+    const{s,rule}=seqParts(l),hide=t==='seq'?s.length-1:R(1,s.length-2),shown=s.map((v,i)=>i===hide?'?':v);
+    return{kind:'num',story:true,html:`Find the missing number:<br><b style="font-size:1.4em">${shown.join(', ')}</b>`,speak:`Find the missing number: ${shown.map(v=>v==='?'?'what':v).join(', ')}`,answer:s[hide],
+      hint:t==='seq'?'Look at how each number changes from the one before it.':'Look at the numbers on both sides of the gap. What’s the rule?',explain:()=>`<p>${rule}</p>${seqHTML(s)}<p>So the missing number is <b>${s[hide]}</b>.</p>`};
+  }
+  if(t==='big'){
+    const n=l===1?3:4;let ds;do ds=shuffle([0,1,2,3,4,5,6,7,8,9]).slice(0,n);while(l<5&&ds.includes(0));
+    const want=l>=3&&Math.random()<0.5?'small':'big';let ans;
+    if(want==='big')ans=Number([...ds].sort((x,y)=>y-x).join(''));
+    else{const asc=[...ds].sort((x,y)=>x-y);if(asc[0]===0){const k=asc.findIndex(x=>x>0),f=asc.splice(k,1)[0];asc.unshift(f)}ans=Number(asc.join(''))}
+    const zero=ds.includes(0)&&want==='small';
+    return{kind:'num',story:true,html:`Use each digit once: <b style="font-size:1.4em;letter-spacing:.25em">${ds.join(' ')}</b><br>Make the <b>${want==='big'?'BIGGEST':'SMALLEST'}</b> number you can!`,
+      speak:`Use the digits ${ds.join(', ')}, once each. Make the ${want==='big'?'biggest':'smallest'} number you can.`,answer:ans,
+      hint:want==='big'?'The left spot is worth the most. Put your biggest digit there!':zero?'Smallest digits first… but a number can’t start with 0!':'The left spot is worth the most. Put your smallest digit there!',
+      explain:()=>`<p>The spot on the left is worth the most. So put the <b>${want==='big'?'biggest':'smallest'}</b> digits first${zero?' (but a number can’t start with 0, so the 0 goes second)':''}:</p><div class="answer-reveal">${ans}</div>`};
+  }
+  if(t==='order'){
+    let items;const cnt=l<=2?4:5;
+    if(l===3){const ds=shuffle([1,2,3,4,5,6,7,8,9]).slice(0,3);items=shuffle([[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]].map(p=>Number(p.map(i=>ds[i]).join('')))).slice(0,5)}
+    else{const base=R(20,89)*100,gen=l===1?()=>R(10,99):l===2?()=>R(100,999):l===4?()=>pick([R(100,999),R(1000,9999)]):()=>base+R(0,99);const set=new Set();while(set.size<cnt)set.add(gen());items=[...set]}
+    const dir=l===1?'asc':pick(['asc','desc']),sorted=[...items].sort((x,y)=>dir==='asc'?x-y:y-x);
+    return{kind:'order',items:shuffle(items),dir,answer:sorted.join(','),answerLabel:sorted.join(dir==='asc'?' &lt; ':' &gt; '),story:true,
+      html:`Tap the numbers in order from <b>${dir==='asc'?'smallest to biggest':'biggest to smallest'}</b>.`,speak:`Put these numbers in order from ${dir==='asc'?'smallest to biggest':'biggest to smallest'}: ${items.join(', ')}`,
+      hint:'Compare the digits on the left first. And a number with more digits is always bigger!',
+      explain:()=>`<p>Compare place by place, starting on the left: ${l>=4?'thousands, then ':''}hundreds, then tens, then ones. A number with more digits is always bigger.</p><div class="seqrow">${sorted.map(v=>`<span class="seqn">${v}</span>`).join(`<span class="seqd">${dir==='asc'?'&lt;':'&gt;'}</span>`)}</div>`};
+  }
+  if(t==='odd'){
+    const rules=l<=2?[[n=>n%2===0,'All the others are even numbers (they end in 0, 2, 4, 6 or 8).'],[n=>n%2===1,'All the others are odd numbers (they end in 1, 3, 5, 7 or 9).'],[n=>n%5===0,'All the others are in the 5 times table (they end in 0 or 5).'],[n=>n%10===0,'All the others are in the 10 times table (they end in 0).']]
+      :[3,4,6,7,8,9].map(m=>[n=>n%m===0,`All the others are in the ${m} times table.`]);
+    let test,desc,fol,odd,tries=0;
+    do{[test,desc]=pick(rules);const f=new Set();while(f.size<3){const n=R(10,99);if(test(n))f.add(n)}fol=[...f];do odd=R(10,99);while(test(odd));tries++}while(oddAmbiguous([...fol,odd],odd)&&tries<300);
+    const ch=shuffle([...fol,odd].map(String));
+    return{kind:'choice',story:true,html:'Which number does NOT belong with the others?',speak:`Which number does not belong: ${ch.join(', ')}?`,choices:ch,answer:String(odd),
+      hint:'Find something that three of the numbers have in common.',explain:()=>`<p>${desc} <b>${odd}</b> isn’t, so it’s the odd one out!</p>`};
+  }
+  if(t==='compare'){
+    const mk=()=>{const k=l===3?pick(['mul','add']):pick(['mul','mul','sub','add']);
+      if(k==='mul'){const a=R(3,9),b=R(3,9);return[`${a} × ${b}`,a*b]}
+      if(k==='add'){const a=R(15,60),b=R(10,40);return[`${a} + ${b}`,a+b]}
+      const a=R(60,99),b=R(5,40);return[`${a} − ${b}`,a-b]};
+    let e1,e2;do{e1=mk();e2=mk()}while(e1[1]===e2[1]||Math.abs(e1[1]-e2[1])>15);
+    const big=e1[1]>e2[1]?e1:e2;
+    return{kind:'choice',story:true,html:'Which is BIGGER?',speak:`Which is bigger: ${speakEq(e1[0])}, or ${speakEq(e2[0])}?`,choices:[e1[0],e2[0]],answer:big[0],
+      hint:'Work out each side first, then compare.',explain:()=>`<div class="pv">${e1[0]} = <b>${e1[1]}</b></div><div class="pv">${e2[0]} = <b>${e2[1]}</b></div><p>${big[1]} is bigger, so <b>${big[0]}</b> wins!</p>`};
+  }
+  if(t==='emoji'){
+    const[X,Y,Z]=shuffle(ICONS).slice(0,3);let lines,ans,ex;
+    if(l<=3){const x=R(2,12),y=R(1,15),reps=l===2?2:3;lines=[`${Array(reps).fill(X).join(' + ')} = ${x*reps}`,`${X} + ${Y} = ${x+y}`,`${Y} = ?`];ans=y;
+      ex=[`${reps} of ${X} make ${x*reps}, so one ${X} = ${x*reps} ÷ ${reps} = <b>${x}</b>`,`${X} + ${Y} = ${x+y}, so ${Y} = ${x+y} − ${x} = <b>${y}</b>`]}
+    else if(l===4){const x=R(2,12),y=R(2,15),z=R(1,15);lines=[`${X} + ${X} = ${2*x}`,`${X} + ${Y} = ${x+y}`,`${Y} + ${Z} = ${y+z}`,`${Z} = ?`];ans=z;
+      ex=[`${X} + ${X} = ${2*x}, so ${X} = <b>${x}</b>`,`${x} + ${Y} = ${x+y}, so ${Y} = <b>${y}</b>`,`${y} + ${Z} = ${y+z}, so ${Z} = <b>${z}</b>`]}
+    else{const x=R(2,9),y=R(2,12),z=R(2,9);lines=[`${X} × ${X} = ${x*x}`,`${X} + ${Y} = ${x+y}`,`${Y} × ${Z} = ${y*z}`,`${Z} = ?`];ans=z;
+      ex=[`${x} × ${x} = ${x*x}, so ${X} = <b>${x}</b>`,`${x} + ${Y} = ${x+y}, so ${Y} = <b>${y}</b>`,`${y} × ${Z} = ${y*z}, so ${Z} = ${y*z} ÷ ${y} = <b>${z}</b>`]}
+    return{kind:'num',story:true,html:`🔐 Space code! Each picture stands for a number.<br><span style="font-size:1.45em;line-height:1.7">${lines.join('<br>')}</span>`,speak:'Space code! Each picture stands for a number. Work out the last one.',answer:ans,
+      hint:'Crack the first line first. Then use that answer in the next line!',explain:()=>`<ol class="steps">${ex.map(s=>`<li>${s}</li>`).join('')}</ol>`};
+  }
+  if(t==='riddle2'){
+    let T,O;do{T=R(1,9);O=R(0,9)}while(T===O);const n=T*10+O,s=T+O,d=Math.abs(T-O),c2=`My tens digit is ${d} ${T>O?'more':'less'} than my ones digit.`;
+    const cands=[];for(let x=10;x<100;x++)if(Math.floor(x/10)+x%10===s)cands.push(x);
+    return{kind:'num',story:true,html:`🕵️ Who am I?<br>• I am a 2-digit number.<br>• My digits add up to ${s}.<br>• ${c2}`,speak:`Who am I? I am a 2-digit number. My digits add up to ${s}. ${c2}`,answer:n,
+      hint:`List the 2-digit numbers whose digits add up to ${s}, then test the last clue.`,explain:()=>`<p>2-digit numbers whose digits add up to ${s}: ${cands.join(', ')}.</p><p>Which one has a tens digit ${d} ${T>O?'more':'less'} than its ones digit? <b>${n}</b>!</p>`};
+  }
+  const H=R(1,9);let T,O,rel;
+  if(Math.random()<0.5){T=R(1,4);O=2*T;rel='My ones digit is double my tens digit.'}else{const k=R(1,5);T=R(0,9-k);O=T+k;rel=`My ones digit is ${k} more than my tens digit.`}
+  const n=H*100+T*10+O,s=H+T+O;
+  return{kind:'num',story:true,html:`🕵️ Who am I?<br>• I am between ${H*100} and ${H*100+99}.<br>• My digits add up to ${s}.<br>• ${rel}`,speak:`Who am I? I am between ${H*100} and ${H*100+99}. My digits add up to ${s}. ${rel}`,answer:n,
+    hint:`The first clue tells you my hundreds digit. So the other two digits add up to ${s} minus that.`,
+    explain:()=>`<ol class="steps"><li>Between ${H*100} and ${H*100+99} ➜ the hundreds digit is <b>${H}</b>.</li><li>The digits add up to ${s}, so tens + ones = ${s} − ${H} = <b>${T+O}</b>.</li><li>${rel} Which two digits add to ${T+O} and fit? <b>${T}</b> and <b>${O}</b>.</li></ol><p>So I am <b>${n}</b>!</p>`};
+}
+
+const GEN={
+  add(l){
+    let a,b,c;
+    if(l>=4&&Math.random()<0.2){b=R(105,899);const tot=b+R(105,899);
+      return eq(`? + ${b} = ${tot}`,tot-b,{paper:true,fast:60,hint:`Think: ${tot} − ${b} = ?`,explain:()=>`<p><b>? + ${b} = ${tot}</b> is the same as asking <b>${tot} − ${b}</b>.</p>`+colSub(tot,b)})}
+    if(Math.random()<0.5){let ns;
+      do ns=l===1?[R(15,89),R(15,89)]:l===2?[R(105,899),R(15,99)]:l===3?[R(105,899),R(105,899)]:l===4?[R(105,899),R(105,899),R(15,99)]:[R(105,899),R(105,899),R(105,899)];while(!hasCarry(ns));
+      return mkAdd(ns)}
+    if(l===1){do{a=R(31,98);b=R(12,a-5)}while(!hasBorrow(a,b));return mkSub(a,b)}
+    if(l===2){do{a=R(110,999);b=R(15,99)}while(!hasBorrow(a,b));return mkSub(a,b)}
+    if(l===3){do{a=R(300,999);b=R(105,a-20)}while(!hasBorrow(a,b));return mkSub(a,b)}
+    if(l===4){if(Math.random()<0.5){do{a=R(1001,1999);b=R(105,999)}while(!hasBorrow(a,b));return mkSub(a,b)}
+      a=R(500,999);b=R(105,Math.floor(a/2));c=R(15,99);return mkSub3(a,b,c)}
+    if(Math.random()<0.5){a=pick([R(3,9)*100,R(3,9)*100+R(1,9),1000+R(1,9),R(11,29)*100+R(1,9)]);b=R(105,a-20);return mkSub(a,b)}
+    a=R(1200,2999);b=R(105,899);c=R(105,Math.min(899,a-b-10));return mkSub3(a,b,c);
+  },
+  mul(l){
+    let a,b;
+    if(l===1){a=R(2,10);b=R(2,10);if(a<6&&b<6)a=R(6,10)}
+    else if(l===2){a=R(12,49);b=R(2,5)}
+    else if(l===3){a=R(23,99);b=R(3,9)}
+    else if(l===4){a=R(102,499);b=R(2,9)}
+    else{a=R(12,49);do b=R(11,29);while(b%10===0)}
+    if(l>=2&&l<=4&&Math.random()<0.5)[a,b]=[b,a];
+    const paper=l>=2;let hint;
+    if(l===1){const e=[2,5,10].includes(b)?b:[2,5,10].includes(a)?a:Math.min(a,b);hint=`Skip count by ${e}, ${a*b/e} times: ${e}, ${2*e}, ${3*e}…`}
+    else if(l===5)hint=`Split ${b} into ${Math.floor(b/10)*10} and ${b%10}. Do ${a} × ${Math.floor(b/10)*10} and ${a} × ${b%10}, then add them up!`;
+    else{const big=Math.max(a,b),s=Math.min(a,b);hint=`Break ${big} into ${big>=100?'hundreds, tens and ones':'tens and ones'}. Multiply each part by ${s}, then add!`}
+    return eq(`${a} × ${b} = ?`,a*b,{paper,fast:paper?60:12,hint,explain:()=>mulExplain(a,b)});
+  },
+  div(l){
+    let d,q;
+    if(l===1){d=R(2,10);q=R(2,10)}
+    else if(l===2){d=R(2,5);q=R(11,25)}
+    else if(l===3){d=R(3,9);q=R(12,30)}
+    else if(l===4){d=R(2,9);q=R(31,99)}
+    else{d=R(3,9);q=R(101,199)}
+    const a=d*q,paper=l>=2;
+    if(l>=4&&Math.random()<0.25)return eq(`? × ${d} = ${a}`,q,{paper,fast:60,hint:`That’s the same question as ${a} ÷ ${d}.`,explain:()=>divExplain(a,d,q)});
+    return eq(`${a} ÷ ${d} = ?`,q,{paper,fast:paper?60:12,hint:paper?`Split ${a} into pieces that are easy to divide by ${d}. For example, ${d} × 10 = ${d*10}.`:`Think: ${d} × ? = ${a}`,explain:()=>divExplain(a,d,q)});
+  },
+  logic(l){return logicGen(l)},
+  frac(l){
+    if(l<=2){
+      const n=pick(l===1?[2,3,4]:[3,4,5,6,8]),k=R(1,n-1),ans=`${k}/${n}`;
+      const ch=shuffle([...new Set([ans,`${n-k}/${n}`,`${k}/${n+1}`,`${n}/${k}`,`${k+1}/${n}`])].slice(0,4));
+      return{kind:'choice',html:'What fraction of the space pizza has pepperoni?',speak:'What fraction of the space pizza has pepperoni?',story:true,visual:pizzaSVG(n,k),choices:ch,answer:ans,
+        hint:'Count ALL the slices first. That’s the bottom number. Then count the pepperoni slices. That’s the top!',
+        explain:()=>`<div class="pizzas">${pizzaSVG(n,k,120)}</div><p>The pizza is cut into <b>${n}</b> equal slices ➜ the bottom number is <b>${n}</b>.</p><p><b>${k}</b> slices have pepperoni ➜ the top number is <b>${k}</b>.</p><p style="font-size:1.6rem">So it’s ${fracHTML(ans)}</p>`};
+    }
+    if(l===3){
+      const n=R(3,8);let k1=R(1,n),k2;do k2=R(1,n);while(k2===k1);const A=`${k1}/${n}`,B=`${k2}/${n}`,ans=k1>k2?A:B;
+      return{kind:'choice',html:'Which is MORE pizza?',speak:`Which is more pizza: ${k1} out of ${n}, or ${k2} out of ${n}?`,choices:[A,B],answer:ans,
+        hint:'Both pizzas are cut into the same size slices. Which one has more slices?',
+        explain:()=>`<div class="pizzas"><figure>${pizzaSVG(n,k1,110)}<figcaption>${fracHTML(A)}</figcaption></figure><figure>${pizzaSVG(n,k2,110)}<figcaption>${fracHTML(B)}</figcaption></figure></div><p>Same bottom number means the slices are the <b>same size</b>. So more slices = more pizza!</p>`};
+    }
+    if(l===4){
+      const k=R(1,3);let n1=R(k+1,10),n2;do n2=R(k+1,10);while(n2===n1);const A=`${k}/${n1}`,B=`${k}/${n2}`,ans=n1<n2?A:B;
+      return{kind:'choice',html:'Which is MORE pizza?',speak:`Which is more pizza: ${k} out of ${n1}, or ${k} out of ${n2}?`,choices:[A,B],answer:ans,
+        hint:'Both have the same number of slices. But which pizza has BIGGER slices? Fewer cuts make bigger slices!',
+        explain:()=>`<div class="pizzas"><figure>${pizzaSVG(n1,k,110)}<figcaption>${fracHTML(A)}</figcaption></figure><figure>${pizzaSVG(n2,k,110)}<figcaption>${fracHTML(B)}</figcaption></figure></div><p>You get <b>${k}</b> slice${k>1?'s':''} either way. A pizza cut into <b>fewer</b> pieces has <b>bigger</b> slices. So ${fracHTML(ans)} is more pizza!</p><div class="tip">💡 Sneaky rule: a bigger bottom number means smaller slices.</div>`};
+    }
+    const bases=[[1,2],[1,3],[2,3],[1,4],[3,4],[2,5]];const[a,b]=pick(bases);let m;do m=R(2,4);while(b*m>12);
+    const askTop=Math.random()<0.6,html=askTop?`${fracHTML(`${a}/${b}`)} = ${fracHTML(`?/${b*m}`)}`:`${fracHTML(`${a}/${b}`)} = ${fracHTML(`${a*m}/?`)}`;
+    return{kind:'num',html,speak:askTop?`${a} over ${b} equals what over ${b*m}?`:`${a} over ${b} equals ${a*m} over what?`,answer:askTop?a*m:b*m,
+      hint:`How do you get from ${askTop?b:a} to ${askTop?b*m:a*m}? Do the same thing to the other number!`,
+      explain:()=>`<div class="pizzas"><figure>${pizzaSVG(b,a,110)}<figcaption>${fracHTML(`${a}/${b}`)}</figcaption></figure><figure>${pizzaSVG(b*m,a*m,110)}<figcaption>${fracHTML(`${a*m}/${b*m}`)}</figcaption></figure></div><p>Same amount of pizza! Each slice got cut into <b>${m}</b> smaller pieces, so the top AND bottom both get multiplied by ${m}.</p>`};
+  },
+  round(l){
+    let n,p;
+    if(l===1){p=10;do n=R(11,99);while(n%10===0)}
+    else if(l===2){p=10;do n=R(101,999);while(n%10===0)}
+    else if(l===3){p=100;do n=R(101,999);while(n%100===0)}
+    else if(l===4){p=pick([10,100]);do n=R(101,999);while(n%p===0)}
+    else{p=pick([100,1000]);do n=R(1001,9999);while(n%p===0)}
+    const lo=Math.floor(n/p)*p,hi=lo+p,ans=Math.round(n/p)*p,dig=Math.floor(n/(p/10))%10,place={10:'ones',100:'tens',1000:'hundreds'}[p];
+    return{kind:'num',html:`Round <b>${n}</b> to the nearest <b>${p}</b>`,speak:`Round ${n} to the nearest ${p}.`,answer:ans,
+      hint:`Is ${n} closer to ${lo} or to ${hi}?`,
+      explain:()=>`<p>${n} sits between <b>${lo}</b> and <b>${hi}</b>. The halfway point is ${lo+p/2}.</p>${numberLine(lo,hi,n,ans)}<p>Look at the ${place} digit: <b>${dig}</b>. ${dig>=5?'5 or more ➜ round <b>up</b>':'Less than 5 ➜ round <b>down</b>'} to <b>${ans}</b>.</p><div class="tip">💡 Rhyme: “5 or more, raise the score. 4 or less, let it rest.”</div>`};
+  },
+  riddle(l){
+    const nm=pick(NAMES),dn=S.dragon||'Your dragon';
+    const story=(text,answer,hint,steps,vis='')=>({kind:'num',html:esc(text),speak:text,story:true,answer,hint,explain:()=>`<p>🔎 ${hint}</p>${vis}<div class="pv">${steps}</div>`});
+    const T=[
+      {min:1,f(){const a=R(12,58),b=R(11,39);return story(`${nm} counted ${a} stars before bedtime and ${b} more after the clouds moved away. How many stars did ${nm} count in all?`,a+b,'“In all” means put together ➜ add!',`${a} + ${b} = <b>${a+b}</b>`)}},
+      {min:1,f(){const a=R(40,95),b=R(12,a-10);return story(`There were ${a} space apples in the rocket. ${dn} gobbled up ${b} of them. How many apples are left?`,a-b,'“Left” means some went away ➜ subtract!',`${a} − ${b} = <b>${a-b}</b>`)}},
+      {min:1,f(){const d=l<=1?pick([2,5,10]):l<=3?pick([3,4,6,25]):pick([7,8,9,15]),down=l>=4&&Math.random()<0.5,s=R(1,20),start=down?s+d*6:s;
+        const seq=[0,1,2,3].map(i=>down?start-i*d:start+i*d),ans=down?start-4*d:start+4*d;
+        return story(`Rocket countdown code! What number comes next? ${seq.join(', ')}, ?`,ans,`Look at how much it ${down?'shrinks':'grows'} each step.`,`Each step ${down?'takes away':'adds'} ${d}: ${seq[3]} ${down?'−':'+'} ${d} = <b>${ans}</b>`)}},
+      {min:2,f(){const d=R(3,9),h=R(2,9);return story(`A Mars rover drives ${d} meters every hour. How many meters does it drive in ${h} hours?`,d*h,'The same amount every hour ➜ multiply!',`${h} hours × ${d} meters = <b>${d*h}</b> meters`)}},
+      {min:2,f(){const g=R(3,9),s=l<=2?pick([2,3,4,5,10]):R(3,9);return story(`There are ${g} boxes with ${s} moon rocks in each box. How many moon rocks altogether?`,g*s,'Equal groups ➜ multiply!',`${g} groups of ${s}: ${g} × ${s} = <b>${g*s}</b>`)}},
+      {min:3,f(){const k=R(3,8),q=R(3,9);return story(`An astronaut has ${k*q} space snacks. She packs ${k} snacks into each bag. How many bags can she fill?`,q,'Making equal bags ➜ divide!',`${k*q} ÷ ${k} = <b>${q}</b> bags`)}},
+      {min:3,f(){const w=R(3,9),h=R(2,7);return story(`A landing pad is ${w} tiles long and ${h} tiles wide. How many square tiles cover the whole pad?`,w*h,'Picture rows of tiles. How many rows? How many in each row?',`${h} rows of ${w} tiles: ${h} × ${w} = <b>${w*h}</b>`,gridHTML(w,h))}},
+      {min:4,f(){const q=R(3,9);return story(`One day on Jupiter lasts about 10 hours. About how many hours do ${q} Jupiter days last?`,q*10,'Count by 10s!',`${q} × 10 = <b>${q*10}</b> hours`)}},
+      {min:4,f(){const g=R(3,7),s=R(4,9),x=R(3,g*s-5);return story(`${nm} buys ${g} packs of planet cards with ${s} cards in each pack, then gives ${x} cards to a friend. How many cards are left?`,g*s-x,'Two steps! First find how many cards in all, then take some away.',`Step 1: ${g} × ${s} = ${g*s}<br>Step 2: ${g*s} − ${x} = <b>${g*s-x}</b>`)}},
+      {min:4,f(){const[legs,kind]=pick([[8,'space spiders'],[4,'moon cats'],[6,'star beetles']]),q=R(3,9);return story(`Some ${kind} are having a party. Each one has ${legs} legs. Altogether there are ${legs*q} legs. How many ${kind} are at the party?`,q,`Think: ${legs} × ? = ${legs*q}`,`${legs*q} ÷ ${legs} = <b>${q}</b>`)}},
+      {min:5,f(){const b=R(5,9),m=R(3,8),f=b*m+R(10,90);return story(`A rocket has ${f} kg of fuel. It burns ${b} kg every minute. How much fuel is left after ${m} minutes?`,f-b*m,'Two steps! How much fuel gets burned in total? Then subtract.',`Step 1: ${m} × ${b} = ${b*m} kg burned<br>Step 2: ${f} − ${b*m} = <b>${f-b*m}</b> kg left`)}},
+      {min:5,f(){const a=R(2,6),b=R(2,10-a),d=R(3,9);return story(`Every day ${dn} eats ${a} star-fish for breakfast and ${b} for dinner. How many does ${dn} eat in ${d} days?`,(a+b)*d,'Two steps! How many in ONE day? Then multiply by the days.',`Step 1: ${a} + ${b} = ${a+b} each day<br>Step 2: ${a+b} × ${d} = <b>${(a+b)*d}</b>`)}},
+      {min:5,f(){const price=R(3,9),n=R(3,8),cost=price*n;let pay=Math.ceil(cost/10)*10;if(pay===cost)pay+=10;
+        return story(`Space comics cost $${price} each. ${nm} buys ${n} of them and pays with $${pay}. How many dollars of change does ${nm} get back?`,pay-cost,'Two steps! What do the comics cost altogether? Then subtract that from what was paid.',`Step 1: ${n} × $${price} = $${cost}<br>Step 2: $${pay} − $${cost} = <b>$${pay-cost}</b>`)}}
+    ];
+    return pick(T.filter(t=>t.min<=l)).f();
+  }
+};
+
+/* ================= screens ================= */
+const SCREENS=['title','map','flight','battle','lair','book','parent'];
+function show(name){
+  SCREENS.forEach(s=>$('s-'+s).hidden=s!==name);window.scrollTo(0,0);
+  if(name==='map')renderMap();if(name==='lair')renderLair();if(name==='parent')renderParent();if(name==='title')renderTitle();if(name==='book')renderBook();
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+
+function renderTitle(){
+  const has=!!S.name;$('titleNew').hidden=has;$('titleBack').hidden=!has;
+  if(has)$('welcomeBack').textContent=`Welcome back, ${S.name}! ${S.dragon} is ready to fly.`;
+}
+$('btnStart').onclick=()=>{
+  const n=$('inName').value.trim(),d=$('inDragon').value.trim()||'Sparky';
+  if(!n){$('inName').focus();$('inName').placeholder='Type your name here';return}
+  S=fresh();S.name=n;S.dragon=d;save();SFX.win();show('map');
+};
+$('btnContinue').onclick=()=>show('map');
+$('btnNewPlayer').onclick=()=>{$('titleNew').hidden=false;$('titleBack').hidden=true;$('inName').focus()};
+
+const totalStars=()=>ORDER.filter(k=>k!=='riddle').reduce((t,k)=>t+S.skills[k].lvl,0);
+
+function renderMap(){
+  const st=stage();
+  $('mapDragon').innerHTML=dragonHTML(68);
+  $('mapTitle').textContent=`${S.name} & ${S.dragon}`;
+  $('mapStage').textContent=`${st.n} · 📖 ${S.facts.length} space facts`;
+  $('mapCoins').textContent=S.coins;
+  let pct=100,txt='';
+  if(st.idx<0){pct=10;txt='Win your first battle to hatch your egg!'}
+  else if(st.next===null){txt='Your dragon is a legend. Keep exploring!'}
+  else{pct=Math.round((S.xp-st.cur)/(st.next-st.cur)*100);txt=`${st.next-S.xp} more brain points until your dragon grows`}
+  $('xpFill').style.width=pct+'%';$('xpText').textContent=txt;
+  $('btnMute').textContent=S.muted?'🔇 Sound is off':'🔊 Sound is on';
+  const stars=totalStars();
+  $('planets').innerHTML=ORDER.map(k=>{
+    const sk=S.skills[k],I=SKILLS[k],locked=I.unlock&&stars<I.unlock;
+    const starStr='★'.repeat(sk.lvl)+`<span class="off">${'★'.repeat(5-sk.lvl)}</span>`;
+    const foe=locked?`🔒 Collect ${I.unlock} ⭐ on the other planets to unlock (you have ${stars})`:sk.lvl===5?`${sk.mastered?'🏆 Mastered! ':''}Boss: King ${I.foeName}`:`Level ${sk.lvl} vs ${I.foeName} ${I.foe}`;
+    return `<button class="planet" data-skill="${k}" ${locked?'disabled':''}>
+      <span class="orbwrap"><span class="orb ${I.orb}" aria-hidden="true"></span></span>
+      <span><h3>${I.planet}${S.lastPlanet===k?'<span class="here">You are here</span>':''}</h3><p>${I.station} · ${I.desc}</p>
+      <div class="stars" aria-label="level ${sk.lvl} of 5">${starStr}</div><div class="foeline">${foe}</div></span></button>`;
+  }).join('');
+  document.querySelectorAll('.planet').forEach(b=>b.onclick=()=>travel(b.dataset.skill));
+}
+$('btnLair').onclick=()=>show('lair');
+$('btnBook').onclick=()=>show('book');
+$('btnParent').onclick=()=>show('parent');
+$('btnMute').onclick=()=>{S.muted=!S.muted;save();renderMap()};
+
+/* ================= travel & flight mini-game ================= */
+function travel(skill){
+  if(S.lastPlanet===skill){startBattle(skill);return}
+  if(S.settings.flight==='off'){S.lastPlanet=skill;save();arrive(skill,null);return}
+  startFlight(skill);
+}
+function arrive(skill,stars){
+  const I=SKILLS[skill],sk=S.skills[skill];
+  modal(`<div style="text-align:center"><span class="orb big ${I.orb}"></span><h2 style="margin-top:12px">Welcome to ${I.planet}!</h2>
+    ${stars!==null?`<p>You caught ⭐ ${stars} on the way: <b>+${stars} coins</b>!</p>`:''}</div>
+    <div class="planetcard">${I.stats.map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('')}</div>
+    <p style="text-align:center;font-size:1.15rem">Mission: defeat the ${sk.lvl===5?'King ':''}${I.foeName} ${I.foe}</p>`,
+    [{label:'Start the mission',fn:()=>startBattle(skill)},{label:'Back to map',cls:'ghost',fn:()=>show('map')}]);
+}
+let F=null;const KEYS={up:false,down:false};
+function startFlight(skill){
+  const len={short:12,normal:25}[S.settings.flight]||25;
+  show('flight');
+  $('flightTo').textContent=`🚀 Flying to ${SKILLS[skill].planet}`;
+  const cv=$('flightCanvas'),ctx=cv.getContext('2d');
+  F={skill,ctx,t:0,len,y:.5,ty:.5,stars:0,objs:[],pops:[],spawn:.4,inv:0,shake:0,last:performance.now(),done:false,
+     dots:Array.from({length:90},()=>({x:Math.random(),y:Math.random(),z:.2+Math.random()*.8}))};
+  sizeFlight();
+  requestAnimationFrame(flightLoop);
+}
+function sizeFlight(){
+  if(!F)return;const cv=$('flightCanvas'),dpr=window.devicePixelRatio||1;
+  F.W=cv.clientWidth;F.H=cv.clientHeight;cv.width=Math.round(F.W*dpr);cv.height=Math.round(F.H*dpr);F.ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize',sizeFlight);
+const steerTo=e=>{if(!F)return;const r=$('flightCanvas').getBoundingClientRect();F.ty=clamp((e.clientY-r.top)/r.height,.08,.92)};
+$('flightCanvas').addEventListener('pointermove',steerTo);
+$('flightCanvas').addEventListener('pointerdown',e=>{steerTo(e);try{$('flightCanvas').setPointerCapture(e.pointerId)}catch(_){}});
+$('btnSkipFlight').onclick=()=>endFlight();
+
+function drawPlanet(ctx,key,x,y,r){
+  const c=PCOL[key];
+  if(key==='saturn'){ctx.save();ctx.strokeStyle='#e2c886';ctx.lineWidth=r*.09;ctx.beginPath();ctx.ellipse(x,y,r*1.75,r*.42,-.28,0,Math.PI*2);ctx.stroke();ctx.restore()}
+  const g=ctx.createRadialGradient(x-r*.35,y-r*.35,r*.1,x,y,r);g.addColorStop(0,c[0]);g.addColorStop(1,c[1]);
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  if(key==='jupiter'){ctx.save();ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.clip();ctx.fillStyle='rgba(140,80,40,.35)';[-.55,-.2,.2,.5].forEach(f=>ctx.fillRect(x-r,y+f*r,r*2,r*.13));
+    ctx.fillStyle='#c7462d';ctx.beginPath();ctx.ellipse(x+r*.25,y+r*.32,r*.2,r*.11,0,0,Math.PI*2);ctx.fill();ctx.restore()}
+  if(key==='uranus'){ctx.save();ctx.strokeStyle='rgba(220,250,255,.75)';ctx.lineWidth=r*.05;ctx.beginPath();ctx.ellipse(x,y,r*.3,r*1.6,.15,0,Math.PI*2);ctx.stroke();ctx.restore()}
+  if(key==='pluto'){ctx.fillStyle='#fff8ee';ctx.font=`${r*.6}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('♥',x,y)}
+}
+function emoji(ctx,e,x,y,size,rot=0){ctx.save();ctx.translate(x,y);if(rot)ctx.rotate(rot);ctx.font=`${Math.round(size)}px ${EMOJI_FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(e,0,0);ctx.restore()}
+
+function flightLoop(now){
+  if(!F||F.done)return;
+  if($('s-flight').hidden){F=null;return}
+  const dt=Math.min(0.05,(now-F.last)/1000);F.last=now;F.t+=dt;
+  const ctx=F.ctx,W=F.W,H=F.H;
+  const k=(KEYS.down?1:0)-(KEYS.up?1:0);if(k)F.ty=clamp(F.ty+k*dt*1.4,.08,.92);
+  F.y+=(F.ty-F.y)*Math.min(1,dt*9);
+  const speed=(230+F.t*7)*Math.max(.7,W/800),dx=W*.16,dy=F.y*H,dr=H*.065;
+  // spawn
+  if(F.t>1.6&&F.t<F.len-3.5){F.spawn-=dt;if(F.spawn<=0){F.spawn=.3+Math.random()*.38;
+    const r=Math.random();let type=r<.5?'star':r<.57?'big':r<.9?'rock':'comet';
+    if(type==='big'&&F.t<3)type='star';if(type==='comet'&&F.t<6)type='rock';
+    const size=H*(type==='rock'?.09+Math.random()*.05:type==='big'?.1:type==='comet'?.09:.07);
+    F.objs.push({type,size,x:W+50,y:H*(.08+Math.random()*.84),vx:speed*(type==='comet'?1.7:type==='rock'?.8+Math.random()*.5:1),
+      vy:type==='comet'?(Math.random()<.5?-1:1)*speed*.22:0,rot:Math.random()*6,spin:(Math.random()-.5)*4})}}
+  // update objects & collisions
+  F.inv=Math.max(0,F.inv-dt);F.shake=Math.max(0,F.shake-dt);
+  F.objs=F.objs.filter(o=>{
+    o.x-=o.vx*dt;o.y+=o.vy*dt;o.rot+=o.spin*dt;
+    if(o.y<H*.05||o.y>H*.95)o.vy*=-1;
+    if(o.x<-60)return false;
+    if(Math.hypot(o.x-dx,o.y-dy)<o.size*.45+dr){
+      if(o.type==='star'||o.type==='big'){const v=o.type==='big'?5:1;F.stars+=v;SFX.star();F.pops.push({x:o.x,y:o.y,t:0,txt:'+'+v,c:'#ffd84a'});return false}
+      if(F.inv<=0){const lose=Math.min(F.stars,3);F.stars-=lose;F.inv=1.3;F.shake=.3;SFX.bonk();F.pops.push({x:dx,y:dy-dr,t:0,txt:lose?'Bonk! −'+lose:'Bonk!',c:'#ff7a8a'});return false}
+    }
+    return true;
+  });
+  // draw background
+  ctx.save();
+  if(F.shake>0)ctx.translate((Math.random()-.5)*10,(Math.random()-.5)*10);
+  const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#090c2a');bg.addColorStop(1,'#25205e');ctx.fillStyle=bg;ctx.fillRect(-10,-10,W+20,H+20);
+  F.dots.forEach(d=>{d.x-=dt*speed/W*d.z*.35;if(d.x<0){d.x+=1;d.y=Math.random()}ctx.fillStyle=`rgba(255,255,255,${.3+d.z*.6})`;ctx.fillRect(d.x*W,d.y*H,d.z*2.4,d.z*2.4)});
+  // destination planet slides in at the end
+  const pk=SKILLS[F.skill].orb,pr=H*.42;
+  if(F.t>F.len-5){const p=clamp((F.t-(F.len-5))/5,0,1);drawPlanet(ctx,pk,W+pr*1.8-p*(pr*1.8+W*.22),H*.5,pr)}
+  else drawPlanet(ctx,pk,W-H*.06,H*.12,H*.04);
+  // objects
+  F.objs.forEach(o=>{
+    if(o.type==='comet'){ctx.strokeStyle='rgba(160,210,255,.45)';ctx.lineWidth=o.size*.25;ctx.beginPath();ctx.moveTo(o.x,o.y);ctx.lineTo(o.x+o.size*1.4,o.y-o.vy*.12);ctx.stroke()}
+    emoji(ctx,{star:'⭐',big:'🌟',rock:'🪨',comet:'☄️'}[o.type],o.x,o.y,o.size,o.type==='rock'?o.rot:0);
+  });
+  // dragon + sparkle trail
+  const st=stage();
+  for(let i=1;i<5;i++){ctx.fillStyle=`rgba(255,${150+i*20},60,${.5-i*.1})`;ctx.beginPath();ctx.arc(dx-dr*.9-i*dr*.45,dy+Math.sin(F.t*10+i)*4,dr*.32*(1-i*.15),0,Math.PI*2);ctx.fill()}
+  if(!(F.inv>0&&Math.floor(F.t*12)%2)){
+    ctx.save();ctx.filter=`hue-rotate(${S.hue}deg)`;emoji(ctx,st.idx<0?'🚀':st.e,dx,dy+Math.sin(F.t*6)*3,dr*2.2,st.idx<0?Math.PI/4:0);ctx.restore();
+    if(st.idx>=0&&S.hat)emoji(ctx,S.hat,dx,dy-dr*1.05,dr*1.05,-.2);
+  }
+  // pops
+  F.pops=F.pops.filter(p=>{p.t+=dt;ctx.globalAlpha=Math.max(0,1-p.t);ctx.fillStyle=p.c;ctx.font=`700 ${Math.round(H*.05)}px Fredoka,sans-serif`;ctx.textAlign='center';ctx.fillText(p.txt,p.x,p.y-p.t*50);ctx.globalAlpha=1;return p.t<1});
+  // countdown / arrival text
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font=`700 ${Math.round(H*.08)}px Fredoka,sans-serif`;
+  if(F.t<1.6)ctx.fillText(F.t<.9?'Get ready…':'GO!',W/2,H*.5);
+  if(F.t>F.len-1.5)ctx.fillText('Landing!',W/2,H*.2);
+  ctx.restore();
+  $('flightStars').textContent=F.stars;$('flightFill').style.width=Math.min(100,F.t/F.len*100)+'%';
+  if(F.t>=F.len){endFlight();return}
+  requestAnimationFrame(flightLoop);
+}
+function endFlight(){
+  if(!F||F.done)return;F.done=true;
+  const skill=F.skill,s=F.stars;S.coins+=s;S.lastPlanet=skill;save();SFX.win();
+  arrive(skill,s);
+}
+
+/* ================= battle ================= */
+let B=null;
+function startBattle(skill){
+  const sk=S.skills[skill],boss=sk.lvl===5;
+  B={skill,lvl:sk.lvl,boss,hp:boss?8:5,maxHp:boss?8:5,hearts:3,streak:0,asked:0,first:0,coins:0,busy:false,q:null,input:'',shield:false,sciDone:false};
+  const I=SKILLS[skill];
+  $('arena').style.setProperty('--ground',I.ground);
+  $('foeBox').classList.toggle('boss',boss);
+  $('foeName').textContent=(boss?'King ':'')+I.foeName+(boss?' 👑':` · Lv ${sk.lvl}`);
+  $('meName').textContent=S.dragon;
+  show('battle');renderArena();nextQ();
+}
+function renderArena(){
+  $('meSprite').innerHTML=dragonHTML(parseInt(getComputedStyle($('meSprite')).fontSize)||84);
+  $('foeSprite').innerHTML=`<span style="display:inline-block;transform:scaleX(-1)">${SKILLS[B.skill].foe}</span>`;
+  updateHUD();
+}
+function updateHUD(){
+  $('hudHearts').textContent='❤️'.repeat(B.hearts)+'🤍'.repeat(3-B.hearts)+(B.shield?' 🛡️':'');
+  $('hudHearts').setAttribute('aria-label',`${B.hearts} hearts left${B.shield?', shield ready':''}`);
+  const s=$('hudStreak');s.textContent=B.streak>=3?`🔥 ${B.streak} in a row! SUPER`:`🔥 ${B.streak} in a row`;s.classList.toggle('hot',B.streak>=3);
+  $('hudCoins').textContent=S.coins;
+  $('hpFill').style.width=(B.hp/B.maxHp*100)+'%';
+}
+function nextQ(){
+  if(S.settings.science&&!B.sciDone&&B.asked>=2){B.sciDone=true;sciQ();return}
+  const l=B.lvl>1&&Math.random()<0.3?B.lvl-1:B.lvl;
+  B.q=GEN[B.skill](l);B.attempts=0;B.hinted=false;B.t0=Date.now();B.input='';B.busy=false;
+  const q=B.q;
+  $('btnHint').hidden=false;
+  $('qvisual').innerHTML=q.visual||'';
+  const qt=$('qtext');qt.innerHTML=q.html;qt.classList.toggle('story',!!q.story);
+  $('hintBubble').hidden=true;
+  const isNum=q.kind==='num';
+  if(!q.fast)q.fast=q.story?40:12;
+  $('numpad').hidden=!isNum;$('answerBox').parentElement.hidden=!isNum;$('choices').hidden=isNum;$('paperNote').hidden=!q.paper;
+  if(isNum)updateBox();
+  else if(q.kind==='order'){B.placed=[];drawOrder()}
+  else{$('choices').innerHTML=q.choices.map(c=>{const fr=String(c).includes('/');return `<button class="choice ${!fr&&String(c).length>3?'text':''}" data-v="${c}">${fr?fracHTML(c):c}</button>`}).join('');
+    $('choices').querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(!B.busy){B.lastChoiceEl=b;submit(b.dataset.v)}})}
+}
+/* --- Mission Control science question --- */
+function sciQ(){
+  const pool=Math.random()<0.7?SCI.filter(x=>x.p===B.skill):SCI.filter(x=>x.p==='sci');
+  const unseen=pool.filter(x=>!S.facts.includes(x.id)),sq=pick(unseen.length?unseen:pool),choices=shuffle(sq.c);
+  B.q={kind:'sci',sq,html:esc(sq.q),speak:`${sq.q} Is it: ${choices.join('? Or: ')}?`};B.busy=false;
+  $('btnHint').hidden=true;$('hintBubble').hidden=true;$('paperNote').hidden=true;
+  $('qvisual').innerHTML='<div class="mc">📡 Message from Mission Control! Answer right to earn a 🛡️ shield.</div>';
+  const qt=$('qtext');qt.innerHTML=B.q.html;qt.classList.add('story');
+  $('numpad').hidden=true;$('answerBox').parentElement.hidden=true;$('choices').hidden=false;
+  $('choices').innerHTML=choices.map((c,i)=>`<button class="choice text" data-i="${i}">${esc(c)}</button>`).join('');
+  $('choices').querySelectorAll('.choice').forEach(b=>b.onclick=()=>answerSci(choices[+b.dataset.i]));
+}
+function answerSci(v){
+  if(B.busy)return;B.busy=true;
+  const sq=B.q.sq,ok=v===sq.c[0],before=S.facts.length;
+  if(!S.facts.includes(sq.id))S.facts.push(sq.id);
+  const n=S.facts.length;let bonus='';
+  if(n>before&&n%5===0){S.coins+=15;bonus=`<p style="font-weight:600">🎉 ${n} facts discovered! Bonus +15 🪙</p>`}
+  if(ok){B.shield=true;S.coins+=3;B.coins+=3;SFX.good();floatText($('meSprite'),'🛡️ Shield!','#5ef2b3')}else SFX.bad();
+  save();updateHUD();
+  setTimeout(()=>modal(`<h2>${ok?'Correct! 🛡️':'Good try!'}</h2>
+    <p>${ok?'You earned a shield. It blocks the next monster hit. Plus 3 coins!':`The answer was: <b>${esc(sq.c[0])}</b>`}</p>
+    <div class="tip" style="font-size:1.1rem">📡 <b>Did you know?</b> ${esc(sq.f)}</div>
+    <p class="tiny">📖 Saved to your Space Book (${n} of ${SCI.length} facts)</p>${bonus}`,
+    [{label:'Back to the battle',fn:nextQ}]),ok?600:300);
+}
+function drawOrder(){
+  const q=B.q,full=B.placed.length===q.items.length,sep=`<span class="lt">${q.dir==='asc'?'&lt;':'&gt;'}</span>`;
+  $('choices').innerHTML=`<div class="ordwrap"><div class="slots">${q.items.map((_,k)=>B.placed[k]===undefined?'<span class="slot"></span>':`<button class="tile placed" data-p="${k}" aria-label="remove ${q.items[B.placed[k]]}">${q.items[B.placed[k]]}</button>`).join(sep)}</div>
+    <div class="pool">${q.items.map((n,i)=>B.placed.includes(i)?'':`<button class="tile" data-i="${i}">${n}</button>`).join('')}</div>
+    <div class="ordbtns"><button class="btn ghost small" id="ordClear">Start over</button><button class="btn small" id="ordGo" ${full?'':'disabled'}>Check ✓</button></div></div>`;
+  $('choices').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(B.busy)return;B.placed.push(+b.dataset.i);SFX.tap();drawOrder()});
+  $('choices').querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(B.busy)return;B.placed.splice(+b.dataset.p,1);drawOrder()});
+  $('ordClear').onclick=()=>{if(!B.busy){B.placed=[];drawOrder()}};
+  $('ordGo').onclick=()=>{if(!B.busy&&full)submit(B.placed.map(i=>q.items[i]).join(','))};
+}
+function updateBox(cls){
+  const b=$('answerBox');b.textContent=B.input||'?';b.className='answerbox'+(B.input?'':' empty')+(cls?' '+cls:'');
+}
+$('numpad').innerHTML=['1','2','3','4','5','6','7','8','9','del','0','go'].map(k=>
+  `<button class="key ${k==='go'?'go':''}" data-k="${k}" aria-label="${k==='del'?'delete':k==='go'?'check answer':k}">${k==='del'?'⌫':k==='go'?'✓':k}</button>`).join('');
+$('numpad').querySelectorAll('.key').forEach(b=>b.onclick=()=>press(b.dataset.k));
+function press(k){
+  if(!B||B.busy||B.q.kind!=='num')return;
+  if(k==='go'){submit();return}
+  SFX.tap();
+  if(k==='del')B.input=B.input.slice(0,-1);else if(B.input.length<6)B.input+=k;
+  updateBox();
+}
+function submit(val){
+  const q=B.q;
+  if(q.kind==='num'){if(B.input==='')return;val=Number(B.input)}
+  if(val===q.answer)onCorrect();else onWrong();
+}
+const CHEERS=['Nice!','Boom!','Math power!','You got it!','Awesome!','Brainy!','Out of this world!'];
+function onCorrect(){
+  B.busy=true;
+  const firstTry=B.attempts===0&&!B.hinted,fast=firstTry&&(Date.now()-B.t0)<(B.q.fast||12)*1000;
+  B.streak++;S.bestStreak=Math.max(S.bestStreak,B.streak);
+  const sup=B.streak>=3,dmg=sup?2:1;
+  const c=2+(firstTry?1:0)+(fast?1:0);B.coins+=c;S.coins+=c;S.xp+=firstTry?2:1;
+  const sk=S.skills[B.skill];sk.seen++;B.asked++;if(firstTry){sk.first++;B.first++}
+  save();
+  if(B.q.kind==='num')updateBox('good');
+  (sup?SFX.super:SFX.good)();
+  sayBubble(sup?'SUPER FIRE!':pick(CHEERS));
+  const proj=stage().idx<0?'✨':sup?'☄️':'🔥';
+  fly($('meSprite'),$('foeSprite'),proj).then(()=>{
+    B.hp=Math.max(0,B.hp-dmg);hitFx($('foeSprite'));
+    floatText($('foeSprite'),`−${dmg}`,'#ff8fa0');
+    setTimeout(()=>floatText($('meSprite'),`+${c} 🪙${fast?' ⚡':''}`,'#ffd84a'),150);
+    updateHUD();
+    if(B.hp<=0)setTimeout(win,700);else setTimeout(nextQ,800);
+  });
+}
+function onWrong(){
+  B.attempts++;B.streak=0;updateHUD();SFX.bad();
+  if(B.attempts===1){
+    if(B.q.kind==='num'){B.input='';updateBox('badbox')}else if(B.q.kind==='order'){B.placed=[];drawOrder()}else if(B.lastChoiceEl)B.lastChoiceEl.disabled=true;
+    const h=$('hintBubble');h.innerHTML=`Not quite. Try again! 💡 ${B.q.hint}`;h.hidden=false;
+    return;
+  }
+  B.busy=true;
+  fly($('foeSprite'),$('meSprite'),SKILLS[B.skill].zap).then(()=>{
+    hitFx($('meSprite'));
+    if(B.shield){B.shield=false;floatText($('meSprite'),'🛡️ Blocked!','#5ef2b3')}else B.hearts--;
+    updateHUD();
+    const sk=S.skills[B.skill];sk.seen++;B.asked++;save();
+    setTimeout(()=>openExplain(()=>{if(B.hearts<=0)lose();else nextQ()}),450);
+  });
+}
+function openExplain(cb){
+  const q=B.q;const ans=q.answerLabel||(q.kind==='choice'&&String(q.answer).includes('/')?fracHTML(q.answer):q.answer);
+  modal(`<h2>Let’s figure it out together 🧠</h2><div class="eq ${q.story?'story':''}">${q.html}</div>${q.visual?`<div class="qvisual">${q.visual}</div>`:''}${q.explain()}
+    <div class="answer-reveal">The answer is <b style="font-size:1.5rem">${ans}</b></div>`,
+    [{label:'Got it! Next question',fn:cb}]);
+}
+function win(){
+  const sk=S.skills[B.skill],I=SKILLS[B.skill],before=stage(),starsBefore=totalStars();
+  S.wins++;const bonus=B.boss?25:10;S.coins+=bonus;B.coins+=bonus;
+  let lvlMsg;
+  if(B.boss){lvlMsg=sk.mastered?'🏆 You beat the boss again. Unstoppable!':`🏆 You beat the BOSS and mastered ${I.planet}!`;sk.mastered=true}
+  else if(B.first/Math.max(1,B.asked)>=0.75){sk.lvl++;lvlMsg=`⭐ Level up! ${I.planet} is now level ${sk.lvl}.${sk.lvl===5?' A BOSS is waiting there…':''}`}
+  else lvlMsg=`Get 3 out of 4 right on the first try to level up ${I.planet}. You got ${B.first} of ${B.asked}.`;
+  const after=stage();let grow='';
+  if(before.idx<0)grow=`<p style="font-size:1.3rem">🥚 ➜ ${after.e} Your egg HATCHED! Say hi to <b>${esc(S.dragon)}</b>!</p>`;
+  else if(after.idx>before.idx)grow=`<p style="font-size:1.3rem">${esc(S.dragon)} grew into a <b>${after.n}</b>! ${after.e}</p>`;
+  const unl=starsBefore<SKILLS.riddle.unlock&&totalStars()>=SKILLS.riddle.unlock?'<p>🪐 Pluto just unlocked on the map!</p>':'';
+  save();SFX.win();confetti();
+  modal(`<div style="text-align:center"><div style="font-size:80px">${dragonHTML(80)}</div><h2>You beat the ${B.boss?'King ':''}${I.foeName}!</h2>
+    ${grow}<p style="font-size:1.15rem">${lvlMsg}</p>${unl}
+    <div class="answer-reveal">🪙 +${B.coins} coins &nbsp; 🎯 ${B.first}/${B.asked} first try</div></div>`,
+    [{label:'Battle again',fn:()=>startBattle(B.skill)},{label:'Fly somewhere new',cls:'ghost',fn:()=>show('map')}]);
+}
+function lose(){
+  modal(`<div style="text-align:center"><div style="font-size:70px">😴</div><h2>The ${SKILLS[B.skill].foeName} got away!</h2>
+    <p>${esc(S.dragon)} needs a snack and a nap. Every mistake you learn from makes your brain stronger 💪</p>
+    <div class="answer-reveal">You still keep your 🪙 ${B.coins} coins!</div></div>`,
+    [{label:'Try again',fn:()=>startBattle(B.skill)},{label:'Back to map',cls:'ghost',fn:()=>show('map')}]);
+}
+$('btnFlee').onclick=()=>show('map');
+$('btnSpeak').onclick=()=>B&&speak(B.q.speak);
+$('btnHint').onclick=()=>{if(!B||B.busy||!B.q.hint)return;B.hinted=true;const h=$('hintBubble');h.innerHTML='💡 '+B.q.hint;h.hidden=false};
+
+/* ================= fx ================= */
+function rel(el){const a=$('arena').getBoundingClientRect(),r=el.getBoundingClientRect();return{x:r.left+r.width/2-a.left,y:r.top+r.height/2-a.top}}
+function fly(from,to,em){
+  return new Promise(res=>{
+    const p=document.createElement('span');p.className='proj';p.textContent=em;$('arena').appendChild(p);
+    const A=rel(from),Z=rel(to);
+    if(!p.animate||RM){p.remove();res();return}
+    const an=p.animate([{transform:`translate(${A.x}px,${A.y}px) scale(.5)`},{transform:`translate(${(A.x+Z.x)/2}px,${Math.min(A.y,Z.y)-55}px) scale(1.25)`},{transform:`translate(${Z.x}px,${Z.y}px) scale(1)`}],{duration:460,easing:'ease-in'});
+    an.onfinish=()=>{p.remove();res()};
+  });
+}
+function hitFx(el){el.classList.remove('hit');void el.offsetWidth;el.classList.add('hit')}
+function floatText(el,txt,color){const p=document.createElement('span');p.className='floattxt';p.textContent=txt;p.style.color=color;const c=rel(el);p.style.left=(c.x-20)+'px';p.style.top=(c.y-50)+'px';$('arena').appendChild(p);setTimeout(()=>p.remove(),1200)}
+let sayT;function sayBubble(t){const b=$('sayBubble');b.textContent=t;b.hidden=false;clearTimeout(sayT);sayT=setTimeout(()=>b.hidden=true,1100)}
+function confetti(){if(RM)return;const box=$('confetti');for(let i=0;i<40;i++){const s=document.createElement('span');s.textContent=pick(['🎉','⭐','✨','🪙','🪐']);s.style.left=R(0,100)+'vw';s.style.animationDelay=(Math.random()*0.6)+'s';s.style.animationDuration=(1.8+Math.random())+'s';box.appendChild(s);setTimeout(()=>s.remove(),3200)}}
+
+function modal(html,buttons){
+  const m=$('modal');
+  m.innerHTML=html+`<div class="mbtns">${buttons.map((b,i)=>`<button class="btn ${b.cls||''} ${i===0?'primary':''}" data-i="${i}">${b.label}</button>`).join('')}</div>`;
+  $('overlay').hidden=false;m.scrollTop=0;
+  m.querySelectorAll('[data-i]').forEach(el=>el.onclick=()=>{$('overlay').hidden=true;const f=buttons[+el.dataset.i].fn;f&&f()});
+  setTimeout(()=>{const p=m.querySelector('.primary');p&&p.focus()},60);
+}
+
+/* ================= lair ================= */
+function renderLair(){
+  const st=stage();
+  $('lairCoins').textContent=S.coins;$('lairDragon').innerHTML=dragonHTML(110);
+  $('lairName').textContent=`${S.dragon} the ${st.n}`;
+  $('lairNote').textContent=st.idx<0?'Hats show up once your egg hatches. Go win a battle!':`Best streak: ${S.bestStreak} in a row · Battles won: ${S.wins}`;
+  $('shopColors').innerHTML=COLORS.map(c=>{const own=S.ownedHues.includes(c.h),on=S.hue===c.h;
+    return `<button class="shopitem ${on?'on':''}" data-hue="${c.h}"><span class="big" style="filter:hue-rotate(${c.h}deg)">${st.idx<0?'🐉':st.e}</span><b>${c.n}</b><span class="tiny">${on?'Wearing':own?'Tap to wear':'🪙 '+c.cost}</span></button>`}).join('');
+  $('shopHats').innerHTML=HATS.map(h=>{const own=S.ownedHats.includes(h.e),on=S.hat===h.e;
+    return `<button class="shopitem ${on?'on':''}" data-hat="${h.e}"><span class="big">${h.e||'🚫'}</span><b>${h.n}</b><span class="tiny">${on?'Wearing':own?'Tap to wear':'🪙 '+h.cost}</span></button>`}).join('');
+  $('shopColors').querySelectorAll('[data-hue]').forEach(b=>b.onclick=()=>{const c=COLORS.find(x=>x.h===+b.dataset.hue);buy(S.ownedHues,c.h,c.cost,()=>S.hue=c.h)});
+  $('shopHats').querySelectorAll('[data-hat]').forEach(b=>b.onclick=()=>{const h=HATS.find(x=>x.e===b.dataset.hat);buy(S.ownedHats,h.e,h.cost,()=>S.hat=h.e)});
+}
+function buy(list,id,cost,equip){
+  if(!list.includes(id)){
+    if(S.coins<cost){modal(`<h2>Not enough coins yet</h2><p>You need 🪙 ${cost} and have 🪙 ${S.coins}. Win a few battles and come back!</p>`,[{label:'OK'}]);return}
+    S.coins-=cost;list.push(id);SFX.buy();
+  }
+  equip();save();renderLair();
+}
+
+/* ================= space book ================= */
+function renderBook(){
+  $('bookCount').textContent=`${S.facts.length} of ${SCI.length} facts discovered`;
+  const groups=[...ORDER.map(k=>({k,title:SKILLS[k].planet,orb:SKILLS[k].orb})),{k:'sci',title:'Space & science',orb:'sun'}];
+  $('bookBody').innerHTML=groups.map(g=>{
+    const qs=SCI.filter(x=>x.p===g.k),got=qs.filter(x=>S.facts.includes(x.id)).length;
+    return `<div class="bookgroup"><h3><span class="orb mini ${g.orb}"></span>${g.title} <span class="tiny">${got}/${qs.length}</span></h3><div class="factgrid">${
+      qs.map(x=>S.facts.includes(x.id)?`<div class="fact">${esc(x.f)}</div>`:`<div class="fact locked">🔒 ${g.k==='sci'?'Mission Control can ask about this on any planet':'Answer a Mission Control question on '+g.title}</div>`).join('')}</div></div>`;
+  }).join('');
+}
+
+/* ================= parents ================= */
+function renderParent(){
+  $('ptable').innerHTML='<tr><th>Planet</th><th>Level</th><th>Questions</th><th>First try</th></tr>'+ORDER.map(k=>{
+    const s=S.skills[k];const pct=s.seen?Math.round(s.first/s.seen*100)+'%':'—';
+    return `<tr><td><span class="orb mini ${SKILLS[k].orb}"></span>${SKILLS[k].planet}: ${SKILLS[k].desc}</td><td><span class="lvlctl"><button data-k="${k}" data-d="-1" aria-label="lower level">−</button><b>${s.lvl}</b><button data-k="${k}" data-d="1" aria-label="raise level">+</button></span></td><td>${s.seen}</td><td>${pct}</td></tr>`}).join('');
+  $('ptable').querySelectorAll('button').forEach(b=>b.onclick=()=>{const s=S.skills[b.dataset.k];s.lvl=Math.min(5,Math.max(1,s.lvl+ +b.dataset.d));save();renderParent()});
+  $('segFlight').querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b.dataset.v===S.settings.flight);b.onclick=()=>{S.settings.flight=b.dataset.v;save();renderParent()}});
+  $('segSci').querySelectorAll('button').forEach(b=>{b.classList.toggle('on',(b.dataset.v==='on')===S.settings.science);b.onclick=()=>{S.settings.science=b.dataset.v==='on';save();renderParent()}});
+  $('pextra').textContent=`Battles won: ${S.wins} · Best streak: ${S.bestStreak} · Coins: ${S.coins} · Space facts: ${S.facts.length}/${SCI.length}`;
+}
+$('btnReset').onclick=()=>{if(confirm('Erase all progress, coins, facts and the dragon? This can’t be undone.')){S=fresh();save();show('title')}};
+
+/* ================= keyboard ================= */
+const UPK=['ArrowUp','w','W'],DNK=['ArrowDown','s','S'];
+document.addEventListener('keydown',e=>{
+  if(!$('overlay').hidden){if(e.key==='Enter'){const b=$('modal').querySelector('.primary');if(b){e.preventDefault();b.click()}}return}
+  if(!$('s-flight').hidden){if(UPK.includes(e.key)){KEYS.up=true;e.preventDefault()}if(DNK.includes(e.key)){KEYS.down=true;e.preventDefault()}return}
+  if($('s-battle').hidden||!B||B.busy)return;
+  if(B.q.kind==='num'){
+    if(/^[0-9]$/.test(e.key))press(e.key);else if(e.key==='Backspace')press('del');else if(e.key==='Enter'){e.preventDefault();press('go')}
+  }
+});
+document.addEventListener('keyup',e=>{if(UPK.includes(e.key))KEYS.up=false;if(DNK.includes(e.key))KEYS.down=false});
+$('inDragon').addEventListener('keydown',e=>{if(e.key==='Enter')$('btnStart').click()});
+
+show('title');
+</script>
+</body>
+</html>
