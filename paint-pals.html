@@ -341,7 +341,7 @@ main{max-width:1180px;margin:0 auto;padding:16px}
 
 <script>
 /* ============================================================
-   PAINT PALS — single-file edition
+   PAINT PALS — game idea by Mika, built for Netlify (single file)
    ============================================================ */
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -529,94 +529,98 @@ function save(){
 /* ---------------- CHARACTER ART ---------------- */
 let uid = 0;
 function charSVG(id, hat='none'){
+  // Body shape traced from Mika's drawing: round head, narrower body that splits into two legs, long arms hanging at the sides,
+  // two little dot eyes and a big smile with curled ends.
   const c = CHARS[id] || CHARS.blobby, B = c.body, u = 'cl'+(uid++);
   const sw = `stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"`;
-  const body = 'M60 26 C88 26 104 46 104 72 C104 99 86 116 60 116 C34 116 16 99 16 72 C16 46 32 26 60 26Z';
-  let behind='', clipped='', over='', eyes=true, eyeCol=INK, mouthCol=INK, arm=B, foot=B, face='';
-  const ball = `<g transform="translate(103 120)"><circle r="9" fill="#fff" ${sw}/><path d="M0 -4 L4 -1 L2.5 4 L-2.5 4 L-4 -1Z" fill="${INK}"/></g>`;
+  const head = `<ellipse cx="60" cy="52" rx="33" ry="28"`;
+  const bodyPath = 'M40 70 V114 Q40 124 50 124 Q58 124 60 116 Q62 124 70 124 Q80 124 80 114 V70Z';
+  let behind='', clipped='', over='', eyes=true, eyeCol=INK, mouthCol=INK, arm=B, slitTop=90, face='';
+  const ball = (fill='#fff') => `<g transform="translate(101 119)"><circle r="8" fill="${fill}" ${sw}/><path d="M0 -3.5 L3.5 -1 L2.2 3.5 L-2.2 3.5 L-3.5 -1Z" fill="${INK}"/></g>`;
+  const spr = (list) => list.map(([f,x,y,r])=>`<rect x="${x}" y="${y}" width="7" height="3" rx="1.5" fill="${f}" transform="rotate(${r} ${x+3.5} ${y+1.5})"/>`).join('');
   switch(id){
     case 'strawberry':
-      clipped = [[40,50],[78,48],[30,80],[60,98],[86,84],[48,106],[74,106],[58,44]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.2" ry="3.4" fill="#FFE066"/>`).join('');
-      over = `<path d="M38 32 L49 22 L53 33 L60 16 L67 33 L71 22 L82 32 Q60 42 38 32Z" fill="#3BAA4A" ${sw}/>`; break;
+      clipped = [[38,32],[82,32],[31,56],[89,56],[48,96],[72,96],[46,112],[74,112],[60,28],[36,70],[84,70]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2" ry="3" fill="#FFE066"/>`).join('');
+      over = `<path d="M40 30 L49 20 L53 30 L60 14 L67 30 L71 20 L80 30 Q60 38 40 30Z" fill="#3BAA4A" ${sw}/>`; break;
     case 'donut':
-      clipped = `<path d="M8 18 H112 V62 Q104 74 94 62 Q86 78 76 64 Q66 80 56 64 Q46 76 38 62 Q28 76 20 62 Q14 70 8 64Z" fill="#FF8FC7"/>` +
-        [['#4FA3F7',38,42,30],['#FFD60A',56,36,-20],['#2EC4A0',74,44,50],['#fff',48,54,10],['#8F5CFF',84,56,-40],['#E63946',30,56,70],['#fff',66,52,-60]]
-        .map(([f,x,y,r])=>`<rect x="${x}" y="${y}" width="9" height="3.5" rx="1.7" fill="${f}" transform="rotate(${r} ${x+4} ${y+2})"/>`).join(''); break;
+      clipped = `<path d="M20 6 H100 V30 Q94 38 88 30 Q82 36 76 30 Q70 34 64 30 Q58 34 52 30 Q46 36 40 30 Q34 38 28 30 Q22 34 20 30Z" fill="#FF8FC7"/>` +
+        spr([['#4FA3F7',42,20,30],['#FFD60A',56,16,-20],['#2EC4A0',70,22,50],['#fff',50,26,10],['#8F5CFF',78,28,-40],['#E63946',34,26,70]]); break;
     case 'avocado':
-      clipped = `<ellipse cx="60" cy="82" rx="31" ry="33" fill="#D9EB8C"/>`;
-      over = `<circle cx="60" cy="98" r="10" fill="#8B5A2B" ${sw}/>`; break;
+      clipped = `<ellipse cx="60" cy="80" rx="24" ry="50" fill="#D9EB8C"/>`;
+      over = `<circle cx="60" cy="102" r="7" fill="#8B5A2B" ${sw}/>`; slitTop = 110; break;
     case 'cupcake':
-      clipped = `<path d="M0 86 H120 V140 H0Z" fill="#5CC8C2"/>` + [30,44,58,72,86].map(x=>`<path d="M${x} 86 L${x+2} 120" stroke="#2E9A95" stroke-width="3"/>`).join('') +
-        `<path d="M0 86 H120" stroke="${INK}" stroke-width="3"/>`;
-      over = `<path d="M60 26 Q62 16 68 12" fill="none" ${sw}/><circle cx="60" cy="24" r="7" fill="#D2042D" ${sw}/>`; break;
+      clipped = `<rect x="0" y="80" width="120" height="60" fill="#5CC8C2"/>` + [46,53,60,67,74].map(x=>`<path d="M${x} 82 L${x+1} 112" stroke="#2E9A95" stroke-width="2.5"/>`).join('');
+      over = `<path d="M60 22 Q62 12 68 9" fill="none" ${sw}/><circle cx="60" cy="21" r="6" fill="#D2042D" ${sw}/>`; break;
     case 'sundae':
-      clipped = `<path d="M8 18 H112 V48 Q104 60 96 48 Q88 66 80 50 Q72 62 64 48 Q56 64 48 48 Q40 60 32 46 Q24 58 8 48Z" fill="#7B4A2A"/>` +
-        [['#FF2E93',36,70],['#4FA3F7',80,66],['#FFD60A',52,96],['#2EC4A0',74,96],['#8F5CFF',30,92],['#FF6B00',88,88]]
-        .map(([f,x,y])=>`<rect x="${x}" y="${y}" width="8" height="3.5" rx="1.7" fill="${f}" transform="rotate(${R(-60,60)} ${x+4} ${y+2})"/>`).join('');
-      over = `<path d="M60 22 Q62 12 69 9" fill="none" ${sw}/><circle cx="60" cy="22" r="7" fill="#D2042D" ${sw}/>
+      clipped = `<path d="M20 6 H100 V28 Q94 38 88 28 Q82 36 76 28 Q70 34 64 28 Q58 34 52 28 Q46 36 40 28 Q34 38 28 28 Q22 34 20 28Z" fill="#7B4A2A"/>
+        <rect x="0" y="80" width="120" height="60" fill="#E2A65B"/><path d="M36 82 L84 122 M46 80 L86 112 M36 96 L64 122 M84 82 L36 122 M74 80 L34 112 M84 96 L56 122" stroke="#B77A33" stroke-width="2"/>` +
+        spr([['#FF2E93',30,46,40],['#4FA3F7',84,48,-30],['#FFD60A',36,64,10],['#2EC4A0',80,64,-60]]);
+      over = `<path d="M60 22 Q62 12 69 8" fill="none" ${sw}/><circle cx="60" cy="21" r="6" fill="#D2042D" ${sw}/>
         <path d="M14 40 l3 -7 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3z" fill="#FFD60A" ${sw} stroke-width="2"/>`; break;
     case 'cat':
-      behind = `<path d="M26 52 L28 14 L56 32Z" fill="${B}" ${sw}/><path d="M94 52 L92 14 L64 32Z" fill="${B}" ${sw}/>
-        <path d="M33 42 L34 24 L46 32Z" fill="#FF9FC3"/><path d="M87 42 L86 24 L74 32Z" fill="#FF9FC3"/>`;
-      clipped = `<path d="M50 26 L54 42 M60 24 L60 40 M70 26 L66 42" stroke="#D98A2B" stroke-width="5" stroke-linecap="round"/>`;
-      over = `<path d="M30 74 H14 M30 80 L16 86 M90 74 H106 M90 80 L104 86" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>`; break;
+      behind = `<path d="M30 42 L32 12 L53 26Z" fill="${B}" ${sw}/><path d="M90 42 L88 12 L67 26Z" fill="${B}" ${sw}/>
+        <path d="M35 33 L36 20 L46 27Z" fill="#FF9FC3"/><path d="M85 33 L84 20 L74 27Z" fill="#FF9FC3"/>`;
+      clipped = `<path d="M52 24 L54 32 M60 23 L60 31 M68 24 L66 32" stroke="#D98A2B" stroke-width="4" stroke-linecap="round"/>`;
+      over = `<path d="M33 50 H19 M33 55 L21 60 M87 50 H101 M87 55 L99 60" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>`; break;
     case 'frog':
-      behind = `<circle cx="42" cy="34" r="15" fill="${B}" ${sw}/><circle cx="78" cy="34" r="15" fill="${B}" ${sw}/>`;
+      behind = `<circle cx="43" cy="28" r="12" fill="${B}" ${sw}/><circle cx="77" cy="28" r="12" fill="${B}" ${sw}/>`;
       eyes = false;
-      face = `<circle cx="42" cy="34" r="8" fill="#fff" ${sw} stroke-width="2"/><circle cx="78" cy="34" r="8" fill="#fff" ${sw} stroke-width="2"/>
-        <circle cx="43" cy="35" r="3.5" fill="${INK}"/><circle cx="79" cy="35" r="3.5" fill="${INK}"/>`; break;
+      face = `<circle cx="43" cy="27" r="6.5" fill="#fff" ${sw} stroke-width="2"/><circle cx="77" cy="27" r="6.5" fill="#fff" ${sw} stroke-width="2"/>
+        <circle cx="44" cy="28" r="3" fill="${INK}"/><circle cx="78" cy="28" r="3" fill="${INK}"/>`; break;
     case 'bunny':
-      behind = `<ellipse cx="45" cy="12" rx="10" ry="25" fill="${B}" ${sw}/><ellipse cx="75" cy="12" rx="10" ry="25" fill="${B}" ${sw}/>
-        <ellipse cx="45" cy="14" rx="4.5" ry="16" fill="#FF9FC3"/><ellipse cx="75" cy="14" rx="4.5" ry="16" fill="#FF9FC3"/>`;
-      over = `<ellipse cx="60" cy="74" rx="3.5" ry="2.5" fill="#FF7EB6"/>`; break;
+      behind = `<ellipse cx="47" cy="6" rx="8" ry="21" fill="${B}" ${sw}/><ellipse cx="73" cy="6" rx="8" ry="21" fill="${B}" ${sw}/>
+        <ellipse cx="47" cy="8" rx="3.5" ry="13" fill="#FF9FC3"/><ellipse cx="73" cy="8" rx="3.5" ry="13" fill="#FF9FC3"/>`;
+      over = `<ellipse cx="60" cy="44" rx="3" ry="2" fill="#FF7EB6"/>`; break;
     case 'panda':
-      behind = `<circle cx="31" cy="34" r="13" fill="${INK}"/><circle cx="89" cy="34" r="13" fill="${INK}"/>`;
-      over = `<ellipse cx="47" cy="64" rx="10" ry="12" transform="rotate(25 47 64)" fill="${INK}"/><ellipse cx="73" cy="64" rx="10" ry="12" transform="rotate(-25 73 64)" fill="${INK}"/>`;
-      eyeCol = '#fff'; arm = INK; foot = INK; break;
+      behind = `<circle cx="35" cy="29" r="10" fill="${INK}"/><circle cx="85" cy="29" r="10" fill="${INK}"/>`;
+      clipped = `<rect x="0" y="104" width="120" height="40" fill="${INK}"/>`;
+      over = `<ellipse cx="53" cy="39" rx="5.5" ry="7" transform="rotate(25 53 39)" fill="${INK}"/><ellipse cx="67" cy="39" rx="5.5" ry="7" transform="rotate(-25 67 39)" fill="${INK}"/>`;
+      eyeCol = '#fff'; arm = INK; break;
     case 'unicorn':
-      behind = `<circle cx="34" cy="36" r="11" fill="#FF9FC3" ${sw}/><circle cx="23" cy="52" r="10" fill="#C8B6FF" ${sw}/><circle cx="18" cy="68" r="9" fill="#A9DEF9" ${sw}/>`;
-      over = `<path d="M53 30 L60 -2 L67 30Z" fill="#FFD54F" ${sw}/><path d="M55 20 L65 16 M54 26 L66 22" stroke="${INK}" stroke-width="2"/>`; break;
+      behind = `<circle cx="36" cy="30" r="9" fill="#FF9FC3" ${sw}/><circle cx="29" cy="44" r="8" fill="#C8B6FF" ${sw}/><circle cx="27" cy="59" r="7" fill="#A9DEF9" ${sw}/>`;
+      over = `<path d="M54 26 L60 -6 L66 26Z" fill="#FFD54F" ${sw}/><path d="M56 15 L64 12 M55 21 L65 18" stroke="${INK}" stroke-width="2"/>`; break;
     case 'pumpkin':
-      clipped = `<path d="M44 26 Q30 72 44 118 M76 26 Q90 72 76 118" fill="none" stroke="#C96A0F" stroke-width="3"/>`;
-      over = `<path d="M55 30 Q54 16 62 10 L67 14 Q61 20 64 30Z" fill="#3B7A2A" ${sw}/>`; break;
+      clipped = `<path d="M46 25 Q36 52 46 79 M74 25 Q84 52 74 79" fill="none" stroke="#C96A0F" stroke-width="3"/>`;
+      over = `<path d="M56 26 Q55 14 62 8 L67 12 Q61 18 64 26Z" fill="#3B7A2A" ${sw}/>`; break;
     case 'snowman':
-      clipped = `<rect x="0" y="90" width="120" height="11" fill="#E63946"/><circle cx="60" cy="110" r="2.8" fill="${INK}"/>`;
-      over = `<path d="M60 70 L77 73 L60 76Z" fill="#F7931E" ${sw} stroke-width="2"/><path d="M84 92 L92 112 L100 108 L90 92Z" fill="#E63946" ${sw} stroke-width="2"/>`; break;
+      clipped = `<rect x="0" y="77" width="120" height="9" fill="#E63946"/><circle cx="60" cy="98" r="2.2" fill="${INK}"/>`;
+      over = `<path d="M60 41 L71 43.5 L60 46Z" fill="#F7931E" ${sw} stroke-width="2"/><path d="M70 80 L77 100 L85 96 L78 80Z" fill="#E63946" ${sw} stroke-width="2"/>`;
+      slitTop = 104; break;
     case 'reindeer':
-      behind = `<path d="M44 34 L36 6 M39 18 L27 12 M76 34 L84 6 M81 18 L93 12" stroke="#6B4226" stroke-width="6" stroke-linecap="round" fill="none"/>`;
-      over = `<circle cx="60" cy="74" r="5.5" fill="#E63946" ${sw} stroke-width="2"/>`; break;
+      behind = `<path d="M46 28 L38 4 M41 14 L30 9 M74 28 L82 4 M79 14 L90 9" stroke="#6B4226" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+      over = `<circle cx="60" cy="44" r="4" fill="#E63946" ${sw} stroke-width="2"/>`; break;
     case 'valentine':
-      over = `<path d="M60 110 C40 98 44 84 53 87 C56 88 59 91 60 94 C61 91 64 88 67 87 C76 84 80 98 60 110Z" fill="#E63946" ${sw} stroke-width="2.5"/>`; break;
+      over = `<path d="M60 104 C47 96 50 86 55.5 88 C57.5 88.8 59.3 90.8 60 92.5 C60.7 90.8 62.5 88.8 64.5 88 C70 86 73 96 60 104Z" fill="#E63946" ${sw} stroke-width="2.5"/>`;
+      slitTop = 108; break;
     case 'firework':
-      behind = [['#FFD60A',12,28],['#FF2E93',104,32],['#00D9FF',8,96],['#B6FF00',108,92]].map(([f,x,y])=>
+      behind = [['#FFD60A',12,30],['#FF2E93',108,30],['#00D9FF',14,100],['#B6FF00',106,100]].map(([f,x,y])=>
         `<path d="M${x} ${y-9} L${x+3} ${y-3} L${x+9} ${y} L${x+3} ${y+3} L${x} ${y+9} L${x-3} ${y+3} L${x-9} ${y} L${x-3} ${y-3}Z" fill="${f}" ${sw} stroke-width="2"/>`).join('');
-      clipped = [[36,44],[82,50],[30,96],[88,98],[60,40],[66,108]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('');
+      clipped = [[38,32],[82,34],[34,66],[86,64],[50,100],[70,108],[60,28]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.6" fill="#fff"/>`).join('');
       eyeCol = '#fff'; mouthCol = '#fff'; break;
     case 'striker': case 'defender': case 'keeper': case 'captain':
-      clipped = `<rect x="0" y="86" width="120" height="60" fill="${c.kit}"/><path d="M0 86 H120" stroke="${INK}" stroke-width="3"/>`;
-      over = `<text x="60" y="110" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-weight="900" font-size="17" fill="#fff" stroke="${INK}" stroke-width="1">${c.num}</text>` + ball;
+      clipped = `<rect x="0" y="78" width="120" height="26" fill="${c.kit}"/><rect x="0" y="104" width="120" height="8" fill="#fff"/>
+        <path d="M0 104 H120 M0 112 H120" stroke="${INK}" stroke-width="2"/>`;
+      over = `<text x="60" y="99" text-anchor="middle" font-family="Nunito,Arial,sans-serif" font-weight="900" font-size="12" fill="#fff" stroke="${INK}" stroke-width=".8">${c.num}</text>` + ball();
       if(id==='keeper') arm = '#FFD60A';
-      if(id==='captain') over += `<rect x="90" y="66" width="12" height="9" rx="2" fill="#FFD60A" transform="rotate(35 96 70)" ${sw} stroke-width="2"/>`;
-      break;
+      if(id==='captain') over += `<rect x="27" y="82" width="12" height="7" rx="2" fill="#FFD60A" transform="rotate(18 33 85)" ${sw} stroke-width="2"/>`;
+      slitTop = 104; break;
     case 'golden':
-      over = `<path d="M38 104 L44 96 L50 104 L56 96 L62 104" fill="none" stroke="#B8860B" stroke-width="3" stroke-linecap="round"/>` +
-        `<g transform="translate(103 120)"><circle r="9" fill="#FFD54F" ${sw}/><path d="M0 -4 L4 -1 L2.5 4 L-2.5 4 L-4 -1Z" fill="${INK}"/></g>`;
-      foot = '#FFFFFF'; break;
+      over = `<path d="M46 92 L50 86 L54 92 L58 86 L62 92 L66 86 L70 92 L74 86" fill="none" stroke="#B8860B" stroke-width="2.5" stroke-linecap="round"/>` + ball('#FFD54F');
+      slitTop = 98; break;
   }
-  const eyeSVG = eyes ? `<ellipse cx="48" cy="64" rx="4" ry="5.5" fill="${eyeCol}"/><ellipse cx="72" cy="64" rx="4" ry="5.5" fill="${eyeCol}"/>`
-    + (eyeCol===INK ? `<circle cx="49.5" cy="62" r="1.4" fill="#fff"/><circle cx="73.5" cy="62" r="1.4" fill="#fff"/>` : '') : '';
-  const mouth = id==='frog'
-    ? `<path d="M44 74 Q60 90 76 74" fill="none" stroke="${mouthCol}" stroke-width="3" stroke-linecap="round"/>`
-    : `<path d="M53 79 Q60 86 67 79" fill="none" stroke="${mouthCol}" stroke-width="3" stroke-linecap="round"/>`;
-  const blush = `<ellipse cx="37" cy="77" rx="6" ry="3.5" fill="#FF7EB6" opacity=".55"/><ellipse cx="83" cy="77" rx="6" ry="3.5" fill="#FF7EB6" opacity=".55"/>`;
+  const eyeSVG = eyes ? `<circle cx="56" cy="37" r="2.3" fill="${eyeCol}"/><circle cx="63.5" cy="37" r="2.3" fill="${eyeCol}"/>` : '';
+  const mouth = `<path d="M43 44 C44 69 76 69 77 42" fill="none" stroke="${mouthCol}" stroke-width="3" stroke-linecap="round"/>
+    <path d="M37 44 Q40 48 45.5 42" fill="none" stroke="${mouthCol}" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M74.5 40 Q80 47 83 41" fill="none" stroke="${mouthCol}" stroke-width="2.6" stroke-linecap="round"/>`;
   return `<svg class="char" viewBox="0 0 120 142" aria-hidden="true"><g transform="translate(0 14)">
     ${behind}
-    <ellipse cx="46" cy="117" rx="12" ry="7" fill="${foot}" ${sw}/><ellipse cx="74" cy="117" rx="12" ry="7" fill="${foot}" ${sw}/>
-    <ellipse cx="19" cy="76" rx="11" ry="8" transform="rotate(-35 19 76)" fill="${arm}" ${sw}/>
-    <ellipse cx="101" cy="76" rx="11" ry="8" transform="rotate(35 101 76)" fill="${arm}" ${sw}/>
-    <clipPath id="${u}"><path d="${body}"/></clipPath>
-    <path d="${body}" fill="${B}"/><g clip-path="url(#${u})">${clipped}</g><path d="${body}" fill="none" ${sw}/>
-    ${over}${eyeSVG}${face}${mouth}${blush}${hatSVG(hat)}
+    <ellipse cx="31" cy="90" rx="6.5" ry="19" transform="rotate(16 31 90)" fill="${arm}" ${sw}/>
+    <ellipse cx="89" cy="90" rx="6.5" ry="19" transform="rotate(-16 89 90)" fill="${arm}" ${sw}/>
+    <clipPath id="${u}"><path d="${bodyPath}"/><ellipse cx="60" cy="52" rx="33" ry="28"/></clipPath>
+    <path d="${bodyPath}" fill="${B}"/>${head} fill="${B}"/>
+    <g clip-path="url(#${u})">${clipped}</g>
+    <path d="M40 75 V114 Q40 124 50 124 Q58 124 60 116 Q62 124 70 124 Q80 124 80 114 V75" fill="none" ${sw}/><path d="M60 ${slitTop} V116" ${sw}/>${head} fill="none" ${sw}/>
+    ${over}${eyeSVG}${face}${mouth}${hatSVG(hat)}
   </g></svg>`;
 }
 function hatSVG(h){
@@ -628,8 +632,8 @@ function hatSVG(h){
     case 'flower': return [0,72,144,216,288].map(a=>{const x=80+9*Math.cos(a*Math.PI/180), y=28+9*Math.sin(a*Math.PI/180); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5" fill="#FF9CEE" ${sw} stroke-width="2"/>`;}).join('') + `<circle cx="80" cy="28" r="5" fill="#FFD60A" ${sw} stroke-width="2"/>`;
     case 'bow': return `<path d="M60 28 L42 16 L42 40Z M60 28 L78 16 L78 40Z" fill="#FF4FA3" ${sw}/><circle cx="60" cy="28" r="5.5" fill="#FF4FA3" ${sw}/>`;
     case 'party': return `<path d="M46 32 L60 -10 L74 32Z" fill="#8F5CFF" ${sw}/><path d="M52 16 L68 20 M49 26 L71 30" stroke="#FFD60A" stroke-width="3.5"/><circle cx="60" cy="-11" r="5" fill="#FFD60A" ${sw} stroke-width="2"/>`;
-    case 'headphones': return `<path d="M18 66 Q16 12 60 12 Q104 12 102 66" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/><rect x="7" y="56" width="16" height="26" rx="7" fill="#FF4FA3" ${sw}/><rect x="97" y="56" width="16" height="26" rx="7" fill="#FF4FA3" ${sw}/>`;
-    case 'shades': return `<rect x="36" y="57" width="21" height="13" rx="5" fill="${INK}"/><rect x="63" y="57" width="21" height="13" rx="5" fill="${INK}"/><path d="M57 62 H63" stroke="${INK}" stroke-width="3"/><path d="M40 60 L46 60" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M67 60 L73 60" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`;
+    case 'headphones': return `<path d="M29 52 Q27 14 60 14 Q93 14 91 52" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/><rect x="20" y="42" width="13" height="22" rx="6" fill="#FF4FA3" ${sw}/><rect x="87" y="42" width="13" height="22" rx="6" fill="#FF4FA3" ${sw}/>`;
+    case 'shades': return `<rect x="44" y="32" width="14" height="11" rx="4" fill="${INK}"/><rect x="62" y="32" width="14" height="11" rx="4" fill="${INK}"/><path d="M58 36 H62 M44 36 L34 34 M76 36 L86 34" stroke="${INK}" stroke-width="2.5"/><path d="M47 35 L52 35 M65 35 L70 35" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>`;
     case 'wizard': return `<path d="M40 30 L68 -10 L80 30Z" fill="#3F51B5" ${sw}/><ellipse cx="60" cy="30" rx="31" ry="6" fill="#3F51B5" ${sw}/><path d="M60 10 l2 4 l4 1 l-4 2 l-2 4 l-2 -4 l-4 -2 l4 -1z" fill="#FFD60A"/>`;
     case 'chef': return `<circle cx="46" cy="12" r="11" fill="#fff" ${sw}/><circle cx="74" cy="12" r="11" fill="#fff" ${sw}/><circle cx="60" cy="5" r="12" fill="#fff" ${sw}/><rect x="40" y="16" width="40" height="15" rx="3" fill="#fff" ${sw}/>`;
     default: return '';
