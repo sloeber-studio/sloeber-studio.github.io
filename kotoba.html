@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kotoba">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#F6F8FD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141A2C" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,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">
+<title>Kotoba · Word game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F8FD; --grid:#D3DDF2; --ink:#1E2A4A; --ink-soft:#56617E;
+  --matcha:#4F8F44; --yuzu:#E2B13C; --slate:#8C94A8; --sakura:#E86A92;
+  --tile-bg:#FFFFFF; --tile-line:#B9C5E2; --key:#E3E9F6; --key-ink:#1E2A4A;
+  --sheet:#FFFFFF; --shadow:0 10px 30px rgba(30,42,74,.18);
+  --on-correct:#FFFFFF; --on-present:#1E2A4A; --on-absent:#FFFFFF;
+  color-scheme:light;
+  box-sizing:border-box;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px); --safe-r:env(safe-area-inset-right,0px);
+  /* key heights scale with screen height: iPhone SE up to Pro Max / iPad */
+  --key-h:clamp(42px, 7.2vh, 58px);
+  --jkey-h:clamp(32px, 5.3vh, 48px);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#141A2C; --grid:#232D49; --ink:#EEF1FA; --ink-soft:#A8B1CC;
+    --matcha:#5FA653; --yuzu:#D9A82E; --slate:#4A5370; --sakura:#F07EA2;
+    --tile-bg:#1B2338; --tile-line:#3A4669; --key:#2A3452; --key-ink:#EEF1FA;
+    --sheet:#1D2540; --shadow:0 10px 30px rgba(0,0,0,.5);
+    --on-present:#1B1B1B; color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+html,body{margin:0;overflow:hidden}
+body{
+  position:fixed;inset:0; /* no rubber-band scrolling or accidental page drag on iPhone */
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:28px 28px;
+  color:var(--ink);
+  font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  overscroll-behavior:none;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--sakura);outline-offset:2px}
+
+.app{
+  height:100%;max-width:560px;margin:0 auto;
+  padding:calc(var(--safe-t) + 6px) calc(var(--safe-r) + 8px) calc(var(--safe-b) + 6px) calc(var(--safe-l) + 8px);
+  display:flex;flex-direction:column;gap:6px;
+}
+button{touch-action:manipulation}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.title{position:relative;display:flex;align-items:baseline;gap:8px;padding:2px 10px}
+.title::before{ /* washi tape */
+  content:"";position:absolute;inset:6px -4px 2px -4px;z-index:-1;
+  background:repeating-linear-gradient(135deg,var(--sakura) 0 8px,color-mix(in srgb,var(--sakura) 75%,#fff) 8px 16px);
+  opacity:.35;transform:rotate(-1.5deg);border-radius:2px;
+}
+.title h1{margin:0;font-family:Fredoka,"M PLUS Rounded 1c",sans-serif;font-weight:700;font-size:27px;letter-spacing:.5px}
+.title span{font-weight:800;font-size:15px;color:var(--ink-soft)}
+.head-btns{display:flex;gap:6px}
+.icon-btn{border:2px solid var(--tile-line);background:var(--tile-bg);border-radius:12px;min-width:44px;height:40px;padding:0 12px;font-size:15px;font-weight:700}
+.head-btns{align-items:center}
+.streak{font-weight:800;font-size:14px;color:var(--ink-soft);white-space:nowrap}
+
+/* controls */
+.controls{display:flex;flex-wrap:nowrap;gap:6px;align-items:center}
+.controls .seg{flex:0 1 auto}
+.seg{display:inline-flex;background:var(--tile-bg);border:2px solid var(--tile-line);border-radius:14px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:10px;min-height:34px;padding:0 11px;font-weight:700;font-size:14px;color:var(--ink-soft);white-space:nowrap}
+.short{display:none}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg .tag{font-size:11px;opacity:.75;margin-left:2px}
+
+.level{font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:8px;min-height:18px;white-space:nowrap;overflow:hidden}
+.bar{flex:0 1 110px;min-width:50px;height:8px;border-radius:8px;background:var(--key);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--matcha);border-radius:8px;transition:width .4s}
+
+/* board */
+.board-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden}
+.board{
+  --cols:5;--gap:6px;
+  --tile:44px;
+  display:grid;gap:var(--gap);
+}
+.row{display:grid;grid-template-columns:repeat(var(--cols),var(--tile));gap:var(--gap)}
+.row.shake{animation:shake .4s}
+.tile{
+  width:var(--tile);height:var(--tile);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--tile-bg);border:2px solid var(--tile-line);border-radius:9px;
+  font-family:Fredoka,"M PLUS Rounded 1c",sans-serif;font-weight:600;
+  font-size:calc(var(--tile) * .52);text-transform:uppercase;line-height:1;
+}
+.ja .tile{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:800;font-size:calc(var(--tile) * .5)}
+.tile.filled{border-color:var(--ink);animation:pop .1s}
+.tile[data-s]{border-color:transparent}
+.tile[data-s="correct"]{background:var(--matcha);color:var(--on-correct)}
+.tile[data-s="present"]{background:var(--yuzu);color:var(--on-present)}
+.tile[data-s="absent"]{background:var(--slate);color:var(--on-absent)}
+.tile.flip{animation:flip .45s ease both}
+.row.win .tile{animation:hop .5s ease both}
+
+/* message + clue */
+.under{min-height:36px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}
+.clue-btn{border:2px dashed var(--sakura);background:transparent;border-radius:12px;min-height:36px;padding:0 14px;font-weight:700;font-size:14px;color:var(--ink)}
+.clue{font-size:14.5px;line-height:1.4;max-height:4.4em;overflow:auto;max-width:46ch;background:var(--tile-bg);border-left:4px solid var(--sakura);border-radius:8px;padding:6px 12px;text-align:left}
+
+/* keyboard */
+.kb{display:flex;flex-direction:column;gap:7px;padding-bottom:2px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.kb .krow{display:flex;gap:5px;justify-content:center}
+.key{
+  flex:1;min-width:0;height:var(--key-h);border:0;border-radius:8px;padding:0;
+  background:var(--key);color:var(--key-ink);
+  font-family:Fredoka,sans-serif;font-weight:600;font-size:18px;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+}
+.key.wide{flex:1.6;font-size:13px;text-transform:none}
+.key.down{filter:brightness(.82);transform:translateY(1px)}
+.key[data-s="correct"]{background:var(--matcha);color:var(--on-correct)}
+.key[data-s="present"]{background:var(--yuzu);color:var(--on-present)}
+.key[data-s="absent"]{background:var(--slate);color:var(--on-absent);opacity:.8}
+.spacer{flex:1;visibility:hidden}
+.ja .key{height:var(--jkey-h);font-family:"M PLUS Rounded 1c",sans-serif;font-weight:800;font-size:18px;border-radius:8px}
+.ja .key small{font-family:Fredoka,sans-serif;font-weight:500;font-size:10px;opacity:.7;text-transform:none;line-height:1}
+.ja .kb{gap:5px}
+.ja .kb .krow{gap:4px}
+.ja .key.wide{font-size:13px}
+.ja .key.mod{font-size:20px}
+
+/* toast */
+.toast{position:fixed;left:50%;top:calc(var(--safe-t) + 96px);transform:translateX(-50%);
+  background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:10px;font-weight:700;font-size:15px;
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.toast.show{opacity:1}
+
+/* result sheet */
+.scrim{position:fixed;inset:0;background:rgba(20,26,44,.35);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.scrim.open{display:flex}
+.sheet{
+  width:min(560px,100%);background:var(--sheet);border-radius:22px 22px 0 0;box-shadow:var(--shadow);
+  padding:22px calc(22px + var(--safe-r)) calc(18px + var(--safe-b)) calc(22px + var(--safe-l));
+  max-height:calc(100% - var(--safe-t) - 20px);overflow:auto;-webkit-user-select:text;user-select:text;
+  animation:rise .3s ease both;
+}
+.sheet .verdict{margin:0 0 6px;font-size:15px;font-weight:700;color:var(--ink-soft)}
+.sheet .word{margin:0;font-family:Fredoka,"M PLUS Rounded 1c",sans-serif;font-weight:700;font-size:44px;letter-spacing:2px;text-transform:uppercase;line-height:1.1}
+.sheet.jaw .word{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:800;letter-spacing:4px}
+.sheet .reading{margin:4px 0 0;font-size:16px;color:var(--ink-soft);font-weight:700}
+.sheet .def{margin:12px 0 0;font-size:17px;line-height:1.55;max-width:48ch}
+.sheet .stats{margin:14px 0 0;font-size:14px;color:var(--ink-soft)}
+.sheet .actions{display:flex;gap:10px;margin-top:18px}
+.btn{border:0;border-radius:14px;min-height:50px;padding:0 18px;font-weight:800;font-size:16px}
+.btn.main{flex:1;background:var(--ink);color:var(--paper)}
+.btn.alt{background:var(--key);color:var(--key-ink)}
+
+/* settings sheet */
+.set-row{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.set-row label{font-weight:700;font-size:15px}
+.set-row p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.4}
+.sheet h2{margin:0;font-family:Fredoka,sans-serif;font-size:24px}
+
+@keyframes pop{50%{transform:scale(1.08)}}
+@keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(90deg)}100%{transform:rotateX(0)}}
+@keyframes hop{40%{transform:translateY(-14px)}}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes rise{from{transform:translateY(40px);opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .tile.flip,.row.win .tile,.row.shake,.tile.filled,.sheet{animation:none!important}
+}
+@media (max-width:430px){
+  .tag{display:none}
+  .ja .long{display:none} .ja .short{display:inline;font-size:16px}
+}
+@media (max-width:380px){ .title h1{font-size:23px} .title span{font-size:13px} .seg button{padding:0 8px} .icon-btn{padding:0 9px} }
+/* short screens (iPhone SE, or Safari with toolbars) */
+@media (max-height:700px){ .app{gap:4px} .level{min-height:16px;font-size:12.5px} }
+/* landscape on a phone: keep it playable */
+@media (orientation:landscape) and (max-height:500px){
+  :root{--key-h:34px;--jkey-h:26px}
+  .level,.under{display:none}
+  .ja .key small{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <div class="title"><h1>Kotoba</h1><span>ことば</span></div>
+    <div class="head-btns">
+      <span class="streak" id="streak"></span>
+      <button class="icon-btn" id="skipBtn" title="Give up and show the word">Skip</button>
+      <button class="icon-btn" id="setBtn" aria-label="Settings">⚙︎</button>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="seg" id="langSeg" role="group" aria-label="Language">
+      <button data-v="en">English</button>
+      <button data-v="ja">日本語</button>
+    </div>
+    <div class="seg" id="lenSeg" role="group" aria-label="Word length"></div>
+    <div class="seg" id="scriptSeg" role="group" aria-label="Japanese script">
+      <button data-v="h"><span class="long">ひらがな</span><span class="short">あ</span></button>
+      <button data-v="k"><span class="long">カタカナ</span><span class="short">ア</span></button>
+    </div>
+  </div>
+
+  <div class="level" id="level"></div>
+
+  <div class="board-wrap"><div class="board" id="board"></div></div>
+
+  <div class="under" id="under"></div>
+
+  <div class="kb" id="kb"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="scrim" id="resultScrim">
+  <div class="sheet" id="resultSheet" role="dialog" aria-modal="true" aria-labelledby="resWord">
+    <p class="verdict" id="resVerdict"></p>
+    <p class="word" id="resWord"></p>
+    <p class="reading" id="resReading"></p>
+    <p class="def" id="resDef"></p>
+    <p class="stats" id="resStats"></p>
+    <div class="actions">
+      <button class="btn alt" id="sayBtn">🔊 Say it</button>
+      <button class="btn main" id="nextBtn">Next word</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="setScrim">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+    <h2 id="setTitle">Settings</h2>
+    <div class="set-row">
+      <label>English word difficulty</label>
+      <div class="seg" id="diffSeg">
+        <button data-v="auto">Auto</button>
+        <button data-v="1">Easy</button>
+        <button data-v="2">Medium</button>
+        <button data-v="3">Hard</button>
+      </div>
+      <p>Auto starts with easy words and moves up a level as you keep solving them.</p>
+    </div>
+    <div class="set-row">
+      <label>Romaji on Japanese keys</label>
+      <div class="seg" id="romajiSeg">
+        <button data-v="on">Show</button>
+        <button data-v="off">Hide</button>
+      </div>
+      <p>Small letters under each kana, like か (ka). Hide them once you know the keys by heart.</p>
+    </div>
+    <div class="set-row">
+      <label>Progress</label>
+      <div><button class="btn alt" id="resetBtn">Reset all progress</button></div>
+    </div>
+    <div class="actions"><button class="btn main" id="closeSet">Done</button></div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   WORD BANKS
+   English: word|kid-friendly definition. Tier 1 everyday,
+   tier 2 school vocabulary, tier 3 stretch words.
+   Japanese: kana|romaji|meaning. No small kana (ゃゅょっ).
+   ========================================================= */
+const EN_RAW = {
+5:{1:`
+apple|A round fruit with red, green, or yellow skin.
+beach|A sandy or pebbly shore next to the ocean or a lake.
+brave|Ready to face danger or difficulty without giving in to fear.
+bread|A food baked from flour, water, and yeast.
+chair|A seat with a back, made for one person.
+cloud|A white or gray mass of tiny water drops floating in the sky.
+dream|Pictures and stories your mind makes while you sleep; also a hope for the future.
+earth|The planet we live on; also the soil that plants grow in.
+field|An open area of land, often used for crops, animals, or sports.
+flame|The hot, glowing part of a fire.
+fruit|The sweet part of a plant that holds its seeds, like an apple or a peach.
+ghost|In stories, the spirit of a dead person that appears to the living.
+grape|A small round fruit that grows in bunches on a vine.
+happy|Feeling pleased and cheerful.
+heart|The organ that pumps blood through your body; also a symbol of love.
+horse|A large animal with a mane and hooves that people can ride.
+house|A building where people live.
+juice|The liquid that comes out of fruit or vegetables.
+laugh|To make sounds that show you think something is funny.
+lemon|A sour yellow citrus fruit.
+light|What lets us see; the opposite of dark. It can also mean not heavy.
+lucky|Having good things happen by chance.
+magic|The power in stories to make impossible things happen; also clever tricks.
+money|Coins and paper bills used to buy things.
+music|Sounds arranged in a pleasing way using rhythm and melody.
+night|The dark time between sunset and sunrise.
+ocean|A huge body of salt water that covers much of the Earth.
+paint|A colored liquid you spread on a surface to decorate or protect it.
+party|A gathering where people celebrate and have fun together.
+pizza|A flat, round bread baked with toppings like tomato sauce and cheese.
+plant|A living thing, like a tree or flower, that grows in soil and makes food from sunlight.
+quiet|Making little or no noise.
+river|A large, natural stream of water flowing to the sea or a lake.
+robot|A machine that can be programmed to do tasks by itself.
+round|Shaped like a circle or a ball.
+salad|A dish of mixed raw vegetables, often with dressing.
+sheep|A farm animal with a thick wool coat.
+smile|To turn up the corners of your mouth to show you're happy.
+snake|A long reptile with no legs that slithers along the ground.
+sport|A game or activity that takes physical skill, like soccer or swimming.
+storm|Bad weather with strong winds and often rain, thunder, or snow.
+sugar|A sweet substance used in food and drinks.
+sunny|Bright with sunshine.
+table|A piece of furniture with a flat top and legs.
+tiger|A large wild cat with orange fur and black stripes.
+toast|Bread browned by heat; also a short speech before people raise their glasses.
+tooth|One of the hard white parts in your mouth used for biting and chewing.
+train|A line of railway cars pulled by an engine.
+water|The clear liquid that falls as rain and fills rivers and oceans.
+whale|A huge ocean mammal that breathes air through a blowhole.
+world|The Earth and all the people and places on it.
+zebra|An African animal like a horse, with black and white stripes.
+puppy|A young dog.
+candy|A sweet treat made with sugar or chocolate.
+clock|A device that shows the time.
+dance|To move your body to music.
+green|The color of grass and leaves.
+cream|The thick, rich part of milk; also a pale yellow-white color.
+shell|The hard outer covering of an egg, a nut, or a sea creature.
+honey|A sweet, sticky food made by bees from flower nectar.
+`,2:`
+adapt|To change in order to fit a new situation.
+agree|To have the same opinion as someone else.
+alert|Watchful and ready to notice danger or act quickly.
+angle|The space between two lines that meet at a point, measured in degrees.
+argue|To give reasons for or against something, often while disagreeing.
+atlas|A book of maps.
+bloom|To produce flowers; a flower that has opened.
+brain|The organ in your head that controls thinking, feeling, and movement.
+cabin|A small, simple house, often made of wood.
+canal|A waterway built by people for boats or for watering crops.
+cause|The reason something happens.
+chart|A diagram or table that shows information clearly.
+civil|Polite; also having to do with ordinary citizens.
+coast|The land along the edge of the sea.
+coral|A hard, colorful material made by tiny sea animals; it builds reefs.
+crisp|Firm, dry, and easy to snap, like a fresh apple or a cracker.
+crowd|A large group of people gathered together.
+delta|Land shaped like a triangle where a river splits up and meets the sea.
+draft|An early version of a piece of writing, before it is finished.
+equal|The same in amount, size, or value.
+event|Something that happens, especially something important.
+exact|Completely correct, with no mistakes.
+fable|A short story, often with animals, that teaches a lesson.
+focus|To give all your attention to one thing.
+genre|A category of art or writing, like mystery or fantasy.
+globe|A ball-shaped map of the Earth.
+habit|Something you do regularly, often without thinking.
+hatch|To break out of an egg.
+index|An alphabetical list at the back of a book that tells you where to find topics.
+judge|A person who decides cases in court or picks the winner of a contest.
+label|A small piece of paper or tag that names or describes something.
+lunar|Having to do with the Moon.
+major|Very important or large.
+merge|To join together into one.
+metal|A hard, shiny material like iron, gold, or copper.
+minor|Smaller or less important.
+motto|A short phrase that sums up a belief or goal.
+novel|A long story written as a book; also something new and unusual.
+orbit|The curved path of a planet, moon, or satellite around another object.
+pause|A short stop before continuing.
+plain|Simple and not decorated; also a large, flat area of land.
+prism|A clear, shaped piece of glass that splits light into a rainbow.
+proof|Evidence that shows something is true.
+rapid|Very fast.
+ratio|A comparison of two amounts, like 2 to 3.
+react|To respond to something that happens.
+rhyme|Words that end with the same sound, like cat and hat.
+scale|A tool for weighing; also one of the small plates on a fish or reptile.
+solar|Having to do with the Sun.
+solve|To find the answer to a problem.
+theme|The main idea or message of a story.
+trait|A quality or feature that makes someone or something special.
+vivid|Very bright or clear, like a vivid color or a vivid memory.
+yield|To produce something, like a crop; also to let others go first.
+`,3:`
+abide|To accept or follow a rule; also to put up with something.
+adept|Very skilled at something.
+aloof|Distant and not friendly; keeping to yourself.
+amber|Hardened tree sap, golden-orange in color; it sometimes holds ancient insects.
+ample|More than enough.
+blunt|Not sharp; also speaking very directly without being gentle.
+bluff|To pretend you know or have something in order to trick others.
+covet|To strongly want something that belongs to someone else.
+cower|To crouch down in fear.
+debut|A first public appearance or performance.
+deter|To discourage someone from doing something.
+droll|Funny in an odd or dry way.
+eerie|Strange and spooky.
+elude|To escape or avoid, often in a clever way.
+envoy|A messenger sent to represent a government.
+feign|To pretend to feel or have something.
+flair|A natural talent or a stylish way of doing things.
+frail|Weak and easily broken.
+gauge|A tool that measures something; also to estimate or judge.
+gaunt|Very thin and bony, often from hunger or illness.
+glean|To gather information bit by bit.
+haste|Great speed, sometimes too much.
+irate|Very angry.
+jaunt|A short trip for fun.
+knack|A special skill for doing something easily.
+lucid|Clear and easy to understand.
+mirth|Laughter and happiness.
+naive|Too trusting, usually because of a lack of experience.
+oasis|A green spot with water in a desert.
+plume|A large feather; also a cloud of smoke rising up.
+prowl|To move around quietly, like a hunting animal.
+quell|To calm or put an end to something, like fear or a fight.
+query|A question.
+rogue|A dishonest person, or something that behaves differently than expected.
+savvy|Smart and practical about the real world.
+scorn|A feeling that someone or something is worthless.
+stoic|Staying calm and not complaining during hard times.
+taunt|To tease someone in a mean way.
+tepid|Only slightly warm.
+valor|Great bravery.
+vague|Not clear or specific.
+wield|To hold and use a tool or weapon; also to have and use power.
+zesty|Full of strong, pleasant flavor or energy.
+`},
+6:{1:`
+animal|A living creature that can move and eat, like a dog or a bird.
+banana|A long curved fruit with yellow skin.
+basket|A container woven from strips of material, used for carrying things.
+bridge|A structure built over a river or road so people can cross.
+butter|A soft yellow food made from cream.
+candle|A stick of wax with a string inside that you burn for light.
+castle|A large, strong building with thick walls, built long ago for protection.
+cookie|A small, sweet baked treat.
+dragon|A large, fire-breathing creature with wings from myths and stories.
+family|A group of people related to each other, like parents and children.
+flower|The colorful part of a plant that makes seeds.
+forest|A large area covered with trees.
+friend|Someone you like and who likes you back.
+garden|A piece of land where flowers, fruits, or vegetables are grown.
+guitar|A musical instrument with strings that you strum or pluck.
+island|A piece of land surrounded by water.
+jacket|A short coat.
+jungle|A thick tropical forest full of plants and animals.
+kitten|A young cat.
+letter|A symbol for a sound, like A or B; also a written message you send.
+monkey|An animal with a long tail that climbs trees.
+orange|A round citrus fruit; also the color of that fruit.
+pencil|A tool for writing or drawing that uses graphite.
+planet|A large round object that orbits a star, like Earth or Mars.
+purple|A color made by mixing red and blue.
+rabbit|A small furry animal with long ears that hops.
+rocket|A vehicle that shoots into space using powerful engines.
+school|A place where students go to learn.
+silver|A shiny gray-white metal; also that color.
+spring|The season after winter when plants begin to grow.
+summer|The warmest season of the year.
+travel|To go from one place to another, especially far away.
+turtle|A reptile with a hard shell on its back.
+winter|The coldest season of the year.
+yellow|The color of lemons and sunflowers.
+bubble|A thin ball of liquid filled with air.
+`,2:`
+absorb|To soak up, like a sponge soaks up water.
+action|Something that is done; the act of doing something.
+admire|To look up to someone or think highly of them.
+border|The line that separates two places, like two countries.
+bright|Giving off a lot of light; also smart.
+canyon|A deep valley with steep sides, often carved by a river.
+circle|A round shape where every point is the same distance from the center.
+crater|A bowl-shaped hole made by a meteor or a volcano.
+debate|A discussion where people argue for different sides.
+decade|A period of ten years.
+divide|To split into parts or groups; in math, to share equally.
+energy|The power to do work or make things move.
+expert|Someone who knows a lot about a subject.
+fossil|The remains or print of an ancient plant or animal preserved in rock.
+fierce|Strong, wild, and intense.
+humble|Not proud or boastful.
+invent|To create something new that didn't exist before.
+legend|An old, famous story that may or may not be true; also a map's key.
+magnet|An object that pulls iron and steel toward it.
+memory|The ability to remember; something you remember.
+method|A way of doing something.
+mirror|Shiny glass that shows a reflection.
+museum|A building where interesting objects are shown to the public.
+nature|The plants, animals, and landscapes not made by people.
+oxygen|A gas in the air that people and animals need to breathe.
+period|A length of time; also the dot at the end of a sentence.
+poetry|Writing that uses rhythm, sound, and imagery to express feelings.
+public|Open to everyone.
+reason|Why something happens; also the ability to think clearly.
+recipe|Instructions for cooking something.
+sample|A small part that shows what the whole is like.
+season|One of the four parts of the year: spring, summer, fall, and winter.
+simple|Easy to understand or do.
+symbol|A sign or picture that stands for something else.
+talent|A natural ability to do something well.
+volume|How loud a sound is; also how much space something takes up.
+weight|How heavy something is.
+`,3:`
+abrupt|Sudden and unexpected.
+absurd|Silly and makes no sense.
+anthem|A song of praise, especially a country's national song.
+banter|Playful, joking conversation.
+candid|Honest and direct; also a photo taken when people aren't posing.
+cipher|A secret code.
+clever|Smart and quick at thinking.
+dismal|Gloomy and sad.
+docile|Calm and easy to handle.
+elated|Extremely happy.
+famine|A severe shortage of food across a large area.
+feeble|Very weak.
+fickle|Changing your mind often.
+frugal|Careful not to waste money.
+futile|Having no chance of success; pointless.
+haggle|To argue about a price to try to get a better deal.
+hearty|Warm and enthusiastic; also describes a big, filling meal.
+humane|Kind and caring, especially toward people or animals.
+jargon|Special words used by a particular group that others may not understand.
+lavish|Rich, fancy, and expensive.
+meager|Very small in amount.
+mellow|Soft, relaxed, and calm.
+mosaic|A picture made from many small pieces of colored stone or glass.
+nimble|Quick and light in movement.
+oblige|To do something because you must, or to help someone out.
+ponder|To think carefully about something.
+quaint|Charming in an old-fashioned way.
+ravine|A deep, narrow valley.
+rustic|Simple and countrylike.
+serene|Calm and peaceful.
+somber|Dark, serious, or sad.
+unique|One of a kind.
+vessel|A ship or boat; also a container for liquids.
+whimsy|Playful and fanciful humor.
+zenith|The highest point.
+`},
+7:{1:`
+balloon|A rubber bag filled with air or gas.
+blanket|A large warm cover used on a bed.
+brother|A boy or man who has the same parents as someone else.
+chicken|A farm bird raised for eggs and meat.
+dolphin|A smart ocean mammal that swims in groups.
+freedom|Being able to act, speak, or think as you want.
+giraffe|An African animal with a very long neck.
+holiday|A special day for celebrating, or a day off.
+kitchen|The room where food is cooked.
+library|A place where you can borrow books.
+morning|The early part of the day, before noon.
+mystery|Something hard to explain; also a story about solving a puzzle or crime.
+octopus|A sea animal with eight arms.
+penguin|A black-and-white bird that swims but can't fly.
+pumpkin|A large round orange vegetable that grows on a vine.
+rainbow|An arc of colors in the sky after rain.
+science|The study of the natural world by observing and testing.
+teacher|A person who helps others learn.
+volcano|A mountain that can erupt with hot lava, ash, and gas.
+weather|The conditions outside, like sun, rain, or wind.
+picture|A drawing, painting, or photo.
+popcorn|Corn kernels that puff up when heated.
+unicorn|A mythical horse with a single horn on its forehead.
+sunrise|The time in the morning when the sun appears.
+diamond|A very hard, sparkly gemstone.
+journey|A long trip from one place to another.
+monster|A frightening, imaginary creature.
+cartoon|A funny drawing or an animated show.
+`,2:`
+ancient|Very old; from a time long ago.
+balance|Being steady and not falling; also an equal amount on each side.
+capital|The city where a country's or state's government is based; also an uppercase letter.
+climate|The usual weather in a place over a long time.
+compass|A tool with a needle that points north.
+culture|The beliefs, customs, art, and way of life of a group of people.
+digital|Using computers or numbers.
+eclipse|When one object in space blocks the light of another, like the Moon blocking the Sun.
+explore|To travel through a place to learn about it.
+fiction|Stories that are made up.
+gravity|The force that pulls things toward the ground or toward each other.
+habitat|The natural home of an animal or plant.
+history|The study of past events.
+imagine|To picture something in your mind.
+journal|A notebook where you write about your thoughts and experiences.
+kingdom|A country ruled by a king or queen.
+mineral|A natural solid substance, like quartz or salt.
+musical|Having to do with music; also a play with songs.
+natural|Found in nature; not made by people.
+opinion|What someone thinks or believes about something.
+pattern|A design or sequence that repeats.
+predict|To say what you think will happen in the future.
+problem|Something that is difficult and needs to be solved.
+protect|To keep safe from harm.
+pyramid|A shape with a square base and triangle sides; also the ancient tombs in Egypt.
+species|A group of living things that are alike and can have young together.
+vehicle|Something that carries people or things, like a car or a bus.
+victory|A win.
+average|In math, the total divided by how many numbers there are; also typical.
+decimal|A number with a dot to show parts of a whole, like 3.5.
+glacier|A huge, slow-moving river of ice.
+pioneer|One of the first people to explore a place or do something new.
+`,3:`
+anxious|Worried or nervous.
+bizarre|Very strange or unusual.
+cascade|A small waterfall; also many things falling one after another.
+chaotic|Completely messy and out of control.
+clarify|To make something clearer.
+cunning|Clever at tricking others.
+dazzled|Amazed by something very bright or impressive.
+fragile|Easily broken.
+gallant|Brave and polite.
+glimpse|A quick look.
+hostile|Unfriendly and aggressive.
+inspire|To fill someone with the urge or ability to do something.
+justify|To give a good reason for something.
+lantern|A light with a protective cover, often carried by hand.
+meander|To wander or follow a winding path.
+mundane|Ordinary and dull.
+obscure|Not well known; also hard to see or understand.
+paradox|A statement that seems to contradict itself but may still be true.
+perplex|To confuse someone.
+radiant|Shining brightly; glowing with happiness.
+resolve|To find a solution; also firm determination.
+sincere|Honest and genuine.
+tedious|Long and boring.
+thrifty|Careful with money.
+triumph|A great victory or success.
+uncanny|Strange in a way that is hard to explain.
+verdict|A decision made by a jury or a judge.
+vibrant|Full of energy and bright color.
+witness|A person who sees something happen.
+zealous|Very enthusiastic.
+nomadic|Moving from place to place instead of living in one spot.
+`}};
+
+const JA_RAW = {
+h:{3:`
+さかな|sakana|fish
+くるま|kuruma|car
+あたま|atama|head
+からだ|karada|body
+みどり|midori|green
+つくえ|tsukue|desk
+いちご|ichigo|strawberry
+りんご|ringo|apple
+うさぎ|usagi|rabbit
+たまご|tamago|egg
+さくら|sakura|cherry blossom
+かばん|kaban|bag
+すいか|suika|watermelon
+みかん|mikan|mandarin orange
+ごはん|gohan|cooked rice; a meal
+めがね|megane|glasses
+はなび|hanabi|fireworks
+おかし|okashi|sweets, snacks
+きいろ|kiiro|yellow
+あかい|akai|red
+あおい|aoi|blue
+しろい|shiroi|white
+くろい|kuroi|black
+なまえ|namae|name
+でんわ|denwa|telephone
+てがみ|tegami|letter (mail)
+ことば|kotoba|word, language
+かぞく|kazoku|family
+やさい|yasai|vegetables
+きつね|kitsune|fox
+たぬき|tanuki|raccoon dog
+ひつじ|hitsuji|sheep
+かえる|kaeru|frog
+はさみ|hasami|scissors
+おふろ|ofuro|bath
+まくら|makura|pillow
+ふとん|futon|futon bed
+てんき|tenki|weather
+あした|ashita|tomorrow
+きのう|kinou|yesterday
+えいが|eiga|movie
+ひだり|hidari|left
+おかね|okane|money
+さとう|satou|sugar
+うどん|udon|thick wheat noodles
+ぼうし|boushi|hat
+みなみ|minami|south
+ひがし|higashi|east
+`,4:`
+ひこうき|hikouki|airplane
+ともだち|tomodachi|friend
+えんぴつ|enpitsu|pencil
+せんせい|sensei|teacher
+たいよう|taiyou|sun
+くだもの|kudamono|fruit
+にんじん|ninjin|carrot
+おおきい|ookii|big
+ちいさい|chiisai|small
+おにぎり|onigiri|rice ball
+てんぷら|tenpura|tempura (fried seafood and vegetables)
+やきとり|yakitori|grilled chicken skewers
+おんがく|ongaku|music
+くつした|kutsushita|socks
+のりもの|norimono|vehicle
+ほしぞら|hoshizora|starry sky
+ひまわり|himawari|sunflower
+どうぶつ|doubutsu|animal
+たべもの|tabemono|food
+のみもの|nomimono|drink
+いもうと|imouto|younger sister
+おとうと|otouto|younger brother
+あおぞら|aozora|blue sky
+かみなり|kaminari|thunder
+にわとり|niwatori|chicken
+うみがめ|umigame|sea turtle
+けしごむ|keshigomu|eraser
+むらさき|murasaki|purple
+まいにち|mainichi|every day
+おはよう|ohayou|good morning
+おやすみ|oyasumi|good night
+たいいく|taiiku|P.E. (gym class)
+すいえい|suiei|swimming
+こくばん|kokuban|blackboard
+`},
+k:{3:`
+カメラ|kamera|camera
+テレビ|terebi|TV
+ピアノ|piano|piano
+バナナ|banana|banana
+トマト|tomato|tomato
+メロン|meron|melon
+レモン|remon|lemon
+パンダ|panda|panda
+ゴリラ|gorira|gorilla
+コアラ|koara|koala
+ノート|nooto|notebook
+ゲーム|geemu|game
+ケーキ|keeki|cake
+パスタ|pasuta|pasta
+カレー|karee|curry
+サラダ|sarada|salad
+スープ|suupu|soup
+ホテル|hoteru|hotel
+ボール|booru|ball
+テニス|tenisu|tennis
+ゴルフ|gorufu|golf
+ダンス|dansu|dance
+ギター|gitaa|guitar
+ドラム|doramu|drums
+クラス|kurasu|class
+テスト|tesuto|test
+メール|meeru|email
+スキー|sukii|skiing
+プール|puuru|swimming pool
+ドレス|doresu|dress
+マスク|masuku|mask
+ハート|haato|heart
+ピンク|pinku|pink
+ミルク|miruku|milk
+チーズ|chiizu|cheese
+アイス|aisu|ice cream
+スマホ|sumaho|smartphone
+カナダ|kanada|Canada
+ドイツ|doitsu|Germany
+トイレ|toire|toilet
+ナイフ|naifu|knife
+ボタン|botan|button
+リボン|ribon|ribbon
+パズル|pazuru|puzzle
+クイズ|kuizu|quiz
+ゴール|gooru|goal
+チーム|chiimu|team
+コーチ|koochi|coach
+アニメ|anime|anime
+バスケ|basuke|basketball
+バレエ|baree|ballet
+`,4:`
+ライオン|raion|lion
+ペンギン|pengin|penguin
+タクシー|takushii|taxi
+スカート|sukaato|skirt
+セーター|seetaa|sweater
+コーヒー|koohii|coffee
+ラーメン|raamen|ramen noodles
+パソコン|pasokon|computer
+アメリカ|amerika|America
+イギリス|igirisu|United Kingdom
+フランス|furansu|France
+ベルギー|berugii|Belgium
+メキシコ|mekishiko|Mexico
+オレンジ|orenji|orange
+テーブル|teeburu|table
+スプーン|supuun|spoon
+ハンカチ|hankachi|handkerchief
+トランプ|toranpu|playing cards
+ドラゴン|doragon|dragon
+デパート|depaato|department store
+スーパー|suupaa|supermarket
+アイドル|aidoru|pop idol
+ヒーロー|hiiroo|hero
+ストーブ|sutoobu|heater
+マラソン|marason|marathon
+エプロン|epuron|apron
+カーテン|kaaten|curtain
+スケート|sukeeto|ice skating
+`}};
+
+/* ---------- parse banks ---------- */
+const EN = {};
+for (const L in EN_RAW){ EN[L] = {}; for (const t in EN_RAW[L]){
+  EN[L][t] = EN_RAW[L][t].trim().split('\n').map(s=>{const [w,d]=s.split('|');return {w:w.trim().toLowerCase(),d:d.trim()};});
+}}
+const JA = {};
+for (const sc in JA_RAW){ JA[sc] = {}; for (const L in JA_RAW[sc]){
+  JA[sc][L] = JA_RAW[sc][L].trim().split('\n').map(s=>{const [w,r,m]=s.split('|');return {w:w.trim(),r:r.trim(),m:m.trim()};});
+}}
+
+/* ---------- kana helpers ---------- */
+const toK = c => { const n=c.charCodeAt(0); return (n>=0x3041&&n<=0x3096)?String.fromCharCode(n+0x60):c; };
+const toH = c => { const n=c.charCodeAt(0); return (n>=0x30A1&&n<=0x30F6)?String.fromCharCode(n-0x60):c; };
+const BASE_V = "かきくけこさしすせそたちつてとはひふへほ", VOICED = "がぎぐげござじずぜぞだぢづでどばびぶべぼ", BASE_P="はひふへほ", SEMI="ぱぴぷぺぽ";
+const toBase = c => { const h=toH(c); let i=VOICED.indexOf(h); if(i>=0) return BASE_V[i]; i=SEMI.indexOf(h); if(i>=0) return BASE_P[i]; return h; };
+const GOJUON = [
+  ["あa","かka","さsa","たta","なna","はha","まma","やya","らra","わwa"],
+  ["いi","きki","しshi","ちchi","にni","ひhi","みmi","","りri",""],
+  ["うu","くku","すsu","つtsu","ぬnu","ふfu","むmu","ゆyu","るru",""],
+  ["えe","けke","せse","てte","ねne","へhe","めme","","れre",""],
+  ["おo","こko","そso","とto","のno","ほho","もmo","よyo","ろro","をwo"]
+];
+
+/* ---------- storage (safe) ---------- */
+const store = {
+  get(k,def){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
+const S = Object.assign({lang:'en', enLen:5, jaLen:3, script:'h', diff:'auto', romaji:true}, store.get('kotoba-settings',{}));
+let P = store.get('kotoba-progress',{});
+const saveS = ()=>store.set('kotoba-settings',S);
+const saveP = ()=>store.set('kotoba-progress',P);
+
+/* levels for English auto mode: wins needed to reach each level */
+const LV = [0, 4, 10]; // level 1 at 0 pts, level 2 at 4, level 3 at 10
+const tierFromPts = p => p>=LV[2]?3:p>=LV[1]?2:1;
+
+const poolKey = ()=> S.lang==='en' ? `en${S.enLen}` : `ja${S.script}${S.jaLen}`;
+const prog = ()=> (P[poolKey()] ||= {pts:0,wins:0,played:0,streak:0,best:0,used:[]});
+const curLen = ()=> S.lang==='en' ? S.enLen : S.jaLen;
+const curTier = ()=> S.diff==='auto' ? tierFromPts(prog().pts) : +S.diff;
+
+/* ---------- game state ---------- */
+const ROWS = 6;
+let G = null;
+let busy = false;
+
+function pick(){
+  const pr = prog();
+  let list, tier=null;
+  if (S.lang==='en'){ tier = curTier(); list = EN[S.enLen][tier]; }
+  else list = JA[S.script][S.jaLen];
+  let fresh = list.filter(x=>!pr.used.includes(x.w));
+  if (!fresh.length){ pr.used = pr.used.filter(w=>!list.some(x=>x.w===w)); fresh = list.slice(); }
+  const e = fresh[Math.floor(Math.random()*fresh.length)];
+  return {...e, tier};
+}
+
+function newGame(){
+  const entry = pick();
+  G = { entry, ans:Array.from(entry.w), rows:[], cur:[], done:false, clue:false, keys:{} };
+  busy=false;
+  render();
+}
+
+/* ---------- evaluation (handles repeated letters) ---------- */
+function evaluate(guess, ans){
+  const res = Array(ans.length).fill('absent'), left = {};
+  ans.forEach((c,i)=>{ if(guess[i]===c) res[i]='correct'; else left[c]=(left[c]||0)+1; });
+  guess.forEach((c,i)=>{ if(res[i]!=='correct' && left[c]>0){ res[i]='present'; left[c]--; } });
+  return res;
+}
+const RANK = {absent:1,present:2,correct:3};
+
+/* ---------- DOM ---------- */
+const $ = id=>document.getElementById(id);
+const app=$('app'), boardEl=$('board'), kbEl=$('kb'), underEl=$('under');
+
+function render(){
+  app.classList.toggle('ja', S.lang==='ja');
+  document.documentElement.lang = S.lang==='ja'?'ja':'en';
+  renderControls(); renderLevel(); renderKeyboard(); renderUnder(); renderBoard();
+  const pr = prog();
+  $('streak').textContent = pr.streak>0 ? `🔥 ${pr.streak}` : '';
+}
+
+function seg(el, val){ el.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v===String(val)))); }
+
+function renderControls(){
+  seg($('langSeg'), S.lang);
+  const lens = S.lang==='en' ? [5,6,7] : [3,4];
+  const unit = S.lang==='en' ? 'letters' : 'kana';
+  $('lenSeg').innerHTML = lens.map(n=>`<button data-v="${n}">${n}<span class="tag">${n===lens[0]?' '+unit:''}</span></button>`).join('');
+  seg($('lenSeg'), curLen());
+  $('scriptSeg').style.display = S.lang==='ja' ? '' : 'none';
+  seg($('scriptSeg'), S.script);
+  seg($('diffSeg'), S.diff);
+  seg($('romajiSeg'), S.romaji?'on':'off');
+}
+
+function renderLevel(){
+  const pr = prog(), el = $('level');
+  if (S.lang==='ja'){
+    el.innerHTML = `Words solved in this set: <b>${pr.wins}</b>`;
+    return;
+  }
+  if (S.diff!=='auto'){
+    el.textContent = `Fixed at ${['','Easy','Medium','Hard'][S.diff]} words. Switch to Auto in settings to level up.`;
+    return;
+  }
+  const t = tierFromPts(pr.pts);
+  if (t===3){ el.innerHTML = `<b>Level 3</b>, the hardest words. Total solved: ${pr.wins}`; return; }
+  const lo = LV[t-1], hi = LV[t], pct = Math.round((pr.pts-lo)/(hi-lo)*100), need = hi-pr.pts;
+  el.innerHTML = `<b>Level ${t}</b><span class="bar"><i style="width:${pct}%"></i></span>${need} more ${need===1?'win':'wins'} to Level ${t+1}`;
+}
+
+function renderBoard(){
+  const L = G.ans.length;
+  boardEl.style.setProperty('--cols', L);
+  let html='';
+  for (let r=0;r<ROWS;r++){
+    html += `<div class="row" data-r="${r}">`;
+    const done = G.rows[r];
+    for (let c=0;c<L;c++){
+      if (done) html += `<div class="tile" data-s="${done.res[c]}">${done.g[c]}</div>`;
+      else if (r===G.rows.length && G.cur[c]) html += `<div class="tile filled">${G.cur[c]}</div>`;
+      else html += `<div class="tile"></div>`;
+    }
+    html += `</div>`;
+  }
+  boardEl.innerHTML = html;
+  fitBoard();
+}
+function fitBoard(){
+  const wrap = boardEl.parentElement, L = G.ans.length, gap = 6;
+  const w = wrap.clientWidth, hgt = wrap.clientHeight;
+  const t = Math.floor(Math.min(64, (w - gap*(L-1))/L, (hgt - gap*(ROWS-1))/ROWS));
+  boardEl.style.setProperty('--tile', Math.max(24,t)+'px');
+}
+addEventListener('resize', ()=>G&&fitBoard());
+if (window.visualViewport) visualViewport.addEventListener('resize', ()=>G&&fitBoard());
+addEventListener('orientationchange', ()=>setTimeout(()=>G&&fitBoard(),250));
+document.fonts && document.fonts.ready.then(()=>G&&fitBoard());
+
+function updateCurrentRow(){
+  const row = boardEl.querySelector(`.row[data-r="${G.rows.length}"]`);
+  if (!row) return;
+  [...row.children].forEach((t,i)=>{
+    const ch = G.cur[i]||''; 
+    if (t.textContent!==ch){ t.textContent=ch; t.classList.toggle('filled', !!ch); }
+  });
+}
+
+function keyBtn(ch, label, extra=''){
+  const s = G.keys[S.lang==='ja'?toBase(ch):ch];
+  return `<button class="key ${extra}" data-k="${ch}" ${s?`data-s="${s}"`:''}>${label}</button>`;
+}
+
+function renderKeyboard(){
+  let html='';
+  if (S.lang==='en'){
+    const rows=['qwertyuiop','asdfghjkl','zxcvbnm'];
+    rows.forEach((r,i)=>{
+      html += `<div class="krow">`;
+      if (i===2) html += `<button class="key wide" data-k="ENTER">Enter</button>`;
+      for (const ch of r) html += keyBtn(ch, ch);
+      if (i===2) html += `<button class="key wide" data-k="BACK" aria-label="Delete">⌫</button>`;
+      html += `</div>`;
+    });
+  } else {
+    const kata = S.script==='k';
+    for (const row of GOJUON){
+      html += `<div class="krow">`;
+      for (const cell of row){
+        if (!cell){ html += `<span class="key spacer"></span>`; continue; }
+        const h = cell[0], rom = cell.slice(1), ch = kata?toK(h):h;
+        html += keyBtn(ch, `${ch}${S.romaji?`<small>${rom}</small>`:''}`);
+      }
+      html += `</div>`;
+    }
+    const n = kata?'ン':'ん';
+    html += `<div class="krow">
+      ${keyBtn(n, `${n}${S.romaji?'<small>n</small>':''}`)}
+      <button class="key mod" data-k="DAKU" aria-label="Add dakuten">゛<small>ka→ga</small></button>
+      <button class="key mod" data-k="HANDAKU" aria-label="Add handakuten">゜<small>ha→pa</small></button>
+      ${kata?`<button class="key mod" data-k="ー" aria-label="Long vowel mark">ー<small>long</small></button>`:''}
+      <button class="key wide" data-k="BACK" aria-label="Delete">⌫</button>
+      <button class="key wide" data-k="ENTER">Enter</button>
+    </div>`;
+  }
+  kbEl.innerHTML = html;
+}
+
+function renderUnder(){
+  if (G.done){ underEl.innerHTML=''; return; }
+  if (G.clue){
+    const e=G.entry;
+    underEl.innerHTML = `<div class="clue">${S.lang==='en' ? e.d : `Meaning: <b>${e.m}</b>`}</div>`;
+  } else {
+    underEl.innerHTML = `<button class="clue-btn" id="clueBtn">${S.lang==='en'?'Show the definition as a clue':'Show the English meaning'}</button>`;
+  }
+}
+
+/* ---------- input ---------- */
+function press(k){
+  if (!G || G.done || busy) return;
+  const L = G.ans.length;
+  if (k==='ENTER') return submit();
+  if (k==='BACK'){ G.cur.pop(); return updateCurrentRow(); }
+  if (k==='DAKU' || k==='HANDAKU'){
+    const last = G.cur[G.cur.length-1]; if (!last) return;
+    const kata = last!==toH(last), h = toH(last);
+    let out = h, i;
+    if (k==='DAKU'){
+      if ((i=BASE_V.indexOf(h))>=0) out=VOICED[i];
+      else if ((i=VOICED.indexOf(h))>=0) out=BASE_V[i];
+      else if ((i=SEMI.indexOf(h))>=0) out=VOICED[BASE_V.indexOf(BASE_P[i])];
+    } else {
+      if ((i=BASE_P.indexOf(h))>=0) out=SEMI[i];
+      else if ((i=SEMI.indexOf(h))>=0) out=BASE_P[i];
+      else if ((i=VOICED.indexOf(h))>=0 && BASE_P.includes(BASE_V[i])) out=SEMI[BASE_P.indexOf(BASE_V[i])];
+    }
+    if (out===h){ toast(S.lang==='ja'?'That kana has no ゛ or ゜ version':''); return; }
+    G.cur[G.cur.length-1] = kata?toK(out):out;
+    return updateCurrentRow();
+  }
+  if (G.cur.length>=L) return;
+  G.cur.push(k); updateCurrentRow();
+}
+
+function shake(){
+  const row = boardEl.querySelector(`.row[data-r="${G.rows.length}"]`);
+  if(!row) return; row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake');
+}
+
+function submit(){
+  const L = G.ans.length;
+  if (G.cur.length<L){ toast(S.lang==='en'?'Not enough letters':'Not enough kana'); return shake(); }
+  const g = G.cur.slice(), res = evaluate(g, G.ans);
+  G.rows.push({g,res}); G.cur=[];
+  const rIdx = G.rows.length-1;
+  const row = boardEl.querySelector(`.row[data-r="${rIdx}"]`);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const step = reduce?0:260;
+  busy = true;
+  [...row.children].forEach((t,i)=>{
+    setTimeout(()=>{
+      t.classList.add('flip');
+      setTimeout(()=>{ t.dataset.s=res[i]; t.classList.remove('filled'); }, reduce?0:200);
+    }, i*step);
+  });
+  setTimeout(()=>{
+    g.forEach((c,i)=>{ const k = S.lang==='ja'?toBase(c):c; if(S.lang==='ja' && k!==toH(c) && res[i]==='absent') return; if((RANK[res[i]]||0)>(RANK[G.keys[k]]||0)) G.keys[k]=res[i]; });
+    renderKeyboard();
+    busy=false;
+    const win = res.every(x=>x==='correct');
+    if (win){ row.classList.add('win'); finish(true); }
+    else if (G.rows.length>=ROWS) finish(false);
+  }, L*step + (reduce?0:250));
+}
+
+function finish(win){
+  G.done = true;
+  const pr = prog();
+  const beforeTier = tierFromPts(pr.pts);
+  pr.played++;
+  if (!pr.used.includes(G.entry.w)) pr.used.push(G.entry.w);
+  if (win){
+    pr.wins++; pr.streak++; pr.best=Math.max(pr.best,pr.streak);
+    if (S.lang==='en' && S.diff==='auto') pr.pts++;
+  } else {
+    pr.streak=0;
+    if (S.lang==='en' && S.diff==='auto'){ const floor = LV[beforeTier-1]; pr.pts=Math.max(floor, pr.pts-1); }
+  }
+  saveP();
+  const levelUp = S.lang==='en' && S.diff==='auto' && tierFromPts(pr.pts)>beforeTier;
+  renderUnder(); renderLevel();
+  $('streak').textContent = pr.streak>0 ? `🔥 ${pr.streak}` : '';
+  setTimeout(()=>showResult(win, levelUp), win?700:300);
+}
+
+const CHEERS = ['Genius!','Brilliant!','Excellent!','Great job!','Nice work!','Phew, got it!'];
+function showResult(win, levelUp){
+  const e = G.entry, n = G.rows.length, pr = prog();
+  const ja = S.lang==='ja';
+  $('resultSheet').classList.toggle('jaw', ja);
+  $('resVerdict').textContent = win ? `${CHEERS[n-1]} Solved in ${n} ${n===1?'guess':'guesses'}.${G.clue?' (with a clue)':''}` : 'Good try. The word was';
+  $('resWord').textContent = e.w;
+  $('resReading').textContent = ja ? e.r : '';
+  $('resReading').style.display = ja ? '' : 'none';
+  $('resDef').innerHTML = ja ? `Means <b>${e.m}</b>` : e.d;
+  $('resStats').textContent = (levelUp ? `Level up! You're now on Level ${tierFromPts(pr.pts)}. ` : '') + `Streak ${pr.streak}, best ${pr.best}, solved ${pr.wins} of ${pr.played}.`;
+  $('resultScrim').classList.add('open');
+  $('nextBtn').focus();
+}
+
+function say(){
+  try{
+    const u = new SpeechSynthesisUtterance(G.entry.w);
+    u.lang = S.lang==='ja'?'ja-JP':'en-US'; u.rate = .85;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }catch(e){ toast('Speech isn’t available on this device'); }
+}
+
+let tt;
+function toast(msg){ if(!msg) return; const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),1400); }
+
+/* ---------- events ---------- */
+let downKey=null;
+kbEl.addEventListener('pointerdown', e=>{
+  const b=e.target.closest('[data-k]'); if(!b) return;
+  e.preventDefault();
+  b.classList.add('down'); downKey=b;
+  press(b.dataset.k);
+});
+let holdT=null;
+kbEl.addEventListener('pointerdown', e=>{ const b=e.target.closest('[data-k="BACK"]'); clearTimeout(holdT); if(b) holdT=setTimeout(()=>{ if(G&&!G.done&&!busy){ G.cur=[]; updateCurrentRow(); } },500); });
+['pointerup','pointercancel','pointerleave'].forEach(t=>kbEl.addEventListener(t, ()=>clearTimeout(holdT)));
+const release=()=>{ if(downKey){ downKey.classList.remove('down'); downKey=null; } };
+['pointerup','pointercancel','pointerleave'].forEach(t=>kbEl.addEventListener(t, release));
+kbEl.addEventListener('contextmenu', e=>e.preventDefault());
+document.addEventListener('keydown', e=>{
+  if (e.metaKey||e.ctrlKey||e.altKey) return;
+  if ($('resultScrim').classList.contains('open')){ if(e.key==='Enter'){ e.preventDefault(); next(); } return; }
+  if ($('setScrim').classList.contains('open')){ if(e.key==='Escape') $('setScrim').classList.remove('open'); return; }
+  if (e.key==='Enter'){ e.preventDefault(); press('ENTER'); }
+  else if (e.key==='Backspace') press('BACK');
+  else if (S.lang==='en' && /^[a-z]$/i.test(e.key)) press(e.key.toLowerCase());
+});
+underEl.addEventListener('click', e=>{ if(e.target.closest('#clueBtn')){ G.clue=true; renderUnder(); fitBoard(); } });
+
+function next(){ $('resultScrim').classList.remove('open'); newGame(); }
+$('nextBtn').onclick = next;
+$('sayBtn').onclick = say;
+
+$('langSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b||b.dataset.v===S.lang) return; S.lang=b.dataset.v; saveS(); newGame(); };
+$('lenSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b) return; const v=+b.dataset.v; if(v===curLen()) return; if(S.lang==='en') S.enLen=v; else S.jaLen=v; saveS(); newGame(); };
+$('scriptSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b||b.dataset.v===S.script) return; S.script=b.dataset.v; saveS(); newGame(); };
+$('diffSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b||b.dataset.v===S.diff) return; S.diff=b.dataset.v; saveS(); renderControls(); renderLevel(); if(!G.rows.length) newGame(); };
+$('romajiSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b) return; S.romaji=b.dataset.v==='on'; saveS(); renderControls(); renderKeyboard(); };
+$('setBtn').onclick = ()=>$('setScrim').classList.add('open');
+$('closeSet').onclick = ()=>$('setScrim').classList.remove('open');
+$('setScrim').onclick = e=>{ if(e.target.id==='setScrim') $('setScrim').classList.remove('open'); };
+$('resetBtn').onclick = ()=>{ if(confirm('Reset all levels, streaks and used words?')){ P={}; saveP(); $('setScrim').classList.remove('open'); newGame(); } };
+$('skipBtn').onclick = ()=>{
+  if (!G || G.done || busy) return;
+  if (!G.rows.length){ newGame(); toast('New word'); return; }
+  finish(false);
+};
+
+newGame();
+</script>
+</body>
+</html>
