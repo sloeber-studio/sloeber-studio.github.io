@@ -1746,6 +1746,16 @@ function earnProgress(p){
 
 function answer(btn, opt){
   if (Q.done) return;
+  try { answerInner(btn, opt); }
+  catch (err) {
+    console.error(err);
+    const nb = $('qNext');
+    nb.textContent = S.turn + 1 >= S.rounds * 2 ? 'See who won' : `${player(1 - me()).name}’s turn`;
+    nb.hidden = false;
+    $('qResult').classList.add('show');
+  }
+}
+function answerInner(btn, opt){
   Q.done = true;
   const { c, mode, q } = Q, p = me(), prevOwner = S.owner[c.id];
   const linksBefore = linksOf(p).length;
@@ -1784,13 +1794,13 @@ function answer(btn, opt){
   } else {
     SFX.wrong();
     title = 'Not this time.';
-    line = `The answer was ${q.answer}. ` + {
-      claim:`${c.n} is still up for grabs.`,
-      steal:`${c.n} stays with ${player(prevOwner).name}, and your steal ticket is used up.`,
-      mega:`${c.n} stays with ${player(prevOwner).name}, and both tickets are used up.`,
-      lock:`${c.n} is still yours, but it isn’t locked.`,
-      hq:`${c.n} is still locked, but it isn’t your HQ yet.`
-    }[mode];
+    const ownerName = prevOwner === undefined ? '' : player(prevOwner).name;
+    const after = mode === 'claim' ? `${c.n} is still up for grabs.`
+      : mode === 'steal' ? `${c.n} stays with ${ownerName}, and your steal ticket is used up.`
+      : mode === 'mega' ? `${c.n} stays with ${ownerName}, and both tickets are used up.`
+      : mode === 'lock' ? `${c.n} is still yours, but it isn’t locked.`
+      : `${c.n} is still locked, but it isn’t your HQ yet.`;
+    line = `The answer was ${q.answer}${/[.!?]$/.test(q.answer) ? '' : '.'} ${after}`;
   }
   $('qResTitle').textContent = title;
   $('qResLine').textContent = line.trim();
