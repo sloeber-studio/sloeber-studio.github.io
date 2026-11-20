@@ -214,6 +214,7 @@
   .badge.orange { background: #FFD43B; color: #1B2340; }
   .badge.teal { background: #96F2D7; color: #1B2340; }
   .badge.blue { background: #74C0FC; color: #1B2340; }
+  .badge.green { background: #B2F2BB; color: #1B2340; }
 
   .card-body {
     padding: 16px 18px 18px;
@@ -255,7 +256,42 @@
     --shadow-col: #163669;
   }
 
+  .card.kotoba {
+    --banner-bg: linear-gradient(135deg, #8BD47E, #3F8A3A);
+    --shadow-col: #22541F;
+  }
+  /* 5th card: full width on two-column layouts so the grid stays balanced */
+  @media (min-width: 601px) {
+    .card.kotoba { grid-column: 1 / -1; }
+    .card.kotoba .banner { height: 110px; }
+  }
+  .tile-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 7px;
+    margin-top: 22px;
+    animation: bob 3s ease-in-out infinite;
+  }
+  .tile-row span {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    border: 3px solid var(--ink);
+    display: grid;
+    place-items: center;
+    font-family: 'Fredoka', ui-rounded, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 4px 0 rgba(27, 35, 64, 0.35);
+  }
+  .tile-row .g { background: #4F8F44; }
+  .tile-row .y { background: #E2B13C; color: #1B2340; }
+  .tile-row .s { background: #8C94A8; }
+
   @media (prefers-reduced-motion: reduce) {
+    .tile-row { animation: none; }
     .floater, .emoji-stack { animation: none; }
     .card { transition: none; }
   }
@@ -316,12 +352,23 @@
           <p>World Flags &amp; Capitals Race</p>
         </div>
       </a>
+
+      <a href="kotoba.html" class="card kotoba">
+        <div class="banner">
+          <span class="badge green">Word Puzzle</span>
+          <div class="tile-row" aria-hidden="true"><span class="g">K</span><span class="y">O</span><span class="s">T</span><span class="g">O</span><span class="y">こ</span></div>
+        </div>
+        <div class="card-body">
+          <h2>Kotoba</h2>
+          <p>Word Guess in English &amp; 日本語</p>
+        </div>
+      </a>
     </main>
   </div>
 
   <script>
     // Populate gentle floating background icons
-    const icons = ['🎨', '🚀', '💎', '🌍', '⭐', '✨', '🪐', '🖌️'];
+    const icons = ['🎨', '🚀', '💎', '🌍', '⭐', '✨', '🪐', '🖌️', '🔤', 'あ'];
     const bg = document.getElementById('floaters');
     for (let i = 0; i < 14; i++) {
       const el = document.createElement('span');
