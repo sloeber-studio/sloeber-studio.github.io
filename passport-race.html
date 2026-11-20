@@ -34,24 +34,22 @@
 }
 :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); background:var(--ocean-deep); }
 *,*::before,*::after{ box-sizing:inherit; }
+[hidden]{ display:none !important; }
 html,body{ height:100%; margin:0; }
 body{
   font-family:var(--font); color:var(--ink); background:var(--ocean-deep);
   overflow:hidden; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none;
-  font-size:18px; touch-action:manipulation;
+  font-size:18px;
 }
-button{ font:inherit; cursor:pointer; touch-action:manipulation; }
-button:focus-visible, input:focus-visible, a:focus-visible{ outline:3px solid #FFD43B; outline-offset:2px; }
+button{ font:inherit; cursor:pointer; }
+button:focus-visible, input:focus-visible{ outline:3px solid #FFD43B; outline-offset:2px; }
 
 .app{ display:grid; grid-template-rows:auto auto 1fr; height:100%; }
 
-/* Hide map completely while a question or confirmation is open */
-body.in-quiz .mapwrap{ visibility:hidden; }
-
 /* ---------- Header ---------- */
 .top{
-  position:relative; display:grid; grid-template-columns:1fr auto 1fr; gap:10px;
-  padding:15px 12px 9px; background:var(--ocean-deep);
+  position:relative; display:grid; grid-template-columns:1fr auto 1fr; gap:12px;
+  padding:16px 14px 10px; background:var(--ocean-deep);
 }
 .top::before{
   content:""; position:absolute; inset:0 0 auto; height:7px;
@@ -59,28 +57,28 @@ body.in-quiz .mapwrap{ visibility:hidden; }
 }
 .pcard{
   --pc:var(--p1);
-  background:var(--paper); border-radius:20px; padding:9px 13px; border:4px solid transparent;
-  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:0 8px; min-width:0;
+  background:var(--paper); border-radius:20px; padding:10px 14px; border:4px solid transparent;
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:0 10px; min-width:0;
   transition:border-color .2s;
 }
 .pcard[data-p="1"]{ --pc:var(--p2); }
 .pcard.active{ border-color:var(--pc); }
-.pname{ font-weight:800; font-size:1.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.pmeta{ font-size:.78rem; color:var(--muted); font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pname{ font-weight:800; font-size:1.15rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pmeta{ font-size:.8rem; color:var(--muted); font-weight:700; }
 .pcard.active .pmeta{ color:var(--pc); }
-.pscore{ grid-column:2; grid-row:1 / span 2; align-self:center; font-size:2.3rem; font-weight:900; color:var(--pc); line-height:1; font-variant-numeric:tabular-nums; }
-.pstamps{ grid-column:1 / -1; font-size:1.25rem; white-space:nowrap; overflow-x:auto; min-height:1.65rem; margin-top:3px; scrollbar-width:none; }
+.pscore{ grid-column:2; grid-row:1 / span 2; align-self:center; font-size:2.4rem; font-weight:900; color:var(--pc); line-height:1; font-variant-numeric:tabular-nums; }
+.pstamps{ grid-column:1 / -1; font-size:1.3rem; white-space:nowrap; overflow-x:auto; min-height:1.75rem; margin-top:4px; scrollbar-width:none; }
 .pstamps::-webkit-scrollbar{ display:none; }
-.pstamps .empty{ font-size:.82rem; color:var(--muted); }
-.mid{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#fff; text-align:center; }
-.round{ font-weight:800; font-size:.9rem; white-space:nowrap; }
-.icons{ display:flex; gap:6px; }
-.iconbtn{ width:38px; height:38px; border-radius:999px; border:0; background:rgba(255,255,255,.16); color:#fff; font-size:1.05rem; display:grid; place-items:center; text-decoration:none; }
+.pstamps .empty{ font-size:.85rem; color:var(--muted); }
+.mid{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#fff; text-align:center; }
+.round{ font-weight:800; font-size:.95rem; white-space:nowrap; }
+.icons{ display:flex; gap:8px; }
+.iconbtn{ width:42px; height:42px; border-radius:999px; border:0; background:rgba(255,255,255,.15); color:#fff; font-size:1.15rem; display:grid; place-items:center; text-decoration:none; }
 
 /* ---------- Tabs ---------- */
-.tabs{ display:flex; gap:8px; padding:0 14px 11px; overflow-x:auto; background:var(--ocean-deep); scrollbar-width:none; }
+.tabs{ display:flex; gap:8px; padding:0 14px 12px; overflow-x:auto; background:var(--ocean-deep); scrollbar-width:none; }
 .tabs::-webkit-scrollbar{ display:none; }
-.tab{ flex:none; border:2px solid rgba(255,255,255,.35); background:transparent; color:#fff; font-weight:800; font-size:.92rem; padding:7px 14px; border-radius:999px; }
+.tab{ flex:none; border:2px solid rgba(255,255,255,.35); background:transparent; color:#fff; font-weight:800; font-size:.95rem; padding:8px 15px; border-radius:999px; }
 .tab[aria-pressed="true"]{ background:var(--paper); color:var(--ink); border-color:var(--paper); }
 
 /* ---------- Map ---------- */
@@ -90,48 +88,42 @@ body.in-quiz .mapwrap{ visibility:hidden; }
   --pc:var(--p1);
   position:absolute; left:50%; top:12px; transform:translateX(-50%); z-index:2;
   max-width:calc(100% - 24px); width:max-content; text-align:center;
-  background:var(--paper); color:var(--ink); font-weight:800; font-size:.95rem;
-  padding:8px 16px; border-radius:999px; border:3px solid var(--pc);
+  background:var(--paper); color:var(--ink); font-weight:800; font-size:1rem;
+  padding:9px 18px; border-radius:999px; border:3px solid var(--pc);
   box-shadow:0 4px 0 rgba(0,0,0,.18); pointer-events:none;
 }
 .sea{ fill:var(--ocean); }
 .grat{ stroke:var(--grid); stroke-width:1; vector-effect:non-scaling-stroke; }
 .grat.eq{ stroke-dasharray:6 6; }
-.land{ fill:var(--land); stroke:var(--land-edge); stroke-width:1.8; vector-effect:non-scaling-stroke; stroke-linejoin:round; stroke-linecap:round; }
-
-/* Border Route Links */
-.route-line{ fill:none; stroke-width:3.2; vector-effect:non-scaling-stroke; stroke-linecap:round; stroke-dasharray:5 5; opacity:.85; pointer-events:none; }
-.route-line.r0{ stroke:var(--p1); }
-.route-line.r1{ stroke:var(--p2); }
-#map:not(.zoomed) .route-line{ stroke-width:2; opacity:.65; }
-
-/* Country Pins - SAFARI FIX: Use visibility instead of display, explicit pointer-events */
+.land{ fill:var(--land); stroke:var(--land-edge); stroke-width:1.2; vector-effect:non-scaling-stroke; stroke-linejoin:round; }
 .pin{ cursor:pointer; }
 .pin:focus{ outline:none; }
-.pin .full{ visibility:hidden; opacity:0; transition:opacity .15s ease; }
-#map.zoomed .pin .full{ visibility:visible; opacity:1; }
-.pin .dot{ visibility:visible; opacity:1; fill:#fff; stroke:#1B2340; stroke-width:1.4; transition:opacity .15s ease; }
-#map.zoomed .pin .dot{ visibility:hidden; opacity:0; }
+.pin .full{ display:none; }
+#map.zoomed .pin .full{ display:inline; }
+#map.zoomed .pin .dot{ display:none; }
+.pin .dot{ fill:#fff; stroke:#1B2340; stroke-width:1.5; }
 .pin.o0 .dot{ fill:var(--p1); } .pin.o1 .dot{ fill:var(--p2); }
-
-/* The hit circle is the ONLY thing that captures clicks */
-.pin .hit{ fill:transparent; pointer-events:all; }
-.pin .body, .pin .mark, .pin .lbl, .pin .lock, .pin .dot { pointer-events:none; }
-
-.pin .body{ fill:#fff; stroke:#1B2340; stroke-width:2.2; }
-.pin.o0 .body{ stroke:var(--p1); stroke-width:4.5; }
-.pin.o1 .body{ stroke:var(--p2); stroke-width:4.5; }
-.pin.hq .body{ fill:#FFF8D6; stroke-width:5.5; }
+.pin .hit{ fill:transparent; }
+.pin .body{ fill:#fff; stroke:#1B2340; stroke-width:2.5; }
+.pin.o0 .body{ stroke:var(--p1); stroke-width:5; }
+.pin.o1 .body{ stroke:var(--p2); stroke-width:5; }
 .pin:focus-visible .body{ stroke:#FFD43B; stroke-width:5; }
-.pin .mark{ font-size:17px; font-weight:900; text-anchor:middle; dominant-baseline:central; fill:#1B2340; }
-.pin .lbl{ font-size:11px; font-weight:800; text-anchor:middle; dominant-baseline:central; fill:var(--ink); stroke:var(--paper); stroke-width:3.8px; paint-order:stroke; stroke-linejoin:round; }
-.pin .lock{ font-size:12px; text-anchor:middle; dominant-baseline:central; }
+.pin .mark{ font-size:20px; font-weight:900; text-anchor:middle; dominant-baseline:central; fill:#1B2340; }
+.pin .lbl{ font-size:11.5px; font-weight:800; text-anchor:middle; dominant-baseline:central; fill:var(--ink); stroke:var(--paper); stroke-width:4px; paint-order:stroke; stroke-linejoin:round; }
+.pin .badge{ font-size:13px; text-anchor:middle; dominant-baseline:central; }
+.pin.hq .body{ fill:#FFF3C4; stroke-width:6; }
+.pin .leader{ stroke:#1B2340; stroke-width:1.5; stroke-dasharray:2 3; opacity:.7; }
+.pin .tdot{ fill:#1B2340; opacity:.8; }
+.route-line{ fill:none; stroke-linecap:round; opacity:.9; pointer-events:none; }
+.route-line.r0{ stroke:var(--p1); } .route-line.r1{ stroke:var(--p2); }
+body.in-quiz .mapwrap{ visibility:hidden; }
+#map.zoomed .pin.off{ display:none; }
 
 /* ---------- Overlays ---------- */
 .overlay{
   position:fixed; inset:0; z-index:20; display:none; align-items:center; justify-content:center;
   padding:max(16px, env(safe-area-inset-top,0px)) 16px max(16px, env(safe-area-inset-bottom,0px));
-  background:rgba(8,18,36,.65); overflow-y:auto;
+  background:rgba(8,18,36,.6); overflow-y:auto;
 }
 .overlay.open{ display:flex; }
 #quizOv{ background:var(--ocean-deep); }
@@ -147,13 +139,13 @@ body.in-quiz .mapwrap{ visibility:hidden; }
 .ticket-body{ padding:20px 22px 22px; border-top:3px dashed var(--paper-2); }
 .bigflag{ font-size:5.5rem; line-height:1; text-align:center; margin:-4px 0 16px; }
 .qnote{ margin:0 0 8px; font-weight:800; color:var(--pc); }
-.qtext{ font-size:1.38rem; line-height:1.3; font-weight:800; margin:0 0 16px; }
+.qtext{ font-size:1.4rem; line-height:1.3; font-weight:800; margin:0 0 16px; }
 .opts{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .opts.three{ grid-template-columns:1fr; }
 .opts.flags{ grid-template-columns:repeat(auto-fit, minmax(96px,1fr)); }
 .opt{
   min-height:62px; padding:10px 14px; border-radius:16px; text-align:left;
-  font-size:1.12rem; font-weight:800; color:var(--ink);
+  font-size:1.15rem; font-weight:800; color:var(--ink);
   background:var(--paper-2); border:3px solid var(--paper-2);
 }
 .opt:active{ transform:scale(.98); }
@@ -174,7 +166,7 @@ body.in-quiz .mapwrap{ visibility:hidden; }
 .btn-primary{ display:block; width:100%; margin-top:16px; padding:15px 22px; border:0; border-radius:16px; background:var(--pc,var(--p1)); color:#fff; font-size:1.2rem; font-weight:900; }
 .btn-ghost{ display:block; width:100%; margin-top:10px; padding:13px 22px; border-radius:16px; background:transparent; color:var(--ink); border:3px solid var(--paper-2); font-size:1.05rem; font-weight:800; }
 
-/* Postage stamp */
+/* Postage stamp: the one bold element */
 .stamp{
   --pc:var(--p1);
   flex:none; width:112px; aspect-ratio:4 / 5; padding:6px; background:#fff;
@@ -188,9 +180,8 @@ body.in-quiz .mapwrap{ visibility:hidden; }
   color:#1B2340; text-align:center; padding:4px;
   background:color-mix(in srgb, var(--pc) 9%, #fff);
 }
-.stamp.hq-stamp .stamp-in{ background:linear-gradient(155deg, #FFF7CC, color-mix(in srgb, var(--pc) 18%, #fff)); border-width:4px; }
 .stamp-in .sf{ font-size:2.8rem; line-height:1; }
-.stamp-in .sn{ font-size:.76rem; font-weight:900; line-height:1.1; }
+.stamp-in .sn{ font-size:.78rem; font-weight:900; line-height:1.1; }
 .stamp.thunk{ animation:thunk .5s cubic-bezier(.2,1.5,.4,1) both; }
 @keyframes thunk{ from{ transform:scale(2.3) rotate(10deg); opacity:0; } to{ transform:rotate(-6deg); opacity:1; } }
 .stamp.sm{ width:78px; transform:rotate(var(--r,-3deg)); }
@@ -201,12 +192,12 @@ body.in-quiz .mapwrap{ visibility:hidden; }
 .setup{ width:min(780px,100%); background:var(--paper); color:var(--ink); border-radius:28px; padding:26px; box-shadow:0 18px 40px rgba(0,0,0,.35); }
 .hero{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .hero h1{ margin:0; font-size:clamp(2.3rem, 7vw, 3.6rem); font-weight:900; line-height:.95; letter-spacing:-.015em; }
-.hero p{ margin:10px 0 0; color:var(--muted); font-size:1.05rem; max-width:36ch; line-height:1.4; }
+.hero p{ margin:10px 0 0; color:var(--muted); font-size:1.08rem; max-width:34ch; line-height:1.4; }
 .hero-stamps{ display:flex; gap:4px; padding-right:6px; }
 .hero-stamps .stampwrap:nth-child(1) .stamp{ --r:-8deg; }
 .hero-stamps .stampwrap:nth-child(2) .stamp{ --r:5deg; margin-top:14px; }
 .hero-stamps .stampwrap:nth-child(3) .stamp{ --r:-2deg; }
-.psetup{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+.psetup{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:22px; }
 .ps{ --pc:var(--p1); border:3px solid var(--pc); border-radius:20px; padding:14px; }
 .ps[data-p="1"]{ --pc:var(--p2); }
 .ps label{ display:block; font-weight:900; color:var(--pc); margin-bottom:6px; }
@@ -217,12 +208,12 @@ body.in-quiz .mapwrap{ visibility:hidden; }
 .segbtn strong{ display:block; font-size:1rem; }
 .segbtn small{ display:block; color:var(--muted); font-size:.8rem; line-height:1.3; margin-top:2px; }
 .segbtn[aria-pressed="true"]{ border-color:var(--pc); background:color-mix(in srgb, var(--pc) 12%, var(--paper)); }
-.lengthrow{ margin-top:16px; }
+.lengthrow{ margin-top:18px; }
 .lengthrow h2, .howto h2{ font-size:1.05rem; margin:0 0 4px; }
 .lengthrow .segbtn{ --pc:var(--ink); }
-.howto{ margin-top:16px; background:var(--paper-2); border-radius:16px; padding:14px 16px; }
-.howto ol{ margin:6px 0 0; padding-left:1.3em; line-height:1.45; font-size:.96rem; }
-.howto li{ margin:4px 0; }
+.howto{ margin-top:18px; background:var(--paper-2); border-radius:16px; padding:14px 16px; }
+.howto ol{ margin:6px 0 0; padding-left:1.3em; line-height:1.45; }
+.howto li{ margin:3px 0; }
 
 /* End */
 .endcard{ width:min(820px,100%); background:var(--paper); color:var(--ink); border-radius:28px; padding:26px; box-shadow:0 18px 40px rgba(0,0,0,.35); }
@@ -249,6 +240,9 @@ body.in-quiz .mapwrap{ visibility:hidden; }
   .pscore{ font-size:1.8rem; }
   .pname{ font-size:1rem; }
   .psetup, .passports, .endbtns{ grid-template-columns:1fr; }
+  .pmeta{ font-size:.68rem; }
+  .pstamps{ font-size:1rem; min-height:1.3rem; }
+  .iconbtn{ width:36px; height:36px; font-size:1rem; }
   .hero-stamps{ display:none; }
   .qtext{ font-size:1.2rem; }
   .opts:not(.flags){ grid-template-columns:1fr; }
@@ -268,7 +262,7 @@ body.in-quiz .mapwrap{ visibility:hidden; }
     <div class="mid">
       <div class="round" id="round">Round 1</div>
       <div class="icons">
-        <a href="index.html" class="iconbtn" aria-label="Back to Arcade" title="Back to Arcade">🏠</a>
+        <a href="index.html" class="iconbtn" aria-label="Back to the arcade" title="Back to the arcade">🏠</a>
         <button class="iconbtn" id="soundBtn" aria-label="Sound on">🔊</button>
         <button class="iconbtn" id="restartBtn" aria-label="New game">↻</button>
       </div>
@@ -290,7 +284,7 @@ body.in-quiz .mapwrap{ visibility:hidden; }
     <div class="hero">
       <div>
         <h1>Passport Race</h1>
-        <p>Fly to 117 countries, answer geography challenges, and link your passport stamps across the globe.</p>
+        <p>Fly to <span id="countryCount">150</span> countries, answer questions, and fill your passport with stamps.</p>
       </div>
       <div class="hero-stamps" aria-hidden="true">
         <div class="stampwrap"><div class="stamp sm" style="--pc:var(--p1)"><div class="stamp-in"><span class="sf">🇯🇵</span><span class="sn">Japan</span></div></div></div>
@@ -303,16 +297,16 @@ body.in-quiz .mapwrap{ visibility:hidden; }
         <label for="name0">Player 1</label>
         <input id="name0" maxlength="14" placeholder="Name" autocomplete="off">
         <div class="seg" data-level="0">
-          <button class="segbtn" data-v="easy" aria-pressed="true"><strong>Explorer</strong><small>Major capitals, flags, continents &amp; fun facts</small></button>
-          <button class="segbtn" data-v="hard" aria-pressed="false"><strong>Adventurer</strong><small>All 117 capitals, cities, borders &amp; expert trivia</small></button>
+          <button class="segbtn" data-v="easy" aria-pressed="true"><strong>Explorer</strong><small>Famous capitals, a few expert questions</small></button>
+          <button class="segbtn" data-v="hard" aria-pressed="false"><strong>Adventurer</strong><small>All capitals, tricky choices, expert questions</small></button>
         </div>
       </div>
       <div class="ps" data-p="1">
         <label for="name1">Player 2</label>
         <input id="name1" maxlength="14" placeholder="Name" autocomplete="off">
         <div class="seg" data-level="1">
-          <button class="segbtn" data-v="easy" aria-pressed="false"><strong>Explorer</strong><small>Major capitals, flags, continents &amp; fun facts</small></button>
-          <button class="segbtn" data-v="hard" aria-pressed="true"><strong>Adventurer</strong><small>All 117 capitals, cities, borders &amp; expert trivia</small></button>
+          <button class="segbtn" data-v="easy" aria-pressed="false"><strong>Explorer</strong><small>Famous capitals, a few expert questions</small></button>
+          <button class="segbtn" data-v="hard" aria-pressed="true"><strong>Adventurer</strong><small>All capitals, tricky choices, expert questions</small></button>
         </div>
       </div>
     </div>
@@ -325,14 +319,14 @@ body.in-quiz .mapwrap{ visibility:hidden; }
       </div>
     </div>
     <div class="howto">
-      <h2>How to play &amp; level up territories</h2>
+      <h2>How to play</h2>
       <ol>
-        <li><strong>Claim (1 pt):</strong> Tap a continent, pick a free country, and answer right to stamp it.</li>
-        <li><strong>Border Links (+1 pt each):</strong> Own two countries that share a land border to draw a route line between them for bonus points!</li>
-        <li><strong>Lock 🔒 (1 pt):</strong> Tap one of your countries and beat a hard question to lock it (max 3 locks).</li>
-        <li><strong>👑 Crown HQ (2 pts + Neighbor Shield 🛡️):</strong> Tap one of your <strong>Locked 🔒</strong> countries and beat an HQ Challenge to promote it! It earns <strong>2 points</strong>, can never be stolen, and gives a <strong>Shield 🛡️</strong> to all your neighboring countries.</li>
-        <li><strong>Steal &amp; Mega-Steal 🎯:</strong> Every 3 right answers earns a 🎯 ticket (max 2). Spend 1 ticket to steal an unlocked, unshielded country—or spend <strong>2 tickets</strong> to Mega-Steal a Locked 🔒 country!</li>
-        <li><strong>Continent Bonus:</strong> At the end, leading a continent earns <strong>+2 bonus points</strong>.</li>
+        <li><strong>Claim (1 pt):</strong> take turns, zoom into a part of the world, tap a free country and answer right to stamp it.</li>
+        <li><strong>Border links 🔗 (+1 pt each):</strong> own two countries that share a land border and a route line links them.</li>
+        <li><strong>Lock 🔒 (+1 pt):</strong> tap one of your countries and beat a hard question to lock it. You can lock up to 3.</li>
+        <li><strong>👑 HQ (+2 pts):</strong> tap one of your locked countries and beat the HQ challenge. Your HQ can never be stolen, and it shields 🛡️ your countries next to it. One HQ each.</li>
+        <li><strong>Steal 🎯:</strong> every 3 right answers earns a ticket (hold up to 2). Spend 1 to steal a normal country, or 2 to mega-steal a locked or shielded one. A country that was just stolen can’t be stolen straight back.</li>
+        <li><strong>Continent bonus:</strong> at the end, leading a continent earns +2 points.</li>
       </ol>
     </div>
     <button class="btn-primary" id="startBtn" style="--pc:var(--p1)">Start the race</button>
@@ -434,7 +428,7 @@ const COUNTRIES = [
 {id:'pa',n:'Panama',f:'🇵🇦',c:'Panama City',ct:'NA',lat:8.6,lon:-80.1,ec:1,cw:['Colón','David'],nb:['Costa Rica','Colombia'],qs:[
  ['Which famous waterway in Panama lets ships shortcut between the Atlantic and Pacific?','The Panama Canal',['The Suez Canal','The Erie Canal','The Kiel Canal'],'A ship takes about 8 to 10 hours to pass through the Panama Canal.'],
  ['Panama connects which two continents?','North America and South America',['Europe and Asia','Africa and Asia','North America and Europe'],'Because of how Panama curves, the sun rises over the Pacific Ocean in Panama City!',1],
- ['Which colorful tiny tree frog is a symbol of Panama?','The Panamanian golden frog',['The poison dart frog','The red-eyed tree frog','The glass frog'],'Golden frogs wave their hands at each other to communicate near noisy streams.']]},
+ ['Which bright yellow frog is a symbol of Panama?','The Panamanian golden frog',['The poison dart frog','The red-eyed tree frog','The glass frog'],'Golden frogs wave their hands at each other to communicate near noisy streams.']]},
 {id:'cu',n:'Cuba',f:'🇨🇺',c:'Havana',ct:'NA',lat:22.4,lon:-80,la:1,ec:1,cw:['Santiago de Cuba','Varadero'],qs:[
  ['Cuba is the largest ___ in the Caribbean.','Island',['Volcano','Lake','Desert'],'Cuba is about 1,250 km (780 miles) long.'],
  ['Which sport is the most popular in Cuba?','Baseball',['Ice hockey','Cricket','Rugby'],'Cuba has won Olympic gold medals in baseball.'],
@@ -602,11 +596,11 @@ const COUNTRIES = [
  ['Which Polish striker once scored 5 goals in 9 minutes in a German league game?','Robert Lewandowski',['Erling Haaland','Harry Kane','Thomas Müller'],'He did it for Bayern Munich in 2015.',1],
  ['What is the longest river in Poland?','The Vistula',['The Danube','The Rhine','The Volga'],'The Vistula flows through both Kraków and Warsaw.',1]]},
 {id:'cz',n:'Czechia',f:'🇨🇿',c:'Prague',ct:'EU',lat:49.8,lon:15.3,ec:1,cw:['Brno','Ostrava'],nb:['Germany','Poland','Slovakia','Austria'],qs:[
- ['Prague’s famous medieval Astronomical Clock is in which country?','Czechia',['Austria','Hungary','Poland'],'The clock has been ticking since 1410!'],
+ ['Czechia is famous for a 600-year-old clock with moving figures that come out every hour. What kind of clock is it?','An astronomical clock',['A cuckoo clock','A digital clock','A sundial'],'The clock was first installed in 1410 and still works today.'],
  ['Which everyday word for a mechanical helper was invented by a Czech writer?','Robot',['Laser','Computer','Rocket'],'Karel Čapek introduced the word “robot” in a 1920 play.'],
  ['Czechia has more ___ per square mile than almost any other country in Europe.','Castles',['Volcanoes','Glaciers','Islands'],'Prague Castle is the largest ancient castle complex in the world.',1]]},
 {id:'sk',n:'Slovakia',f:'🇸🇰',c:'Bratislava',ct:'EU',lat:48.7,lon:19.5,cw:['Košice'],nb:['Czechia','Poland','Ukraine','Hungary','Austria'],qs:[
- ['Bratislava is the only national capital in the world that borders…','Two other countries',['Three oceans','A glacier','A desert'],'Bratislava sits right on the borders of both Austria and Hungary.'],
+ ['Slovakia’s capital is the only national capital in the world that borders…','Two other countries',['Three oceans','A glacier','A desert'],'It sits right on the borders of both Austria and Hungary.'],
  ['Which dramatic mountain range runs along Slovakia’s border with Poland?','The High Tatras',['The Pyrenees','The Apennines','The Urals'],'The High Tatras are the highest part of the Carpathian Mountains.'],
  ['Slovakia has more than 6,000…','Caves',['Islands','Volcanoes','Lakes'],'Some of Slovakia’s caves are filled with ice all year round!',1]]},
 {id:'at',n:'Austria',f:'🇦🇹',c:'Vienna',ct:'EU',lat:47.5,lon:14.2,la:1,ec:1,cw:['Salzburg','Innsbruck'],nb:['Germany','Czechia','Slovakia','Hungary','Slovenia','Italy','Switzerland'],qs:[
@@ -623,12 +617,12 @@ const COUNTRIES = [
  ['Which Croatian midfielder won the 2018 Ballon d’Or as the world’s best player?','Luka Modrić',['Ivan Rakitić','Mateo Kovačić','Davor Šuker'],'Modrić broke a 10-year streak in which only Messi or Ronaldo had won it.',1]]},
 {id:'ba',n:'Bosnia & Herzegovina',f:'🇧🇦',c:'Sarajevo',ct:'EU',lat:43.9,lon:17.8,cw:['Mostar','Banja Luka'],nb:['Croatia','Serbia','Montenegro'],qs:[
  ['The city of Mostar in Bosnia & Herzegovina is famous for its arched stone…','Bridge',['Aqueduct','Castle','Lighthouse'],'Every summer, brave divers leap off the bridge into the cold river below.'],
- ['Sarajevo hosted which major sports event in 1984?','The Winter Olympics',['The World Cup','The Summer Olympics','The Tour de France'],'Sarajevo sits in a valley surrounded by the Dinaric Alps.'],
+ ['The capital of Bosnia & Herzegovina hosted which major sports event in 1984?','The Winter Olympics',['The World Cup','The Summer Olympics','The Tour de France'],'The capital sits in a valley surrounded by the Dinaric Alps.'],
  ['Bosnia & Herzegovina has a tiny coastline of only about 20 km on which sea?','The Adriatic Sea',['The Black Sea','The North Sea','The Baltic Sea'],'The coastal town is called Neum.',1]]},
 {id:'rs',n:'Serbia',f:'🇷🇸',c:'Belgrade',ct:'EU',lat:44,lon:20.9,ec:1,cw:['Novi Sad'],nb:['Hungary','Romania','Bulgaria','Croatia','Bosnia & Herzegovina','Montenegro','Albania'],qs:[
  ['Which tennis legend from Serbia has won more Grand Slam singles titles than any other man?','Novak Djokovic',['Roger Federer','Rafael Nadal','Andy Murray'],'Serbia is also a powerhouse in basketball and water polo.'],
- ['Which famous inventor of alternating-current electricity was ethnically Serbian?','Nikola Tesla',['Thomas Edison','Alexander Graham Bell','Guglielmo Marconi'],'Belgrade’s international airport is named after Nikola Tesla.'],
- ['Belgrade sits where the Sava River meets which huge European river?','The Danube',['The Rhine','The Volga','The Seine'],'Belgrade is one of the oldest cities in Europe.',1]]},
+ ['Which famous inventor of alternating-current electricity was ethnically Serbian?','Nikola Tesla',['Thomas Edison','Alexander Graham Bell','Guglielmo Marconi'],'Serbia’s main airport is named after Nikola Tesla.'],
+ ['Serbia’s capital sits where the Sava River meets which huge European river?','The Danube',['The Rhine','The Volga','The Seine'],'It is one of the oldest cities in Europe.',1]]},
 {id:'me',n:'Montenegro',f:'🇲🇪',c:'Podgorica',ct:'EU',lat:42.7,lon:19.3,cw:['Kotor'],nb:['Croatia','Bosnia & Herzegovina','Serbia','Albania'],qs:[
  ['What does the name “Montenegro” mean?','Black Mountain',['White River','Green Valley','Red Sea'],'It was named after the dark evergreen forests on Mount Lovćen.'],
  ['Montenegro’s Tara River Canyon is the deepest ___ in Europe.','Canyon',['Lake','Cave','Fjord'],'It is about 1,300 meters deep in places.',1],
@@ -720,7 +714,7 @@ const COUNTRIES = [
  ['Eritrea has a long coastline along which sea?','The Red Sea',['The Mediterranean Sea','The Black Sea','The Caspian Sea'],'The Dahlak Archipelago off Eritrea has more than 200 islands.'],
  ['Which sport is huge in Eritrea, producing Tour de France stage winner Biniam Girmay?','Cycling',['Ice hockey','Surfing','Cricket'],'In 2024, Biniam Girmay became the first Black African rider to win a Tour de France stage.'],
  ['Eritrea’s capital, Asmara, sits more than 2,300 meters high in the…','Highlands',['Rainforest','Salt flats','Swamps'],'Because of its altitude, Asmara stays mild all year round.',1]]},
-{id:'dj',n:'Djibouti',f:'🇩🇯',c:'Djibouti',ct:'AF',lat:11.8,lon:42.6,cw:['Tadjoura'],nb:['Eritrea','Ethiopia','Somalia'],qs:[
+{id:'dj',n:'Djibouti',f:'🇩🇯',c:'Djibouti',ct:'AF',nocap:1,lat:11.8,lon:42.6,cw:['Tadjoura'],nb:['Eritrea','Ethiopia','Somalia'],qs:[
  ['Djibouti’s Lake Assal is the lowest point in Africa and is even saltier than…','The Dead Sea',['The Atlantic Ocean','Lake Superior','Rainwater'],'Lake Assal sits 155 meters below sea level.'],
  ['Whale sharks gather in Djibouti’s Gulf of Tadjoura every winter to feed on…','Plankton',['Penguins','Seaweed','Crabs'],'Whale sharks are the biggest fish in the ocean.'],
  ['Djibouti sits at the narrow entrance between the Red Sea and the…','Gulf of Aden',['Persian Gulf','Mediterranean Sea','Black Sea'],'Thousands of cargo ships pass right by Djibouti every year.',1]]},
@@ -818,14 +812,14 @@ const COUNTRIES = [
  ['People in Georgia have made wine for about 8,000 years using clay pots buried in the…','Ground',['Snow','Ocean','Sand dunes'],'Georgia may be the oldest wine-making country in the world.',1]]},
 {id:'am',n:'Armenia',f:'🇦🇲',c:'Yerevan',ct:'AS',lat:40.2,lon:44.8,cw:['Gyumri'],nb:['Georgia','Azerbaijan','Iran','Turkey'],qs:[
  ['Which board game is a mandatory school subject for kids in Armenia?','Chess',['Checkers','Monopoly','Go'],'Armenia has produced several Olympic chess champion teams!'],
- ['Which apricot-colored fruit is a national symbol of Armenia?','The apricot',['The banana','The pineapple','The coconut'],'Armenia’s capital, Yerevan, is nicknamed “the Pink City” because of its pink volcanic stone buildings.'],
+ ['Which famous mountain is a symbol of Armenia, even though it stands just across the border in Turkey?','Mount Ararat',['Mount Elbrus','Mount Olympus','Mount Kazbek'],'Mount Ararat even appears on Armenia’s coat of arms.'],
  ['Lake Sevan in Armenia is one of the largest high-altitude freshwater ___ in Eurasia.','Lakes',['Deserts','Glaciers','Canyons'],'Lake Sevan sits about 1,900 meters (6,200 feet) above sea level.',1]]},
 {id:'az',n:'Azerbaijan',f:'🇦🇿',c:'Baku',ct:'AS',lat:40.5,lon:48,cw:['Ganja'],nb:['Russia','Georgia','Armenia','Iran'],qs:[
  ['Azerbaijan is nicknamed “the Land of…”','Fire',['Ice','Wind','Water'],'Natural gas seeping from the ground at Yanar Dag keeps flames burning on a hillside all year!'],
- ['Baku sits on the shore of the world’s largest enclosed body of water. What is it?','The Caspian Sea',['The Black Sea','Lake Baikal','The Red Sea'],'Baku is the lowest-lying national capital in the world, 28 meters below sea level.'],
+ ['Azerbaijan’s capital sits on the shore of the world’s largest enclosed body of water. What is it?','The Caspian Sea',['The Black Sea','Lake Baikal','The Red Sea'],'It is the lowest-lying national capital in the world, about 28 meters below sea level.'],
  ['Azerbaijan has more ___ volcanoes, which bubble cool mud instead of lava, than any other country.','Mud',['Ice','Underwater','Sand'],'Around 400 mud volcanoes are found in Azerbaijan.',1]]},
 {id:'sy',n:'Syria',f:'🇸🇾',c:'Damascus',ct:'AS',lat:35,lon:38.2,cw:['Aleppo'],nb:['Turkey','Iraq','Jordan','Israel','Lebanon'],qs:[
- ['Damascus in Syria is one of the oldest continuously inhabited ___ in the world.','Cities',['Islands','Castles','Forests'],'People have lived in Damascus for thousands of years.'],
+ ['Syria’s capital is one of the oldest continuously inhabited ___ in the world.','Cities',['Islands','Castles','Forests'],'People have lived there for thousands of years.'],
  ['Which ancient desert city in Syria was famous for its stone columns and arches?','Palmyra',['Petra','Pompeii','Machu Picchu'],'Palmyra was an important stop for camel caravans crossing the desert.'],
  ['Which river flows across eastern Syria on its way to Iraq?','The Euphrates',['The Nile','The Ganges','The Volga'],'The Euphrates is the longest river in Western Asia.',1]]},
 {id:'lb',n:'Lebanon',f:'🇱🇧',c:'Beirut',ct:'AS',lat:33.9,lon:35.8,la:1,ec:1,cw:['Tripoli','Byblos'],nb:['Syria','Israel'],qs:[
@@ -836,7 +830,7 @@ const COUNTRIES = [
  ['Israel borders the Dead Sea, the lowest place on land. Why do people float so easily in it?','It is extremely salty',['It is very shallow','It is frozen','It has strong waves'],'The Dead Sea is so salty that fish can’t live in it.'],
  ['Which “sea” in Israel is actually a freshwater lake?','The Sea of Galilee',['The Red Sea','The Dead Sea','The Black Sea'],'The Jordan River flows through the Sea of Galilee and on to the Dead Sea.'],
  ['Which sea is on Israel’s western coast?','The Mediterranean Sea',['The Black Sea','The Caspian Sea','The Baltic Sea'],'Israel also has a short coast on the Red Sea, at the city of Eilat.',1]]},
-{id:'jo',n:'Jordan',f:'🇯🇴',c:'Amman',ct:'AS',lat:31.2,lon:36.7,ec:1,cw:['Petra','Aqaba'],nb:['Syria','Iraq','Saudi Arabia','Israel'],qs:[
+{id:'jo',n:'Jordan',f:'🇯🇴',c:'Amman',ct:'AS',lat:31.2,lon:36.7,ec:1,cw:['Irbid','Aqaba'],nb:['Syria','Iraq','Saudi Arabia','Israel'],qs:[
  ['Jordan’s famous ancient city of Petra was carved straight into pink…','Rock cliffs',['Icebergs','Giant trees','Mud bricks'],'Petra is one of the New Seven Wonders of the World.'],
  ['Jordan’s Wadi Rum desert has red sand and rock arches that look so much like another planet that movies use it for…','Mars',['Jupiter','Neptune','Saturn'],'Movies like The Martian were filmed in Wadi Rum.'],
  ['Jordan shares the Dead Sea with…','Israel',['Egypt','Saudi Arabia','Lebanon'],'The Dead Sea is more than 400 meters below sea level.',1]]},
@@ -853,7 +847,7 @@ const COUNTRIES = [
  ['At the 2022 World Cup, Saudi Arabia shocked fans by beating which team that went on to win it all?','Argentina',['France','Brazil','Spain'],'Saudi Arabia won that game 2–1.',1],
  ['Saudi Arabia’s Rub’ al Khali is one of the biggest sand deserts on Earth. What does its name mean?','The Empty Quarter',['The Golden Sea','The Hot Land','The Camel Road'],'Some of its sand dunes are about 250 meters tall.']]},
 {id:'qa',n:'Qatar',f:'🇶🇦',c:'Doha',ct:'AS',lat:25.3,lon:51.2,la:1,ec:1,cw:['Lusail'],nb:['Saudi Arabia'],qs:[
- ['Which country hosted the 2022 men’s soccer World Cup?','Qatar',['Russia','Brazil','United States'],'Qatar is a small peninsula sticking out into the Persian Gulf.'],
+ ['Qatar hosted the 2022 World Cup. Which team won it?','Argentina',['France','Croatia','Morocco'],'It was the first World Cup ever held in the Middle East.'],
  ['Qatar’s Khor Al Adaid is famous as an “Inland Sea” where giant sand dunes meet…','The ocean',['A glacier','A rainforest','A volcano'],'You can only reach it by driving across the desert dunes.'],
  ['What is the shape of Qatar on a map?','A small thumb-shaped peninsula',['A long island','A perfect square','A thin strip'],'Qatar’s only land border is with Saudi Arabia.',1]]},
 {id:'ae',n:'United Arab Emirates',f:'🇦🇪',c:'Abu Dhabi',ct:'AS',lat:24,lon:54.3,la:1,ec:1,cw:['Dubai','Sharjah'],nb:['Saudi Arabia','Oman'],qs:[
@@ -891,7 +885,7 @@ const COUNTRIES = [
 {id:'tj',n:'Tajikistan',f:'🇹🇯',c:'Dushanbe',ct:'AS',lat:38.8,lon:71,cw:['Khujand'],nb:['Uzbekistan','Kyrgyzstan','China','Afghanistan'],qs:[
  ['Which towering mountain range in Tajikistan is nicknamed “the Roof of the World”?','The Pamir Mountains',['The Alps','The Andes','The Appalachians'],'Several peaks in the Pamirs rise over 7,000 meters tall.'],
  ['Tajikistan’s Nurek Dam is one of the tallest ___ in the world.','Dams',['Bridges','Skyscrapers','Lighthouses'],'It is 300 meters (984 feet) tall on the Vakhsh River.'],
- ['What does the name of Tajikistan’s capital, Dushanbe, mean?','Monday',['Sunrise','River','Mountain'],'The city grew around a popular Monday market.',1]]},
+ ['What does the name of Tajikistan’s capital mean?','Monday',['Sunrise','River','Mountain'],'The city grew around a popular Monday market.',1]]},
 {id:'af',n:'Afghanistan',f:'🇦🇫',c:'Kabul',ct:'AS',lat:34.5,lon:65,la:1,ec:1,cw:['Kandahar','Herat'],nb:['Iran','Turkmenistan','Uzbekistan','Tajikistan','China','Pakistan'],qs:[
  ['Which mountain range covers much of Afghanistan?','The Hindu Kush',['The Alps','The Andes','The Atlas Mountains'],'Some peaks in the Hindu Kush are over 7,000 meters tall.'],
  ['Afghanistan’s national sport, buzkashi, is played on…','Horseback',['Ice skates','Bicycles','Camels'],'Riders grab a heavy object and race to score with it.'],
@@ -940,7 +934,7 @@ const COUNTRIES = [
  ['Which martial art with high kicks comes from Korea?','Taekwondo',['Karate','Judo','Kung fu'],'Taekwondo is an Olympic sport.']]},
 {id:'kp',n:'North Korea',f:'🇰🇵',c:'Pyongyang',ct:'AS',lat:40,lon:127,cw:['Hamhung'],nb:['China','Russia','South Korea'],qs:[
  ['North Korea shares the Korean Peninsula with…','South Korea',['Japan','China','Russia'],'The two countries are divided by the Demilitarized Zone (DMZ).'],
- ['North Korea’s Rungrado 1st of May Stadium is famous for being…','The largest stadium in the world',['Made entirely of ice','Floating on the ocean','Completely underground'],'It can hold more than 100,000 people!'],
+ ['Which river forms much of North Korea’s border with China?','The Yalu River',['The Mekong','The Yangtze','The Ganges'],'The Tumen River forms the rest of the border.',1],
  ['What is the name of the highest mountain in North Korea, a volcano on the Chinese border?','Mount Paektu',['Mount Fuji','Mount Everest','Mount Sinai'],'Mount Paektu has a beautiful crater lake at the top called Heaven Lake.',1]]},
 {id:'jp',n:'Japan',f:'🇯🇵',c:'Tokyo',ct:'AS',lat:36.5,lon:138.5,ec:1,cw:['Kyoto','Osaka'],qs:[
  ['What is the name of Japan’s tallest mountain?','Mount Fuji',['Mount Aso','Mount Etna','Kilimanjaro'],'Japan is made up of thousands of islands.'],
@@ -998,7 +992,7 @@ const COUNTRIES = [
  ['The kiwi is a bird from New Zealand. What can’t it do?','Fly',['Run','Lay eggs','Sleep'],'There are more sheep than people in New Zealand.'],
  ['Which movie series was filmed among New Zealand’s mountains?','The Lord of the Rings',['Star Wars','Harry Potter','Jurassic Park'],'New Zealand’s tallest mountain is Aoraki, also called Mount Cook.'],
  ['New Zealand’s rugby team performs a war dance called the haka before games. What is the team called?','The All Blacks',['The Wallabies','The Springboks','The Red Devils'],'New Zealand’s men’s soccer team is called the All Whites.',1]]},
-{id:'tl',n:'Timor-Leste',f:'🇹🇱',c:'Dili',ct:'OC',lat:-8.8,lon:125.7,cw:['Baucau'],nb:['Indonesia'],qs:[
+{id:'tl',n:'Timor-Leste',f:'🇹🇱',c:'Dili',ct:'AS',lat:-8.8,lon:125.7,cw:['Baucau'],nb:['Indonesia'],qs:[
  ['Timor-Leste became the first new sovereign country of the 21st century in which year?','2002',['1950','1985','2020'],'It sits on the eastern half of the island of Timor.'],
  ['What are the two official languages of Timor-Leste?','Tetum and Portuguese',['English and French','Spanish and Dutch','Malay and Hindi'],'Timor-Leste sits just northwest of Australia.'],
  ['Which sea north of Timor-Leste is famous for deep trenches and coral reefs?','The Banda Sea',['The Baltic Sea','The North Sea','The Black Sea'],'The waters around Timor-Leste are part of the Coral Triangle.',1]]},
@@ -1021,7 +1015,7 @@ const COUNTRIES = [
 {id:'nr',n:'Nauru',f:'🇳🇷',c:'Yaren',ct:'OC',lat:-0.5,lon:166.9,nocap:1,qs:[
  ['Nauru is the world’s smallest ___ nation.','Island',['Landlocked','Mountain','Desert'],'You can drive all the way around Nauru in about 20 minutes!'],
  ['What is the most popular sport in Nauru?','Australian rules football',['Ice hockey','Baseball','Skiing'],'Weightlifting is also very popular in Nauru.'],
- ['Nauru sits just south of which imaginary line around Earth?','The equator',['The Arctic Circle','The prime meridian','The Tropic of Capricorn'],'Nauru is only about 42 km south of the equator.',1]]},
+ ['Nauru sits just south of which imaginary line around Earth?','The equator',['The Arctic Circle','The prime meridian','The Tropic of Capricorn'],'Nauru is only about 60 km (35 miles) south of the equator.',1]]},
 {id:'sb',n:'Solomon Islands',f:'🇸🇧',c:'Honiara',ct:'OC',lat:-9.5,lon:160,cw:['Gizo'],qs:[
  ['The Solomon Islands is made up of about how many islands?','Almost 1,000',['About 10','About 50','More than 10,000'],'The biggest island is Guadalcanal, where the capital Honiara is.'],
  ['Which ocean surrounds the Solomon Islands?','The Pacific Ocean',['The Atlantic Ocean','The Indian Ocean','The Arctic Ocean'],'Many people in the Solomon Islands speak a language called Pijin.'],
@@ -1036,14 +1030,767 @@ const COUNTRIES = [
  ['Fiji won its first-ever Olympic gold medal in 2016 in which sport?','Rugby sevens',['Swimming','Soccer','Surfing'],'Fiji won rugby sevens gold again at the next Olympics in Tokyo.',1]]}
 ];
 
-// Ensure all land borders are symmetric and valid
+
+// Rough coastlines as [lon, lat] points
+const LAND = [
+ // North America
+ [[-166,68.5],[-156,71.3],[-141,69.7],[-128,70],[-115,68.5],[-95,68.5],[-85,69],[-82,64],[-90,64],[-94,60],[-92,57],[-82,55],[-79,51.5],[-78,58],[-77,62],[-70,61],[-64,60],[-61,56],[-56,52],[-60,50],[-64,48.8],[-61,46],[-66,44.5],[-70,43],[-70,41.7],[-74,40.5],[-76,37],[-75.5,35.3],[-78,34],[-81,31.5],[-80.2,27],[-80.5,25.2],[-81.8,26.5],[-83,29],[-85,29.8],[-89,30.3],[-90.5,29],[-94,29.6],[-97.3,27.5],[-97.5,24],[-96,19],[-94.5,18.2],[-91,19],[-90.3,21],[-87,21.5],[-87.5,18.5],[-88.3,16],[-84,15.8],[-83.4,12],[-83.5,10.5],[-81.5,8.8],[-79.5,9.6],[-77,8],[-78,7.3],[-80,7.3],[-83,8.3],[-85.7,10],[-87.5,13],[-91.5,13.9],[-94.5,16],[-97,15.8],[-101.5,17.5],[-105.5,20],[-105.5,22.5],[-109,25.5],[-112.7,31.5],[-114.7,31.7],[-112.5,29],[-110,24],[-109.5,23],[-112.2,24.8],[-115,28],[-117.1,32.5],[-118.5,34],[-120.6,34.6],[-122.5,37.5],[-124.2,40.4],[-124,46.2],[-124.7,48.4],[-127.5,50.5],[-131,54],[-135,57.5],[-140,59.8],[-146,60.9],[-152,59],[-156,56.8],[-162,55],[-158,58.5],[-162,60],[-165,62],[-164.5,64.5],[-168,65.6]],
+ [[-120,72],[-100,73],[-85,73],[-80,76],[-90,80],[-110,78],[-122,75]],
+ [[-80,73],[-62,67],[-65,63],[-75,64.5],[-85,70]],
+ [[-73,78],[-60,82],[-30,83.5],[-20,82],[-18,76],[-22,70],[-32,68],[-40,65],[-43,60],[-48,61],[-53,66],[-54,70],[-60,75.5],[-68,76.5]],
+ [[-85,21.9],[-82,23.1],[-77.5,22],[-74.2,20.2],[-77.5,19.8],[-80,21.8]],
+ [[-74.5,18.5],[-72.8,19.9],[-68.4,19],[-68.8,18.2],[-71.5,17.6]],
+ [[-78.3,18.4],[-76.3,18.2],[-76.8,17.9],[-77.8,17.9]],
+ // South America
+ [[-77,8],[-75.5,10.8],[-72,12.2],[-71.5,10.5],[-68,10.5],[-62,10.7],[-60,8.5],[-57,6],[-52,5],[-50,1.5],[-48,-1],[-44.5,-2.5],[-39,-3.7],[-35,-5.5],[-35,-9],[-39,-13.5],[-39,-18],[-41,-22],[-44,-23.2],[-48.5,-26],[-48.6,-28.5],[-52,-32],[-54,-34.5],[-57.5,-34.5],[-58,-38.5],[-62,-39],[-65,-41],[-63.5,-42.5],[-65.5,-45],[-67.5,-46.5],[-66,-48],[-68.5,-50.5],[-68.5,-52.5],[-65.5,-55],[-70,-55],[-74,-52],[-75.5,-47],[-74,-43],[-73.5,-37],[-71.5,-30],[-70.3,-18],[-75,-15.5],[-77,-12],[-79.5,-7.5],[-81.2,-5],[-80,-2],[-80,1],[-78.8,1.5],[-77.5,4],[-77.5,6.5]],
+ // Eurasia
+ [[-9,37],[-9.5,39],[-8.8,42],[-8,43.7],[-2,43.4],[-1.5,46],[-4.5,48],[-1.5,49],[2,51],[4,52],[5,53.5],[8,54],[8.5,57],[10.5,57.7],[10.5,56.5],[12.5,56],[11.5,58.5],[10.5,59.3],[8,58.1],[5.5,58.7],[5,62],[10,64],[14,68],[18,70],[25,71],[31,70],[40,67],[44,68.5],[54,68.5],[60,70],[69,73],[80,73],[100,77],[113,74],[130,71.5],[140,72],[160,70],[170,70],[180,68],[180,65],[176,62],[163,59],[163,56],[156,51],[155,59],[142,59],[135,54.5],[141.4,52.2],[140,48],[133,43],[131,42.5],[129.7,41],[129.5,36],[126.5,34.5],[126,37.5],[124.5,40],[121,40.8],[121.5,39],[118,39],[119,37.2],[122.5,37.3],[120,35],[121.8,31.8],[121.9,30],[120,27],[117,23.5],[113,22],[108,21.5],[106,19],[109,15],[109,11.5],[105,8.6],[103,10.5],[100.5,13.5],[100.2,9],[103.4,4],[103.5,1.5],[100.3,4],[98.3,8],[98.5,13],[97.5,16.5],[94.3,16],[94,19],[92,22],[89,22],[86.5,20],[80.3,15.5],[77.5,8],[76,10],[73,17],[72.5,21],[70,22.5],[67,25],[62,25.3],[57.3,25.8],[56.4,24.9],[59.8,22.5],[57,18.8],[52,16],[45,13],[43.3,12.6],[42.7,16],[39,21.5],[35,28],[34.9,29.5],[34.5,31.5],[35.8,34.5],[36,36.8],[32,36.2],[29,36.5],[27.3,37.5],[26.3,40],[26,40.8],[24,40.8],[22.6,40.5],[23.8,38],[22.2,36.5],[21,38.5],[20,40],[19.4,42],[13.5,45.6],[12.3,44.5],[14,42],[16,41.8],[18.5,40.2],[16.5,39],[15.7,38],[15.6,40],[12,41.8],[10.5,43.5],[9,44.3],[7,43.7],[3,43.3],[0,40],[-1,37.5],[-5.6,36]],
+ [[-5.7,50],[-3,50.6],[1.4,51.2],[1.7,52.7],[0,53.5],[-1.5,55],[-2,56],[-1.8,57.6],[-3.3,58.6],[-5,58.6],[-6.2,57.5],[-5.6,56],[-4.8,54.8],[-3.2,54.6],[-3,53.4],[-4.7,52.8],[-4.2,51.7],[-5.2,51.6]],
+ [[-10,51.6],[-6.3,52.2],[-6,53.9],[-5.6,54.6],[-7.3,55.3],[-8.5,55],[-10,54.2],[-9.8,53],[-10.4,52.1]],
+ [[-24,65.5],[-21.5,63.9],[-17,63.4],[-14,64.4],[-13.6,65.3],[-15,66.4],[-18,66.2],[-22.5,66.4]],
+ [[130,31],[132,33.5],[135,33.5],[137,34.5],[140,35],[141,38.5],[142,40],[141.3,41.4],[139.9,40.5],[140,39],[138.5,37.5],[136.5,37],[133,35.5],[130.9,34]],
+ [[140,41.5],[141.8,42.6],[145.5,43.3],[145,44.2],[141.8,45.4],[141.5,43.2],[140,42.5]],
+ [[120.1,23],[121,22],[121.9,25],[121,25.2]],
+ [[119.8,16],[120.6,18.5],[122.3,18.4],[122,16],[124,13],[120.6,14]],
+ [[122,7],[125,5.6],[126.5,7],[125.4,9.8],[123.5,8.5]],
+ [[80,9.8],[81.8,7.5],[81,6],[79.8,7]],
+ [[95.2,5.6],[98,4],[103.8,-1],[106,-3],[105.8,-5.8],[104.5,-5.9],[102,-4],[100.3,-0.5],[98.5,1.8]],
+ [[105.2,-6.8],[106,-5.9],[111,-6.5],[114.6,-7.8],[114.4,-8.7],[110,-8.1],[106.5,-7.4]],
+ [[109,1.5],[111,1.6],[113,3.2],[115.5,5],[117.2,7],[119.2,5],[118,1],[117.5,-1],[116.5,-3.5],[114.6,-4],[110.2,-3],[109.5,-0.5]],
+ [[119.5,-5.5],[120.5,-1.5],[121,1],[124.8,1.5],[121.4,-1],[123.3,-1],[121,-2.5],[121.3,-4.8],[120.4,-5.6]],
+ // Africa
+ [[-17,21],[-16,24],[-13,28],[-9.8,30],[-9.5,32.5],[-6,35.8],[-2,35],[3,36.8],[10,37.2],[11,35.5],[10,34],[11.5,33],[15,32.3],[20,30.8],[20,32],[23,32.7],[25,31.6],[30,31.5],[32.3,31.3],[34.2,31.3],[34.8,29.5],[34,28],[35.5,24],[37.2,21],[38.5,18],[39.5,15.5],[41.5,13.5],[43.3,11.9],[44.5,10.4],[51.2,11.8],[51,10.5],[49.5,6],[47,4],[43,-0.5],[40.5,-2.5],[39.3,-5],[39.5,-8],[40.5,-11],[40.6,-15],[37,-17.7],[35.4,-22],[35.5,-24],[32.7,-26],[32.4,-29],[30,-31.3],[27.5,-33.5],[25,-34],[20,-34.8],[18.4,-34],[17.9,-32],[15.2,-27],[14.5,-23],[11.8,-17.2],[13.6,-12],[13.2,-8.5],[12.2,-5.5],[9,-1],[9.5,3.7],[8.5,4.5],[5.5,4.3],[4.5,6.3],[1,6],[-2,4.8],[-7.5,4.4],[-11,6.8],[-13.2,8.5],[-15,11],[-16.8,13],[-17.5,14.7],[-16.5,16.5],[-16,19.5]],
+ [[44,-25],[47,-25],[50.3,-15.5],[49.3,-12],[44.3,-16.5],[43.3,-22]],
+ // Oceania
+ [[131,-1.2],[134,-0.8],[138,-1.6],[141,-2.6],[145,-4.5],[147.8,-6.3],[147.5,-8],[150.3,-10.4],[147,-10],[144,-7.8],[142.5,-9.3],[141,-9.1],[139,-8.2],[137.8,-5.3],[135,-4.4],[132.5,-4.1],[131.8,-2.8]],
+ [[113.5,-22],[115,-21.5],[118.5,-20.3],[122,-17.5],[124,-16],[126,-14],[129.5,-15],[130.5,-12.3],[132.5,-11.4],[136.5,-12],[135.9,-15],[140,-17.6],[141.5,-12.5],[142.6,-10.7],[143.5,-14],[145.4,-15],[146.3,-19],[149,-21.5],[153.1,-25],[153.6,-28.5],[152.5,-32.5],[150.7,-35],[150,-37.5],[146.3,-39],[144,-38.3],[141,-38],[139.6,-37.2],[137.5,-35.6],[136,-35],[136,-33],[134.2,-32.5],[131,-31.5],[126,-32.3],[124,-33.8],[120,-34],[117.9,-35.1],[115,-34.3],[115.7,-31.5],[114.7,-28.8],[113.5,-26]],
+ [[144.6,-40.7],[148.3,-40.9],[147.9,-43.2],[146,-43.6]],
+ [[172.7,-34.5],[174.3,-35.5],[175.9,-37.5],[178.5,-37.7],[177,-39.3],[176.8,-40.2],[175.2,-41.6],[174.6,-41.2],[175.2,-40],[173.8,-39.2],[174.6,-37.8],[173,-35.2]],
+ [[172.7,-40.5],[174.3,-41.5],[173.2,-43],[171.2,-44.5],[169,-46.6],[166.5,-46],[167.5,-44.5],[170.5,-43],[172,-41.5]],
+ [[177.2,-17.4],[178.6,-17.6],[178.2,-18.3],[177.3,-18.1]]
+];
+const WATER = [
+ [[28,43],[28.5,45.5],[33,46],[35.5,45.3],[39,47],[41.5,42],[38,41],[33,42],[29,41.2]],
+ [[47,44.8],[50,46.6],[53,46.5],[53,41],[54,37],[50,37],[49.5,40],[47.5,43]],
+ [[48,30],[50.3,29.3],[51.5,27.9],[54.5,26.6],[56.3,26.6],[56.3,25.5],[54.5,24.2],[51.6,24.3],[50.8,25.8],[49.6,26.5]],
+ [[10,54.3],[14,54],[18.5,54.6],[21.2,55.5],[21,57.3],[24,57.2],[24.3,59.4],[28,60.5],[23,60],[21.5,60.8],[21.2,62.5],[25,65],[23,65.8],[21,64.5],[17.6,62.3],[19,60],[18,59],[16.5,56.2],[14.3,55.5],[12.5,56],[12.4,55.3],[10.8,55.6]]
+];
+
+
+/* ---------- borders: make them symmetric, drop contested/sea-only ones ---------- */
 const BY_ID = Object.fromEntries(COUNTRIES.map(c => [c.id, c]));
 const BY_NAME = Object.fromEntries(COUNTRIES.map(c => [c.n, c]));
 COUNTRIES.forEach(c => {
   c.nb = (c.nb || []).filter(name => BY_NAME[name]);
-  c.nb.forEach(name => {
-    const other = BY_NAME[name];
-    if (!other.nb) other.nb = [];
-    if (!other.nb.includes(c.n)) other.nb.push(c.n);
-  });
+  c.nb.forEach(name => { const o = BY_NAME[name]; o.nb = o.nb || []; if (!o.nb.includes(c.n)) o.nb.push(c.n); });
 });
+[['Serbia','Albania'],['Mauritania','Morocco'],['Singapore','Malaysia']].forEach(([a, b]) => {
+  BY_NAME[a].nb = BY_NAME[a].nb.filter(x => x !== b); BY_NAME[b].nb = BY_NAME[b].nb.filter(x => x !== a);
+});
+[['Azerbaijan','Turkey']].forEach(([a, b]) => {
+  if (!BY_NAME[a].nb.includes(b)) BY_NAME[a].nb.push(b);
+  if (!BY_NAME[b].nb.includes(a)) BY_NAME[b].nb.push(a);
+});
+
+/* ---------- map regions (zoom levels) ---------- */
+const REGIONS = {
+  NAm:{ name:'North America',                ids:'us ca mx cu bs' },
+  CAm:{ name:'Central America & Caribbean',  ids:'bz gt sv hn ni cr pa jm ht do mx cu bs' },
+  SAm:{ name:'South America',                ids:'co ve gy sr ec pe br bo py cl ar uy' },
+  WEu:{ name:'Western Europe',               ids:'gb ie fr be lu nl de ch it es pt at dk' },
+  NEu:{ name:'Northern Europe',              ids:'is no se fi ee lv lt dk' },
+  EEu:{ name:'Eastern Europe & Balkans',     ids:'pl cz sk hu si hr ba rs me al bg ro ua gr' },
+  NAf:{ name:'North & West Africa',          ids:'ma dz tn ly eg mr sn ml ci gh bj ng cv' },
+  SAf:{ name:'Central, East & South Africa', ids:'sd er dj et so cm ga cd ug ke rw tz ao zm mw mz zw bw na za mg mu sc' },
+  ME: { name:'Middle East',                  ids:'tr ge am az sy lb il jo iq kw sa qa ae om ye ir' },
+  CAs:{ name:'Central & South Asia',         ids:'kz uz tm kg tj af pk in np bt bd lk mv' },
+  EAs:{ name:'East Asia',                    ids:'ru cn mn kr kp jp' },
+  SEA:{ name:'Southeast Asia',               ids:'mm la th kh vn my bn sg id ph tl' },
+  OC: { name:'Oceania',                      ids:'au nz pg pw fm mh nr sb vu fj' }
+};
+
+/* ================= HELPERS ================= */
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const px = lon => lon + 180, py = lat => 85 - lat;
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pathFrom = pts => 'M' + pts.map(([lo, la]) => px(lo).toFixed(1) + ',' + py(la).toFixed(1)).join('L') + 'Z';
+const colorVar = p => p === 0 ? 'var(--p1)' : 'var(--p2)';
+
+let soundOn = true, actx = null;
+function tone(notes){
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const now = actx.currentTime;
+    notes.forEach(([f, t, d]) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, now + t);
+      g.gain.exponentialRampToValueAtTime(0.22, now + t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + t + d);
+      o.connect(g); g.connect(actx.destination);
+      o.start(now + t); o.stop(now + t + d + 0.05);
+    });
+  } catch (e) {}
+}
+const SFX = {
+  right: () => tone([[523,0,.16],[659,.12,.16],[784,.24,.32]]),
+  wrong: () => tone([[311,0,.2],[220,.18,.4]]),
+  fly:   () => tone([[392,0,.08],[523,.07,.12]])
+};
+
+let toastTimer;
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ================= MAP ================= */
+const svg = $('map');
+const WORLD_VB = [0, 0, 360, 143];
+let curVB = WORLD_VB.slice(), view = 'world', anim = 0;
+
+COUNTRIES.forEach(c => { c.x = px(c.lon); c.y = py(c.lat); c.dx = c.x; c.dy = c.y; });
+Object.entries(REGIONS).forEach(([key, r]) => {
+  r.list = r.ids.split(' ').map(id => BY_ID[id]).filter(Boolean);
+  r.list.forEach(c => { if (!c.home) c.home = key; });
+  const xs = r.list.map(c => c.x), ys = r.list.map(c => c.y);
+  let x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const padX = Math.max(3, (x1 - x0) * 0.12), padY = Math.max(3, (y1 - y0) * 0.16);
+  x0 -= padX; x1 += padX; y0 -= padY * 1.6; y1 += padY;  // extra room on top for the banner
+  const w = Math.max(x1 - x0, 14), h = Math.max(y1 - y0, 10);
+  r.vb = [(x0 + x1) / 2 - w / 2, (y0 + y1) / 2 - h / 2, w, h];
+});
+COUNTRIES.forEach(c => { if (!c.home) console.warn('No map region for', c.n); });
+
+function buildMap(){
+  let h = '<rect class="sea" x="-60" y="-60" width="520" height="280"/>';
+  for (let lon = -150; lon <= 180; lon += 30) h += `<line class="grat" x1="${px(lon)}" y1="-60" x2="${px(lon)}" y2="210"/>`;
+  for (let lat = 60; lat >= -30; lat -= 30) h += `<line class="grat${lat === 0 ? ' eq' : ''}" x1="-60" y1="${py(lat)}" x2="440" y2="${py(lat)}"/>`;
+  LAND.forEach(p => h += `<path class="land" d="${pathFrom(p)}"/>`);
+  WATER.forEach(p => h += `<path class="sea" d="${pathFrom(p)}"/>`);
+  h += '<g id="routes"></g><g id="pins"></g>';
+  svg.innerHTML = h;
+  const g = svg.querySelector('#pins');
+  COUNTRIES.forEach(c => {
+    const el = document.createElementNS(NS, 'g');
+    el.setAttribute('class', 'pin'); el.setAttribute('role', 'button'); el.setAttribute('tabindex', '0');
+    el.dataset.id = c.id;
+    el.innerHTML = `<circle class="dot" r="4.5"/><g class="full"><line class="leader" x1="0" y1="0" x2="0" y2="0"/><circle class="tdot" r="3"/><circle class="hit" r="24"/><circle class="body" r="17"/><text class="mark" y="1">?</text><text class="lbl"></text><text class="badge" x="15" y="-14"></text></g>`;
+    el.querySelector('.lbl').textContent = c.n;
+    c.el = el; g.appendChild(el);
+  });
+}
+
+function svgBox(){ const r = svg.getBoundingClientRect(); return { w: r.width || 1, h: r.height || 1 }; }
+function scaleFor(vb){ const b = svgBox(); return Math.max(vb[2] / b.w, vb[3] / b.h); }
+
+/* Spread pins apart so they never overlap. Positions stay as close to the real spot as possible;
+   a thin line points back to the real location when a pin had to move. */
+const layoutCache = {};
+function layoutFor(key){
+  const b = svgBox(), vb = REGIONS[key].vb, s = scaleFor(vb);
+  const cacheKey = `${key}:${Math.round(b.w)}x${Math.round(b.h)}`;
+  if (layoutCache[cacheKey]) return layoutCache[cacheKey];
+  const left = vb[0] + vb[2] / 2 - b.w * s / 2, top = vb[1] + vb[3] / 2 - b.h * s / 2;
+  const TOP = 62, EDGE = 26;
+  const members = new Set(REGIONS[key].list.map(c => c.id));
+  const nodes = COUNTRIES.map(c => ({ c, tx:(c.x - left) / s, ty:(c.y - top) / s }))
+    // only this region's countries, so the map stays uncluttered
+    .filter(n => members.has(n.c.id))
+    .map(n => ({ ...n, x:n.tx, y:n.ty, w:Math.max(40, n.c.n.length * 6.8 + 10), h:54, off:n.c.la ? -9 : 9 }));
+  for (let it = 0; it < 260; it++) {
+    for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], d = nodes[j];
+      const dx = (d.x) - (a.x), dy = (d.y + d.off) - (a.y + a.off);
+      const ox = (a.w + d.w) / 2 + 2 - Math.abs(dx), oy = (a.h + d.h) / 2 + 2 - Math.abs(dy);
+      if (ox > 0 && oy > 0) {
+        if (ox < oy) { const m = ox / 2 * (dx >= 0 ? 1 : -1) || (i % 2 ? 1 : -1); a.x -= m; d.x += m; }
+        else { const m = oy / 2 * (dy >= 0 ? 1 : -1) || (i % 2 ? 1 : -1); a.y -= m; d.y += m; }
+      }
+    }
+    nodes.forEach(n => {
+      n.x += (n.tx - n.x) * 0.03; n.y += (n.ty - n.y) * 0.03;
+      n.x = Math.min(b.w - n.w / 2 - 4, Math.max(n.w / 2 + 4, n.x));
+      n.y = Math.min(b.h - EDGE - 14, Math.max(TOP + 18, n.y));
+    });
+  }
+  const out = {};
+  nodes.forEach(n => { out[n.c.id] = { x:left + n.x * s, y:top + n.y * s }; });
+  out._shown = new Set(nodes.map(n => n.c.id));
+  return (layoutCache[cacheKey] = out);
+}
+
+function placePins(){
+  const s = scaleFor(curVB);
+  COUNTRIES.forEach(c => {
+    c.el.setAttribute('transform', `translate(${c.dx} ${c.dy}) scale(${s})`);
+    const lx = (c.x - c.dx) / s, ly = (c.y - c.dy) / s, far = Math.hypot(lx, ly) > 10;
+    const ln = c.el.querySelector('.leader'), td = c.el.querySelector('.tdot');
+    ln.setAttribute('x2', far ? lx : 0); ln.setAttribute('y2', far ? ly : 0);
+    td.setAttribute('cx', lx); td.setAttribute('cy', ly);
+    td.style.display = far ? '' : 'none';
+    c.el.querySelector('.lbl').setAttribute('y', c.la ? -28 : 31);
+  });
+  drawRoutes();
+}
+
+function zoomTo(key, instant){
+  view = key;
+  const target = key === 'world' ? WORLD_VB.slice() : REGIONS[key].vb.slice(), from = curVB.slice();
+  const lay = key === 'world' ? {} : layoutFor(key);
+  const start = COUNTRIES.map(c => [c.dx, c.dy]);
+  const goal = COUNTRIES.map(c => lay[c.id] ? [lay[c.id].x, lay[c.id].y] : [c.x, c.y]);
+  svg.classList.toggle('zoomed', key !== 'world');
+  COUNTRIES.forEach(c => c.el.classList.toggle('off', key !== 'world' && !lay._shown.has(c.id)));
+  cancelAnimationFrame(anim);
+  const apply = e => {
+    curVB = from.map((f, i) => f + (target[i] - f) * e);
+    svg.setAttribute('viewBox', curVB.map(n => n.toFixed(3)).join(' '));
+    COUNTRIES.forEach((c, i) => { c.dx = start[i][0] + (goal[i][0] - start[i][0]) * e; c.dy = start[i][1] + (goal[i][1] - start[i][1]) * e; });
+    placePins();
+  };
+  if (instant || reduceMotion()) apply(1);
+  else {
+    const t0 = performance.now(), D = 480;
+    const step = now => {
+      const t = Math.min(1, (now - t0) / D);
+      apply(t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+      if (t < 1) anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  }
+  renderTabs(); renderBanner();
+}
+
+function svgPoint(evt){
+  const pt = svg.createSVGPoint(); pt.x = evt.clientX; pt.y = evt.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+function buildTabs(){
+  const nav = $('tabs');
+  [['world', '🌍 World'], ...Object.entries(REGIONS).map(([k, r]) => [k, r.name])].forEach(([key, label]) => {
+    const b = document.createElement('button');
+    b.className = 'tab'; b.textContent = label; b.dataset.key = key;
+    b.addEventListener('click', () => { if (!busy()) zoomTo(key); });
+    nav.appendChild(b);
+  });
+}
+function renderTabs(){
+  document.querySelectorAll('.tab').forEach(b => {
+    const on = b.dataset.key === view;
+    b.setAttribute('aria-pressed', String(on));
+    if (on) b.scrollIntoView({ block:'nearest', inline:'nearest' });
+  });
+}
+
+/* ================= GAME STATE ================= */
+let S = null;
+const setup = { names:['',''], levels:['easy','hard'], rounds:10 };
+const PER_TICKET = 3, MAX_TICKETS = 2, MAX_LOCKS = 3;
+
+const busy = () => !S || $('quizOv').classList.contains('open') || $('endOv').classList.contains('open') || $('setupOv').classList.contains('open');
+const me = () => S.turn % 2;
+const player = i => S.players[i];
+const owned = p => COUNTRIES.filter(c => S.owner[c.id] === p);
+const neighborsOf = c => (c.nb || []).map(n => BY_NAME[n]);
+const isShielded = c => {
+  const o = S.owner[c.id];
+  return o !== undefined && !S.hq[c.id] && neighborsOf(c).some(n => S.owner[n.id] === o && S.hq[n.id]);
+};
+function linksOf(p){
+  const L = [];
+  owned(p).forEach(c => neighborsOf(c).forEach(n => { if (S.owner[n.id] === p && c.id < n.id) L.push([c, n]); }));
+  return L;
+}
+function scoreOf(p){
+  const mine = owned(p);
+  const hq = mine.filter(c => S.hq[c.id]).length;
+  const locks = mine.filter(c => S.locked[c.id] && !S.hq[c.id]).length;
+  const links = linksOf(p).length;
+  return { countries:mine.length, locks, hq, links, total:mine.length + locks + hq * 2 + links };
+}
+
+function startGame(){
+  S = {
+    players: [0,1].map(i => ({ name: setup.names[i] || `Player ${i + 1}`, level: setup.levels[i] })),
+    rounds: setup.rounds, turn: 0, owner: {}, locked: {}, hq: {}, asked: new Set(),
+    tickets: [0,0], progress: [0,0], justStolen: {}
+  };
+  ['setupOv','endOv','quizOv'].forEach(id => $(id).classList.remove('open'));
+  zoomTo('world', true);
+  renderAll();
+}
+
+function renderAll(){ renderPlayers(); renderPins(); renderRound(); renderTabs(); renderBanner(); }
+
+function renderPlayers(){
+  [0,1].forEach(i => {
+    const card = $('card' + i), p = player(i), mine = owned(i), sc = scoreOf(i);
+    card.classList.toggle('active', me() === i);
+    card.querySelector('.pname').textContent = p.name;
+    const dots = '●'.repeat(S.progress[i]) + '○'.repeat(PER_TICKET - S.progress[i]);
+    card.querySelector('.pmeta').textContent = (me() === i ? '✈ Your turn' : (p.level === 'easy' ? 'Explorer' : 'Adventurer')) + ` · 🎯 ${S.tickets[i]} · ${dots}`;
+    card.querySelector('.pmeta').title = `${S.tickets[i]} steal tickets. ${PER_TICKET - S.progress[i]} more right answers to earn the next one.`;
+    card.querySelector('.pscore').textContent = sc.total;
+    card.querySelector('.pscore').title = `${sc.countries} countries + ${sc.locks} locks + ${sc.hq * 2} HQ + ${sc.links} border links`;
+    const st = card.querySelector('.pstamps');
+    st.innerHTML = '';
+    if (!mine.length) st.innerHTML = '<span class="empty">No stamps yet</span>';
+    else { st.textContent = mine.map(c => (S.hq[c.id] ? '👑' : '') + c.f).join(' '); st.scrollLeft = st.scrollWidth; }
+  });
+}
+
+function renderPins(){
+  COUNTRIES.forEach(c => {
+    const o = S.owner[c.id];
+    c.el.classList.toggle('o0', o === 0);
+    c.el.classList.toggle('o1', o === 1);
+    c.el.classList.toggle('hq', !!S.hq[c.id]);
+    c.el.querySelector('.mark').textContent = o === undefined ? '?' : c.f;
+    const badge = S.hq[c.id] ? '👑' : S.locked[c.id] ? '🔒' : isShielded(c) ? '🛡️' : '';
+    c.el.querySelector('.badge').textContent = badge;
+    c.el.setAttribute('aria-label', c.n + (o === undefined ? ', free' : `, owned by ${player(o).name}`) +
+      (S.hq[c.id] ? ', headquarters' : S.locked[c.id] ? ', locked' : isShielded(c) ? ', shielded' : ''));
+  });
+  drawRoutes();
+}
+
+function drawRoutes(){
+  const g = $('routes');
+  if (!g || !S) return;
+  const s = scaleFor(curVB);
+  let h = '';
+  [0,1].forEach(p => linksOf(p).forEach(([a, b]) => {
+    h += `<line class="route-line r${p}" x1="${a.dx}" y1="${a.dy}" x2="${b.dx}" y2="${b.dy}" style="stroke-width:${(3 * s).toFixed(3)};stroke-dasharray:${(6 * s).toFixed(3)} ${(5 * s).toFixed(3)}"/>`;
+  }));
+  g.innerHTML = h;
+}
+
+function renderRound(){
+  $('round').textContent = `Round ${Math.min(S.rounds, Math.floor(S.turn / 2) + 1)} of ${S.rounds}`;
+}
+
+function renderBanner(){
+  const b = $('banner');
+  if (!S) { b.textContent = ''; return; }
+  const p = player(me()), opp = player(1 - me());
+  b.style.setProperty('--pc', colorVar(me()));
+  if (view === 'world') { b.textContent = `${p.name}, tap a part of the world (or a button above) to zoom in.`; return; }
+  const t = S.tickets[me()];
+  const tip = t >= 1 ? ` You have ${t} 🎯 — tap ${opp.name}’s country to steal.`
+            : owned(me()).some(c => !S.locked[c.id]) ? ' Or tap one of yours to lock it.' : '';
+  b.textContent = `${p.name}, pick a country to fly to.${tip}`;
+}
+
+/* ================= QUESTIONS ================= */
+const ART = new Set(['us','gb','nl','ph','ae','bs','mv','do','mh','sb','cd']);
+const the = c => (ART.has(c.id) ? 'the ' : '') + c.n;
+function optsFrom(right, wrong){ return shuffle([{ label:right, ok:true }, ...wrong.map(w => ({ label:w }))]); }
+
+function capitalQ(c, hard){
+  let wrong = [];
+  if (c.cw) wrong.push(pick(c.cw));
+  wrong.push(...shuffle(COUNTRIES.filter(x => x.ct === c.ct && x.id !== c.id && !x.nocap && (hard || x.ec))).map(x => x.c));
+  wrong.push(...shuffle(COUNTRIES.filter(x => x.id !== c.id && !x.nocap && (hard || x.ec))).map(x => x.c));
+  wrong = [...new Set(wrong)].filter(x => x !== c.c).slice(0, 3);
+  return { type:'capital', prompt:`What is the capital of ${the(c)}?`, answer:c.c, opts:optsFrom(c.c, wrong) };
+}
+function flagQ(c){
+  let others = shuffle(COUNTRIES.filter(x => x.ct === c.ct && x.id !== c.id));
+  if (others.length < 3) others = others.concat(shuffle(COUNTRIES.filter(x => x.id !== c.id && !others.includes(x))));
+  return { type:'flag', prompt:`Which flag belongs to ${the(c)}?`, answer:`this one: ${c.f}`, flags:true,
+    opts: shuffle([{ label:c.f, cap:c.n, ok:true }, ...others.slice(0, 3).map(x => ({ label:x.f, cap:x.n }))]) };
+}
+function whoseFlagQ(o){
+  const others = shuffle(COUNTRIES.filter(x => x.ct === o.ct && x.id !== o.id)).slice(0, 3).map(x => x.n);
+  return { type:'whose', prompt:'Which country does this flag belong to?', bigFlag:o.f, answer:o.n, about:o, opts:optsFrom(o.n, others) };
+}
+function neighborBuilder(c){
+  const nbSet = new Set(c.nb || []);
+  if (!nbSet.size) return null;
+  const nonNb = COUNTRIES.filter(x => x.ct === c.ct && x.id !== c.id && !nbSet.has(x.n));
+  if (nonNb.length < 3) return null;
+  return () => {
+    const right = pick(c.nb);
+    return { type:'nb', prompt:`Which of these countries shares a land border with ${the(c)}?`, answer:right,
+      opts:optsFrom(right, shuffle(nonNb).slice(0, 3).map(x => x.n)) };
+  };
+}
+function cityQ(c){
+  const right = pick(c.cw);
+  const pool = COUNTRIES.filter(x => x.ct === c.ct && x.id !== c.id).flatMap(x => [x.c, ...(x.cw || [])]);
+  const wrong = [...new Set(shuffle(pool))].filter(w => w !== right && w !== c.c && !c.cw.includes(w)).slice(0, 3);
+  return { type:'city', prompt:`Which of these cities is in ${the(c)}?`, answer:right, opts:optsFrom(right, wrong) };
+}
+function factQ(c, q){
+  return { type:'fact', prompt:q[0], answer:q[1], fact:q[3], about:c, opts:optsFrom(q[1], shuffle(q[2]).slice(0, 3)) };
+}
+
+function ownCandidates(c, mode, hard){
+  const L = [];
+  if (!c.nocap && (hard || c.ec)) L.push({ key:`${c.id}:cap`, tough:true, build:() => capitalQ(c, hard) });
+  if (mode === 'claim') L.push({ key:`${c.id}:flag`, build:() => flagQ(c) });
+  const nb = neighborBuilder(c);
+  if (nb) L.push({ key:`${c.id}:nb`, tough:true, build:nb });
+  if (c.cw && c.cw.length && (hard || c.ec)) L.push({ key:`${c.id}:city`, tough:true, build:() => cityQ(c) });
+  c.qs.forEach((q, i) => L.push({ key:`${c.id}:f${i}`, tough:!!q[4], late:!hard && !!q[4], build:() => factQ(c, q) }));
+  return L;
+}
+function layoverCandidates(o, hard){
+  const L = [];
+  if (!o.nocap && (hard || o.ec)) L.push({ key:`${o.id}:cap`, build:() => ({ ...capitalQ(o, hard), about:o }) });
+  if (S.owner[o.id] === undefined) L.push({ key:`${o.id}:flag`, build:() => whoseFlagQ(o) });
+  o.qs.forEach((q, i) => { if (hard || !q[4]) L.push({ key:`${o.id}:f${i}`, build:() => factQ(o, q) }); });
+  return L;
+}
+
+function makeQuestion(c, level, mode){
+  const hard = level === 'hard' || mode !== 'claim';
+  const own = ownCandidates(c, mode, hard);
+  let pool = own.filter(x => !S.asked.has(x.key));
+  if (mode !== 'claim') { const tough = pool.filter(x => x.tough); if (tough.length) pool = tough; }
+  else { const early = pool.filter(x => !x.late); if (early.length) pool = early; }
+  let layover = false;
+  if (!pool.length) {
+    const near = shuffle(COUNTRIES.filter(x => x.ct === c.ct && x.id !== c.id));
+    const far = shuffle(COUNTRIES.filter(x => x.ct !== c.ct));
+    for (const o of near.concat(far)) {
+      pool = layoverCandidates(o, hard).filter(x => !S.asked.has(x.key));
+      if (pool.length) { layover = true; break; }
+    }
+    if (!pool.length) pool = own;
+  }
+  const cand = pick(pool);
+  const q = cand.build();
+  q.key = cand.key; q.layover = layover; q.about = q.about || c;
+  return q;
+}
+
+/* ================= TURNS ================= */
+let Q = null;
+const MODE_TEXT = {
+  claim:'is flying to', steal:'is trying to steal', mega:'is trying a 🎯🎯 mega-steal on',
+  lock:'is trying to lock', hq:'is trying to crown'
+};
+
+function openCountry(c){
+  if (busy()) return;
+  const o = S.owner[c.id], p = me(), t = S.tickets[p];
+  if (o === undefined) { openQuestion(c, 'claim'); return; }
+  if (o === p) {
+    if (S.hq[c.id]) { toast(`${c.n} is already your 👑 HQ.`); return; }
+    if (S.locked[c.id]) {
+      if (owned(p).some(x => S.hq[x.id])) { toast('You already have a 👑 HQ. Each player gets one.'); return; }
+      confirmStep(c, 'hq'); return;
+    }
+    if (owned(p).filter(x => S.locked[x.id]).length >= MAX_LOCKS) { toast(`You already have ${MAX_LOCKS} locked countries. That’s the limit.`); return; }
+    confirmStep(c, 'lock'); return;
+  }
+  // The other player's country
+  if (S.hq[c.id]) { toast(`${c.n} is ${player(o).name}’s 👑 HQ. HQs can never be stolen.`); return; }
+  if (S.justStolen[c.id] === S.turn - 1) { toast(`${c.n} was just stolen. It can’t be stolen back until next round.`); return; }
+  const guarded = S.locked[c.id] || isShielded(c);
+  if (guarded) {
+    const why = S.locked[c.id] ? 'locked 🔒' : 'shielded 🛡️ by an HQ next door';
+    if (t < 2) { toast(`${c.n} is ${why}. You need 2 🎯 tickets for a mega-steal.`); return; }
+    confirmStep(c, 'mega'); return;
+  }
+  if (t < 1) { toast(`You need a 🎯 steal ticket first. You earn one for every ${PER_TICKET} right answers.`); return; }
+  confirmStep(c, 'steal');
+}
+
+function setHead(c, mode){
+  const p = me();
+  $('ticket').style.setProperty('--pc', colorVar(p));
+  $('qWho').textContent = `${player(p).name} ${MODE_TEXT[mode]}`;
+  $('qTo').innerHTML = '';
+  $('qTo').append(c.n);
+  const sm = document.createElement('small'); sm.textContent = CONT[c.ct].name; $('qTo').append(sm);
+  $('qResult').classList.remove('show');
+  $('qStamp').innerHTML = '';
+  $('qNext').hidden = true;
+  $('qFlag').hidden = true;
+}
+
+function confirmStep(c, mode){
+  const p = me(), o = S.owner[c.id];
+  Q = { c, mode, stage:'confirm' };
+  setHead(c, mode);
+  $('qNote').hidden = true;
+  const nbCount = neighborsOf(c).filter(n => S.owner[n.id] === p).length;
+  $('qText').textContent = {
+    steal:`Use 1 🎯 steal ticket to try to take ${c.n} from ${player(o).name}? You’ll get a hard question, and the ticket is used up even if you miss.`,
+    mega:`Use 2 🎯🎯 steal tickets for a mega-steal on ${c.n}? You’ll get a hard question. If you win, ${c.n} becomes yours and loses its protection.`,
+    lock:`Try to lock ${c.n}? You’ll get a hard question. Locked countries are worth +1 point and need a mega-steal to take. This uses your turn.`,
+    hq:`Try to crown ${c.n} as your 👑 HQ? You’ll get a hard question. Your HQ is worth +2 points, can never be stolen, and shields ${nbCount ? `your ${nbCount} neighboring ${nbCount === 1 ? 'country' : 'countries'}` : 'any neighboring countries you own'}. This uses your turn.`
+  }[mode];
+  const box = $('qOpts');
+  box.className = 'opts three';
+  box.innerHTML = '';
+  const yes = { steal:'Yes, try to steal it', mega:'Yes, mega-steal it', lock:'Yes, try to lock it', hq:'Yes, crown it' }[mode];
+  [[yes, true], ['No, go back', false]].forEach(([label, ok]) => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.textContent = label;
+    b.addEventListener('click', () => { if (ok) openQuestion(c, mode); else closeQuiz(); });
+    box.appendChild(b);
+  });
+  openQuiz();
+  box.firstChild.focus({ preventScroll:true });
+}
+
+function openQuiz(){ $('quizOv').classList.add('open'); document.body.classList.add('in-quiz'); $('quizOv').scrollTop = 0; }
+function closeQuiz(){ $('quizOv').classList.remove('open'); document.body.classList.remove('in-quiz'); }
+
+function openQuestion(c, mode){
+  const p = me(), o = S.owner[c.id];
+  if (mode === 'steal') S.tickets[p] -= 1;
+  if (mode === 'mega') S.tickets[p] -= 2;
+  Q = { c, mode, stage:'question', done:false, q: makeQuestion(c, player(p).level, mode) };
+  const q = Q.q;
+  SFX.fly();
+  setHead(c, mode);
+  const notes = [];
+  if (mode === 'steal' || mode === 'mega') notes.push(`Answer right to take ${c.n} from ${player(o).name}.`);
+  if (mode === 'lock') notes.push(`Answer right to lock ${c.n}.`);
+  if (mode === 'hq') notes.push(`👑 HQ challenge! Answer right to crown ${c.n}.`);
+  if (q.layover) notes.push(`✈ Layover in ${q.about.n}! You’ve answered all the ${c.n} questions, so here’s one about another country.`);
+  $('qNote').hidden = !notes.length;
+  $('qNote').textContent = notes.join(' ');
+  $('qText').textContent = q.prompt;
+  if (q.bigFlag) { $('qFlag').textContent = q.bigFlag; $('qFlag').hidden = false; }
+  const box = $('qOpts');
+  box.className = 'opts' + (q.flags ? ' flags' : '');
+  box.innerHTML = '';
+  q.opts.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.append(opt.label);
+    if (opt.cap) { const s = document.createElement('span'); s.className = 'cap'; s.textContent = opt.cap; b.append(s); b.setAttribute('aria-label', 'Flag option'); }
+    b.addEventListener('click', () => answer(b, opt));
+    opt.btn = b;
+    box.appendChild(b);
+  });
+  openQuiz();
+  renderPlayers();
+  box.firstChild.focus({ preventScroll:true });
+}
+
+function stampHTML(c, p, extra){
+  return `<div class="stamp ${extra || ''}" style="--pc:${colorVar(p)}"><div class="stamp-in"><span class="sf">${c.f}</span><span class="sn"></span></div></div>`;
+}
+
+function earnProgress(p){
+  S.progress[p]++;
+  if (S.progress[p] < PER_TICKET) return '';
+  S.progress[p] = 0;
+  if (S.tickets[p] >= MAX_TICKETS) return ` You already hold ${MAX_TICKETS} steal tickets, the most you can carry.`;
+  S.tickets[p]++;
+  return ' 🎯 You earned a steal ticket!';
+}
+
+function answer(btn, opt){
+  if (Q.done) return;
+  Q.done = true;
+  const { c, mode, q } = Q, p = me(), prevOwner = S.owner[c.id];
+  const linksBefore = linksOf(p).length;
+  S.asked.add(q.key);
+  $('qOpts').classList.add('revealed');
+  q.opts.forEach(o => { if (o.ok) o.btn.classList.add('right'); });
+  if (!opt.ok) btn.classList.add('wrong');
+
+  let title, line = '';
+  if (opt.ok) {
+    SFX.right();
+    if (mode === 'claim') {
+      S.owner[c.id] = p;
+      title = `Correct! ${c.n} is in your passport.`;
+      line = earnProgress(p);
+    } else if (mode === 'steal' || mode === 'mega') {
+      S.owner[c.id] = p; S.justStolen[c.id] = S.turn;
+      delete S.locked[c.id];
+      title = `Stolen! ${c.n} is yours now.`;
+      line = `${player(prevOwner).name} can’t steal it back on the very next turn.`;
+    } else if (mode === 'lock') {
+      S.locked[c.id] = true;
+      title = `Locked! ${c.n} is worth +1 point and needs a mega-steal to take.`;
+      line = earnProgress(p);
+    } else {
+      S.hq[c.id] = true;
+      const shielded = neighborsOf(c).filter(n => S.owner[n.id] === p).length;
+      title = `Crowned! ${c.n} is your 👑 HQ.`;
+      line = (shielded ? `It shields ${shielded} neighboring ${shielded === 1 ? 'country' : 'countries'}.` : 'Claim its neighbors to put them under its shield.') + earnProgress(p);
+    }
+    const gained = linksOf(p).length - linksBefore;
+    if (gained > 0) line += ` 🔗 +${gained} border link${gained > 1 ? 's' : ''}!`;
+    $('qStamp').innerHTML = stampHTML(c, p, 'thunk');
+    $('qStamp').querySelector('.sn').textContent = (mode === 'hq' ? '👑 ' : mode === 'lock' ? '🔒 ' : '') + c.n;
+  } else {
+    SFX.wrong();
+    title = 'Not this time.';
+    line = `The answer was ${q.answer}. ` + {
+      claim:`${c.n} is still up for grabs.`,
+      steal:`${c.n} stays with ${player(prevOwner).name}, and your steal ticket is used up.`,
+      mega:`${c.n} stays with ${player(prevOwner).name}, and both tickets are used up.`,
+      lock:`${c.n} is still yours, but it isn’t locked.`,
+      hq:`${c.n} is still locked, but it isn’t your HQ yet.`
+    }[mode];
+  }
+  $('qResTitle').textContent = title;
+  $('qResLine').textContent = line.trim();
+  $('qFact').innerHTML = '<b>Did you know?</b> ';
+  $('qFact').append(didYouKnow(q, q.about));
+  $('qResult').classList.add('show');
+  const last = S.turn + 1 >= S.rounds * 2;
+  const nb = $('qNext');
+  nb.textContent = last ? 'See who won' : `${player(1 - p).name}’s turn`;
+  nb.hidden = false;
+  renderPlayers(); renderPins();
+  setTimeout(() => nb.scrollIntoView({ block:'nearest' }), 60);
+  setTimeout(() => nb.focus({ preventScroll:true }), 60);
+}
+
+function didYouKnow(q, a){
+  let fact = q.type === 'fact' ? q.fact : '';
+  if (!fact) {
+    const items = a.qs.map((x, i) => ({ x, key:`${a.id}:f${i}` }));
+    const seen = items.filter(o => S.asked.has(o.key));
+    if (seen.length) fact = pick(seen).x[3];
+    else {
+      const fresh = items.filter(o => !S.asked.has(o.key));
+      if (fresh.length) { const o = pick(fresh); S.asked.add(o.key); fact = o.x[3]; }
+    }
+  }
+  if (q.type !== 'capital' && !a.nocap && S.asked.has(`${a.id}:cap`)) fact += ` Remember, the capital of ${a.n} is ${a.c}.`;
+  return fact.trim() || `${a.n} is in ${CONT[a.ct].name}.`;
+}
+
+function nextTurn(){
+  closeQuiz();
+  S.turn++;
+  if (S.turn >= S.rounds * 2) { showEnd(); return; }
+  renderAll();
+}
+
+/* ================= END ================= */
+function showEnd(){
+  const sc = [scoreOf(0), scoreOf(1)];
+  const bonus = [[], []];
+  Object.entries(CONT).forEach(([key, v]) => {
+    if (key === 'world') return;
+    const a = COUNTRIES.filter(c => c.ct === key && S.owner[c.id] === 0).length;
+    const b = COUNTRIES.filter(c => c.ct === key && S.owner[c.id] === 1).length;
+    if (a > b) bonus[0].push(v.name); else if (b > a) bonus[1].push(v.name);
+  });
+  const totals = [0,1].map(i => sc[i].total + bonus[i].length * 2);
+  const title = $('eTitle'), sub = $('eSub');
+  if (totals[0] === totals[1]) { title.textContent = 'It’s a tie!'; title.style.color = ''; sub.textContent = 'Both passports are equally full. Time for a rematch?'; }
+  else {
+    const w = totals[0] > totals[1] ? 0 : 1;
+    title.textContent = `${player(w).name} wins!`;
+    title.style.color = colorVar(w);
+    sub.textContent = `${totals[w]} points to ${totals[1 - w]}. What a trip around the world.`;
+  }
+  const wrap = $('ePass'); wrap.innerHTML = '';
+  [0,1].forEach(i => {
+    const d = document.createElement('div');
+    d.className = 'passport'; d.dataset.p = i;
+    d.innerHTML = `<h2><span class="nm"></span><span>${totals[i]}</span></h2><div class="lines"></div><div class="stampgrid"></div>`;
+    d.querySelector('.nm').textContent = player(i).name;
+    const s = sc[i], parts = [`<b>${s.countries}</b> ${s.countries === 1 ? 'country' : 'countries'}`];
+    if (s.locks) parts.push(`+${s.locks} for locks 🔒`);
+    if (s.hq) parts.push('+2 for the 👑 HQ');
+    if (s.links) parts.push(`+${s.links} for border links 🔗`);
+    if (bonus[i].length) parts.push(`+${bonus[i].length * 2} for leading ${bonus[i].join(', ')}`);
+    d.querySelector('.lines').innerHTML = parts.join('<br>');
+    const grid = d.querySelector('.stampgrid');
+    owned(i).forEach((c, k) => {
+      const w = document.createElement('div');
+      w.className = 'stampwrap';
+      w.innerHTML = stampHTML(c, i, 'sm');
+      w.querySelector('.sn').textContent = (S.hq[c.id] ? '👑 ' : '') + c.n;
+      w.querySelector('.stamp').style.setProperty('--r', ((k * 37) % 9 - 4) + 'deg');
+      grid.appendChild(w);
+    });
+    if (!owned(i).length) grid.innerHTML = '<span class="lines">No stamps this time.</span>';
+    wrap.appendChild(d);
+  });
+  renderPlayers();
+  $('endOv').classList.add('open');
+  tone([[523,0,.14],[659,.13,.14],[784,.26,.14],[1047,.4,.45]]);
+}
+
+/* ================= SETUP ================= */
+function initSetup(){
+  document.querySelectorAll('.seg[data-level]').forEach(seg => {
+    const i = +seg.dataset.level;
+    seg.querySelectorAll('.segbtn').forEach(b => {
+      b.style.setProperty('--pc', colorVar(i));
+      b.addEventListener('click', () => {
+        setup.levels[i] = b.dataset.v;
+        seg.querySelectorAll('.segbtn').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      });
+    });
+  });
+  $('lengthSeg').querySelectorAll('.segbtn').forEach(b => b.addEventListener('click', () => {
+    setup.rounds = +b.dataset.v;
+    $('lengthSeg').querySelectorAll('.segbtn').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  [0,1].forEach(i => $('name' + i).addEventListener('input', e => setup.names[i] = e.target.value.trim()));
+  $('startBtn').addEventListener('click', startGame);
+  $('countryCount').textContent = COUNTRIES.length;
+}
+
+function openSetup(){
+  $('endOv').classList.remove('open');
+  closeQuiz();
+  $('setupOv').classList.add('open');
+}
+
+/* ================= WIRING ================= */
+buildMap();
+buildTabs();
+initSetup();
+zoomTo('world', true);
+
+svg.addEventListener('click', e => {
+  if (busy()) return;
+  if (view === 'world') {
+    const pt = svgPoint(e);
+    let best = null, bd = Infinity;
+    COUNTRIES.forEach(c => { const d = (c.x - pt.x) ** 2 + (c.y - pt.y) ** 2; if (d < bd) { bd = d; best = c; } });
+    if (best) zoomTo(best.home);
+    return;
+  }
+  const pin = e.target.closest('.pin');
+  if (pin) openCountry(BY_ID[pin.dataset.id]);
+});
+svg.addEventListener('keydown', e => {
+  const pin = e.target.closest && e.target.closest('.pin');
+  if ((e.key === 'Enter' || e.key === ' ') && pin) {
+    e.preventDefault();
+    const c = BY_ID[pin.dataset.id];
+    if (view === 'world') zoomTo(c.home); else openCountry(c);
+  }
+});
+$('qNext').addEventListener('click', nextTurn);
+$('eAgain').addEventListener('click', startGame);
+$('eNew').addEventListener('click', openSetup);
+$('restartBtn').addEventListener('click', () => {
+  if (!S || confirm('Start a new game? The stamps from this game will be lost.')) openSetup();
+});
+$('soundBtn').addEventListener('click', () => {
+  soundOn = !soundOn;
+  $('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+  $('soundBtn').setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
+});
+let resizeTimer;
+window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => zoomTo(view, true), 150); });
+
+</script>
+</body>
+</html>
