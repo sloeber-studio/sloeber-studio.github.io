@@ -176,6 +176,18 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .set-row{display:flex;flex-direction:column;gap:6px;margin-top:14px}
 .set-row label{font-weight:700;font-size:15px}
 .set-row p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.4}
+.result{
+  width:100%;border-radius:18px;padding:14px 18px 14px;max-height:none;overflow:visible;
+  border:2px solid var(--tile-line);box-shadow:none;
+}
+[hidden]{display:none!important}
+.result .verdict{margin:0 0 2px;font-size:14px}
+.result .word-line{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.result .word{font-size:34px}
+.result .reading{margin:0}
+.result .def{margin:6px 0 0;font-size:16px;line-height:1.45}
+.result .stats{margin:8px 0 0;font-size:13px}
+.result .actions{margin-top:12px}
 .sheet h2{margin:0;font-family:Fredoka,sans-serif;font-size:24px}
 
 @keyframes pop{50%{transform:scale(1.08)}}
@@ -231,23 +243,20 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
   <div class="under" id="under"></div>
 
   <div class="kb" id="kb"></div>
+
+  <section class="sheet result" id="resultSheet" hidden aria-live="polite">
+    <p class="verdict" id="resVerdict"></p>
+    <div class="word-line"><p class="word" id="resWord"></p><p class="reading" id="resReading"></p></div>
+    <p class="def" id="resDef"></p>
+    <p class="stats" id="resStats"></p>
+    <div class="actions">
+      <button class="btn main" id="nextBtn">Next word</button>
+    </div>
+  </section>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<div class="scrim" id="resultScrim">
-  <div class="sheet" id="resultSheet" role="dialog" aria-modal="true" aria-labelledby="resWord">
-    <p class="verdict" id="resVerdict"></p>
-    <p class="word" id="resWord"></p>
-    <p class="reading" id="resReading"></p>
-    <p class="def" id="resDef"></p>
-    <p class="stats" id="resStats"></p>
-    <div class="actions">
-      <button class="btn alt" id="sayBtn">🔊 Say it</button>
-      <button class="btn main" id="nextBtn">Next word</button>
-    </div>
-  </div>
-</div>
 
 <div class="scrim" id="setScrim">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="setTitle">
@@ -883,6 +892,7 @@ function pick(){
 }
 
 function newGame(){
+  const rs=document.getElementById('resultSheet'); if(rs && !rs.hidden){ rs.hidden=true; kbEl.hidden=false; underEl.hidden=false; }
   const entry = pick();
   G = { entry, ans:Array.from(entry.w), rows:[], cur:[], done:false, clue:false, keys:{} };
   busy=false;
@@ -1116,17 +1126,11 @@ function showResult(win, levelUp){
   $('resReading').style.display = ja ? '' : 'none';
   $('resDef').innerHTML = ja ? `Means <b>${e.m}</b>` : e.d;
   $('resStats').textContent = (levelUp ? `Level up! You're now on Level ${tierFromPts(pr.pts)}. ` : '') + `Streak ${pr.streak}, best ${pr.best}, solved ${pr.wins} of ${pr.played}.`;
-  $('resultScrim').classList.add('open');
-  $('nextBtn').focus();
+  kbEl.hidden = true; underEl.hidden = true;
+  $('resultSheet').hidden = false;
+  fitBoard();
 }
 
-function say(){
-  try{
-    const u = new SpeechSynthesisUtterance(G.entry.w);
-    u.lang = S.lang==='ja'?'ja-JP':'en-US'; u.rate = .85;
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
-  }catch(e){ toast('Speech isn’t available on this device'); }
-}
 
 let tt;
 function toast(msg){ if(!msg) return; const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),1400); }
@@ -1147,7 +1151,7 @@ const release=()=>{ if(downKey){ downKey.classList.remove('down'); downKey=null;
 kbEl.addEventListener('contextmenu', e=>e.preventDefault());
 document.addEventListener('keydown', e=>{
   if (e.metaKey||e.ctrlKey||e.altKey) return;
-  if ($('resultScrim').classList.contains('open')){ if(e.key==='Enter'){ e.preventDefault(); next(); } return; }
+  if (!$('resultSheet').hidden){ if(e.key==='Enter'){ e.preventDefault(); next(); } return; }
   if ($('setScrim').classList.contains('open')){ if(e.key==='Escape') $('setScrim').classList.remove('open'); return; }
   if (e.key==='Enter'){ e.preventDefault(); press('ENTER'); }
   else if (e.key==='Backspace') press('BACK');
@@ -1155,9 +1159,8 @@ document.addEventListener('keydown', e=>{
 });
 underEl.addEventListener('click', e=>{ if(e.target.closest('#clueBtn')){ G.clue=true; renderUnder(); fitBoard(); } });
 
-function next(){ $('resultScrim').classList.remove('open'); newGame(); }
+function next(){ $('resultSheet').hidden = true; kbEl.hidden = false; underEl.hidden = false; newGame(); }
 $('nextBtn').onclick = next;
-$('sayBtn').onclick = say;
 
 $('langSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b||b.dataset.v===S.lang) return; S.lang=b.dataset.v; saveS(); newGame(); };
 $('lenSeg').onclick = e=>{ const b=e.target.closest('button'); if(!b) return; const v=+b.dataset.v; if(v===curLen()) return; if(S.lang==='en') S.enLen=v; else S.jaLen=v; saveS(); newGame(); };
