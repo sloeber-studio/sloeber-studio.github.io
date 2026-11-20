@@ -1,1460 +1,1503 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Passport Race">
-    <meta name="theme-color" content="#0F172A">
-    <title>Passport Race - 2-Player Geography Strategy</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Passport Race - World Geography Strategy Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap');
+    
+    :root {
+      --p1: #f97316;
+      --p1-light: #ffedd5;
+      --p2: #8b5cf6;
+      --p2-light: #ede9fe;
+      --ocean-deep: #0f172a;
+      --ocean-shallow: #1e293b;
+    }
 
-    <!-- Globe Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
+    body {
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      background-color: #0b1329;
+      color: #f8fafc;
+      overflow: hidden;
+    }
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        p1: '#F26B1D',
-                        p2: '#7B3FE4',
-                        p1light: '#FFEDD5',
-                        p2light: '#F3E8FF'
-                    }
-                }
-            }
-        }
-    </script>
+    /* Anti-peeking rule: when in quiz modal, hide map so player cannot see neighbors */
+    body.in-quiz #map-container {
+      visibility: hidden !important;
+    }
 
-    <style>
-        :root {
-            --sat: env(safe-area-inset-top, 0px);
-            --sab: env(safe-area-inset-bottom, 0px);
-            --sal: env(safe-area-inset-left, 0px);
-            --sar: env(safe-area-inset-right, 0px);
-        }
+    /* Smooth SVG Canvas transitions */
+    #world-map {
+      transition: viewBox 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      cursor: grab;
+    }
+    #world-map:active {
+      cursor: grabbing;
+    }
 
-        body {
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            padding: var(--sat) var(--sar) var(--sab) var(--sal);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #0F172A;
-            color: #F8FAFC;
-        }
+    .grat {
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 0.75;
+      fill: none;
+      pointer-events: none;
+    }
+    .tropic {
+      stroke: rgba(56, 189, 248, 0.25);
+      stroke-dasharray: 4 4;
+      stroke-width: 1;
+      fill: none;
+      pointer-events: none;
+    }
+    .equator {
+      stroke: rgba(244, 63, 94, 0.35);
+      stroke-dasharray: 6 4;
+      stroke-width: 1.25;
+      fill: none;
+      pointer-events: none;
+    }
 
-        /* Anti-Peeking Rule: Hide map when in quiz mode */
-        body.in-quiz .mapwrap {
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
+    .landmass {
+      fill: #1e293b;
+      stroke: #334155;
+      stroke-width: 1;
+      filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.15));
+      transition: fill 0.3s ease;
+    }
+    .landmass:hover {
+      fill: #24354a;
+    }
 
-        .mapwrap {
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
+    .mountains {
+      fill: #475569;
+      opacity: 0.6;
+      pointer-events: none;
+    }
 
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 9999px;
-        }
+    /* Map pins & touch targets */
+    .pin-touch {
+      fill: transparent;
+      cursor: pointer;
+      pointer-events: all;
+    }
+    .pin {
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s ease;
+      cursor: pointer;
+      pointer-events: all;
+    }
+    .pin:hover {
+      transform: scale(1.4);
+    }
+    .pin-p1 { fill: #f97316; stroke: #fff; stroke-width: 1.5; }
+    .pin-p2 { fill: #8b5cf6; stroke: #fff; stroke-width: 1.5; }
+    .pin-neutral { fill: #64748b; stroke: #cbd5e1; stroke-width: 1; }
 
-        /* SVG Map Styling */
-        .ocean-bg {
-            fill: #0F172A;
-        }
-        .graticule {
-            stroke: #1E293B;
-            stroke-width: 0.5;
-            fill: none;
-        }
-        .equator {
-            stroke: #334155;
-            stroke-width: 1;
-            stroke-dasharray: 4,4;
-            fill: none;
-        }
-        .land-mass {
-            fill: #1E293B;
-            stroke: #334155;
-            stroke-width: 0.8;
-            transition: fill 0.2s ease;
-        }
-        .land-mass:hover {
-            fill: #334155;
-        }
+    .pin-pulse {
+      animation: pulse-ring 1.8s infinite;
+      pointer-events: none;
+    }
+    @keyframes pulse-ring {
+      0% { r: 6px; opacity: 0.9; stroke-width: 2px; }
+      100% { r: 22px; opacity: 0; stroke-width: 0.5px; }
+    }
 
-        /* Country Pin Animations & Style */
-        .country-pin {
-            cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
-        }
-        .country-pin:hover {
-            transform: scale(1.25);
-            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
-        }
-        .pin-p1 {
-            fill: #F26B1D;
-            stroke: #FFFFFF;
-            stroke-width: 1.5;
-        }
-        .pin-p2 {
-            fill: #7B3FE4;
-            stroke: #FFFFFF;
-            stroke-width: 1.5;
-        }
-        .pin-unclaimed {
-            fill: #475569;
-            stroke: #94A3B8;
-            stroke-width: 1;
-        }
+    .route-line {
+      stroke-dasharray: 6 4;
+      animation: dash 20s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes dash {
+      to { stroke-dashoffset: -100; }
+    }
 
-        /* Border Link Connection Lines */
-        .border-link-p1 {
-            stroke: #F26B1D;
-            stroke-width: 2.5;
-            stroke-dasharray: 4, 3;
-            animation: dash 15s linear infinite;
-        }
-        .border-link-p2 {
-            stroke: #7B3FE4;
-            stroke-width: 2.5;
-            stroke-dasharray: 4, 3;
-            animation: dash 15s linear infinite;
-        }
-        @keyframes dash {
-            to { stroke-dashoffset: -100; }
-        }
+    .lbl {
+      font-size: 8px;
+      font-weight: 700;
+      fill: #e2e8f0;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.9);
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
 
-        /* Boarding Pass Ticket UI */
-        .ticket-edge-left {
-            border-left: 8px dashed #334155;
-        }
-        .stamp-animation {
-            animation: stampDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes stampDown {
-            0% { transform: scale(3) rotate(-25deg); opacity: 0; }
-            100% { transform: scale(1) rotate(-8deg); opacity: 0.95; }
-        }
+    .badge-btn {
+      cursor: pointer;
+      pointer-events: all;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    .badge-btn:hover {
+      transform: scale(1.08);
+      filter: brightness(1.2);
+    }
 
-        @media (prefers-reduced-motion: reduce) {
-            .stamp-animation, .border-link-p1, .border-link-p2, .country-pin {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-    </style>
+    /* Glassmorphism UI */
+    .glass {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.6);
+      border-radius: 4px;
+    }
+
+    /* Modal Animation */
+    .modal-pop {
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9) translateY(10px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+  </style>
 </head>
-<body class="h-full flex flex-col overflow-hidden select-none">
+<body class="h-screen w-screen flex flex-col justify-between select-none bg-slate-950 text-slate-100">
 
-    <!-- Top Header Navigation Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between z-30 shrink-0">
-        <div class="flex items-center space-x-3">
-            <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200 transition active:scale-95 text-lg" title="Back to Launcher" aria-label="Home">🏠</a>
-            <div>
-                <h1 class="font-extrabold text-base md:text-lg tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-200 to-purple-400">PASSPORT RACE</h1>
-                <p id="turnSubText" class="text-xs text-slate-400 hidden md:block">2-Player Pass-and-Play World Conquest</p>
-            </div>
-        </div>
-
-        <!-- Center Turn Banner (Visible when active game) -->
-        <div id="headerTurnStatus" class="hidden flex items-center space-x-2 bg-slate-800/80 border border-slate-700 px-3 py-1 rounded-full text-xs font-semibold">
-            <span id="turnIndicatorBadge" class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
-            <span id="turnIndicatorText" class="text-slate-200">Player 1's Turn</span>
-            <span class="text-slate-500">|</span>
-            <span id="turnCounterText" class="text-slate-400">Turn 1 / 10</span>
-        </div>
-
-        <div class="flex items-center space-x-2">
-            <button id="rulesBtn" onclick="toggleRulesModal(true)" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-semibold transition active:scale-95 flex items-center gap-1">
-                <span>📖</span> <span class="hidden sm:inline">Rules</span>
-            </button>
-            <button id="soundMuteBtn" onclick="toggleMute()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-lg transition active:scale-95" title="Toggle Sound">🔊</button>
-        </div>
-    </header>
-
-    <!-- MAIN CONTAINER -->
-    <main class="flex-1 relative overflow-hidden flex flex-col bg-slate-950">
-
-        <!-- SETUP SCREEN -->
-        <div id="setupScreen" class="absolute inset-0 z-40 bg-slate-950 p-4 md:p-8 overflow-y-auto flex flex-col items-center justify-center">
-            <div class="max-w-3xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
-                <!-- Title & Mini Stamps -->
-                <div class="text-center space-y-2">
-                    <div class="flex justify-center items-center space-x-3 text-2xl md:text-3xl">
-                        <span class="p-2 bg-slate-800 rounded-lg border border-slate-700">🇯🇵</span>
-                        <span class="p-2 bg-slate-800 rounded-lg border border-slate-700">🇧🇷</span>
-                        <span class="p-2 bg-slate-800 rounded-lg border border-slate-700">🇰🇪</span>
-                    </div>
-                    <h2 class="text-3xl font-black tracking-tight text-white">PASSPORT RACE</h2>
-                    <p class="text-sm text-slate-400">Answer Geography Trivia &bull; Connect Borders &bull; Build HQ Crowns</p>
-                </div>
-
-                <!-- Players Setup -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Player 1 -->
-                    <div class="bg-slate-950/70 border-2 border-orange-500/50 rounded-xl p-4 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-4 h-4 rounded-full bg-orange-500"></span>
-                            <label class="text-xs font-bold uppercase tracking-wider text-orange-400">Player 1 Name</label>
-                        </div>
-                        <input type="text" id="p1Input" value="Player 1" maxlength="14" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-semibold focus:outline-none focus:border-orange-500">
-                    </div>
-
-                    <!-- Player 2 -->
-                    <div class="bg-slate-950/70 border-2 border-purple-500/50 rounded-xl p-4 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-4 h-4 rounded-full bg-purple-500"></span>
-                            <label class="text-xs font-bold uppercase tracking-wider text-purple-400">Player 2 Name</label>
-                        </div>
-                        <input type="text" id="p2Input" value="Player 2" maxlength="14" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-semibold focus:outline-none focus:border-purple-500">
-                    </div>
-                </div>
-
-                <!-- Game Settings -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Difficulty -->
-                    <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-2">
-                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Difficulty Mode</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button type="button" onclick="setDiff('explorer')" id="diffExplorerBtn" class="py-2.5 px-3 rounded-lg text-xs font-bold border transition bg-amber-500/20 border-amber-500 text-amber-300">
-                                🧭 Explorer
-                                <span class="block font-normal text-[10px] text-slate-400 mt-0.5">Capitals & Flags</span>
-                            </button>
-                            <button type="button" onclick="setDiff('adventurer')" id="diffAdventurerBtn" class="py-2.5 px-3 rounded-lg text-xs font-bold border transition bg-slate-900 border-slate-700 text-slate-400 hover:text-white">
-                                🧗 Adventurer
-                                <span class="block font-normal text-[10px] text-slate-400 mt-0.5">Tricky Cities & Trivia</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Game Length -->
-                    <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 space-y-2">
-                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Trip Length</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" onclick="setTurns(6)" id="turns6Btn" class="py-2 px-2 rounded-lg text-xs font-bold border transition bg-slate-900 border-slate-700 text-slate-400 hover:text-white">
-                                ⚡ Quick<span class="block text-[10px] font-normal">6 Turns</span>
-                            </button>
-                            <button type="button" onclick="setTurns(10)" id="turns10Btn" class="py-2 px-2 rounded-lg text-xs font-bold border transition bg-blue-500/20 border-blue-500 text-blue-300">
-                                ✈️ Regular<span class="block text-[10px] font-normal">10 Turns</span>
-                            </button>
-                            <button type="button" onclick="setTurns(15)" id="turns15Btn" class="py-2 px-2 rounded-lg text-xs font-bold border transition bg-slate-900 border-slate-700 text-slate-400 hover:text-white">
-                                🌍 Long Trip<span class="block text-[10px] font-normal">15 Turns</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-400 hover:to-purple-500 text-white font-black text-lg rounded-xl shadow-lg shadow-purple-900/30 transition active:scale-98 flex items-center justify-center space-x-2">
-                    <span>START RACE</span>
-                    <span>🚀</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- GAME BOARD UI (Visible when playing) -->
-        <div id="gameScreen" class="hidden flex-1 flex flex-col h-full relative">
-
-            <!-- Scores & Status Bar -->
-            <div class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2 grid grid-cols-2 gap-3 z-20">
-                <!-- P1 Score Box -->
-                <div id="p1ScoreCard" class="bg-slate-950/80 border-2 border-orange-500/60 rounded-xl p-2.5 flex items-center justify-between transition-all">
-                    <div>
-                        <div class="flex items-center space-x-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                            <span id="p1DisplayName" class="font-bold text-xs md:text-sm text-orange-400 truncate max-w-[100px] md:max-w-[140px]">Player 1</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-[11px] text-slate-400 mt-0.5">
-                            <span id="p1CountriesCnt" title="Countries">📌 0</span>
-                            <span id="p1HqCnt" title="Crown HQs">👑 0</span>
-                            <span id="p1StealCnt" title="Steal Tickets">🎯 0</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span id="p1TotalScore" class="text-xl md:text-2xl font-black text-white">0</span>
-                        <span class="text-[10px] block text-slate-400 uppercase font-semibold">PTS</span>
-                    </div>
-                </div>
-
-                <!-- P2 Score Box -->
-                <div id="p2ScoreCard" class="bg-slate-950/80 border-2 border-purple-500/60 rounded-xl p-2.5 flex items-center justify-between transition-all">
-                    <div>
-                        <div class="flex items-center space-x-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                            <span id="p2DisplayName" class="font-bold text-xs md:text-sm text-purple-400 truncate max-w-[100px] md:max-w-[140px]">Player 2</span>
-                        </div>
-                        <div class="flex items-center space-x-2 text-[11px] text-slate-400 mt-0.5">
-                            <span id="p2CountriesCnt" title="Countries">📌 0</span>
-                            <span id="p2HqCnt" title="Crown HQs">👑 0</span>
-                            <span id="p2StealCnt" title="Steal Tickets">🎯 0</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span id="p2TotalScore" class="text-xl md:text-2xl font-black text-white">0</span>
-                        <span class="text-[10px] block text-slate-400 uppercase font-semibold">PTS</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Continent Zoom Navigation Tabs -->
-            <div class="bg-slate-900 border-b border-slate-800 px-3 py-1.5 flex items-center space-x-1 overflow-x-auto text-xs font-bold shrink-0 z-20">
-                <button onclick="zoomContinent('WORLD')" id="tab-WORLD" class="cont-tab px-3 py-1.5 rounded-lg border bg-blue-600 border-blue-400 text-white whitespace-nowrap transition">🌍 World</button>
-                <button onclick="zoomContinent('NA')" id="tab-NA" class="cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition">🌮 N. America</button>
-                <button onclick="zoomContinent('SA')" id="tab-SA" class="cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition">🪘 S. America</button>
-                <button onclick="zoomContinent('EU')" id="tab-EU" class="cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition">🏰 Europe</button>
-                <button onclick="zoomContinent('AF')" id="tab-AF" class="cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition">🦁 Africa</button>
-                <button onclick="zoomContinent('AS')" id="tab-AS" class="cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition">🏯 Asia</button>
-                <button onclick="zoomContinent('OC')" id="tab-OC" class="cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition">🦘 Oceania</button>
-            </div>
-
-            <!-- INTERACTIVE SVG WORLD MAP CONTAINER -->
-            <div class="flex-1 relative overflow-hidden bg-slate-950 mapwrap">
-                <svg id="worldMap" class="w-full h-full cursor-grab active:cursor-grabbing" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice">
-                    <!-- Ocean Background -->
-                    <rect width="1000" height="500" class="ocean-bg"/>
-
-                    <!-- Graticules -->
-                    <g class="graticules-group">
-                        <line x1="0" y1="125" x2="1000" y2="125" class="graticule" />
-                        <line x1="0" y1="250" x2="1000" y2="250" class="equator" />
-                        <line x1="0" y1="375" x2="1000" y2="375" class="graticule" />
-                        <line x1="250" y1="0" x2="250" y2="500" class="graticule" />
-                        <line x1="500" y1="0" x2="500" y2="500" class="graticule" />
-                        <line x1="750" y1="0" x2="750" y2="500" class="graticule" />
-                    </g>
-
-                    <!-- SVG Simplified Continental Coastlines & Islands -->
-                    <g id="landmassesGroup">
-                        <!-- North America -->
-                        <path class="land-mass" d="M120,40 L260,35 L320,60 L280,110 L250,150 L200,180 L180,220 L160,230 L130,200 L80,180 L50,120 L80,70 Z"/>
-                        <!-- Greenland -->
-                        <path class="land-mass" d="M340,25 L410,20 L400,65 L350,60 Z"/>
-                        <!-- South America -->
-                        <path class="land-mass" d="M250,250 L310,255 L350,300 L320,380 L280,450 L250,420 L230,320 L240,280 Z"/>
-                        <!-- Europe -->
-                        <path class="land-mass" d="M460,70 L550,60 L580,100 L530,150 L480,160 L450,120 Z"/>
-                        <!-- British Isles -->
-                        <path class="land-mass" d="M440,90 L460,85 L455,115 L435,110 Z"/>
-                        <!-- Africa -->
-                        <path class="land-mass" d="M460,180 L560,170 L600,220 L570,300 L520,380 L460,350 L440,260 Z"/>
-                        <!-- Madagascar -->
-                        <path class="land-mass" d="M610,310 L630,315 L620,360 L605,350 Z"/>
-                        <!-- Asia -->
-                        <path class="land-mass" d="M560,60 L900,50 L950,120 L880,220 L780,240 L700,230 L620,180 L580,100 Z"/>
-                        <!-- Japan -->
-                        <path class="land-mass" d="M880,130 L900,125 L895,170 L880,160 Z"/>
-                        <!-- Australia & NZ -->
-                        <path class="land-mass" d="M780,310 L880,300 L900,370 L800,390 Z"/>
-                        <path class="land-mass" d="M920,380 L940,375 L930,420 Z"/>
-                    </g>
-
-                    <!-- Dynamic Border Connection Lines -->
-                    <g id="borderLinksGroup"></g>
-
-                    <!-- Country Pin Nodes -->
-                    <g id="countryPinsGroup"></g>
-                </svg>
-
-                <!-- Map Action Prompt Footer Overlay -->
-                <div class="absolute bottom-3 left-3 right-3 bg-slate-900/90 backdrop-blur-md border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs shadow-xl z-10">
-                    <div class="flex items-center space-x-2 truncate">
-                        <span class="p-1.5 bg-blue-500/20 text-blue-400 rounded-lg font-bold">💡 HINT</span>
-                        <span id="mapInstructionText" class="text-slate-300 font-medium">Tap any pin on the map to inspect or attempt to claim it!</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ANTI-PEEK INTERSTITIAL OVERLAY (Between turns) -->
-    <div id="passTabletModal" class="hidden fixed inset-0 z-50 bg-slate-950/98 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center">
-        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-            <div class="text-5xl animate-bounce">📱</div>
-            <h3 class="text-2xl font-black text-white">PASS THE TABLET!</h3>
-            <p id="passTabletSubtext" class="text-sm text-slate-300">Hand the screen to <span id="nextPlayerName" class="font-bold text-orange-400">Player 2</span> for their turn.</p>
-            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl text-xs text-slate-400 text-left space-y-1">
-                <p class="font-bold text-slate-200">🛡️ Anti-Peeking Protection:</p>
-                <p>&bull; The map will stay hidden until you tap Ready.</p>
-                <p>&bull; Make sure opponents aren't looking at your choice!</p>
-            </div>
-            <button onclick="confirmTurnStart()" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-base rounded-xl transition active:scale-95 shadow-lg">
-                I'm Ready! Let's Play 🚀
-            </button>
-        </div>
+  <!-- ================= TOP HUD HEADER ================= -->
+  <header class="glass z-20 px-3 py-2 flex items-center justify-between shadow-lg border-b border-slate-800">
+    <!-- Left: Home & Brand -->
+    <div class="flex items-center gap-2">
+      <a href="index.html" class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center justify-center border border-slate-700" title="Back to Arcade Launcher">
+        🏠 <span class="hidden sm:inline text-xs font-bold ml-1">Arcade</span>
+      </a>
+      <div class="flex flex-col">
+        <h1 class="text-base sm:text-lg font-black tracking-wide bg-gradient-to-r from-amber-400 via-orange-400 to-purple-400 bg-clip-text text-transparent leading-none">
+          PASSPORT RACE 🌍
+        </h1>
+        <span class="text-[10px] text-slate-400 font-semibold leading-tight">World Geography Strategy</span>
+      </div>
     </div>
 
-    <!-- ANTI-PEEKING BOARDING PASS QUESTION TICKET MODAL -->
-    <div id="quizModal" class="hidden fixed inset-0 z-50 bg-slate-950/98 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="max-w-xl w-full bg-slate-900 border-2 border-slate-700 rounded-2xl overflow-hidden shadow-2xl flex flex-col relative">
-
-            <!-- Boarding Pass Header Strip -->
-            <div id="ticketHeaderBg" class="bg-gradient-to-r from-orange-600 to-amber-600 px-5 py-3 flex items-center justify-between text-white">
-                <div class="flex items-center space-x-2">
-                    <span class="text-2xl">✈️</span>
-                    <div>
-                        <div class="text-[10px] font-black uppercase tracking-widest opacity-80">BOARDING PASS / QUESTION TICKET</div>
-                        <h4 id="ticketCountryName" class="font-black text-lg leading-tight">JAPAN 🇯🇵</h4>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <span id="ticketActionBadge" class="text-xs font-extrabold bg-slate-950/40 px-2.5 py-1 rounded-full border border-white/20">CLAIM TERRITORY</span>
-                </div>
-            </div>
-
-            <!-- Ticket Body -->
-            <div class="p-6 space-y-5 bg-slate-900 relative">
-                <!-- Perforated Stamp Reveal (hidden by default) -->
-                <div id="stampBadge" class="hidden absolute top-4 right-6 z-20 pointer-events-none">
-                    <div id="stampBadgeText" class="border-4 border-emerald-500 text-emerald-400 font-black text-xl px-4 py-2 rounded-xl uppercase tracking-widest stamp-animation bg-slate-950/90 shadow-2xl">
-                        APPROVED ✓
-                    </div>
-                </div>
-
-                <!-- Country Details & Difficulty -->
-                <div class="flex items-center justify-between text-xs bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-                    <div>
-                        <span class="text-slate-400">Continent:</span>
-                        <span id="ticketContinent" class="font-bold text-slate-200 ml-1">Asia</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-400">Reward:</span>
-                        <span id="ticketReward" class="font-bold text-amber-400 ml-1">+1 Point</span>
-                    </div>
-                </div>
-
-                <!-- The Question -->
-                <div class="space-y-2">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Geography Challenge</span>
-                    <p id="ticketQuestionPrompt" class="text-base font-bold text-slate-100 leading-snug">What is the capital city of Japan?</p>
-                </div>
-
-                <!-- Answer Choice Buttons -->
-                <div id="ticketOptionsGrid" class="grid grid-cols-1 gap-2.5">
-                    <!-- Buttons inserted dynamically -->
-                </div>
-
-                <!-- Fun Fact Reveal Box (Hidden until answer selected) -->
-                <div id="funFactBox" class="hidden bg-blue-950/50 border border-blue-800/80 p-3.5 rounded-xl text-xs space-y-1">
-                    <div class="font-bold text-blue-300 flex items-center gap-1">
-                        <span>💡</span> <span>DID YOU KNOW?</span>
-                    </div>
-                    <p id="funFactText" class="text-slate-300 leading-relaxed">Japan is made up of over 6,800 islands!</p>
-                </div>
-            </div>
-
-            <!-- Ticket Footer -->
-            <div class="bg-slate-950 px-6 py-3 border-t border-slate-800 flex items-center justify-between">
-                <button id="cancelTicketBtn" onclick="closeQuizModal()" class="text-xs text-slate-400 hover:text-slate-200 font-semibold transition">Cancel Turn</button>
-                <button id="nextTurnBtn" onclick="finishQuizTurn()" class="hidden px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition active:scale-95">
-                    Next Turn ➔
-                </button>
-            </div>
+    <!-- Center: Score Cards & Turn Tracker -->
+    <div class="flex items-center gap-2 sm:gap-4">
+      <!-- Player 1 Score HUD -->
+      <div id="hud-p1" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-orange-500/50 bg-orange-950/30 transition-all">
+        <div class="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center text-white font-black text-sm shadow">
+          P1
         </div>
+        <div class="flex flex-col">
+          <span id="p1-name-display" class="text-xs font-bold text-orange-300 max-w-[80px] truncate">Player 1</span>
+          <div class="flex items-center gap-1.5">
+            <span id="p1-score" class="text-base font-black text-white">0 pts</span>
+            <span id="p1-tickets" class="text-xs text-amber-400" title="Steal Tickets">🎯0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Round & Turn Info -->
+      <div class="flex flex-col items-center px-2 py-1 rounded-xl bg-slate-900/90 border border-slate-800 min-w-[70px]">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Round</span>
+        <span id="round-display" class="text-sm font-black text-cyan-400">1 / 10</span>
+      </div>
+
+      <!-- Player 2 Score HUD -->
+      <div id="hud-p2" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-purple-500/30 bg-purple-950/20 opacity-70 transition-all">
+        <div class="flex flex-col text-right">
+          <span id="p2-name-display" class="text-xs font-bold text-purple-300 max-w-[80px] truncate">Player 2</span>
+          <div class="flex items-center justify-end gap-1.5">
+            <span id="p2-tickets" class="text-xs text-amber-400" title="Steal Tickets">🎯0</span>
+            <span id="p2-score" class="text-base font-black text-white">0 pts</span>
+          </div>
+        </div>
+        <div class="w-7 h-7 rounded-lg bg-purple-600 flex items-center justify-center text-white font-black text-sm shadow">
+          P2
+        </div>
+      </div>
     </div>
 
-    <!-- COUNTRY ACTION INSPECTOR MODAL -->
-    <div id="countryActionModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="max-w-sm w-full bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-2xl">
-            <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-3">
-                    <span id="inspectFlag" class="text-3xl">🇯🇵</span>
-                    <div>
-                        <h3 id="inspectCountryName" class="font-black text-lg text-white">Japan</h3>
-                        <p id="inspectOwnerText" class="text-xs text-slate-400">Unclaimed Territory</p>
-                    </div>
-                </div>
-                <button onclick="closeInspectModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
-            </div>
-
-            <!-- Territory Specs -->
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1 text-slate-300">
-                <p><strong>Capital:</strong> <span id="inspectCapital">Tokyo</span></p>
-                <p><strong>Status:</strong> <span id="inspectStatus">Open for Claim</span></p>
-                <p><strong>Borders:</strong> <span id="inspectBorders">South Korea, Russia</span></p>
-            </div>
-
-            <!-- Action Buttons -->
-            <div id="inspectActionButtons" class="space-y-2">
-                <!-- Dynamically populated -->
-            </div>
-        </div>
+    <!-- Right Controls: Audio & Setup -->
+    <div class="flex items-center gap-2">
+      <button id="btn-sound" onclick="toggleSound()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Toggle Sound">
+        🔊
+      </button>
+      <button onclick="confirmReset()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Restart Game">
+        ↻
+      </button>
     </div>
+  </header>
 
-    <!-- RULES & HELP MODAL -->
-    <div id="rulesModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="max-w-lg w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-black text-white flex items-center gap-2">
-                    <span>📖</span> Passport Race Rules
-                </h3>
-                <button onclick="toggleRulesModal(false)" class="text-slate-400 hover:text-white text-xl">✕</button>
-            </div>
+  <!-- ================= CONTINENT QUICK-TABS ================= -->
+  <div class="z-10 bg-slate-900/90 border-b border-slate-800 px-2 py-1.5 flex items-center justify-center gap-1.5 overflow-x-auto custom-scrollbar">
+    <button onclick="zoomContinent('WORLD')" class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition whitespace-nowrap">
+      🌍 World View
+    </button>
+    <button onclick="zoomContinent('NA')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">
+      🌮 N. America
+    </button>
+    <button onclick="zoomContinent('SA')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">
+      🦜 S. America
+    </button>
+    <button onclick="zoomContinent('EU')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">
+      Castles Europe
+    </button>
+    <button onclick="zoomContinent('AF')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">
+      🦁 Africa
+    </button>
+    <button onclick="zoomContinent('AS')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">
+      🏯 Asia
+    </button>
+    <button onclick="zoomContinent('OC')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">
+      🦘 Oceania
+    </button>
+  </div>
 
-            <div class="space-y-3 text-xs text-slate-300 leading-relaxed">
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-orange-400 mb-1">📌 Claiming Territory (+1 pt)</h4>
-                    <p>Tap any unclaimed country and answer the geography question to claim it for your passport!</p>
-                </div>
+  <!-- ================= MAIN MAP AREA ================= -->
+  <main id="map-container" class="relative flex-1 w-full h-full overflow-hidden bg-slate-950 flex items-center justify-center">
+    
+    <!-- SVG CARTOGRAPHIC MAP -->
+    <svg id="world-map" viewBox="0 0 1200 650" class="w-full h-full max-h-full max-w-full">
+      <defs>
+        <!-- Ocean Deep Gradient -->
+        <radialGradient id="ocean-grad" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stop-color="#1e293b"/>
+          <stop offset="100%" stop-color="#090d16"/>
+        </radialGradient>
 
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-amber-400 mb-1">🔗 Border Route Links (+1 pt each)</h4>
-                    <p>When you own two countries that share a land border, an animated flight route connects them for bonus points!</p>
-                </div>
+        <!-- Player Route Line Glow Filters -->
+        <filter id="glow-p1" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="glow-p2" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
 
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-blue-400 mb-1">🔒 Locking Territories (Max 3)</h4>
-                    <p>Tap your claimed country to lock it 🔒. Locked countries require opponents to spend 2 Steal tickets to attack.</p>
-                </div>
+      <!-- Ocean Background -->
+      <rect width="1200" height="650" fill="url(#ocean-grad)" />
 
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-purple-400 mb-1">👑 Crown Headquarters (+2 pts & Shield 🛡️)</h4>
-                    <p>Promote a Locked country into a Crown HQ 👑. HQs are permanently unstealable AND provide a protective Shield 🛡️ to all your adjacent countries!</p>
-                </div>
+      <!-- Graticules Grid -->
+      <g id="layer-graticule">
+        <!-- Meridians (-150 to 150 step 30) -->
+        <path class="grat" d="M 100 0 Q 100 325 100 650 M 266 0 Q 266 325 266 650 M 433 0 Q 433 325 433 650 M 600 0 L 600 650 M 766 0 Q 766 325 766 650 M 933 0 Q 933 325 933 650 M 1100 0 Q 1100 325 1100 650" />
+        <!-- Parallels -->
+        <line x1="0" y1="125" x2="1200" y2="125" class="grat" />
+        <line x1="0" y1="216" x2="1200" y2="216" class="tropic" title="Tropic of Cancer" />
+        <line x1="0" y1="325" x2="1200" y2="325" class="equator" title="Equator" />
+        <line x1="0" y1="433" x2="1200" y2="433" class="tropic" title="Tropic of Capricorn" />
+        <line x1="0" y1="525" x2="1200" y2="525" class="grat" />
+      </g>
 
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-emerald-400 mb-1">🎯 Stealing & Mega-Stealing</h4>
-                    <p>Earn 1 Steal ticket for every 3 correct answers (max 2 held). Spend 1 ticket to steal an opponent's unlocked country, or spend 2 tickets to Mega-Steal a locked 🔒 country!</p>
-                </div>
+      <!-- Cartographic Coastlines (Detailed Multi-point SVG Polygons) -->
+      <g id="layer-landmass">
+        <!-- North America -->
+        <path class="landmass" d="M 150,110 L 190,95 L 240,105 L 290,90 L 330,120 L 360,110 L 390,140 L 410,130 L 415,160 L 390,175 L 360,170 L 340,210 L 310,230 L 290,270 L 260,285 L 250,265 L 220,250 L 190,235 L 180,195 L 155,160 L 130,145 Z" />
+        <!-- Greenland -->
+        <path class="landmass" d="M 440,65 L 510,50 L 535,80 L 490,125 L 450,120 L 430,90 Z" />
+        <!-- South America -->
+        <path class="landmass" d="M 310,310 L 350,305 L 400,340 L 435,380 L 420,430 L 390,490 L 360,540 L 340,555 L 335,510 L 320,450 L 305,390 L 295,350 Z" />
+        <!-- Europe -->
+        <path class="landmass" d="M 570,145 L 610,125 L 650,110 L 700,120 L 710,150 L 680,180 L 650,195 L 610,205 L 590,190 L 565,165 Z" />
+        <!-- Scandinavia & UK -->
+        <path class="landmass" d="M 610,85 L 645,75 L 665,110 L 635,130 L 615,110 Z" />
+        <path class="landmass" d="M 550,145 L 570,140 L 565,165 L 545,160 Z" />
+        <!-- Africa -->
+        <path class="landmass" d="M 565,225 L 630,210 L 680,240 L 730,275 L 720,325 L 690,380 L 660,430 L 610,450 L 580,410 L 560,350 L 545,290 L 540,250 Z" />
+        <path class="landmass" d="M 725,385 L 745,370 L 755,420 L 735,435 Z" /> <!-- Madagascar -->
+        <!-- Asia -->
+        <path class="landmass" d="M 710,135 L 780,105 L 870,95 L 970,115 L 1050,140 L 1080,185 L 1030,210 L 960,230 L 910,275 L 850,290 L 790,285 L 750,250 L 720,200 Z" />
+        <!-- India Subcontinent -->
+        <path class="landmass" d="M 790,280 L 830,275 L 845,325 L 820,355 L 795,310 Z" />
+        <!-- Japan -->
+        <path class="landmass" d="M 1040,195 L 1060,185 L 1070,215 L 1045,225 Z" />
+        <!-- Southeast Asia & Indonesia -->
+        <path class="landmass" d="M 890,295 L 935,285 L 950,325 L 915,340 Z" />
+        <path class="landmass" d="M 940,365 L 1010,355 L 1035,385 L 960,390 Z" />
+        <!-- Australia & New Zealand -->
+        <path class="landmass" d="M 970,435 L 1050,420 L 1080,465 L 1060,525 L 990,535 L 950,490 Z" />
+        <path class="landmass" d="M 1095,505 L 1120,495 L 1110,545 L 1090,535 Z" /> <!-- NZ -->
+      </g>
 
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-yellow-400 mb-1">🌍 Continent Leadership (+2 pts)</h4>
-                    <p>Control the most countries in any continent to earn a +2 Point Continent Bonus!</p>
-                </div>
-            </div>
+      <!-- Mountain Range Accents -->
+      <g class="mountains">
+        <!-- Rockies -->
+        <polygon points="210,160 216,148 222,160" />
+        <polygon points="218,175 224,162 230,175" />
+        <polygon points="225,190 231,178 237,190" />
+        <!-- Andes -->
+        <polygon points="310,340 316,328 322,340" />
+        <polygon points="315,380 321,368 327,380" />
+        <polygon points="325,430 331,418 337,430" />
+        <polygon points="335,480 341,468 347,480" />
+        <!-- Alps -->
+        <polygon points="620,165 626,155 632,165" />
+        <polygon points="630,168 636,158 642,168" />
+        <!-- Himalayas -->
+        <polygon points="810,250 818,236 826,250" />
+        <polygon points="824,248 832,234 840,248" />
+        <polygon points="838,252 846,238 854,252" />
+        <polygon points="852,255 860,241 868,255" />
+      </g>
 
-            <button onclick="toggleRulesModal(false)" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">Got It!</button>
+      <!-- Interactive Route Lines Layer (Friendly Land Border Links) -->
+      <g id="layer-routes"></g>
+
+      <!-- Map Country Pins Layer -->
+      <g id="layer-pins"></g>
+
+      <!-- Selection Pulsing Ring -->
+      <circle id="target-pulse" class="pin-pulse" cx="-100" cy="-100" r="10" stroke="#fbbf24" fill="none" style="display:none;" />
+
+      <!-- Clickable Continent Region Badges directly on World Map -->
+      <g id="layer-badges">
+        <g class="badge-btn" onclick="zoomContinent('NA')" transform="translate(210, 120)">
+          <rect x="0" y="0" width="85" height="20" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2" opacity="0.9"/>
+          <text x="42.5" y="13" text-anchor="middle" fill="#38bdf8" font-size="9" font-weight="800">🌮 NORTH AMERICA</text>
+        </g>
+        <g class="badge-btn" onclick="zoomContinent('SA')" transform="translate(340, 420)">
+          <rect x="0" y="0" width="85" height="20" rx="10" fill="#0f172a" stroke="#4ade80" stroke-width="1.2" opacity="0.9"/>
+          <text x="42.5" y="13" text-anchor="middle" fill="#4ade80" font-size="9" font-weight="800">🦜 SOUTH AMERICA</text>
+        </g>
+        <g class="badge-btn" onclick="zoomContinent('EU')" transform="translate(600, 125)">
+          <rect x="0" y="0" width="65" height="20" rx="10" fill="#0f172a" stroke="#fbbf24" stroke-width="1.2" opacity="0.9"/>
+          <text x="32.5" y="13" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="800"> EUROPE</text>
+        </g>
+        <g class="badge-btn" onclick="zoomContinent('AF')" transform="translate(605, 310)">
+          <rect x="0" y="0" width="60" height="20" rx="10" fill="#0f172a" stroke="#f97316" stroke-width="1.2" opacity="0.9"/>
+          <text x="30" y="13" text-anchor="middle" fill="#f97316" font-size="9" font-weight="800">🦁 AFRICA</text>
+        </g>
+        <g class="badge-btn" onclick="zoomContinent('AS')" transform="translate(860, 160)">
+          <rect x="0" y="0" width="55" height="20" rx="10" fill="#0f172a" stroke="#c084fc" stroke-width="1.2" opacity="0.9"/>
+          <text x="27.5" y="13" text-anchor="middle" fill="#c084fc" font-size="9" font-weight="800">🏯 ASIA</text>
+        </g>
+        <g class="badge-btn" onclick="zoomContinent('OC')" transform="translate(980, 480)">
+          <rect x="0" y="0" width="70" height="20" rx="10" fill="#0f172a" stroke="#f43f5e" stroke-width="1.2" opacity="0.9"/>
+          <text x="35" y="13" text-anchor="middle" fill="#f43f5e" font-size="9" font-weight="800">🦘 OCEANIA</text>
+        </g>
+      </g>
+    </svg>
+
+    <!-- Bottom Selection Quick-Launch Card -->
+    <div id="selection-card" class="absolute bottom-4 left-1/2 -translate-x-1/2 glass px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 flex items-center gap-4 transition-all duration-300 translate-y-24 opacity-0 pointer-events-none z-10 max-w-md w-11/12">
+      <div id="sel-flag" class="text-3xl">🇺🇸</div>
+      <div class="flex flex-col flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <h3 id="sel-name" class="font-black text-sm sm:text-base text-white truncate">United States</h3>
+          <span id="sel-owner" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">Unclaimed</span>
         </div>
+        <p id="sel-details" class="text-xs text-slate-300 truncate">Capital: Washington D.C. • N. America</p>
+      </div>
+      <button id="sel-action-btn" onclick="triggerCountryAction()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:scale-105 transition active:scale-95 whitespace-nowrap">
+        Fly Now ✈️
+      </button>
     </div>
+  </main>
 
-    <!-- GAME OVER / RESULTS MODAL -->
-    <div id="gameOverModal" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-lg flex items-center justify-center p-4 overflow-y-auto">
-        <div class="max-w-2xl w-full bg-slate-900 border-2 border-amber-500/50 rounded-2xl p-6 space-y-6 shadow-2xl text-center">
-            
-            <div class="space-y-2">
-                <span class="text-5xl">🏆</span>
-                <h2 id="winnerTitle" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">PLAYER 1 WINS!</h2>
-                <p id="winnerSubtitle" class="text-xs text-slate-400">Master Geographer & Supreme Leader of the World</p>
-            </div>
+  <!-- ================= MODAL: GAME SETUP ================= -->
+  <div id="modal-setup" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass max-w-lg w-full rounded-3xl p-6 border border-slate-700 shadow-2xl modal-pop flex flex-col gap-5">
+      <div class="text-center">
+        <h2 class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-400 via-orange-400 to-purple-400 bg-clip-text text-transparent">
+          PASSPORT RACE 🌍
+        </h2>
+        <p class="text-xs text-slate-300 mt-1">Fly the globe, pass geography challenges, lock Crown HQs & link land borders!</p>
+      </div>
 
-            <!-- Detailed Score Table Breakdown -->
-            <div class="grid grid-cols-2 gap-4">
-                <!-- P1 Final -->
-                <div class="bg-slate-950 border border-orange-500/40 rounded-xl p-4 text-left space-y-2">
-                    <div class="font-bold text-orange-400 text-sm border-b border-slate-800 pb-1" id="endP1Name">Player 1</div>
-                    <div class="text-xs space-y-1 text-slate-300">
-                        <div class="flex justify-between"><span>Countries:</span><span id="endP1Countries">0</span></div>
-                        <div class="flex justify-between"><span>Border Links:</span><span id="endP1Links">0</span></div>
-                        <div class="flex justify-between"><span>Crown HQs:</span><span id="endP1Hq">0</span></div>
-                        <div class="flex justify-between"><span>Continent Bonuses:</span><span id="endP1Cont">0</span></div>
-                        <div class="flex justify-between font-bold text-white pt-1 border-t border-slate-800"><span>TOTAL SCORE:</span><span id="endP1Total" class="text-orange-400 font-extrabold text-base">0</span></div>
-                    </div>
-                </div>
-
-                <!-- P2 Final -->
-                <div class="bg-slate-950 border border-purple-500/40 rounded-xl p-4 text-left space-y-2">
-                    <div class="font-bold text-purple-400 text-sm border-b border-slate-800 pb-1" id="endP2Name">Player 2</div>
-                    <div class="text-xs space-y-1 text-slate-300">
-                        <div class="flex justify-between"><span>Countries:</span><span id="endP2Countries">0</span></div>
-                        <div class="flex justify-between"><span>Border Links:</span><span id="endP2Links">0</span></div>
-                        <div class="flex justify-between"><span>Crown HQs:</span><span id="endP2Hq">0</span></div>
-                        <div class="flex justify-between"><span>Continent Bonuses:</span><span id="endP2Cont">0</span></div>
-                        <div class="flex justify-between font-bold text-white pt-1 border-t border-slate-800"><span>TOTAL SCORE:</span><span id="endP2Total" class="text-purple-400 font-extrabold text-base">0</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Passport Stamps Collection Preview -->
-            <div class="space-y-2 text-left">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Passport Stamp Book</span>
-                <div id="stampsGallery" class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                    <!-- Stamps added dynamically -->
-                </div>
-            </div>
-
-            <!-- Rematch / Menu Buttons -->
-            <div class="flex items-center space-x-3">
-                <button onclick="resetGame()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition">
-                    ⚙️ Change Setup
-                </button>
-                <button onclick="startGame()" class="flex-1 py-3 bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-400 hover:to-purple-500 text-white font-bold text-xs rounded-xl shadow-lg transition">
-                    🔄 Play Again
-                </button>
-            </div>
+      <!-- Player Input Fields -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5 p-3 rounded-2xl bg-orange-950/20 border border-orange-500/40">
+          <label class="text-xs font-black text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> Player 1 (Orange)
+          </label>
+          <input type="text" id="input-p1-name" value="Player 1" class="w-full bg-slate-900 border border-orange-500/40 rounded-xl px-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-orange-400" placeholder="Enter P1 Name">
         </div>
+
+        <div class="flex flex-col gap-1.5 p-3 rounded-2xl bg-purple-950/20 border border-purple-500/40">
+          <label class="text-xs font-black text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span> Player 2 (Purple)
+          </label>
+          <input type="text" id="input-p2-name" value="Player 2" class="w-full bg-slate-900 border border-purple-500/40 rounded-xl px-3 py-2 text-sm font-bold text-white focus:outline-none focus:border-purple-400" placeholder="Enter P2 Name">
+        </div>
+      </div>
+
+      <!-- Settings Selectors -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[11px] font-bold text-slate-400 uppercase">Difficulty</label>
+          <select id="select-diff" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-200">
+            <option value="explorer">Explorer (Multiple Choice)</option>
+            <option value="adventurer">Adventurer (Harder Distractors)</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[11px] font-bold text-slate-400 uppercase">Trip Length</label>
+          <select id="select-rounds" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-200">
+            <option value="6">Quick Trip (6 Turns)</option>
+            <option value="10" selected>Regular Trip (10 Turns)</option>
+            <option value="15">Grand Tour (15 Turns)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick Rules Box -->
+      <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex flex-col gap-1">
+        <span class="font-bold text-amber-400">💡 Quick Rules:</span>
+        <ul class="list-disc list-inside space-y-0.5 text-[11px] text-slate-300">
+          <li><strong>Claim (1pt):</strong> Fly to unclaimed country & answer quiz.</li>
+          <li><strong>Border Link (+1pt):</strong> Owning adjacent land neighbors links them!</li>
+          <li><strong>Lock 🔒 (1pt):</strong> Lock your country to prevent regular steals.</li>
+          <li><strong>Crown HQ 👑 (2pts):</strong> Upgrades to HQ & shields all neighbors 🛡️!</li>
+        </ul>
+      </div>
+
+      <button onclick="startGame()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-base shadow-xl hover:scale-[1.02] active:scale-95 transition">
+        START PASSPORT RACE ✈️
+      </button>
     </div>
+  </div>
 
-    <!-- GAME LOGIC SCRIPT -->
-    <script>
-        /* ----------------------------------------------------
-           1. GAME DATA: 117 COUNTRIES WITH LAT/LON & QUESTIONS
-           ---------------------------------------------------- */
-        const COUNTRIES_DATA = [
-            // --- NORTH AMERICA (12) ---
-            { id: 'USA', name: 'United States', cont: 'NA', lat: 38.0, lon: -97.0, flag: '🇺🇸', cap: 'Washington, D.C.', distractors: ['New York', 'Los Angeles', 'Chicago'], nb: ['CAN', 'MEX'], q: "Which US state is famous for the Grand Canyon?" },
-            { id: 'CAN', name: 'Canada', cont: 'NA', lat: 56.0, lon: -106.0, flag: '🇨🇦', cap: 'Ottawa', distractors: ['Toronto', 'Vancouver', 'Montreal'], nb: ['USA'], q: "What is the leaf depicted on Canada's national flag?" },
-            { id: 'MEX', name: 'Mexico', cont: 'NA', lat: 23.0, lon: -102.0, flag: '🇲🇽', cap: 'Mexico City', distractors: ['Cancun', 'Guadalajara', 'Monterrey'], nb: ['USA', 'GTM', 'BLZ'], q: "Which ancient civilization built Chichen Itza in Mexico?" },
-            { id: 'GTM', name: 'Guatemala', cont: 'NA', lat: 15.5, lon: -90.2, flag: '🇬🇹', cap: 'Guatemala City', distractors: ['Antigua', 'Flores', 'Quetzaltenango'], nb: ['MEX', 'BLZ', 'HND', 'SLV'], q: "Guatemala is famous for its ancient Mayan ruins, such as Tikal." },
-            { id: 'CUB', name: 'Cuba', cont: 'NA', lat: 21.5, lon: -79.0, flag: '🇨🇺', cap: 'Havana', distractors: ['Santiago', 'Varadero', 'Trinidad'], nb: ['JAM', 'HTI'], q: "What island nation in the Caribbean has Havana as its capital?" },
-            { id: 'JAM', name: 'Jamaica', cont: 'NA', lat: 18.1, lon: -77.3, flag: '🇯🇲', cap: 'Kingston', distractors: ['Montego Bay', 'Negril', 'Ocho Rios'], nb: ['CUB'], q: "Which music genre originated in Jamaica in the late 1960s?" },
-            { id: 'CRI', name: 'Costa Rica', cont: 'NA', lat: 9.7, lon: -83.7, flag: '🇨🇷', cap: 'San José', distractors: ['Limon', 'Alajuela', 'Puntarenas'], nb: ['NIC', 'PAN'], q: "Costa Rica is famous for having no standing army and protecting its rainforests." },
-            { id: 'PAN', name: 'Panama', cont: 'NA', lat: 8.5, lon: -80.1, flag: '🇵🇦', cap: 'Panama City', distractors: ['Colon', 'David', 'Boquete'], nb: ['CRI', 'COL'], q: "Which man-made canal connects the Atlantic and Pacific Oceans?" },
-            { id: 'DOM', name: 'Dominican Republic', cont: 'NA', lat: 18.7, lon: -70.2, flag: '🇩🇴', cap: 'Santo Domingo', distractors: ['Punta Cana', 'Santiago', 'Puerto Plata'], nb: ['HTI'], q: "The Dominican Republic shares the island of Hispaniola with Haiti." },
-            { id: 'BLZ', name: 'Belize', cont: 'NA', lat: 17.2, lon: -88.5, flag: '🇧🇿', cap: 'Belmopan', distractors: ['Belize City', 'San Pedro', 'Dangriga'], nb: ['MEX', 'GTM'], q: "What is the official language of Belize?" },
-            { id: 'HND', name: 'Honduras', cont: 'NA', lat: 15.2, lon: -86.2, flag: '🇭🇳', cap: 'Tegucigalpa', distractors: ['San Pedro Sula', 'La Ceiba', 'Roatan'], nb: ['GTM', 'SLV', 'NIC'], q: "Honduras features the Copan Mayan ruins." },
-            { id: 'NIC', name: 'Nicaragua', cont: 'NA', lat: 12.8, lon: -85.2, flag: '🇳🇮', cap: 'Managua', distractors: ['Granada', 'Leon', 'Masaya'], nb: ['HND', 'CRI'], q: "Lake Nicaragua contains freshwater sharks." },
+  <!-- ================= MODAL: TURN PASS DEVICE ================= -->
+  <div id="modal-pass" class="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-lg flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="glass max-w-md w-full rounded-3xl p-8 border border-slate-700 shadow-2xl text-center flex flex-col items-center gap-4 modal-pop">
+      <div id="pass-avatar" class="w-16 h-16 rounded-2xl bg-orange-500 flex items-center justify-center text-3xl font-black text-white shadow-xl">
+        P1
+      </div>
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Next Turn</span>
+        <h2 id="pass-player-name" class="text-2xl font-black text-white">Player 1's Turn</h2>
+      </div>
+      <p id="pass-hint" class="text-xs text-slate-300 max-w-xs">Pass the iPad to Player 1, then tap Ready to explore the map!</p>
+      <button onclick="dismissPassModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-sm shadow-lg hover:scale-105 active:scale-95 transition">
+        I'm Ready! 🗺️
+      </button>
+    </div>
+  </div>
 
-            // --- SOUTH AMERICA (12) ---
-            { id: 'BRA', name: 'Brazil', cont: 'SA', lat: -14.2, lon: -51.9, flag: '🇧🇷', cap: 'Brasília', distractors: ['Rio de Janeiro', 'São Paulo', 'Salvador'], nb: ['ARG', 'COL', 'PER', 'VEN', 'PRY', 'URY'], q: "What is the largest tropical rainforest located mostly in Brazil?" },
-            { id: 'ARG', name: 'Argentina', cont: 'SA', lat: -38.4, lon: -63.6, flag: '🇦🇷', cap: 'Buenos Aires', distractors: ['Mendoza', 'Cordoba', 'Rosario'], nb: ['BRA', 'CHL', 'PRY', 'URY', 'BOL'], q: "Which famous dance originated in Buenos Aires, Argentina?" },
-            { id: 'COL', name: 'Colombia', cont: 'SA', lat: 4.5, lon: -74.2, flag: '🇨🇴', cap: 'Bogotá', distractors: ['Medellín', 'Cali', 'Cartagena'], nb: ['PAN', 'VEN', 'ECU', 'PER', 'BRA'], q: "Colombia is named after which historic explorer?" },
-            { id: 'PER', name: 'Peru', cont: 'SA', lat: -9.1, lon: -75.0, flag: '🇵🇪', cap: 'Lima', distractors: ['Cusco', 'Arequipa', 'Trujillo'], nb: ['ECU', 'COL', 'BRA', 'BOL', 'CHL'], q: "Which famous Incan citadel sits high in the Andes mountains of Peru?" },
-            { id: 'CHL', name: 'Chile', cont: 'SA', lat: -35.6, lon: -71.5, flag: '🇨🇱', cap: 'Santiago', distractors: ['Valparaíso', 'Concepción', 'Antofagasta'], nb: ['ARG', 'BOL', 'PER'], q: "Chile is known as one of the longest and narrowest countries in the world." },
-            { id: 'VEN', name: 'Venezuela', cont: 'SA', lat: 6.4, lon: -66.5, flag: '🇻🇪', cap: 'Caracas', distractors: ['Maracaibo', 'Valencia', 'Barquisimeto'], nb: ['COL', 'BRA', 'GUY'], q: "Angel Falls in Venezuela is the world's tallest uninterrupted waterfall." },
-            { id: 'ECU', name: 'Ecuador', cont: 'SA', lat: -1.8, lon: -78.1, flag: '🇪🇨', cap: 'Quito', distractors: ['Guayaquil', 'Cuenca', 'Manta'], nb: ['COL', 'PER'], q: "Which famous island archipelago belongs to Ecuador?" },
-            { id: 'BOL', name: 'Bolivia', cont: 'SA', lat: -16.2, lon: -63.5, flag: '🇧🇴', cap: 'Sucre / La Paz', distractors: ['Santa Cruz', 'Cochabamba', 'Oruro'], nb: ['PER', 'BRA', 'PRY', 'ARG', 'CHL'], q: "Salar de Uyuni in Bolivia is the world's largest salt flat." },
-            { id: 'PRY', name: 'Paraguay', cont: 'SA', lat: -23.4, lon: -58.4, flag: '🇵🇾', cap: 'Asunción', distractors: ['Ciudad del Este', 'Encarnación', 'San Lorenzo'], nb: ['ARG', 'BRA', 'BOL'], q: "Paraguay is one of two landlocked countries in South America." },
-            { id: 'URY', name: 'Uruguay', cont: 'SA', lat: -32.5, lon: -55.7, flag: '🇺🇾', cap: 'Montevideo', distractors: ['Punta del Este', 'Salto', 'Colonia'], nb: ['ARG', 'BRA'], q: "Uruguay hosted and won the very first FIFA World Cup in 1930." },
-            { id: 'GUY', name: 'Guyana', cont: 'SA', lat: 4.8, lon: -58.9, flag: '🇬🇾', cap: 'Georgetown', distractors: ['Linden', 'New Amsterdam', 'Bartica'], nb: ['VEN', 'BRA', 'SUR'], q: "Guyana is the only English-speaking country in South America." },
-            { id: 'SUR', name: 'Suriname', cont: 'SA', lat: 3.9, lon: -56.0, flag: '🇸🇷', cap: 'Paramaribo', distractors: ['Lelydorp', 'Nieuw Nickerie', 'Moengo'], nb: ['GUY', 'BRA'], q: "What is the official language of Suriname?" },
+  <!-- ================= MODAL: QUIZ CHALLENGE (Anti-Peeking) ================= -->
+  <div id="modal-quiz" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="glass max-w-xl w-full rounded-3xl p-6 border border-slate-700 shadow-2xl flex flex-col gap-5 modal-pop">
+      
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-3">
+          <span id="quiz-flag" class="text-4xl">🇫🇷</span>
+          <div class="flex flex-col">
+            <span id="quiz-action-type" class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 w-fit">
+              CLAIM COUNTRY
+            </span>
+            <h2 id="quiz-country-name" class="text-xl font-black text-white">France</h2>
+          </div>
+        </div>
+        <div class="text-right">
+          <span id="quiz-timer" class="text-xs font-bold text-slate-400">Geography Challenge</span>
+        </div>
+      </div>
 
-            // --- EUROPE (20) ---
-            { id: 'GBR', name: 'United Kingdom', cont: 'EU', lat: 55.3, lon: -3.4, flag: '🇬🇧', cap: 'London', distractors: ['Manchester', 'Edinburgh', 'Birmingham'], nb: ['IRL', 'FRA'], q: "Which famous clock tower is located in London?" },
-            { id: 'FRA', name: 'France', cont: 'EU', lat: 46.2, lon: 2.2, flag: '🇫🇷', cap: 'Paris', distractors: ['Marseille', 'Lyon', 'Nice'], nb: ['GBR', 'ESP', 'DEU', 'ITA', 'CHE', 'BEL'], q: "What famous iron tower stands in Paris?" },
-            { id: 'DEU', name: 'Germany', cont: 'EU', lat: 51.1, lon: 10.4, flag: '🇩🇪', cap: 'Berlin', distractors: ['Munich', 'Frankfurt', 'Hamburg'], nb: ['FRA', 'POL', 'CZE', 'AUT', 'CHE', 'NLD', 'DNK'], q: "Which historic wall dividing Berlin fell in 1989?" },
-            { id: 'ITA', name: 'Italy', cont: 'EU', lat: 41.8, lon: 12.5, flag: '🇮🇹', cap: 'Rome', distractors: ['Milan', 'Venice', 'Florence'], nb: ['FRA', 'CHE', 'AUT', 'SVN'], q: "Which famous ancient amphitheater stands in Rome?" },
-            { id: 'ESP', name: 'Spain', cont: 'EU', lat: 40.4, lon: -3.7, flag: '🇪🇸', cap: 'Madrid', distractors: ['Barcelona', 'Seville', 'Valencia'], nb: ['PRT', 'FRA'], q: "What is the traditional Spanish dish made with saffron rice?" },
-            { id: 'PRT', name: 'Portugal', cont: 'EU', lat: 39.3, lon: -8.2, flag: '🇵🇹', cap: 'Lisbon', distractors: ['Porto', 'Faro', 'Braga'], nb: ['ESP'], q: "Lisbon sits on the coast of which ocean?" },
-            { id: 'NLD', name: 'Netherlands', cont: 'EU', lat: 52.1, lon: 5.2, flag: '🇳🇱', cap: 'Amsterdam', distractors: ['Rotterdam', 'The Hague', 'Utrecht'], nb: ['DEU', 'BEL'], q: "The Netherlands is famous for tulips, wooden clogs, and windmills." },
-            { id: 'BEL', name: 'Belgium', cont: 'EU', lat: 50.5, lon: 4.4, flag: '🇧🇪', cap: 'Brussels', distractors: ['Antwerp', 'Ghent', 'Bruges'], nb: ['FRA', 'NLD', 'DEU'], q: "Brussels is headquarters for NATO and the European Union." },
-            { id: 'CHE', name: 'Switzerland', cont: 'EU', lat: 46.8, lon: 8.2, flag: '🇨🇭', cap: 'Bern', distractors: ['Zurich', 'Geneva', 'Basel'], nb: ['FRA', 'DEU', 'ITA', 'AUT'], q: "Switzerland is famous for its towering Alps and high-quality watches." },
-            { id: 'AUT', name: 'Austria', cont: 'EU', lat: 47.5, lon: 14.5, flag: '🇦🇹', cap: 'Vienna', distractors: ['Salzburg', 'Innsbruck', 'Graz'], nb: ['DEU', 'CZE', 'HUN', 'SVN', 'ITA', 'CHE'], q: "Composer Wolfgang Amadeus Mozart was born in Austria." },
-            { id: 'GRC', name: 'Greece', cont: 'EU', lat: 39.0, lon: 22.0, flag: '🇬🇷', cap: 'Athens', distractors: ['Thessaloniki', 'Santorini', 'Heraklion'], nb: ['TUR', 'ALB', 'MKD', 'BGR'], q: "Where were the ancient Olympic Games first held?" },
-            { id: 'SWE', name: 'Sweden', cont: 'EU', lat: 60.1, lon: 18.6, flag: '🇸🇪', cap: 'Stockholm', distractors: ['Gothenburg', 'Malmö', 'Uppsala'], nb: ['NOR', 'FIN'], q: "Sweden is the birthplace of furniture store IKEA and ABBA." },
-            { id: 'NOR', name: 'Norway', cont: 'EU', lat: 60.4, lon: 8.4, flag: '🇳🇴', cap: 'Oslo', distractors: ['Bergen', 'Trondheim', 'Stavanger'], nb: ['SWE', 'FIN'], q: "Norway is famous for its deep coastal inlets carved by glaciers, called..." },
-            { id: 'FIN', name: 'Finland', cont: 'EU', lat: 61.9, lon: 25.7, flag: '🇫🇮', cap: 'Helsinki', distractors: ['Tampere', 'Turku', 'Oulu'], nb: ['SWE', 'NOR', 'RUS'], q: "Finland is famously known as the home of Santa Claus in Lapland." },
-            { id: 'POL', name: 'Poland', cont: 'EU', lat: 51.9, lon: 19.1, flag: '🇵🇱', cap: 'Warsaw', distractors: ['Kraków', 'Gdańsk', 'Wrocław'], nb: ['DEU', 'CZE', 'SVK', 'UKR'], q: "Astronomer Nicolaus Copernicus was born in Poland." },
-            { id: 'IRL', name: 'Ireland', cont: 'EU', lat: 53.4, lon: -7.6, flag: '🇮🇪', cap: 'Dublin', distractors: ['Cork', 'Galway', 'Limerick'], nb: ['GBR'], q: "Ireland is known as the 'Emerald Isle' because of its lush green countryside." },
-            { id: 'UKR', name: 'Ukraine', cont: 'EU', lat: 48.3, lon: 31.1, flag: '🇺🇦', cap: 'Kyiv', distractors: ['Odesa', 'Lviv', 'Kharkiv'], nb: ['POL', 'ROU', 'RUS'], q: "Ukraine is one of the world's largest producers of sunflower seeds and grain." },
-            { id: 'ROU', name: 'Romania', cont: 'EU', lat: 45.9, lon: 24.9, flag: '🇷🇴', cap: 'Bucharest', distractors: ['Cluj-Napoca', 'Brașov', 'Timișoara'], nb: ['UKR', 'BGR', 'HUN', 'SRB'], q: "Transylvania in Romania is associated with the legend of Dracula." },
-            { id: 'CZE', name: 'Czechia', cont: 'EU', lat: 49.8, lon: 15.4, flag: '🇨🇿', cap: 'Prague', distractors: ['Brno', 'Ostrava', 'Plzeň'], nb: ['DEU', 'POL', 'SVK', 'AUT'], q: "Prague is known as the 'City of a Hundred Spires'." },
-            { id: 'DNK', name: 'Denmark', cont: 'EU', lat: 56.2, lon: 9.5, flag: '🇩🇰', cap: 'Copenhagen', distractors: ['Aarhus', 'Odense', 'Aalborg'], nb: ['DEU', 'SWE'], q: "LEGO building bricks were invented in Denmark." },
+      <!-- Question Box -->
+      <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
+        <p id="quiz-question-text" class="text-sm sm:text-base font-bold text-slate-100 leading-relaxed">
+          What is the capital city of France?
+        </p>
+      </div>
 
-            // --- AFRICA (20) ---
-            { id: 'EGY', name: 'Egypt', cont: 'AF', lat: 26.8, lon: 30.8, flag: '🇪🇬', cap: 'Cairo', distractors: ['Alexandria', 'Giza', 'Luxor'], nb: ['SDN', 'LBY', 'ISR'], q: "Which ancient wonder stands on the Giza plateau in Egypt?" },
-            { id: 'KEN', name: 'Kenya', cont: 'AF', lat: -0.02, lon: 37.9, flag: '🇰🇪', cap: 'Nairobi', distractors: ['Mombasa', 'Kisumu', 'Nakuru'], nb: ['ETH', 'TZA', 'UGA', 'SOM'], q: "Kenya is famous for its wildlife safaris in the Maasai Mara." },
-            { id: 'NGA', name: 'Nigeria', cont: 'AF', lat: 9.0, lon: 8.6, flag: '🇳🇬', cap: 'Abuja', distractors: ['Lagos', 'Kano', 'Ibadan'], nb: ['CMR', 'NER', 'BEN'], q: "Nigeria has the largest population of any country in Africa." },
-            { id: 'ZAF', name: 'South Africa', cont: 'AF', lat: -30.5, lon: 22.9, flag: '🇿🇦', cap: 'Pretoria', distractors: ['Cape Town', 'Johannesburg', 'Durban'], nb: ['NAM', 'BWA', 'ZWE', 'MOZ'], q: "Nelson Mandela was the first democratically elected president of South Africa." },
-            { id: 'MAR', name: 'Morocco', cont: 'AF', lat: 31.7, lon: -7.0, flag: '🇲🇦', cap: 'Rabat', distractors: ['Casablanca', 'Marrakesh', 'Fes'], nb: ['DZA', 'ESP'], q: "Morocco is separated from Europe by the Strait of Gibraltar." },
-            { id: 'GHA', name: 'Ghana', cont: 'AF', lat: 7.9, lon: -1.0, flag: '🇬🇭', cap: 'Accra', distractors: ['Kumasi', 'Tamale', 'Sekondi'], nb: ['CIV', 'TGO', 'BFA'], q: "Ghana was the first sub-Saharan African nation to gain independence in 1957." },
-            { id: 'ETH', name: 'Ethiopia', cont: 'AF', lat: 9.1, lon: 40.4, flag: '🇪🇹', cap: 'Addis Ababa', distractors: ['Gondar', 'Hawassa', 'Dire Dawa'], nb: ['KEN', 'SDN', 'SOM'], q: "Coffee is believed to have originated in the highlands of Ethiopia." },
-            { id: 'TZA', name: 'Tanzania', cont: 'AF', lat: -6.3, lon: 34.8, flag: '🇹🇿', cap: 'Dodoma', distractors: ['Dar es Salaam', 'Arusha', 'Zanzibar'], nb: ['KEN', 'UGA', 'RWA', 'MOZ'], q: "Mount Kilimanjaro, Africa's highest peak, is located in Tanzania." },
-            { id: 'SEN', name: 'Senegal', cont: 'AF', lat: 14.4, lon: -14.4, flag: '🇸🇳', cap: 'Dakar', distractors: ['Saint-Louis', 'Thies', 'Ziguinchor'], nb: ['MRT', 'MLI', 'GIN'], q: "Dakar is the westernmost city on the African mainland." },
-            { id: 'DZA', name: 'Algeria', cont: 'AF', lat: 28.0, lon: 1.6, flag: '🇩🇿', cap: 'Algiers', distractors: ['Oran', 'Constantine', 'Annaba'], nb: ['MAR', 'TUN', 'LBY', 'MLI', 'NER'], q: "Algeria is the largest country by land area in Africa." },
-            { id: 'TUN', name: 'Tunisia', cont: 'AF', lat: 33.8, lon: 9.5, flag: '🇹🇳', cap: 'Tunis', distractors: ['Sfax', 'Sousse', 'Bizerte'], nb: ['DZA', 'LBY'], q: "The ancient city of Carthage was located in modern-day Tunisia." },
-            { id: 'MDG', name: 'Madagascar', cont: 'AF', lat: -18.7, lon: 46.8, flag: '🇲🇬', cap: 'Antananarivo', distractors: ['Toamasina', 'Mahajanga', 'Antsirabe'], nb: [], q: "Madagascar is home to unique wildlife like lemurs and baobab trees." },
-            { id: 'UGA', name: 'Uganda', cont: 'AF', lat: 1.3, lon: 32.2, flag: '🇺🇬', cap: 'Kampala', distractors: ['Entebbe', 'Jinja', 'Gulu'], nb: ['KEN', 'TZA', 'RWA', 'SSD'], q: "Uganda is known as the 'Pearl of Africa'." },
-            { id: 'ZWE', name: 'Zimbabwe', cont: 'AF', lat: -19.0, lon: 29.1, flag: '🇿🇼', cap: 'Harare', distractors: ['Bulawayo', 'Mutare', 'Gweru'], nb: ['ZAF', 'BWA', 'ZMB', 'MOZ'], q: "Victoria Falls sits on the border between Zimbabwe and Zambia." },
-            { id: 'CIV', name: 'Ivory Coast', cont: 'AF', lat: 7.5, lon: -5.5, flag: '🇨🇮', cap: 'Yamoussoukro', distractors: ['Abidjan', 'Bouake', 'San-Pedro'], nb: ['GHA', 'LBR', 'GIN', 'MLI'], q: "Ivory Coast is the world's leading exporter of cocoa beans." },
-            { id: 'CMR', name: 'Cameroon', cont: 'AF', lat: 7.3, lon: 12.3, flag: '🇨🇲', cap: 'Yaoundé', distractors: ['Douala', 'Garoua', 'Bamenda'], nb: ['NGA', 'GAB', 'COG', 'TCD'], q: "Cameroon is often called 'Africa in miniature' for its diverse landscapes." },
-            { id: 'ZMB', name: 'Zambia', cont: 'AF', lat: -13.1, lon: 27.8, flag: '🇿🇲', cap: 'Lusaka', distractors: ['Ndola', 'Kitwe', 'Livingstone'], nb: ['ZWE', 'BWA', 'NAM', 'AGO', 'COD', 'TZA', 'MWI', 'MOZ'], q: "Zambia takes its name from the mighty Zambezi River." },
-            { id: 'RWA', name: 'Rwanda', cont: 'AF', lat: -1.9, lon: 29.8, flag: '🇷🇼', cap: 'Kigali', distractors: ['Gisenyi', 'Butare', 'Ruhengeri'], nb: ['UGA', 'TZA', 'BDI', 'COD'], q: "Rwanda is known as the 'Land of a Thousand Hills'." },
-            { id: 'BWA', name: 'Botswana', cont: 'AF', lat: -22.3, lon: 24.6, flag: '🇧🇼', cap: 'Gaborone', distractors: ['Francistown', 'Maun', 'Kasane'], nb: ['ZAF', 'NAM', 'ZWE', 'ZMB'], q: "The Okavango Delta in Botswana is a giant inland river delta." },
-            { id: 'AGO', name: 'Angola', cont: 'AF', lat: -11.2, lon: 17.8, flag: '🇦🇴', cap: 'Luanda', distractors: ['Huambo', 'Lobito', 'Benguela'], nb: ['NAM', 'ZMB', 'COD'], q: "What is the official national language of Angola?" },
+      <!-- Choice Buttons -->
+      <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- JS rendered option buttons -->
+      </div>
 
-            // --- ASIA (20) ---
-            { id: 'JPN', name: 'Japan', cont: 'AS', lat: 36.2, lon: 138.2, flag: '🇯🇵', cap: 'Tokyo', distractors: ['Kyoto', 'Osaka', 'Yokohama'], nb: ['KOR', 'TWN', 'RUS'], q: "What iconic snow-capped volcano is the highest peak in Japan?" },
-            { id: 'CHN', name: 'China', cont: 'AS', lat: 35.8, lon: 104.1, flag: '🇨🇳', cap: 'Beijing', distractors: ['Shanghai', 'Guangzhou', 'Shenzhen'], nb: ['JPN', 'KOR', 'IND', 'NPL', 'MNG', 'RUS', 'VNM'], q: "Which massive fortification was built across northern China?" },
-            { id: 'IND', name: 'India', cont: 'AS', lat: 20.5, lon: 78.9, flag: '🇮🇳', cap: 'New Delhi', distractors: ['Mumbai', 'Bengaluru', 'Kolkata'], nb: ['PAK', 'NPL', 'BGD', 'LKA', 'CHN'], q: "Which marble mausoleum in Agra, India, is one of the New 7 Wonders?" },
-            { id: 'KOR', name: 'South Korea', cont: 'AS', lat: 35.9, lon: 127.7, flag: '🇰🇷', cap: 'Seoul', distractors: ['Busan', 'Incheon', 'Daegu'], nb: ['JPN', 'CHN'], q: "K-pop music and kimchi are famous exports from which East Asian nation?" },
-            { id: 'IDN', name: 'Indonesia', cont: 'AS', lat: -0.78, lon: 113.9, flag: '🇮🇩', cap: 'Jakarta', distractors: ['Bali', 'Surabaya', 'Bandung'], nb: ['MYS', 'PNG'], q: "Indonesia is the largest island country in the world, with over 17,000 islands." },
-            { id: 'THA', name: 'Thailand', cont: 'AS', lat: 15.8, lon: 100.9, flag: '🇹🇭', cap: 'Bangkok', distractors: ['Chiang Mai', 'Phuket', 'Pattaya'], nb: ['MMR', 'LAO', 'KHM', 'MYS'], q: "Thailand was historically known by what former name?" },
-            { id: 'VNM', name: 'Vietnam', cont: 'AS', lat: 14.0, lon: 108.2, flag: '🇻🇳', cap: 'Hanoi', distractors: ['Ho Chi Minh City', 'Da Nang', 'Haiphong'], nb: ['CHN', 'LAO', 'KHM'], q: "Ha Long Bay in Vietnam is famous for its emerald waters and limestone pillars." },
-            { id: 'PHL', name: 'Philippines', cont: 'AS', lat: 12.8, lon: 121.7, flag: '🇵🇭', cap: 'Manila', distractors: ['Cebu', 'Davao', 'Quezon City'], nb: [], q: "The Philippines consists of more than 7,000 tropical islands." },
-            { id: 'MYS', name: 'Malaysia', cont: 'AS', lat: 4.2, lon: 101.9, flag: '🇲🇾', cap: 'Kuala Lumpur', distractors: ['George Town', 'Johor Bahru', 'Kota Kinabalu'], nb: ['THA', 'SGP', 'IDN'], q: "The famous Petronas Twin Towers are located in Kuala Lumpur." },
-            { id: 'SGP', name: 'Singapore', cont: 'AS', lat: 1.35, lon: 103.8, flag: '🇸🇬', cap: 'Singapore', distractors: ['Sentosa', 'Jurong', 'Changi'], nb: ['MYS'], q: "Singapore is both an island city-state and one of the world's smallest nations." },
-            { id: 'PAK', name: 'Pakistan', cont: 'AS', lat: 30.3, lon: 69.3, flag: '🇵🇰', cap: 'Islamabad', distractors: ['Karachi', 'Lahore', 'Rawalpindi'], nb: ['IND', 'AFG', 'IRN', 'CHN'], q: "K2, the world's second-highest mountain, is located on Pakistan's northern border." },
-            { id: 'BGD', name: 'Bangladesh', cont: 'AS', lat: 23.6, lon: 90.3, flag: '🇧🇩', cap: 'Dhaka', distractors: ['Chittagong', 'Sylhet', 'Khulna'], nb: ['IND', 'MMR'], q: "The Sundarbans mangrove forest in Bangladesh is home to Bengal tigers." },
-            { id: 'SAU', name: 'Saudi Arabia', cont: 'AS', lat: 23.8, lon: 45.0, flag: '🇸🇦', cap: 'Riyadh', distractors: ['Jeddah', 'Mecca', 'Medina'], nb: ['ARE', 'JOR', 'IRQ', 'KWT', 'OMN', 'YEM'], q: "Saudi Arabia occupies most of the Arabian Peninsula." },
-            { id: 'ARE', name: 'United Arab Emirates', cont: 'AE', lat: 23.4, lon: 53.8, flag: '🇦🇪', cap: 'Abu Dhabi', distractors: ['Dubai', 'Sharjah', 'Ajman'], nb: ['SAU', 'OMN'], q: "Burj Khalifa, the world's tallest skyscraper, stands in which UAE city?" },
-            { id: 'ISR', name: 'Israel', cont: 'IL', lat: 31.0, lon: 34.8, flag: '🇮🇱', cap: 'Jerusalem', distractors: ['Tel Aviv', 'Haifa', 'Eilat'], nb: ['EGY', 'JOR', 'LBN'], q: "The Dead Sea, bordered by Israel and Jordan, is the lowest land point on Earth." },
-            { id: 'JOR', name: 'Jordan', cont: 'JO', lat: 30.5, lon: 36.2, flag: '🇯🇴', cap: 'Amman', distractors: ['Aqaba', 'Zarqa', 'Irbid'], nb: ['ISR', 'SAU', 'SYR', 'IRQ'], q: "The ancient rock-cut city of Petra is located in Jordan." },
-            { id: 'IRN', name: 'Iran', cont: 'IR', lat: 32.4, lon: 53.6, flag: '🇮🇷', cap: 'Tehran', distractors: ['Isfahan', 'Shiraz', 'Tabriz'], nb: ['PAK', 'AFG', 'IRQ', 'TUR'], q: "Iran was historically known as Persia until 1935." },
-            { id: 'NPL', name: 'Nepal', cont: 'AS', lat: 28.3, lon: 84.1, flag: '🇳🇵', cap: 'Kathmandu', distractors: ['Pokhara', 'Lalitpur', 'Biratnagar'], nb: ['IND', 'CHN'], q: "Mount Everest, the highest peak on Earth, sits on Nepal's northern border." },
-            { id: 'MNG', name: 'Mongolia', cont: 'AS', lat: 46.8, lon: 103.8, flag: '🇲🇳', cap: 'Ulaanbaatar', distractors: ['Darkhan', 'Erdenet', 'Choibalsan'], nb: ['CHN', 'RUS'], q: "Mongolia is famous for its vast Gobi Desert and nomadic culture." },
-            { id: 'TWN', name: 'Taiwan', cont: 'AS', lat: 23.7, lon: 120.9, flag: '🇹🇼', cap: 'Taipei', distractors: ['Kaohsiung', 'Taichung', 'Tainan'], nb: ['JPN', 'PHL'], q: "Taipei 101 was once the tallest building in the world." },
+      <!-- Fun Fact / Feedback Banner (Hidden by default) -->
+      <div id="quiz-feedback" class="p-3 rounded-2xl bg-emerald-950/50 border border-emerald-500/40 text-xs text-emerald-300 flex items-start gap-2 hidden">
+        <span class="text-base">💡</span>
+        <div class="flex flex-col">
+          <span font-bold>Did you know?</span>
+          <p id="quiz-fact-text" class="text-[11px] text-emerald-200">France is the most visited country in the world!</p>
+        </div>
+      </div>
 
-            // --- OCEANIA (8) ---
-            { id: 'AUS', name: 'Australia', cont: 'OC', lat: -25.2, lon: 133.7, flag: '🇦🇺', cap: 'Canberra', distractors: ['Sydney', 'Melbourne', 'Brisbane'], nb: ['NZL', 'IDN', 'PNG'], q: "What is the world's largest coral reef system located off Australia's coast?" },
-            { id: 'NZL', name: 'New Zealand', cont: 'OC', lat: -40.9, lon: 174.8, flag: '🇳🇿', cap: 'Wellington', distractors: ['Auckland', 'Christchurch', 'Queenstown'], nb: ['AUS'], q: "The flightless Kiwi bird is a national symbol of New Zealand." },
-            { id: 'FJI', name: 'Fiji', cont: 'OC', lat: -17.7, lon: 178.0, flag: '🇫🇯', cap: 'Suva', distractors: ['Nadi', 'Lautoka', 'Labasa'], nb: ['VUT'], q: "Fiji is an island nation famous for soft coral diving and crystal clear lagoons." },
-            { id: 'PNG', name: 'Papua New Guinea', cont: 'OC', lat: -6.3, lon: 143.9, flag: '🇵🇬', cap: 'Port Moresby', distractors: ['Lae', 'Mount Hagen', 'Madang'], nb: ['IDN', 'AUS'], q: "Papua New Guinea is one of the most culturally diverse countries in the world." },
-            { id: 'WSM', name: 'Samoa', cont: 'OC', lat: -13.7, lon: -172.1, flag: '🇼🇸', cap: 'Apia', distractors: ['Salelologa', 'Mulifanua', 'Asau'], nb: ['TON'], q: "Samoa is a Polynesian island nation in the South Pacific." },
-            { id: 'VUT', name: 'Vanuatu', cont: 'OC', lat: -15.3, lon: 166.9, flag: '🇻🇺', cap: 'Port Vila', distractors: ['Luganville', 'Isangel', 'Sola'], nb: ['FJI'], q: "Land diving (the predecessor to bungee jumping) originated in Vanuatu." },
-            { id: 'TON', name: 'Tonga', cont: 'OC', lat: -21.1, lon: -175.1, flag: '🇹🇴', cap: "Nuku'alofa", distractors: ['Neiafu', 'Pangai', 'Hihifo'], nb: ['WSM'], q: "Tonga is known as the 'Friendly Islands' in the South Pacific." },
-            { id: 'SLB', name: 'Solomon Islands', cont: 'OC', lat: -9.6, lon: 160.1, flag: '🇸🇧', cap: 'Honiara', distractors: ['Gizo', 'Auki', 'Kira Kira'], nb: ['PNG', 'VUT'], q: "The Solomon Islands saw intense naval battles during World War II." }
-        ];
+      <button id="quiz-continue-btn" onclick="completeQuizTurn()" class="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm shadow-lg transition hidden">
+        Continue Trip ✈️
+      </button>
+    </div>
+  </div>
 
-        /* ----------------------------------------------------
-           2. AUDIO SYNTHESIZER (Web Audio API Triangle Wave FX)
-           ---------------------------------------------------- */
-        let audioCtx = null;
-        let isMuted = false;
+  <!-- ================= MODAL: GAME OVER & PASSPORT SUMMARY ================= -->
+  <div id="modal-summary" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="glass max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl flex flex-col gap-6 modal-pop max-h-[90vh] overflow-y-auto custom-scrollbar">
+      
+      <div class="text-center">
+        <span class="text-4xl">🏆</span>
+        <h2 id="winner-title" class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent mt-1">
+          Player 1 Wins the Race!
+        </h2>
+        <p class="text-xs text-slate-400">Final Passport & Territory Breakdown</p>
+      </div>
 
-        function initAudio() {
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) audioCtx = new AudioContext();
+      <!-- Final Score Comparison -->
+      <div class="grid grid-cols-2 gap-4">
+        <!-- P1 Final Card -->
+        <div class="p-4 rounded-2xl bg-orange-950/30 border-2 border-orange-500/50 flex flex-col items-center text-center gap-2">
+          <span id="sum-p1-name" class="text-sm font-black text-orange-400">Player 1</span>
+          <span id="sum-p1-score" class="text-3xl font-black text-white">18 pts</span>
+          <div class="text-[11px] text-slate-300 flex flex-col gap-0.5">
+            <span id="sum-p1-countries">Countries: 12</span>
+            <span id="sum-p1-hqs">Crown HQs: 2</span>
+            <span id="sum-p1-links">Border Links: 4</span>
+            <span id="sum-p1-bonus">Continent Bonus: +2</span>
+          </div>
+        </div>
+
+        <!-- P2 Final Card -->
+        <div class="p-4 rounded-2xl bg-purple-950/30 border-2 border-purple-500/50 flex flex-col items-center text-center gap-2">
+          <span id="sum-p2-name" class="text-sm font-black text-purple-400">Player 2</span>
+          <span id="sum-p2-score" class="text-3xl font-black text-white">14 pts</span>
+          <div class="text-[11px] text-slate-300 flex flex-col gap-0.5">
+            <span id="sum-p2-countries">Countries: 9</span>
+            <span id="sum-p2-hqs">Crown HQs: 1</span>
+            <span id="sum-p2-links">Border Links: 3</span>
+            <span id="sum-p2-bonus">Continent Bonus: +0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passport Stamps Grid -->
+      <div class="flex flex-col gap-2">
+        <h4 class="text-xs font-black text-slate-400 uppercase tracking-wider">Stamped Passports</h4>
+        <div class="grid grid-cols-2 gap-3">
+          <div id="stamps-p1" class="p-3 rounded-2xl bg-slate-900 border border-slate-800 flex flex-wrap gap-1.5 min-h-[60px]"></div>
+          <div id="stamps-p2" class="p-3 rounded-2xl bg-slate-900 border border-slate-800 flex flex-wrap gap-1.5 min-h-[60px]"></div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="restartGame()" class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition">
+          Play Again 🔄
+        </button>
+        <button onclick="showSetup()" class="px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm border border-slate-700 transition">
+          Change Settings ⚙️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT GAME ENGINE ================= -->
+  <script>
+    /* ================= Web Audio API Sound Synth ================= */
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('btn-sound');
+      btn.innerText = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'click') {
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } else if (type === 'correct') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.setValueAtTime(180, now + 0.1);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if (type === 'fanfare') {
+        osc.type = 'sine';
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.frequency.setValueAtTime(freq, now + idx * 0.1);
+          g.gain.setValueAtTime(0.2, now + idx * 0.1);
+          g.gain.linearRampToValueAtTime(0.01, now + idx * 0.1 + 0.25);
+          o.start(now + idx * 0.1);
+          o.stop(now + idx * 0.1 + 0.25);
+        });
+      }
+    }
+
+    /* ================= Kavrayskiy VII Projection ================= */
+    // Kavrayskiy VII maps lon (-180..180) & lat (-60..82) into SVG coordinates 1200x650
+    function proj(lon, lat) {
+      const lam = (lon * Math.PI) / 180;
+      const phi = (lat * Math.PI) / 180;
+      
+      // Formula: x = (3 * lam / 2*pi) * sqrt(pi^2 / 3 - phi^2)
+      const x_raw = (3 * lam / (2 * Math.PI)) * Math.sqrt((Math.PI * Math.PI / 3) - (phi * phi));
+      const y_raw = phi;
+
+      // Scale and center into 1200 x 650 SVG canvas
+      const x = 600 + x_raw * 240;
+      const y = 330 - y_raw * 210;
+      return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
+    }
+
+    /* ================= 117-COUNTRY COMPREHENSIVE DATASET ================= */
+    const COUNTRIES = [
+      // NORTH AMERICA (15)
+      { id: "USA", n: "United States", f: "🇺🇸", c: "Washington D.C.", ct: "NA", lat: 38, lon: -97, cw: ["New York", "Chicago", "Los Angeles"], nb: ["CAN", "MEX"], lx: 0, ly: 0 },
+      { id: "CAN", n: "Canada", f: "🇨🇦", c: "Ottawa", ct: "NA", lat: 56, lon: -106, cw: ["Toronto", "Vancouver", "Montreal"], nb: ["USA"], lx: 0, ly: 0 },
+      { id: "MEX", n: "Mexico", f: "🇲🇽", c: "Mexico City", ct: "NA", lat: 23, lon: -102, cw: ["Guadalajara", "Cancún", "Monterrey"], nb: ["USA", "GTM", "BLZ"], lx: 0, ly: 0 },
+      { id: "GTM", n: "Guatemala", f: "🇬🇹", c: "Guatemala City", ct: "NA", lat: 15.5, lon: -90.2, cw: ["Antigua", "Quetzaltenango"], nb: ["MEX", "BLZ", "SLV", "HND"], lx: -15, ly: 10 },
+      { id: "BLZ", n: "Belize", f: "🇧🇿", c: "Belmopan", ct: "NA", lat: 17.2, lon: -88.7, cw: ["Belize City", "San Ignacio"], nb: ["MEX", "GTM"], lx: 12, ly: -5 },
+      { id: "HND", n: "Honduras", f: "🇭🇳", c: "Tegucigalpa", ct: "NA", lat: 14.1, lon: -87.2, cw: ["San Pedro Sula", "La Ceiba"], nb: ["GTM", "SLV", "NIC"], lx: 0, ly: 10 },
+      { id: "SLV", n: "El Salvador", f: "🇸🇻", c: "San Salvador", ct: "NA", lat: 13.7, lon: -88.9, cw: ["Santa Ana", "San Miguel"], nb: ["GTM", "HND"], lx: -15, ly: 12 },
+      { id: "NIC", n: "Nicaragua", f: "🇳🇮", c: "Managua", ct: "NA", lat: 12.8, lon: -85.2, cw: ["Granada", "León"], nb: ["HND", "CRI"], lx: 0, ly: 0 },
+      { id: "CRI", n: "Costa Rica", f: "🇨🇷", c: "San José", ct: "NA", lat: 9.9, lon: -84.1, cw: ["Alajuela", "Limon"], nb: ["NIC", "PAN"], lx: 0, ly: 10 },
+      { id: "PAN", n: "Panama", f: "🇵🇦", c: "Panama City", ct: "NA", lat: 8.5, lon: -80.1, cw: ["Colón", "David"], nb: ["CRI", "COL"], lx: 10, ly: 10 },
+      { id: "CUB", n: "Cuba", f: "🇨🇺", c: "Havana", ct: "NA", lat: 21.5, lon: -78.9, cw: ["Santiago de Cuba", "Varadero"], nb: [], lx: 0, ly: -10 },
+      { id: "JAM", n: "Jamaica", f: "🇯🇲", c: "Kingston", ct: "NA", lat: 18.1, lon: -77.3, cw: ["Montego Bay", "Ocho Rios"], nb: [], lx: 0, ly: 10 },
+      { id: "HTI", n: "Haiti", f: "🇭🇹", c: "Port-au-Prince", ct: "NA", lat: 18.9, lon: -72.7, cw: ["Cap-Haïtien", "Jacmel"], nb: ["DOM"], lx: -10, ly: -10 },
+      { id: "DOM", n: "Dominican Rep.", f: "🇩🇴", c: "Santo Domingo", ct: "NA", lat: 18.7, lon: -70.2, cw: ["Punta Cana", "Santiago"], nb: ["HTI"], lx: 10, ly: -10 },
+      { id: "BHS", n: "Bahamas", f: "🇧🇸", c: "Nassau", ct: "NA", lat: 25.0, lon: -77.3, cw: ["Freeport", "Exuma"], nb: [], lx: 15, ly: -5 },
+
+      // SOUTH AMERICA (12)
+      { id: "COL", n: "Colombia", f: "🇨🇴", c: "Bogotá", ct: "SA", lat: 4.5, lon: -74.2, cw: ["Medellín", "Cali", "Cartagena"], nb: ["PAN", "VEN", "BRA", "PER", "ECU"], lx: -10, ly: 0 },
+      { id: "VEN", n: "Venezuela", f: "🇻🇪", c: "Caracas", ct: "SA", lat: 6.4, lon: -66.5, cw: ["Maracaibo", "Valencia"], nb: ["COL", "BRA", "GUY"], lx: 0, ly: -10 },
+      { id: "GUY", n: "Guyana", f: "🇬🇾", c: "Georgetown", ct: "SA", lat: 4.8, lon: -58.9, cw: ["Linden", "New Amsterdam"], nb: ["VEN", "BRA", "SUR"], lx: 10, ly: -10 },
+      { id: "SUR", n: "Suriname", f: "🇸🇷", c: "Paramaribo", ct: "SA", lat: 3.9, lon: -56.0, cw: ["Lelydorp", "Nieuw Nickerie"], nb: ["GUY", "BRA"], lx: 10, ly: 0 },
+      { id: "ECU", n: "Ecuador", f: "🇪🇨", c: "Quito", ct: "SA", lat: -1.8, lon: -78.1, cw: ["Guayaquil", "Cuenca"], nb: ["COL", "PER"], lx: -15, ly: 0 },
+      { id: "PER", n: "Peru", f: "🇵🇪", c: "Lima", ct: "SA", lat: -9.1, lon: -75.0, cw: ["Cusco", "Arequipa"], nb: ["ECU", "COL", "BRA", "BOL", "CHL"], lx: -10, ly: 0 },
+      { id: "BRA", n: "Brazil", f: "🇧🇷", c: "Brasília", ct: "SA", lat: -14.2, lon: -51.9, cw: ["Rio de Janeiro", "São Paulo"], nb: ["COL", "VEN", "GUY", "SUR", "PER", "BOL", "PRY", "ARG", "URY"], lx: 10, ly: 0 },
+      { id: "BOL", n: "Bolivia", f: "🇧🇴", c: "Sucre", ct: "SA", lat: -16.2, lon: -63.5, cw: ["La Paz", "Santa Cruz"], nb: ["PER", "BRA", "PRY", "ARG", "CHL"], lx: -10, ly: 0 },
+      { id: "PRY", n: "Paraguay", f: "🇵🇾", c: "Asunción", ct: "SA", lat: -23.4, lon: -58.4, cw: ["Ciudad del Este", "Encarnación"], nb: ["BOL", "BRA", "ARG"], lx: 0, ly: 10 },
+      { id: "CHL", n: "Chile", f: "🇨🇱", c: "Santiago", ct: "SA", lat: -35.6, lon: -71.5, cw: ["Valparaíso", "Concepción"], nb: ["PER", "BOL", "ARG"], lx: -15, ly: 0 },
+      { id: "ARG", n: "Argentina", f: "🇦🇷", c: "Buenos Aires", ct: "SA", lat: -38.4, lon: -63.6, cw: ["Mendoza", "Córdoba"], nb: ["CHL", "BOL", "PRY", "BRA", "URY"], lx: 0, ly: 10 },
+      { id: "URY", n: "Uruguay", f: "🇺🇾", c: "Montevideo", ct: "SA", lat: -32.5, lon: -55.7, cw: ["Salto", "Punta del Este"], nb: ["ARG", "BRA"], lx: 12, ly: 5 },
+
+      // EUROPE (34)
+      { id: "GBR", n: "United Kingdom", f: "🇬🇧", c: "London", ct: "EU", lat: 55.3, lon: -3.4, cw: ["Manchester", "Edinburgh"], nb: ["IRL"], lx: -15, ly: 0 },
+      { id: "IRL", n: "Ireland", f: "🇮🇪", c: "Dublin", ct: "EU", lat: 53.4, lon: -8.2, cw: ["Cork", "Galway"], nb: ["GBR"], lx: -15, ly: -5 },
+      { id: "FRA", n: "France", f: "🇫🇷", c: "Paris", ct: "EU", lat: 46.2, lon: 2.2, cw: ["Marseille", "Lyon", "Nice"], nb: ["ESP", "BEL", "DEU", "CHE", "ITA"], lx: 0, ly: 0 },
+      { id: "ESP", n: "Spain", f: "🇪🇸", c: "Madrid", ct: "EU", lat: 40.4, lon: -3.7, cw: ["Barcelona", "Seville"], nb: ["PRT", "FRA"], lx: 0, ly: 10 },
+      { id: "PRT", n: "Portugal", f: "🇵🇹", c: "Lisbon", ct: "EU", lat: 39.3, lon: -8.2, cw: ["Porto", "Faro"], nb: ["ESP"], lx: -15, ly: 0 },
+      { id: "DEU", n: "Germany", f: "🇩🇪", c: "Berlin", ct: "EU", lat: 51.1, lon: 10.4, cw: ["Munich", "Hamburg", "Frankfurt"], nb: ["FRA", "BEL", "NLD", "DNK", "POL", "CZE", "AUT", "CHE"], lx: 0, ly: -5 },
+      { id: "NLD", n: "Netherlands", f: "🇳🇱", c: "Amsterdam", ct: "EU", lat: 52.1, lon: 5.2, cw: ["Rotterdam", "The Hague"], nb: ["BEL", "DEU"], lx: -10, ly: -10 },
+      { id: "BEL", n: "Belgium", f: "🇧🇪", c: "Brussels", ct: "EU", lat: 50.5, lon: 4.4, cw: ["Antwerp", "Ghent"], nb: ["FRA", "NLD", "DEU"], lx: -12, ly: 0 },
+      { id: "ITA", n: "Italy", f: "🇮🇹", c: "Rome", ct: "EU", lat: 41.8, lon: 12.5, cw: ["Milan", "Venice", "Naples"], nb: ["FRA", "CHE", "AUT", "SVN"], lx: 10, ly: 10 },
+      { id: "CHE", n: "Switzerland", f: "🇨🇭", c: "Bern", ct: "EU", lat: 46.8, lon: 8.2, cw: ["Zurich", "Geneva"], nb: ["FRA", "DEU", "ITA", "AUT"], lx: 0, ly: -8 },
+      { id: "AUT", n: "Austria", f: "🇦🇹", c: "Vienna", ct: "EU", lat: 47.5, lon: 14.5, cw: ["Salzburg", "Innsbruck"], nb: ["DEU", "CHE", "ITA", "CZE", "SVK", "HUN", "SVN"], lx: 0, ly: -8 },
+      { id: "POL", n: "Poland", f: "🇵🇱", c: "Warsaw", ct: "EU", lat: 51.9, lon: 19.1, cw: ["Kraków", "Gdańsk"], nb: ["DEU", "CZE", "SVK", "UKR", "BLR", "LTU"], lx: 0, ly: 0 },
+      { id: "CZE", n: "Czechia", f: "🇨🇿", c: "Prague", ct: "EU", lat: 49.8, lon: 15.4, cw: ["Brno", "Ostrava"], nb: ["DEU", "POL", "SVK", "AUT"], lx: 0, ly: 0 },
+      { id: "DNK", n: "Denmark", f: "🇩🇰", c: "Copenhagen", ct: "EU", lat: 56.2, lon: 9.5, cw: ["Aarhus", "Odense"], nb: ["DEU", "SWE"], lx: -10, ly: -10 },
+      { id: "SWE", n: "Sweden", f: "🇸🇪", c: "Stockholm", ct: "EU", lat: 60.1, lon: 18.6, cw: ["Gothenburg", "Malmö"], nb: ["NOR", "FIN"], lx: 0, ly: 0 },
+      { id: "NOR", n: "Norway", f: "🇳🇴", c: "Oslo", ct: "EU", lat: 60.4, lon: 8.4, cw: ["Bergen", "Trondheim"], nb: ["SWE", "FIN"], lx: -15, ly: 0 },
+      { id: "FIN", n: "Finland", f: "🇫🇮", c: "Helsinki", ct: "EU", lat: 61.9, lon: 25.7, cw: ["Tampere", "Turku"], nb: ["SWE", "NOR", "RUS"], lx: 10, ly: 0 },
+      { id: "GRC", n: "Greece", f: "🇬🇷", c: "Athens", ct: "EU", lat: 39.0, lon: 22.9, cw: ["Thessaloniki", "Santorini"], nb: ["ALB", "MKD", "BGR", "TUR"], lx: 10, ly: 10 },
+      { id: "UKR", n: "Ukraine", f: "🇺🇦", c: "Kyiv", ct: "EU", lat: 48.3, lon: 31.1, cw: ["Lviv", "Odesa"], nb: ["POL", "SVK", "HUN", "ROU", "MDA", "BLR", "RUS"], lx: 0, ly: 0 },
+      { id: "ROU", n: "Romania", f: "🇷🇴", c: "Bucharest", ct: "EU", lat: 45.9, lon: 24.9, cw: ["Cluj-Napoca", "Timișoara"], nb: ["UKR", "MDA", "BGR", "SRB", "HUN"], lx: 0, ly: 0 },
+      { id: "HUN", n: "Hungary", f: "🇭🇺", c: "Budapest", ct: "EU", lat: 47.1, lon: 19.5, cw: ["Debrecen", "Szeged"], nb: ["AUT", "SVK", "UKR", "ROU", "SRB", "HRV", "SVN"], lx: 0, ly: 0 },
+      { id: "SRB", n: "Serbia", f: "🇷🇸", c: "Belgrade", ct: "EU", lat: 44.0, lon: 21.0, cw: ["Novi Sad", "Niš"], nb: ["HUN", "ROU", "BGR", "MKD", "MNE", "BIH", "HRV"], lx: 0, ly: 0 },
+      { id: "HRV", n: "Croatia", f: "🇭🇷", c: "Zagreb", ct: "EU", lat: 45.1, lon: 15.2, cw: ["Split", "Dubrovnik"], nb: ["SVN", "HUN", "SRB", "BIH"], lx: -10, ly: 5 },
+      { id: "BGR", n: "Bulgaria", f: "🇧🇬", c: "Sofia", ct: "EU", lat: 42.7, lon: 25.4, cw: ["Plovdiv", "Varna"], nb: ["ROU", "SRB", "MKD", "GRC", "TUR"], lx: 0, ly: 0 },
+      { id: "SVK", n: "Slovakia", f: "🇸🇰", c: "Bratislava", ct: "EU", lat: 48.6, lon: 19.6, cw: ["Košice", "Prešov"], nb: ["CZE", "POL", "UKR", "HUN", "AUT"], lx: 0, ly: -5 },
+      { id: "SVN", n: "Slovenia", f: "🇸🇮", c: "Ljubljana", ct: "EU", lat: 46.1, lon: 14.9, cw: ["Maribor", "Koper"], nb: ["ITA", "AUT", "HUN", "HRV"], lx: -10, ly: -5 },
+      { id: "EST", n: "Estonia", f: "🇪🇪", c: "Tallinn", ct: "EU", lat: 58.5, lon: 25.0, cw: ["Tartu", "Pärnu"], nb: ["LVA", "RUS"], lx: 10, ly: -5 },
+      { id: "LVA", n: "Latvia", f: "🇱🇻", c: "Riga", ct: "EU", lat: 56.8, lon: 24.6, cw: ["Daugavpils", "Liepāja"], nb: ["EST", "LTU", "BLR", "RUS"], lx: 10, ly: 0 },
+      { id: "LTU", n: "Lithuania", f: "🇱🇹", c: "Vilnius", ct: "EU", lat: 55.1, lon: 23.9, cw: ["Kaunas", "Klaipėda"], nb: ["LVA", "BLR", "POL", "RUS"], lx: 10, ly: 5 },
+      { id: "BLR", n: "Belarus", f: "🇧🇾", c: "Minsk", ct: "EU", lat: 53.7, lon: 27.9, cw: ["Brest", "Grodno"], nb: ["POL", "LTU", "LVA", "RUS", "UKR"], lx: 0, ly: 0 },
+      { id: "ISL", n: "Iceland", f: "🇮🇸", c: "Reykjavík", ct: "EU", lat: 64.9, lon: -19.0, cw: ["Akureyri", "Keflavík"], nb: [], lx: -10, ly: -10 },
+      { id: "ALB", n: "Albania", f: "🇦🇱", c: "Tirana", ct: "EU", lat: 41.1, lon: 20.1, cw: ["Durrës", "Vlorë"], nb: ["MNE", "MKD", "GRC"], lx: -10, ly: 5 },
+      { id: "MKD", n: "North Macedonia", f: "🇲🇰", c: "Skopje", ct: "EU", lat: 41.6, lon: 21.7, cw: ["Bitola", "Ohrid"], nb: ["SRB", "BGR", "GRC", "ALB"], lx: 10, ly: 0 },
+      { id: "BIH", n: "Bosnia & Herz.", f: "🇧🇦", c: "Sarajevo", ct: "EU", lat: 43.9, lon: 17.6, cw: ["Mostar", "Banja Luka"], nb: ["HRV", "SRB", "MNE"], lx: -10, ly: 0 },
+
+      // AFRICA (37)
+      { id: "EGY", n: "Egypt", f: "🇪🇬", c: "Cairo", ct: "AF", lat: 26.8, lon: 30.8, cw: ["Alexandria", "Giza", "Luxor"], nb: ["LBY", "SDN"], lx: 0, ly: 0 },
+      { id: "MAR", n: "Morocco", f: "🇲🇦", c: "Rabat", ct: "AF", lat: 31.7, lon: -7.0, cw: ["Casablanca", "Marrakesh"], nb: ["DZA"], lx: -10, ly: 0 },
+      { id: "DZA", n: "Algeria", f: "🇩🇿", c: "Algiers", ct: "AF", lat: 28.0, lon: 1.6, cw: ["Oran", "Constantine"], nb: ["MAR", "TUN", "LBY", "NER", "MLI", "MRT"], lx: 0, ly: 0 },
+      { id: "TUN", n: "Tunisia", f: "🇹🇳", c: "Tunis", ct: "AF", lat: 34.0, lon: 9.5, cw: ["Sfax", "Sousse"], nb: ["DZA", "LBY"], lx: 0, ly: -10 },
+      { id: "LBY", n: "Libya", f: "🇱🇾", c: "Tripoli", ct: "AF", lat: 26.3, lon: 17.2, cw: ["Benghazi", "Misrata"], nb: ["TUN", "DZA", "NER", "TCD", "SDN", "EGY"], lx: 0, ly: 0 },
+      { id: "SDN", n: "Sudan", f: "🇸🇩", c: "Khartoum", ct: "AF", lat: 12.8, lon: 30.2, cw: ["Omdurman", "Port Sudan"], nb: ["EGY", "LBY", "TCD", "ETH"], lx: 0, ly: 0 },
+      { id: "ETH", n: "Ethiopia", f: "🇪🇹", c: "Addis Ababa", ct: "AF", lat: 9.1, lon: 40.4, cw: ["Gondar", "Hawassa"], nb: ["SDN", "KEN", "SOM"], lx: 0, ly: 0 },
+      { id: "KEN", n: "Kenya", f: "🇰🇪", c: "Nairobi", ct: "AF", lat: -0.02, lon: 37.9, cw: ["Mombasa", "Kisumu"], nb: ["ETH", "SOM", "TZA", "UGA"], lx: 10, ly: 0 },
+      { id: "TZA", n: "Tanzania", f: "🇹🇿", c: "Dodoma", ct: "AF", lat: -6.3, lon: 34.8, cw: ["Dar es Salaam", "Zanzibar"], nb: ["KEN", "UGA", "RWA", "MOZ", "ZMB"], lx: 10, ly: 5 },
+      { id: "UGA", n: "Uganda", f: "🇺🇬", c: "Kampala", ct: "AF", lat: 1.3, lon: 32.2, cw: ["Entebbe", "Jinja"], nb: ["KEN", "TZA", "RWA", "COD", "SSD"], lx: -10, ly: -5 },
+      { id: "RWA", n: "Rwanda", f: "🇷🇼", c: "Kigali", ct: "AF", lat: -1.9, lon: 29.8, cw: ["Gisenyi", "Butare"], nb: ["UGA", "TZA", "COD"], lx: -12, ly: 0 },
+      { id: "NGA", n: "Nigeria", f: "🇳🇬", c: "Abuja", ct: "AF", lat: 9.0, lon: 8.6, cw: ["Lagos", "Kano"], nb: ["BEN", "NER", "TCD", "CMR"], lx: 0, ly: 0 },
+      { id: "GHA", n: "Ghana", f: "🇬🇭", c: "Accra", ct: "AF", lat: 7.9, lon: -1.0, cw: ["Kumasi", "Tamale"], nb: ["CIV", "BFA", "TGO"], lx: 0, ly: 5 },
+      { id: "CIV", n: "Ivory Coast", f: "🇨🇮", c: "Yamoussoukro", ct: "AF", lat: 7.5, lon: -5.5, cw: ["Abidjan", "Bouaké"], nb: ["LBR", "GIN", "MLI", "BFA", "GHA"], lx: -10, ly: 0 },
+      { id: "SEN", n: "Senegal", f: "🇸🇳", c: "Dakar", ct: "AF", lat: 14.4, lon: -14.4, cw: ["Saint-Louis", "Thiès"], nb: ["MRT", "MLI", "GIN"], lx: -10, ly: -5 },
+      { id: "MLI", n: "Mali", f: "🇲🇱", c: "Bamako", ct: "AF", lat: 17.5, lon: -3.9, cw: ["Timbuktu", "Sikasso"], nb: ["SEN", "MRT", "DZA", "NER", "BFA", "CIV"], lx: 0, ly: 0 },
+      { id: "NER", n: "Niger", f: "🇳🇪", c: "Niamey", ct: "AF", lat: 17.6, lon: 8.0, cw: ["Zinder", "Agadez"], nb: ["MLI", "DZA", "LBY", "TCD", "NGA", "BEN", "BFA"], lx: 0, ly: 0 },
+      { id: "TCD", n: "Chad", f: "🇹🇩", c: "N'Djamena", ct: "AF", lat: 15.4, lon: 18.7, cw: ["Moundou", "Abéché"], nb: ["NER", "LBY", "SDN", "CMR", "NGA"], lx: 0, ly: 0 },
+      { id: "CMR", n: "Cameroon", f: "🇨🇲", c: "Yaoundé", ct: "AF", lat: 7.3, lon: 12.3, cw: ["Douala", "Garoua"], nb: ["NGA", "TCD", "GAB", "COG"], lx: 0, ly: 0 },
+      { id: "GAB", n: "Gabon", f: "🇬🇦", c: "Libreville", ct: "AF", lat: -0.8, lon: 11.6, cw: ["Port-Gentil", "Franceville"], nb: ["CMR", "COG"], lx: -10, ly: 0 },
+      { id: "COG", n: "Congo", f: "🇨🇬", c: "Brazzaville", ct: "AF", lat: -0.2, lon: 15.8, cw: ["Pointe-Noire", "Dolisie"], nb: ["GAB", "CMR", "COD"], lx: 0, ly: 10 },
+      { id: "COD", n: "DR Congo", f: "🇨🇩", c: "Kinshasa", ct: "CD", lat: -4.0, lon: 21.7, cw: ["Lubumbashi", "Goma"], nb: ["COG", "UGA", "RWA", "TZA", "ZMB", "AGO"], lx: 0, ly: 0 },
+      { id: "AGO", n: "Angola", f: "🇦🇴", c: "Luanda", ct: "AF", lat: -12.5, lon: 18.5, cw: ["Huambo", "Lobito"], nb: ["COD", "ZMB", "NAM"], lx: 0, ly: 0 },
+      { id: "ZMB", n: "Zambia", f: "🇿🇲", c: "Lusaka", ct: "AF", lat: -13.1, lon: 27.8, cw: ["Kitwe", "Ndola"], nb: ["COD", "TZA", "MWI", "MOZ", "ZWE", "NAM", "AGO"], lx: 0, ly: 0 },
+      { id: "ZWE", n: "Zimbabwe", f: "🇿🇼", c: "Harare", ct: "AF", lat: -19.0, lon: 29.1, cw: ["Bulawayo", "Mutare"], nb: ["ZMB", "MOZ", "ZAF", "BWA"], lx: 0, ly: 0 },
+      { id: "MOZ", n: "Mozambique", f: "🇲🇿", c: "Maputo", ct: "AF", lat: -18.6, lon: 35.5, cw: ["Beira", "Nampula"], nb: ["TZA", "MWI", "ZMB", "ZWE", "ZAF"], lx: 10, ly: 0 },
+      { id: "ZAF", n: "South Africa", f: "🇿🇦", c: "Pretoria", ct: "AF", lat: -30.5, lon: 22.9, cw: ["Cape Town", "Johannesburg"], nb: ["NAM", "BWA", "ZWE", "MOZ"], lx: 0, ly: 10 },
+      { id: "NAM", n: "Namibia", f: "🇳🇦", c: "Windhoek", ct: "AF", lat: -22.9, lon: 18.4, cw: ["Walvis Bay", "Swakopmund"], nb: ["AGO", "ZMB", "BWA", "ZAF"], lx: -10, ly: 0 },
+      { id: "BWA", n: "Botswana", f: "🇧🇼", c: "Gaborone", ct: "AF", lat: -22.3, lon: 24.6, cw: ["Francistown", "Maun"], nb: ["NAM", "ZMB", "ZWE", "ZAF"], lx: 0, ly: 0 },
+      { id: "MAD", n: "Madagascar", f: "🇲🇬", c: "Antananarivo", ct: "AF", lat: -18.7, lon: 46.8, cw: ["Toamasina", "Antsirabe"], nb: [], lx: 10, ly: 0 },
+      { id: "SOM", n: "Somalia", f: "🇸🇴", c: "Mogadishu", ct: "AF", lat: 5.1, lon: 46.1, cw: ["Hargeisa", "Bosaso"], nb: ["ETH", "KEN"], lx: 10, ly: 0 },
+      { id: "MRT", n: "Mauritania", f: "🇲🇷", c: "Nouakchott", ct: "AF", lat: 21.0, lon: -10.9, cw: ["Nouadhibou", "Kiffa"], nb: ["SEN", "MLI", "DZA"], lx: -10, ly: 0 },
+      { id: "BEN", n: "Benin", f: "🇧🇯", c: "Porto-Novo", ct: "AF", lat: 9.3, lon: 2.3, cw: ["Cotonou", "Parakou"], nb: ["TGO", "BFA", "NER", "NGA"], lx: 5, ly: 0 },
+      { id: "TGO", n: "Togo", f: "🇹🇬", c: "Lomé", ct: "AF", lat: 8.6, lon: 0.8, cw: ["Sokodé", "Kara"], nb: ["GHA", "BFA", "BEN"], lx: -8, ly: 0 },
+      { id: "BFA", n: "Burkina Faso", f: "🇧🇫", c: "Ouagadougou", ct: "AF", lat: 12.2, lon: -1.5, cw: ["Bobo-Dioulasso", "Koudougou"], nb: ["MLI", "NER", "BEN", "TGO", "GHA", "CIV"], lx: 0, ly: 0 },
+      { id: "GIN", n: "Guinea", f: "🇬🇳", c: "Conakry", ct: "AF", lat: 9.9, lon: -9.6, cw: ["Nzérékoré", "Kankan"], nb: ["SEN", "MLI", "CIV", "LBR", "SLE"], lx: -10, ly: 0 },
+      { id: "LBR", n: "Liberia", f: "🇱🇷", c: "Monrovia", ct: "AF", lat: 6.4, lon: -9.4, cw: ["Gbarnga", "Buchanan"], nb: ["SLN", "GIN", "CIV"], lx: -10, ly: 10 },
+
+      // ASIA (43)
+      { id: "CHN", n: "China", f: "🇨🇳", c: "Beijing", ct: "AS", lat: 35.8, lon: 104.1, cw: ["Shanghai", "Guangzhou", "Shenzhen"], nb: ["RUS", "MNG", "KOR", "VNM", "LAO", "MMR", "IND", "NPL", "PAK", "AFG", "KAZ", "KGZ", "TJK"], lx: 0, ly: 0 },
+      { id: "IND", n: "India", f: "🇮🇳", c: "New Delhi", ct: "AS", lat: 20.5, lon: 78.9, cw: ["Mumbai", "Bengaluru", "Kolkata"], nb: ["PAK", "CHN", "NPL", "BTN", "BGD", "MMR"], lx: 0, ly: 0 },
+      { id: "JPN", n: "Japan", f: "🇯🇵", c: "Tokyo", ct: "AS", lat: 36.2, lon: 138.2, cw: ["Osaka", "Kyoto", "Yokohama"], nb: [], lx: 15, ly: 0 },
+      { id: "KOR", n: "South Korea", f: "🇰🇷", c: "Seoul", ct: "AS", lat: 35.9, lon: 127.7, cw: ["Busan", "Incheon"], nb: ["PRK"], lx: 10, ly: 5 },
+      { id: "PRK", n: "North Korea", f: "🇰🇵", c: "Pyongyang", ct: "AS", lat: 40.3, lon: 127.5, cw: ["Hamhung", "Kaesong"], nb: ["CHN", "RUS", "KOR"], lx: 10, ly: -5 },
+      { id: "RUS", n: "Russia", f: "🇷🇺", c: "Moscow", ct: "AS", lat: 61.5, lon: 105.3, cw: ["Saint Petersburg", "Novosibirsk"], nb: ["NOR", "FIN", "EST", "LVA", "LTU", "POL", "BLR", "UKR", "GEO", "KAZ", "MNG", "CHN", "PRK"], lx: 0, ly: 0 },
+      { id: "MNG", n: "Mongolia", f: "🇲🇳", c: "Ulaanbaatar", ct: "AS", lat: 46.8, lon: 103.8, cw: ["Erdenet", "Darkhan"], nb: ["RUS", "CHN"], lx: 0, ly: 0 },
+      { id: "VNM", n: "Vietnam", f: "🇻🇳", c: "Hanoi", ct: "AS", lat: 14.0, lon: 108.2, cw: ["Ho Chi Minh City", "Da Nang"], nb: ["CHN", "LAO", "KHM"], lx: 10, ly: 0 },
+      { id: "THA", n: "Thailand", f: "🇹🇭", c: "Bangkok", ct: "AS", lat: 15.8, lon: 100.9, cw: ["Chiang Mai", "Phuket"], nb: ["MMR", "LAO", "KHM", "MYS"], lx: -10, ly: 0 },
+      { id: "IDN", n: "Indonesia", f: "🇮🇩", c: "Jakarta", ct: "AS", lat: -0.78, lon: 113.9, cw: ["Bali", "Surabaya", "Bandung"], nb: ["MYS", "PNG", "TLS"], lx: 0, ly: 10 },
+      { id: "PHL", n: "Philippines", f: "🇵🇭", c: "Manila", ct: "AS", lat: 12.8, lon: 121.7, cw: ["Cebu", "Davao"], nb: [], lx: 15, ly: 0 },
+      { id: "MYS", n: "Malaysia", f: "🇲🇾", c: "Kuala Lumpur", ct: "AS", lat: 4.2, lon: 101.9, cw: ["George Town", "Johor Bahru"], nb: ["THA", "IDN", "BRN"], lx: -10, ly: 5 },
+      { id: "SGP", n: "Singapore", f: "🇸🇬", c: "Singapore", ct: "AS", lat: 1.35, lon: 103.8, cw: ["Jurong", "Changi"], nb: ["MYS"], lx: 10, ly: 10 },
+      { id: "PAK", n: "Pakistan", f: "🇵🇰", c: "Islamabad", ct: "AS", lat: 30.3, lon: 69.3, cw: ["Karachi", "Lahore"], nb: ["IRN", "AFG", "CHN", "IND"], lx: -10, ly: 0 },
+      { id: "BGD", n: "Bangladesh", f: "🇧🇩", c: "Dhaka", ct: "AS", lat: 23.6, lon: 90.3, cw: ["Chittagong", "Sylhet"], nb: ["IND", "MMR"], lx: 10, ly: 0 },
+      { id: "MMR", n: "Myanmar", f: "🇲🇲", c: "Naypyidaw", ct: "AS", lat: 21.9, lon: 95.9, cw: ["Yangon", "Mandalay"], nb: ["BGD", "IND", "CHN", "LAO", "THA"], lx: -10, ly: 0 },
+      { id: "NPL", n: "Nepal", f: "🇳🇵", c: "Kathmandu", ct: "AS", lat: 28.3, lon: 84.1, cw: ["Pokhara", "Lalitpur"], nb: ["IND", "CHN"], lx: 0, ly: -8 },
+      { id: "LKA", n: "Sri Lanka", f: "🇱🇰", c: "Sri Jayawardenepura Kotte", ct: "AS", lat: 7.8, lon: 80.7, cw: ["Colombo", "Kandy"], nb: [], lx: 10, ly: 10 },
+      { id: "KAZ", n: "Kazakhstan", f: "🇰🇿", c: "Astana", ct: "AS", lat: 48.0, lon: 66.9, cw: ["Almaty", "Shymkent"], nb: ["RUS", "CHN", "KGZ", "UZB", "TKM"], lx: 0, ly: 0 },
+      { id: "UZB", n: "Uzbekistan", f: "🇺🇿", c: "Tashkent", ct: "AS", lat: 41.3, lon: 64.5, cw: ["Samarkand", "Bukhara"], nb: ["KAZ", "KGZ", "TJK", "AFG", "TKM"], lx: 0, ly: 0 },
+      { id: "AFG", n: "Afghanistan", f: "🇦🇫", c: "Kabul", ct: "AS", lat: 33.9, lon: 67.7, cw: ["Kandahar", "Herat"], nb: ["IRN", "TKM", "UZB", "TJK", "CHN", "PAK"], lx: 0, ly: 0 },
+      { id: "IRN", n: "Iran", f: "🇮🇷", c: "Tehran", ct: "AS", lat: 32.4, lon: 53.6, cw: ["Isfahan", "Shiraz"], nb: ["IRQ", "TUR", "ARM", "AZE", "TKM", "AFG", "PAK"], lx: 0, ly: 0 },
+      { id: "TUR", n: "Turkey", f: "🇹🇷", c: "Ankara", ct: "AS", lat: 38.9, lon: 35.2, cw: ["Istanbul", "Izmir"], nb: ["GRC", "BGR", "GEO", "ARM", "IRN", "IRQ", "SYR"], lx: 0, ly: 0 },
+      { id: "SAU", n: "Saudi Arabia", f: "🇸🇦", c: "Riyadh", ct: "AS", lat: 23.8, lon: 45.0, cw: ["Jeddah", "Mecca"], nb: ["JOR", "IRQ", "KWT", "QAT", "ARE", "OMN", "YEM"], lx: 0, ly: 0 },
+      { id: "ARE", n: "UAE", f: "🇦🇪", c: "Abu Dhabi", ct: "AS", lat: 23.4, lon: 53.8, cw: ["Dubai", "Sharjah"], nb: ["SAU", "OMN"], lx: 10, ly: 0 },
+      { id: "IRQ", n: "Iraq", f: "🇮🇶", c: "Baghdad", ct: "AS", lat: 33.2, lon: 43.6, cw: ["Basra", "Erbil"], nb: ["SYR", "TUR", "IRN", "KWT", "SAU", "JOR"], lx: 0, ly: 0 },
+      { id: "ISR", n: "Israel", f: "🇮🇱", c: "Jerusalem", ct: "AS", lat: 31.0, lon: 34.8, cw: ["Tel Aviv", "Haifa"], nb: ["EGY", "JOR", "SYR", "LBN"], lx: -12, ly: 5 },
+      { id: "SYR", n: "Syria", f: "🇸🇾", c: "Damascus", ct: "AS", lat: 34.8, lon: 38.9, cw: ["Aleppo", "Homs"], nb: ["TUR", "IRQ", "JOR", "ISR", "LBN"], lx: 0, ly: -5 },
+      { id: "JOR", n: "Jordan", f: "🇯🇴", c: "Amman", ct: "AS", lat: 30.5, lon: 36.2, cw: ["Zarqa", "Aqaba"], nb: ["ISR", "SYR", "IRQ", "SAU"], lx: -10, ly: 5 },
+      { id: "YEM", n: "Yemen", f: "🇾🇪", c: "Sana'a", ct: "AS", lat: 15.5, lon: 48.5, cw: ["Aden", "Taiz"], nb: ["SAU", "OMN"], lx: 0, ly: 10 },
+      { id: "OMN", n: "Oman", f: "🇴🇲", c: "Muscat", ct: "AS", lat: 21.5, lon: 55.9, cw: ["Salalah", "Sohar"], nb: ["YEM", "SAU", "ARE"], lx: 10, ly: 0 },
+      { id: "KHM", n: "Cambodia", f: "🇰🇭", c: "Phnom Penh", ct: "AS", lat: 12.5, lon: 104.9, cw: ["Siem Reap", "Battambang"], nb: ["THA", "LAO", "VNM"], lx: 0, ly: 8 },
+      { id: "LAO", n: "Laos", f: "🇱🇦", c: "Vientiane", ct: "AS", lat: 19.8, lon: 102.4, cw: ["Luang Prabang", "Pakse"], nb: ["MMR", "CHN", "VNM", "KHM", "THA"], lx: -8, ly: -5 },
+      { id: "GEO", n: "Georgia", f: "🇬🇪", c: "Tbilisi", ct: "AS", lat: 42.3, lon: 43.3, cw: ["Batumi", "Kutaisi"], nb: ["RUS", "AZE", "ARM", "TUR"], lx: 0, ly: -8 },
+      { id: "ARM", n: "Armenia", f: "🇦🇲", c: "Yerevan", ct: "AS", lat: 40.0, lon: 45.0, cw: ["Gyumri", "Vanadzor"], nb: ["TUR", "GEO", "AZE", "IRN"], lx: -8, ly: 5 },
+      { id: "AZE", n: "Azerbaijan", f: "🇦🇿", c: "Baku", ct: "AS", lat: 40.1, lon: 47.5, cw: ["Ganja", "Sumqayit"], nb: ["RUS", "GEO", "ARM", "IRN"], lx: 10, ly: 0 },
+      { id: "KGZ", n: "Kyrgyzstan", f: "🇰🇬", c: "Bishkek", ct: "AS", lat: 41.2, lon: 74.7, cw: ["Osh", "Jalal-Abad"], nb: ["KAZ", "CHN", "TJK", "UZB"], lx: 10, ly: 0 },
+      { id: "TJK", n: "Tajikistan", f: "🇹🇯", c: "Dushanbe", ct: "AS", lat: 38.8, lon: 71.2, cw: ["Khujand", "Bokhtar"], nb: ["UZB", "KGZ", "CHN", "AFG"], lx: 0, ly: 10 },
+      { id: "TKM", n: "Turkmenistan", f: "🇹🇲", c: "Ashgabat", ct: "AS", lat: 38.9, lon: 59.5, cw: ["Türkmenbaşy", "Mary"], nb: ["KAZ", "UZB", "AFG", "IRN"], lx: -10, ly: 0 },
+      { id: "BTN", n: "Bhutan", f: "🇧🇹", c: "Thimphu", ct: "AS", lat: 27.5, lon: 90.4, cw: ["Phuntsholing", "Paro"], nb: ["IND", "CHN"], lx: 8, ly: -8 },
+      { id: "QAT", n: "Qatar", f: "🇶🇦", c: "Doha", ct: "AS", lat: 25.3, lon: 51.1, cw: ["Al Wakrah", "Al Khor"], nb: ["SAU"], lx: 10, ly: -5 },
+      { id: "KWT", n: "Kuwait", f: "🇰🇼", c: "Kuwait City", ct: "AS", lat: 29.3, lon: 47.4, cw: ["Al Ahmadi", "Hawalli"], nb: ["IRQ", "SAU"], lx: 8, ly: 0 },
+      { id: "LBN", n: "Lebanon", f: "🇱🇧", c: "Beirut", ct: "AS", lat: 33.8, lon: 35.8, cw: ["Tripoli", "Sidon"], nb: ["SYR", "ISR"], lx: -10, ly: -5 },
+
+      // OCEANIA (11)
+      { id: "AUS", n: "Australia", f: "🇦🇺", c: "Canberra", ct: "OC", lat: -25.2, lon: 133.7, cw: ["Sydney", "Melbourne", "Brisbane"], nb: [], lx: 0, ly: 0 },
+      { id: "NZL", n: "New Zealand", f: "🇳🇿", c: "Wellington", ct: "OC", lat: -40.9, lon: 174.8, cw: ["Auckland", "Christchurch"], nb: [], lx: 15, ly: 0 },
+      { id: "PNG", n: "Papua New Guinea", f: "🇵🇬", c: "Port Moresby", ct: "OC", lat: -6.3, lon: 143.9, cw: ["Lae", "Mount Hagen"], nb: ["IDN"], lx: 10, ly: 0 },
+      { id: "FJI", n: "Fiji", f: "🇫🇯", c: "Suva", ct: "OC", lat: -17.7, lon: 178.0, cw: ["Nadi", "Lautoka"], nb: [], lx: 12, ly: 0 },
+      { id: "SLB", n: "Solomon Islands", f: "🇸🇧", c: "Honiara", ct: "OC", lat: -9.6, lon: 160.1, cw: ["Gizo", "Auki"], nb: [], lx: 10, ly: -10 },
+      { id: "VUT", n: "Vanuatu", f: "🇻🇺", c: "Port Vila", ct: "OC", lat: -15.3, lon: 166.9, cw: ["Luganville"], nb: [], lx: 10, ly: 0 },
+      { id: "WSM", n: "Samoa", f: "🇼🇸", c: "Apia", ct: "OC", lat: -13.7, lon: -172.1, cw: ["Asau"], nb: [], lx: 10, ly: 0 },
+      { id: "TON", n: "Tonga", f: "🇹🇴", c: "Nuku'alofa", ct: "OC", lat: -21.1, lon: -175.2, cw: ["Neiafu"], nb: [], lx: 10, ly: 5 },
+      { id: "FSM", n: "Micronesia", f: "🇫🇲", c: "Palikir", ct: "OC", lat: 6.9, lon: 158.1, cw: ["Weno", "Tofol"], nb: [], lx: 10, ly: -10 },
+      { id: "PLW", n: "Palau", f: "🇵🇼", c: "Ngerulmud", ct: "OC", lat: 7.5, lon: 134.5, cw: ["Koror"], nb: [], lx: -12, ly: -5 },
+      { id: "KIR", n: "Kiribati", f: "🇰🇮", c: "South Tarawa", ct: "OC", lat: 1.8, lon: -157.3, cw: ["Betio"], nb: [], lx: 10, ly: 0 }
+    ];
+
+    /* ================= GAME STATE VARIABLES ================= */
+    let gameState = {
+      p1Name: "Player 1",
+      p2Name: "Player 2",
+      difficulty: "explorer",
+      maxRounds: 10,
+      currentRound: 1,
+      turnPlayer: 1, // 1 or 2
+      p1Score: 0,
+      p2Score: 0,
+      p1Tickets: 0,
+      p2Tickets: 0,
+      p1RightCombo: 0,
+      p2RightCombo: 0,
+      p1Stamps: [],
+      p2Stamps: [],
+      // Country ownership: { [id]: { owner: 1|2, status: 'claim'|'locked'|'hq' } }
+      countries: {},
+      selectedCountry: null,
+      currentView: 'WORLD', // 'WORLD' | 'NA' | 'SA' | 'EU' | 'AF' | 'AS' | 'OC'
+      currentQuiz: null
+    };
+
+    /* Continent Bounding ViewBoxes for Kavrayskiy VII */
+    const CONTINENT_VIEWS = {
+      WORLD: "0 0 1200 650",
+      NA: "50 30 450 320",
+      SA: "240 280 250 320",
+      EU: "520 40 250 200",
+      AF: "500 180 300 320",
+      AS: "680 50 420 320",
+      OC: "900 360 280 240"
+    };
+
+    /* ================= INITIALIZATION ================= */
+    window.onload = function() {
+      // Ensure all country land borders are 100% symmetric
+      sanitizeSymmetricBorders();
+      // Render initial map pins and elements
+      renderMapPins();
+      updateHUD();
+    };
+
+    function sanitizeSymmetricBorders() {
+      const map = {};
+      COUNTRIES.forEach(c => map[c.id] = c);
+
+      COUNTRIES.forEach(c => {
+        if (!c.nb) c.nb = [];
+        c.nb.forEach(neighborId => {
+          const neighbor = map[neighborId];
+          if (neighbor && !neighbor.nb.includes(c.id)) {
+            neighbor.nb.push(c.id);
+          }
+        });
+      });
+    }
+
+    /* ================= MAP SVG RENDERING ================= */
+    function renderMapPins() {
+      const pinLayer = document.getElementById('layer-pins');
+      pinLayer.innerHTML = '';
+
+      COUNTRIES.forEach(c => {
+        const pt = proj(c.lon, c.lat);
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('id', `pin-${c.id}`);
+
+        // Invisible touch target (24px radius for easy iPad tapping)
+        const touch = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        touch.setAttribute('cx', pt.x);
+        touch.setAttribute('cy', pt.y);
+        touch.setAttribute('r', '24');
+        touch.setAttribute('class', 'pin-touch');
+        touch.onclick = (e) => { e.stopPropagation(); handlePinClick(c); };
+
+        // Visible Circle Pin
+        const pin = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pin.setAttribute('cx', pt.x);
+        pin.setAttribute('cy', pt.y);
+        pin.setAttribute('r', '6');
+        pin.setAttribute('id', `pin-dot-${c.id}`);
+        pin.setAttribute('class', 'pin pin-neutral');
+        pin.onclick = (e) => { e.stopPropagation(); handlePinClick(c); };
+
+        // Status Symbol / Crown HQ Badge
+        const statusText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        statusText.setAttribute('id', `pin-badge-${c.id}`);
+        statusText.setAttribute('x', pt.x);
+        statusText.setAttribute('y', pt.y - 8);
+        statusText.setAttribute('text-anchor', 'middle');
+        statusText.setAttribute('class', 'lbl');
+        statusText.setAttribute('font-size', '9');
+        statusText.textContent = '';
+
+        // Country Name Label
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', pt.x + (c.lx || 0));
+        label.setAttribute('y', pt.y + 11 + (c.ly || 0));
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('class', 'lbl');
+        label.textContent = c.n;
+
+        g.appendChild(touch);
+        g.appendChild(pin);
+        g.appendChild(statusText);
+        g.appendChild(label);
+        pinLayer.appendChild(g);
+      });
+
+      renderRouteLines();
+    }
+
+    function renderRouteLines() {
+      const routeLayer = document.getElementById('layer-routes');
+      routeLayer.innerHTML = '';
+
+      const drawnLinks = new Set();
+      const map = {};
+      COUNTRIES.forEach(c => map[c.id] = c);
+
+      COUNTRIES.forEach(c => {
+        const state = gameState.countries[c.id];
+        if (!state) return;
+
+        c.nb.forEach(nbrId => {
+          const nbrState = gameState.countries[nbrId];
+          if (nbrState && nbrState.owner === state.owner) {
+            const pairKey = [c.id, nbrId].sort().join('-');
+            if (!drawnLinks.has(pairKey)) {
+              drawnLinks.add(pairKey);
+
+              const p1 = proj(c.lon, c.lat);
+              const p2 = proj(map[nbrId].lon, map[nbrId].lat);
+
+              const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+              line.setAttribute('x1', p1.x);
+              line.setAttribute('y1', p1.y);
+              line.setAttribute('x2', p2.x);
+              line.setAttribute('y2', p2.y);
+              line.setAttribute('class', 'route-line');
+              line.setAttribute('stroke', state.owner === 1 ? '#f97316' : '#8b5cf6');
+              line.setAttribute('stroke-width', '2.5');
+              line.setAttribute('filter', state.owner === 1 ? 'url(#glow-p1)' : 'url(#glow-p2)');
+              routeLayer.appendChild(line);
             }
+          }
+        });
+      });
+    }
+
+    /* ================= CONTINENT ZOOM & SELECTION ================= */
+    function zoomContinent(ctCode) {
+      playSound('click');
+      gameState.currentView = ctCode;
+      const svg = document.getElementById('world-map');
+      svg.setAttribute('viewBox', CONTINENT_VIEWS[ctCode] || CONTINENT_VIEWS.WORLD);
+    }
+
+    function handlePinClick(country) {
+      playSound('click');
+      gameState.selectedCountry = country;
+
+      // Position pulse target ring
+      const pt = proj(country.lon, country.lat);
+      const pulse = document.getElementById('target-pulse');
+      pulse.setAttribute('cx', pt.x);
+      pulse.setAttribute('cy', pt.y);
+      pulse.style.display = 'block';
+
+      // Auto zoom into country's continent if in world view
+      if (gameState.currentView === 'WORLD') {
+        zoomContinent(country.ct);
+      }
+
+      // Show selection card at bottom
+      const card = document.getElementById('selection-card');
+      document.getElementById('sel-flag').textContent = country.f;
+      document.getElementById('sel-name').textContent = country.n;
+      
+      const ownerState = gameState.countries[country.id];
+      const ownerBadge = document.getElementById('sel-owner');
+      const actionBtn = document.getElementById('sel-action-btn');
+      const details = document.getElementById('sel-details');
+
+      details.textContent = `Capital: ${country.c} • ${getContinentName(country.ct)}`;
+
+      if (!ownerState) {
+        ownerBadge.textContent = "Unclaimed";
+        ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
+        actionBtn.textContent = "Fly & Claim (1pt) ✈️";
+        actionBtn.className = "px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:scale-105 active:scale-95 transition whitespace-nowrap";
+      } else if (ownerState.owner === gameState.turnPlayer) {
+        if (ownerState.status === 'claim') {
+          ownerBadge.textContent = "Your Territory";
+          ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700";
+          actionBtn.textContent = "Lock Country 🔒 (+1pt)";
+          actionBtn.className = "px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:scale-105 active:scale-95 transition whitespace-nowrap";
+        } else if (ownerState.status === 'locked') {
+          ownerBadge.textContent = "Locked 🔒";
+          ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-950 text-amber-400 border border-amber-700";
+          actionBtn.textContent = "Build Crown HQ 👑 (+2pts)";
+          actionBtn.className = "px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:scale-105 active:scale-95 transition whitespace-nowrap";
+        } else {
+          ownerBadge.textContent = "Crown HQ 👑";
+          ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 border border-amber-300";
+          actionBtn.textContent = "Crown HQ Shielded 🛡️";
+          actionBtn.className = "px-4 py-2 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap";
+        }
+      } else {
+        // Enemy Territory
+        const pName = gameState.turnPlayer === 1 ? gameState.p2Name : gameState.p1Name;
+        const pTickets = gameState.turnPlayer === 1 ? gameState.p1Tickets : gameState.p2Tickets;
+
+        if (ownerState.status === 'hq' || isShieldedByHQ(country.id, ownerState.owner)) {
+          ownerBadge.textContent = `${pName}'s HQ / Shielded 🛡️`;
+          ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-950 text-rose-400 border border-rose-700";
+          actionBtn.textContent = "Unstealable 🛡️";
+          actionBtn.className = "px-4 py-2 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap";
+        } else if (ownerState.status === 'locked') {
+          ownerBadge.textContent = `${pName}'s Locked 🔒`;
+          ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-950 text-purple-400 border border-purple-700";
+          actionBtn.textContent = `Mega-Steal (2 🎯 Req - Have ${pTickets})`;
+          actionBtn.className = pTickets >= 2 
+            ? "px-4 py-2 rounded-xl bg-rose-600 text-white font-black text-xs sm:text-sm shadow-lg hover:scale-105 transition whitespace-nowrap"
+            : "px-4 py-2 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap";
+        } else {
+          ownerBadge.textContent = `${pName}'s Unlocked`;
+          ownerBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-950 text-orange-400 border border-orange-700";
+          actionBtn.textContent = `Steal Territory (1 🎯 Req - Have ${pTickets})`;
+          actionBtn.className = pTickets >= 1 
+            ? "px-4 py-2 rounded-xl bg-rose-500 text-white font-black text-xs sm:text-sm shadow-lg hover:scale-105 transition whitespace-nowrap"
+            : "px-4 py-2 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs sm:text-sm cursor-not-allowed whitespace-nowrap";
+        }
+      }
+
+      card.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+    }
+
+    function isShieldedByHQ(countryId, owner) {
+      const country = COUNTRIES.find(c => c.id === countryId);
+      if (!country) return false;
+
+      // Check if any land neighbor is a Crown HQ owned by the same player
+      return country.nb.some(nbrId => {
+        const st = gameState.countries[nbrId];
+        return st && st.owner === owner && st.status === 'hq';
+      });
+    }
+
+    function getContinentName(code) {
+      const map = { NA: 'North America', SA: 'South America', EU: 'Europe', AF: 'Africa', AS: 'Asia', OC: 'Oceania' };
+      return map[code] || code;
+    }
+
+    /* ================= GAME ACTION & QUIZ GENERATOR ================= */
+    function triggerCountryAction() {
+      const country = gameState.selectedCountry;
+      if (!country) return;
+
+      const ownerState = gameState.countries[country.id];
+      const pTickets = gameState.turnPlayer === 1 ? gameState.p1Tickets : gameState.p2Tickets;
+
+      let actionType = 'CLAIM';
+
+      if (ownerState) {
+        if (ownerState.owner === gameState.turnPlayer) {
+          if (ownerState.status === 'claim') actionType = 'LOCK';
+          else if (ownerState.status === 'locked') actionType = 'HQ';
+          else return;
+        } else {
+          if (ownerState.status === 'hq' || isShieldedByHQ(country.id, ownerState.owner)) return;
+          if (ownerState.status === 'locked') {
+            if (pTickets < 2) return;
+            actionType = 'MEGA_STEAL';
+          } else {
+            if (pTickets < 1) return;
+            actionType = 'STEAL';
+          }
+        }
+      }
+
+      // Hide bottom selection card
+      document.getElementById('selection-card').classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      
+      // Launch Quiz Challenge (Anti-peeking mode active via body class)
+      launchQuiz(country, actionType);
+    }
+
+    function launchQuiz(country, actionType) {
+      document.body.classList.add('in-quiz');
+
+      const quizModal = document.getElementById('modal-quiz');
+      document.getElementById('quiz-flag').textContent = country.f;
+      document.getElementById('quiz-country-name').textContent = country.n;
+
+      const actionBadge = document.getElementById('quiz-action-type');
+      actionBadge.textContent = actionType.replace('_', ' ');
+
+      // Build Questions & Options
+      const quiz = generateQuestion(country, actionType);
+      gameState.currentQuiz = { country, actionType, quiz };
+
+      document.getElementById('quiz-question-text').textContent = quiz.question;
+
+      const optionsGrid = document.getElementById('quiz-options-grid');
+      optionsGrid.innerHTML = '';
+
+      quiz.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "p-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-700 font-bold text-xs sm:text-sm text-slate-200 text-left transition flex items-center justify-between";
+        btn.innerHTML = `<span>${opt}</span> <span class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-[10px] text-slate-400">${String.fromCharCode(65 + idx)}</span>`;
+        btn.onclick = () => handleAnswerSelect(idx, btn);
+        optionsGrid.appendChild(btn);
+      });
+
+      document.getElementById('quiz-feedback').classList.add('hidden');
+      document.getElementById('quiz-continue-btn').classList.add('hidden');
+
+      quizModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function generateQuestion(country, actionType) {
+      // Create high quality geography questions with distractors
+      const questionTypes = [
+        {
+          q: `What is the capital city of ${country.n}?`,
+          correct: country.c,
+          distractors: country.cw || ["Sydney", "Cairo", "Madrid"]
+        },
+        {
+          q: `Which continent is ${country.n} (${country.f}) located on?`,
+          correct: getContinentName(country.ct),
+          distractors: ["North America", "Europe", "Asia", "Africa", "South America", "Oceania"].filter(c => c !== getContinentName(country.ct))
+        },
+        {
+          q: `Which of these cities is located in ${country.n}?`,
+          correct: (country.cw && country.cw[0]) ? country.cw[0] : country.c,
+          distractors: ["Tokyo", "Berlin", "Buenos Aires", "Toronto", "Rome"].filter(c => c !== country.c)
+        }
+      ];
+
+      const chosen = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+      let options = [chosen.correct, ...chosen.distractors.slice(0, 3)];
+      options = shuffleArray(options).slice(0, 4);
+
+      return {
+        question: chosen.q,
+        correctIndex: options.indexOf(chosen.correct),
+        options: options,
+        fact: `${country.n} (${country.f}) has its capital at ${country.c} and is a key destination on the world map!`
+      };
+    }
+
+    function shuffleArray(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    function handleAnswerSelect(selectedIdx, btnElement) {
+      const quiz = gameState.currentQuiz.quiz;
+      const optionsGrid = document.getElementById('quiz-options-grid');
+      const allBtns = optionsGrid.querySelectorAll('button');
+
+      allBtns.forEach((b, idx) => {
+        b.disabled = true;
+        if (idx === quiz.correctIndex) {
+          b.className = "p-3.5 rounded-2xl bg-emerald-950 border-2 border-emerald-500 font-bold text-xs sm:text-sm text-emerald-200 text-left flex items-center justify-between";
+        } else if (idx === selectedIdx) {
+          b.className = "p-3.5 rounded-2xl bg-rose-950 border-2 border-rose-500 font-bold text-xs sm:text-sm text-rose-200 text-left flex items-center justify-between";
+        }
+      });
+
+      const isCorrect = (selectedIdx === quiz.correctIndex);
+
+      if (isCorrect) {
+        playSound('correct');
+        applyQuizResult(true);
+      } else {
+        playSound('wrong');
+        applyQuizResult(false);
+      }
+
+      // Show Feedback Fact & Continue Button
+      document.getElementById('quiz-fact-text').textContent = quiz.fact;
+      document.getElementById('quiz-feedback').classList.remove('hidden');
+      document.getElementById('quiz-continue-btn').classList.remove('hidden');
+    }
+
+    function applyQuizResult(isCorrect) {
+      const { country, actionType } = gameState.currentQuiz;
+      const player = gameState.turnPlayer;
+
+      if (isCorrect) {
+        // Ticket reward calculation (1 ticket per 3 correct answers, max 2)
+        if (player === 1) {
+          gameState.p1RightCombo++;
+          if (gameState.p1RightCombo % 3 === 0 && gameState.p1Tickets < 2) gameState.p1Tickets++;
+        } else {
+          gameState.p2RightCombo++;
+          if (gameState.p2RightCombo % 3 === 0 && gameState.p2Tickets < 2) gameState.p2Tickets++;
         }
 
-        function playSound(type) {
-            if (isMuted) return;
-            initAudio();
-            if (!audioCtx) return;
+        // Apply territory change
+        if (actionType === 'CLAIM') {
+          gameState.countries[country.id] = { owner: player, status: 'claim' };
+          addStamp(player, country);
+        } else if (actionType === 'LOCK') {
+          gameState.countries[country.id].status = 'locked';
+        } else if (actionType === 'HQ') {
+          gameState.countries[country.id].status = 'hq';
+        } else if (actionType === 'STEAL') {
+          if (player === 1) gameState.p1Tickets--; else gameState.p2Tickets--;
+          gameState.countries[country.id] = { owner: player, status: 'claim' };
+          addStamp(player, country);
+        } else if (actionType === 'MEGA_STEAL') {
+          if (player === 1) gameState.p1Tickets -= 2; else gameState.p2Tickets -= 2;
+          gameState.countries[country.id] = { owner: player, status: 'claim' };
+          addStamp(player, country);
+        }
+      }
 
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+      updatePinAppearance(country.id);
+      renderRouteLines();
+      recalculateScores();
+    }
 
-            if (type === 'flight') {
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.3);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } else if (type === 'right') {
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                osc.start(now);
-                osc.stop(now + 0.4);
-            } else if (type === 'wrong') {
-                osc.frequency.setValueAtTime(200, now);
-                osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
-                gain.gain.setValueAtTime(0.25, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } else if (type === 'hq') {
-                osc.frequency.setValueAtTime(440, now);
-                osc.frequency.setValueAtTime(554.37, now + 0.12);
-                osc.frequency.setValueAtTime(659.25, now + 0.24);
-                osc.frequency.setValueAtTime(880, now + 0.36);
-                gain.gain.setValueAtTime(0.25, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-                osc.start(now);
-                osc.stop(now + 0.6);
-            } else if (type === 'victory') {
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.setValueAtTime(659.25, now + 0.15);
-                osc.frequency.setValueAtTime(783.99, now + 0.3);
-                osc.frequency.setValueAtTime(1046.50, now + 0.45);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
-                osc.start(now);
-                osc.stop(now + 0.8);
+    function addStamp(player, country) {
+      const arr = player === 1 ? gameState.p1Stamps : gameState.p2Stamps;
+      if (!arr.find(s => s.id === country.id)) {
+        arr.push(country);
+      }
+    }
+
+    function updatePinAppearance(countryId) {
+      const st = gameState.countries[countryId];
+      const pinDot = document.getElementById(`pin-dot-${countryId}`);
+      const pinBadge = document.getElementById(`pin-badge-${countryId}`);
+
+      if (!st) {
+        pinDot.setAttribute('class', 'pin pin-neutral');
+        pinBadge.textContent = '';
+      } else {
+        pinDot.setAttribute('class', `pin ${st.owner === 1 ? 'pin-p1' : 'pin-p2'}`);
+        if (st.status === 'locked') pinBadge.textContent = '🔒';
+        else if (st.status === 'hq') pinBadge.textContent = '👑';
+        else pinBadge.textContent = '';
+      }
+    }
+
+    function completeQuizTurn() {
+      // Hide quiz modal & clear anti-peeking rule
+      document.body.classList.remove('in-quiz');
+      document.getElementById('modal-quiz').classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('target-pulse').style.display = 'none';
+
+      // Advance Turn
+      if (gameState.turnPlayer === 1) {
+        gameState.turnPlayer = 2;
+      } else {
+        gameState.turnPlayer = 1;
+        gameState.currentRound++;
+      }
+
+      updateHUD();
+
+      // Check for End Game condition
+      if (gameState.currentRound > gameState.maxRounds) {
+        endGame();
+      } else {
+        showPassModal();
+      }
+    }
+
+    /* ================= SCORE CALCULATION & GAME ENGINE ================= */
+    function recalculateScores() {
+      let p1 = 0, p2 = 0;
+
+      // 1. Territory Points (Claim = 1, Lock = 2, Crown HQ = 3)
+      Object.values(gameState.countries).forEach(st => {
+        let pts = 1;
+        if (st.status === 'locked') pts = 2;
+        if (st.status === 'hq') pts = 3;
+
+        if (st.owner === 1) p1 += pts;
+        if (st.owner === 2) p2 += pts;
+      });
+
+      // 2. Border Link Bonus (+1 per land-adjacent friendly pair)
+      const drawnLinks = new Set();
+      const map = {};
+      COUNTRIES.forEach(c => map[c.id] = c);
+
+      COUNTRIES.forEach(c => {
+        const state = gameState.countries[c.id];
+        if (!state) return;
+
+        c.nb.forEach(nbrId => {
+          const nbrState = gameState.countries[nbrId];
+          if (nbrState && nbrState.owner === state.owner) {
+            const pairKey = [c.id, nbrId].sort().join('-');
+            if (!drawnLinks.has(pairKey)) {
+              drawnLinks.add(pairKey);
+              if (state.owner === 1) p1 += 1;
+              if (state.owner === 2) p2 += 1;
             }
-        }
-
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('soundMuteBtn').innerText = isMuted ? '🔇' : '🔊';
-        }
-
-        /* ----------------------------------------------------
-           3. GAME STATE MANAGEMENT
-           ---------------------------------------------------- */
-        let gameState = {
-            players: [
-                { id: 1, name: 'Player 1', color: '#F26B1D', steals: 0, streak: 0 },
-                { id: 2, name: 'Player 2', color: '#7B3FE4', steals: 0, streak: 0 }
-            ],
-            currentPlayerIndex: 0,
-            totalTurnsPerPlayer: 10,
-            currentTurn: 1,
-            difficulty: 'explorer', // 'explorer' or 'adventurer'
-            territories: {}, // { 'USA': { owner: 1, state: 'normal'|'locked'|'hq' } }
-            lastStolenCountryId: null,
-            activeCountryId: null,
-            activeActionType: null, // 'claim', 'lock', 'hq', 'steal', 'megasteal'
-            activeQuestion: null,
-            zoomContinent: 'WORLD'
-        };
-
-        const CONTINENT_VIEWS = {
-            WORLD: { viewBox: '0 0 1000 500' },
-            NA: { viewBox: '40 0 350 250' },
-            SA: { viewBox: '200 220 200 250' },
-            EU: { viewBox: '400 30 220 160' },
-            AF: { viewBox: '420 150 240 250' },
-            AS: { viewBox: '550 30 400 240' },
-            OC: { viewBox: '750 280 220 180' }
-        };
-
-        // Projection mapping from Lat/Lon to SVG 1000x500 coordinates
-        function projectLatLon(lat, lon) {
-            const x = (lon + 180) * (1000 / 360);
-            const y = (90 - lat) * (500 / 180);
-            return { x, y };
-        }
-
-        /* ----------------------------------------------------
-           4. SETUP & INITIALIZATION
-           ---------------------------------------------------- */
-        function setDiff(mode) {
-            gameState.difficulty = mode;
-            const expBtn = document.getElementById('diffExplorerBtn');
-            const advBtn = document.getElementById('diffAdventurerBtn');
-            if (mode === 'explorer') {
-                expBtn.className = "py-2.5 px-3 rounded-lg text-xs font-bold border transition bg-amber-500/20 border-amber-500 text-amber-300";
-                advBtn.className = "py-2.5 px-3 rounded-lg text-xs font-bold border transition bg-slate-900 border-slate-700 text-slate-400 hover:text-white";
-            } else {
-                advBtn.className = "py-2.5 px-3 rounded-lg text-xs font-bold border transition bg-purple-500/20 border-purple-500 text-purple-300";
-                expBtn.className = "py-2.5 px-3 rounded-lg text-xs font-bold border transition bg-slate-900 border-slate-700 text-slate-400 hover:text-white";
-            }
-        }
-
-        function setTurns(count) {
-            gameState.totalTurnsPerPlayer = count;
-            [6, 10, 15].forEach(t => {
-                const btn = document.getElementById(`turns${t}Btn`);
-                if (t === count) {
-                    btn.className = "py-2 px-2 rounded-lg text-xs font-bold border transition bg-blue-500/20 border-blue-500 text-blue-300";
-                } else {
-                    btn.className = "py-2 px-2 rounded-lg text-xs font-bold border transition bg-slate-900 border-slate-700 text-slate-400 hover:text-white";
-                }
-            });
-        }
-
-        function startGame() {
-            initAudio();
-            const p1Val = document.getElementById('p1Input').value.trim() || 'Player 1';
-            const p2Val = document.getElementById('p2Input').value.trim() || 'Player 2';
-            
-            gameState.players[0].name = p1Val;
-            gameState.players[1].name = p2Val;
-            gameState.players[0].steals = 0;
-            gameState.players[1].steals = 0;
-            gameState.players[0].streak = 0;
-            gameState.players[1].streak = 0;
-            gameState.currentPlayerIndex = 0;
-            gameState.currentTurn = 1;
-            gameState.territories = {};
-            gameState.lastStolenCountryId = null;
-
-            document.getElementById('p1DisplayName').innerText = p1Val;
-            document.getElementById('p2DisplayName').innerText = p2Val;
-
-            document.getElementById('setupScreen').classList.add('hidden');
-            document.getElementById('gameOverModal').classList.add('hidden');
-            document.getElementById('gameScreen').classList.remove('hidden');
-            document.getElementById('headerTurnStatus').classList.remove('hidden');
-
-            renderPins();
-            updateHeaderAndScores();
-            zoomContinent('WORLD');
-            playSound('flight');
-        }
-
-        function resetGame() {
-            document.getElementById('setupScreen').classList.remove('hidden');
-            document.getElementById('gameScreen').classList.add('hidden');
-            document.getElementById('gameOverModal').classList.add('hidden');
-            document.getElementById('headerTurnStatus').classList.add('hidden');
-        }
-
-        /* ----------------------------------------------------
-           5. MAP & GRAPHICS RENDERER
-           ---------------------------------------------------- */
-        function renderPins() {
-            const pinsGroup = document.getElementById('countryPinsGroup');
-            pinsGroup.innerHTML = '';
-
-            COUNTRIES_DATA.forEach(c => {
-                const { x, y } = projectLatLon(c.lat, c.lon);
-                const t = gameState.territories[c.id];
-
-                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                g.setAttribute('class', 'country-pin');
-                g.setAttribute('transform', `translate(${x}, ${y})`);
-                g.setAttribute('onclick', `inspectCountry('${c.id}')`);
-
-                // Outer Pin Circle
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('r', '8.5');
-                
-                if (!t) {
-                    circle.setAttribute('class', 'pin-unclaimed');
-                } else if (t.owner === 1) {
-                    circle.setAttribute('class', 'pin-p1');
-                } else {
-                    circle.setAttribute('class', 'pin-p2');
-                }
-                g.appendChild(circle);
-
-                // Text Overlay Symbol
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('dy', '3.5');
-                text.setAttribute('font-size', '8');
-                text.setAttribute('font-weight', 'bold');
-                text.setAttribute('fill', '#FFFFFF');
-
-                if (!t) {
-                    text.textContent = '?';
-                } else if (t.state === 'hq') {
-                    text.textContent = '👑';
-                } else if (t.state === 'locked') {
-                    text.textContent = '🔒';
-                } else {
-                    text.textContent = c.flag;
-                }
-                g.appendChild(text);
-
-                // Shield Indicator Badge
-                if (t && isCountryShielded(c.id, t.owner)) {
-                    const shield = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    shield.setAttribute('x', '6');
-                    shield.setAttribute('y', '-6');
-                    shield.setAttribute('font-size', '7');
-                    shield.textContent = '🛡️';
-                    g.appendChild(shield);
-                }
-
-                pinsGroup.appendChild(g);
-            });
-
-            renderBorderLinks();
-        }
-
-        function renderBorderLinks() {
-            const linksGroup = document.getElementById('borderLinksGroup');
-            linksGroup.innerHTML = '';
-
-            const processedPairs = new Set();
-
-            COUNTRIES_DATA.forEach(c1 => {
-                const t1 = gameState.territories[c1.id];
-                if (!t1) return;
-
-                c1.nb.forEach(nbId => {
-                    const c2 = COUNTRIES_DATA.find(x => x.id === nbId);
-                    if (!c2) return;
-                    const t2 = gameState.territories[c2.id];
-
-                    if (t2 && t2.owner === t1.owner) {
-                        const pairKey = [c1.id, c2.id].sort().join('-');
-                        if (processedPairs.has(pairKey)) return;
-                        processedPairs.add(pairKey);
-
-                        const p1 = projectLatLon(c1.lat, c1.lon);
-                        const p2 = projectLatLon(c2.lat, c2.lon);
-
-                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                        line.setAttribute('x1', p1.x);
-                        line.setAttribute('y1', p1.y);
-                        line.setAttribute('x2', p2.x);
-                        line.setAttribute('y2', p2.y);
-                        line.setAttribute('class', t1.owner === 1 ? 'border-link-p1' : 'border-link-p2');
-                        linksGroup.appendChild(line);
-                    }
-                });
-            });
-        }
-
-        function zoomContinent(code) {
-            gameState.zoomContinent = code;
-            document.querySelectorAll('.cont-tab').forEach(t => {
-                t.className = "cont-tab px-3 py-1.5 rounded-lg border bg-slate-800 border-slate-700 text-slate-300 hover:text-white whitespace-nowrap transition";
-            });
-            const activeTab = document.getElementById(`tab-${code}`);
-            if (activeTab) {
-                activeTab.className = "cont-tab px-3 py-1.5 rounded-lg border bg-blue-600 border-blue-400 text-white whitespace-nowrap transition";
-            }
-
-            const svg = document.getElementById('worldMap');
-            const view = CONTINENT_VIEWS[code] || CONTINENT_VIEWS.WORLD;
-            svg.setAttribute('viewBox', view.viewBox);
-            playSound('flight');
-        }
-
-        /* ----------------------------------------------------
-           6. STRATEGY & SCORING LOGIC
-           ---------------------------------------------------- */
-        function isCountryShielded(countryId, ownerId) {
-            const country = COUNTRIES_DATA.find(c => c.id === countryId);
-            if (!country) return false;
-            return country.nb.some(nbId => {
-                const t = gameState.territories[nbId];
-                return t && t.owner === ownerId && t.state === 'hq';
-            });
-        }
-
-        function calculateScores() {
-            let p1Score = 0, p2Score = 0;
-            let p1Countries = 0, p2Countries = 0;
-            let p1Hqs = 0, p2Hqs = 0;
-            let p1Links = 0, p2Links = 0;
-
-            // 1. Territory & HQ Points
-            Object.keys(gameState.territories).forEach(cid => {
-                const t = gameState.territories[cid];
-                if (t.owner === 1) {
-                    p1Countries++;
-                    p1Score += (t.state === 'hq' ? 2 : 1);
-                    if (t.state === 'hq') p1Hqs++;
-                } else if (t.owner === 2) {
-                    p2Countries++;
-                    p2Score += (t.state === 'hq' ? 2 : 1);
-                    if (t.state === 'hq') p2Hqs++;
-                }
-            });
-
-            // 2. Border Links Bonus (+1 per shared border)
-            const processedPairs = new Set();
-            COUNTRIES_DATA.forEach(c1 => {
-                const t1 = gameState.territories[c1.id];
-                if (!t1) return;
-                c1.nb.forEach(nbId => {
-                    const t2 = gameState.territories[nbId];
-                    if (t2 && t2.owner === t1.owner) {
-                        const key = [c1.id, nbId].sort().join('-');
-                        if (!processedPairs.has(key)) {
-                            processedPairs.add(key);
-                            if (t1.owner === 1) { p1Links++; p1Score++; }
-                            else { p2Links++; p2Score++; }
-                        }
-                    }
-                });
-            });
-
-            // 3. Continent Bonus (+2 for holding most countries in continent)
-            let p1ContBonus = 0, p2ContBonus = 0;
-            ['NA', 'SA', 'EU', 'AF', 'AS', 'OC'].forEach(code => {
-                const cList = COUNTRIES_DATA.filter(c => c.cont === code);
-                let count1 = 0, count2 = 0;
-                cList.forEach(c => {
-                    const t = gameState.territories[c.id];
-                    if (t) {
-                        if (t.owner === 1) count1++;
-                        if (t.owner === 2) count2++;
-                    }
-                });
-                if (count1 >= 2 && count1 > count2) { p1ContBonus += 2; p1Score += 2; }
-                if (count2 >= 2 && count2 > count1) { p2ContBonus += 2; p2Score += 2; }
-            });
-
-            return {
-                p1: { score: p1Score, countries: p1Countries, hqs: p1Hqs, links: p1Links, cont: p1ContBonus },
-                p2: { score: p2Score, countries: p2Countries, hqs: p2Hqs, links: p2Links, cont: p2ContBonus }
-            };
-        }
-
-        function updateHeaderAndScores() {
-            const scores = calculateScores();
-            
-            document.getElementById('p1TotalScore').innerText = scores.p1.score;
-            document.getElementById('p1CountriesCnt').innerText = `📌 ${scores.p1.countries}`;
-            document.getElementById('p1HqCnt').innerText = `👑 ${scores.p1.hqs}`;
-            document.getElementById('p1StealCnt').innerText = `🎯 ${gameState.players[0].steals}`;
-
-            document.getElementById('p2TotalScore').innerText = scores.p2.score;
-            document.getElementById('p2CountriesCnt').innerText = `📌 ${scores.p2.countries}`;
-            document.getElementById('p2HqCnt').innerText = `👑 ${scores.p2.hqs}`;
-            document.getElementById('p2StealCnt').innerText = `🎯 ${gameState.players[1].steals}`;
-
-            // Current Turn Header Setup
-            const activeP = gameState.players[gameState.currentPlayerIndex];
-            const badge = document.getElementById('turnIndicatorBadge');
-            badge.style.backgroundColor = activeP.color;
-            document.getElementById('turnIndicatorText').innerText = `${activeP.name}'s Turn`;
-            document.getElementById('turnCounterText').innerText = `Turn ${gameState.currentTurn} / ${gameState.totalTurnsPerPlayer}`;
-
-            // Highlight Active Player Card
-            const card1 = document.getElementById('p1ScoreCard');
-            const card2 = document.getElementById('p2ScoreCard');
-            if (gameState.currentPlayerIndex === 0) {
-                card1.classList.add('ring-2', 'ring-orange-400', 'scale-105');
-                card2.classList.remove('ring-2', 'ring-purple-400', 'scale-105');
-            } else {
-                card2.classList.add('ring-2', 'ring-purple-400', 'scale-105');
-                card1.classList.remove('ring-2', 'ring-orange-400', 'scale-105');
-            }
-        }
-
-        /* ----------------------------------------------------
-           7. INSPECT COUNTRY & ACTION DECISION MODAL
-           ---------------------------------------------------- */
-        function inspectCountry(countryId) {
-            const c = COUNTRIES_DATA.find(x => x.id === countryId);
-            if (!c) return;
-
-            gameState.activeCountryId = countryId;
-            const t = gameState.territories[countryId];
-            const curPlayerId = gameState.currentPlayerIndex + 1;
-            const curPlayer = gameState.players[gameState.currentPlayerIndex];
-
-            document.getElementById('inspectFlag').innerText = c.flag;
-            document.getElementById('inspectCountryName').innerText = c.name;
-            document.getElementById('inspectCapital').innerText = c.cap;
-            
-            const nbNames = c.nb.map(id => COUNTRIES_DATA.find(x => x.id === id)?.name).filter(Boolean).join(', ');
-            document.getElementById('inspectBorders').innerText = nbNames || 'None (Island)';
-
-            const actionsBox = document.getElementById('inspectActionButtons');
-            actionsBox.innerHTML = '';
-
-            const ownerText = document.getElementById('inspectOwnerText');
-            const statusText = document.getElementById('inspectStatus');
-
-            if (!t) {
-                ownerText.innerText = "Unclaimed Territory";
-                statusText.innerText = "Open for Claim (+1 Pt)";
-                
-                // Claim Action Button
-                actionsBox.innerHTML = `
-                    <button onclick="triggerQuiz('claim')" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition active:scale-95 shadow">
-                        📌 Claim Territory (Answer Question)
-                    </button>
-                `;
-            } else if (t.owner === curPlayerId) {
-                ownerText.innerText = `Owned by You (${curPlayer.name})`;
-                if (t.state === 'normal') {
-                    statusText.innerText = "Unlocked Territory";
-                    actionsBox.innerHTML = `
-                        <button onclick="triggerQuiz('lock')" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition active:scale-95 shadow">
-                            🔒 Lock Territory (Requires 2 Steal tickets for opponents)
-                        </button>
-                    `;
-                } else if (t.state === 'locked') {
-                    statusText.innerText = "Locked Territory 🔒";
-                    actionsBox.innerHTML = `
-                        <button onclick="triggerQuiz('hq')" class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition active:scale-95 shadow">
-                            👑 Upgrade to Crown HQ (+2 Pts & Shield Neighbors)
-                        </button>
-                    `;
-                } else {
-                    statusText.innerText = "Crown Headquarters 👑 (Permanently Secure)";
-                    actionsBox.innerHTML = `<p class="text-xs text-center text-amber-400 font-bold">This Crown HQ is unstealable and shields adjacent borders!</p>`;
-                }
-            } else {
-                // Opponent Territory
-                const oppPlayer = gameState.players[t.owner - 1];
-                ownerText.innerText = `Owned by ${oppPlayer.name}`;
-
-                const isShielded = isCountryShielded(c.id, t.owner);
-                const isRecentlyStolen = (gameState.lastStolenCountryId === c.id);
-
-                if (t.state === 'hq') {
-                    statusText.innerText = "Crown HQ 👑 (Unstealable)";
-                    actionsBox.innerHTML = `<p class="text-xs text-center text-slate-400">Crown Headquarters cannot be stolen.</p>`;
-                } else if (isShielded) {
-                    statusText.innerText = "Shielded by Adjacent HQ 🛡️";
-                    actionsBox.innerHTML = `<p class="text-xs text-center text-slate-400">Protected by neighboring HQ shield.</p>`;
-                } else if (isRecentlyStolen) {
-                    statusText.innerText = "Protected (Recently Stolen)";
-                    actionsBox.innerHTML = `<p class="text-xs text-center text-slate-400">Cannot be stolen back on consecutive turns.</p>`;
-                } else if (t.state === 'normal') {
-                    statusText.innerText = "Unlocked Opponent Territory";
-                    if (curPlayer.steals >= 1) {
-                        actionsBox.innerHTML = `
-                            <button onclick="triggerQuiz('steal')" class="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl transition active:scale-95 shadow">
-                                🎯 Steal Territory (Costs 1 Ticket)
-                            </button>
-                        `;
-                    } else {
-                        actionsBox.innerHTML = `<p class="text-xs text-center text-rose-400">Requires 1 Steal Ticket (Earn 1 every 3 correct answers).</p>`;
-                    }
-                } else if (t.state === 'locked') {
-                    statusText.innerText = "Locked Opponent Territory 🔒";
-                    if (curPlayer.steals >= 2) {
-                        actionsBox.innerHTML = `
-                            <button onclick="triggerQuiz('megasteal')" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition active:scale-95 shadow">
-                                💥 Mega-Steal Locked Territory (Costs 2 Tickets)
-                            </button>
-                        `;
-                    } else {
-                        actionsBox.innerHTML = `<p class="text-xs text-center text-rose-400">Requires 2 Steal Tickets to Mega-Steal a Locked Territory.</p>`;
-                    }
-                }
-            }
-
-            document.getElementById('countryActionModal').classList.remove('hidden');
-        }
-
-        function closeInspectModal() {
-            document.getElementById('countryActionModal').classList.add('hidden');
-        }
-
-        /* ----------------------------------------------------
-           8. QUESTION TICKET MODAL & ANTI-PEEKING LOGIC
-           ---------------------------------------------------- */
-        function triggerQuiz(actionType) {
-            closeInspectModal();
-            gameState.activeActionType = actionType;
-
-            const c = COUNTRIES_DATA.find(x => x.id === gameState.activeCountryId);
-            if (!c) return;
-
-            // Generate Boarding Pass Quiz Question
-            let qPrompt = "";
-            let correctAnswer = "";
-            let options = [];
-
-            if (gameState.difficulty === 'explorer') {
-                // Capital / Flag Q
-                if (Math.random() > 0.4) {
-                    qPrompt = `What is the capital city of ${c.name}?`;
-                    correctAnswer = c.cap;
-                    options = [...c.distractors, c.cap];
-                } else {
-                    qPrompt = `Which country has the flag ${c.flag} and capital ${c.cap}?`;
-                    correctAnswer = c.name;
-                    // pick 3 other random country names
-                    const others = COUNTRIES_DATA.filter(x => x.id !== c.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(x => x.name);
-                    options = [...others, c.name];
-                }
-            } else {
-                // Adventurer TRIVIA Q
-                qPrompt = `${c.q}`;
-                correctAnswer = c.cap;
-                options = [...c.distractors, c.cap];
-            }
-
-            // Shuffle options
-            options.sort(() => 0.5 - Math.random());
-            gameState.activeQuestion = { prompt: qPrompt, correct: correctAnswer, funFact: c.q };
-
-            // Fill Ticket Modal UI
-            document.getElementById('ticketCountryName').innerText = `${c.name.toUpperCase()} ${c.flag}`;
-            document.getElementById('ticketContinent').innerText = c.cont;
-            document.getElementById('ticketQuestionPrompt').innerText = qPrompt;
-            document.getElementById('funFactText').innerText = c.q;
-
-            const badge = document.getElementById('ticketActionBadge');
-            const reward = document.getElementById('ticketReward');
-            
-            if (actionType === 'claim') {
-                badge.innerText = "CLAIM TERRITORY";
-                reward.innerText = "+1 Point";
-            } else if (actionType === 'lock') {
-                badge.innerText = "LOCK TERRITORY";
-                reward.innerText = "Lock 🔒";
-            } else if (actionType === 'hq') {
-                badge.innerText = "CROWN HQ UPGRADE";
-                reward.innerText = "+2 Pts & Shield";
-            } else if (actionType === 'steal') {
-                badge.innerText = "STEAL TERRITORY";
-                reward.innerText = "1 Ticket";
-            } else if (actionType === 'megasteal') {
-                badge.innerText = "MEGA-STEAL LOCK";
-                reward.innerText = "2 Tickets";
-            }
-
-            const grid = document.getElementById('ticketOptionsGrid');
-            grid.innerHTML = '';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "w-full py-3 px-4 bg-slate-950 border border-slate-700 hover:border-blue-500 rounded-xl text-left text-xs font-semibold text-slate-200 transition active:scale-98 flex items-center justify-between";
-                btn.innerHTML = `<span>${opt}</span><span class="text-slate-500">➔</span>`;
-                btn.onclick = () => handleAnswer(opt, btn);
-                grid.appendChild(btn);
-            });
-
-            // Reset Stamp & Fun Fact Visibility
-            document.getElementById('stampBadge').classList.add('hidden');
-            document.getElementById('funFactBox').classList.add('hidden');
-            document.getElementById('nextTurnBtn').classList.add('hidden');
-            document.getElementById('cancelTicketBtn').classList.remove('hidden');
-
-            // ACTIVATE ANTI-PEEKING MODE (Hides map completely)
-            document.body.classList.add('in-quiz');
-            document.getElementById('quizModal').classList.remove('hidden');
-        }
-
-        function handleAnswer(selectedOpt, btnElem) {
-            const q = gameState.activeQuestion;
-            const isRight = (selectedOpt === q.correct);
-
-            // Disable all option buttons
-            const buttons = document.querySelectorAll('#ticketOptionsGrid button');
-            buttons.forEach(b => b.disabled = true);
-
-            const stamp = document.getElementById('stampBadge');
-            const stampText = document.getElementById('stampBadgeText');
-            stamp.classList.remove('hidden');
-
-            if (isRight) {
-                btnElem.className = "w-full py-3 px-4 bg-emerald-950/80 border-2 border-emerald-500 rounded-xl text-left text-xs font-bold text-emerald-300 flex items-center justify-between";
-                stampText.innerText = "APPROVED ✓";
-                stampText.className = "border-4 border-emerald-500 text-emerald-400 font-black text-xl px-4 py-2 rounded-xl uppercase tracking-widest stamp-animation bg-slate-950/90 shadow-2xl";
-                
-                playSound('right');
-                executeActionSuccess();
-
-                // Track Steal Ticket Streaks (1 ticket per 3 right answers, max 2)
-                const curPlayer = gameState.players[gameState.currentPlayerIndex];
-                curPlayer.streak++;
-                if (curPlayer.streak % 3 === 0 && curPlayer.steals < 2) {
-                    curPlayer.steals++;
-                }
-            } else {
-                btnElem.className = "w-full py-3 px-4 bg-rose-950/80 border-2 border-rose-500 rounded-xl text-left text-xs font-bold text-rose-300 flex items-center justify-between";
-                stampText.innerText = "REJECTED ✕";
-                stampText.className = "border-4 border-rose-500 text-rose-400 font-black text-xl px-4 py-2 rounded-xl uppercase tracking-widest stamp-animation bg-slate-950/90 shadow-2xl";
-                
-                // Highlight correct answer button
-                buttons.forEach(b => {
-                    if (b.innerText.includes(q.correct)) {
-                        b.className = "w-full py-3 px-4 bg-emerald-950/50 border border-emerald-500 rounded-xl text-left text-xs font-bold text-emerald-300";
-                    }
-                });
-
-                playSound('wrong');
-            }
-
-            document.getElementById('funFactBox').classList.remove('hidden');
-            document.getElementById('nextTurnBtn').classList.remove('hidden');
-            document.getElementById('cancelTicketBtn').classList.add('hidden');
-
-            updateHeaderAndScores();
-            renderPins();
-        }
-
-        function executeActionSuccess() {
-            const cid = gameState.activeCountryId;
-            const curPlayerId = gameState.currentPlayerIndex + 1;
-            const curPlayer = gameState.players[gameState.currentPlayerIndex];
-            const action = gameState.activeActionType;
-
-            if (action === 'claim') {
-                gameState.territories[cid] = { owner: curPlayerId, state: 'normal' };
-            } else if (action === 'lock') {
-                if (gameState.territories[cid]) gameState.territories[cid].state = 'locked';
-            } else if (action === 'hq') {
-                if (gameState.territories[cid]) gameState.territories[cid].state = 'hq';
-                playSound('hq');
-            } else if (action === 'steal') {
-                curPlayer.steals--;
-                gameState.territories[cid] = { owner: curPlayerId, state: 'normal' };
-                gameState.lastStolenCountryId = cid;
-            } else if (action === 'megasteal') {
-                curPlayer.steals -= 2;
-                gameState.territories[cid] = { owner: curPlayerId, state: 'normal' };
-                gameState.lastStolenCountryId = cid;
-            }
-        }
-
-        function closeQuizModal() {
-            document.getElementById('quizModal').classList.add('hidden');
-            document.body.classList.remove('in-quiz');
-        }
-
-        function finishQuizTurn() {
-            closeQuizModal();
-
-            // Advance Turn & Pass Tablet Interstitial Screen
-            if (gameState.currentPlayerIndex === 1) {
-                gameState.currentTurn++;
-            }
-
-            if (gameState.currentTurn > gameState.totalTurnsPerPlayer) {
-                endGame();
-                return;
-            }
-
-            gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % 2;
-            const nextP = gameState.players[gameState.currentPlayerIndex];
-
-            document.getElementById('nextPlayerName').innerText = nextP.name;
-            document.getElementById('nextPlayerName').style.color = nextP.color;
-            document.getElementById('passTabletModal').classList.remove('hidden');
-        }
-
-        function confirmTurnStart() {
-            document.getElementById('passTabletModal').classList.add('hidden');
-            updateHeaderAndScores();
-            playSound('flight');
-        }
-
-        /* ----------------------------------------------------
-           9. GAME OVER & WINNER CELEBRATION
-           ---------------------------------------------------- */
-        function endGame() {
-            playSound('victory');
-            document.getElementById('quizModal').classList.add('hidden');
-            document.body.classList.remove('in-quiz');
-
-            const scores = calculateScores();
-
-            document.getElementById('endP1Name').innerText = gameState.players[0].name;
-            document.getElementById('endP1Countries').innerText = scores.p1.countries;
-            document.getElementById('endP1Links').innerText = `+${scores.p1.links}`;
-            document.getElementById('endP1Hq').innerText = `+${scores.p1.hqs * 2}`;
-            document.getElementById('endP1Cont').innerText = `+${scores.p1.cont}`;
-            document.getElementById('endP1Total').innerText = scores.p1.score;
-
-            document.getElementById('endP2Name').innerText = gameState.players[1].name;
-            document.getElementById('endP2Countries').innerText = scores.p2.countries;
-            document.getElementById('endP2Links').innerText = `+${scores.p2.links}`;
-            document.getElementById('endP2Hq').innerText = `+${scores.p2.hqs * 2}`;
-            document.getElementById('endP2Cont').innerText = `+${scores.p2.cont}`;
-            document.getElementById('endP2Total').innerText = scores.p2.score;
-
-            const title = document.getElementById('winnerTitle');
-            if (scores.p1.score > scores.p2.score) {
-                title.innerText = `${gameState.players[0].name.toUpperCase()} WINS!`;
-                title.className = "text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500";
-            } else if (scores.p2.score > scores.p1.score) {
-                title.innerText = `${gameState.players[1].name.toUpperCase()} WINS!`;
-                title.className = "text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500";
-            } else {
-                title.innerText = "IT'S A TIE!";
-                title.className = "text-3xl font-black text-yellow-400";
-            }
-
-            // Populate Passport Stamps Gallery
-            const gallery = document.getElementById('stampsGallery');
-            gallery.innerHTML = '';
-            Object.keys(gameState.territories).forEach(cid => {
-                const c = COUNTRIES_DATA.find(x => x.id === cid);
-                const t = gameState.territories[cid];
-                if (c && t) {
-                    const badge = document.createElement('div');
-                    badge.className = `px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 ${t.owner === 1 ? 'bg-orange-950/60 border-orange-500/50 text-orange-300' : 'bg-purple-950/60 border-purple-500/50 text-purple-300'}`;
-                    badge.innerHTML = `<span>${c.flag}</span> <span>${c.name}</span>`;
-                    gallery.appendChild(badge);
-                }
-            });
-
-            document.getElementById('gameOverModal').classList.remove('hidden');
-        }
-
-        function toggleRulesModal(show) {
-            document.getElementById('rulesModal').classList.toggle('hidden', !show);
-        }
-    </script>
+          }
+        });
+      });
+
+      // 3. Continent Dominance Bonus (+2 pts per continent led)
+      const continents = ['NA', 'SA', 'EU', 'AF', 'AS', 'OC'];
+      continents.forEach(ct => {
+        let cP1 = 0, cP2 = 0;
+        COUNTRIES.filter(c => c.ct === ct).forEach(c => {
+          const st = gameState.countries[c.id];
+          if (st) {
+            if (st.owner === 1) cP1++;
+            if (st.owner === 2) cP2++;
+          }
+        });
+        if (cP1 > cP2) p1 += 2;
+        else if (cP2 > cP1) p2 += 2;
+      });
+
+      gameState.p1Score = p1;
+      gameState.p2Score = p2;
+      updateHUD();
+    }
+
+    function updateHUD() {
+      document.getElementById('p1-name-display').textContent = gameState.p1Name;
+      document.getElementById('p2-name-display').textContent = gameState.p2Name;
+      document.getElementById('p1-score').textContent = `${gameState.p1Score} pts`;
+      document.getElementById('p2-score').textContent = `${gameState.p2Score} pts`;
+      document.getElementById('p1-tickets').textContent = `🎯${gameState.p1Tickets}`;
+      document.getElementById('p2-tickets').textContent = `🎯${gameState.p2Tickets}`;
+
+      document.getElementById('round-display').textContent = `${gameState.currentRound} / ${gameState.maxRounds}`;
+
+      // Highlight active turn player HUD
+      const hudP1 = document.getElementById('hud-p1');
+      const hudP2 = document.getElementById('hud-p2');
+
+      if (gameState.turnPlayer === 1) {
+        hudP1.className = "flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-orange-500 bg-orange-950/50 shadow-lg scale-105 transition-all";
+        hudP2.className = "flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-purple-500/20 bg-purple-950/10 opacity-60 transition-all";
+      } else {
+        hudP2.className = "flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-purple-500 bg-purple-950/50 shadow-lg scale-105 transition-all";
+        hudP1.className = "flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-orange-500/20 bg-orange-950/10 opacity-60 transition-all";
+      }
+    }
+
+    /* ================= PASS DEVICE & SETUP MODALS ================= */
+    function showPassModal() {
+      const modal = document.getElementById('modal-pass');
+      const avatar = document.getElementById('pass-avatar');
+      const name = document.getElementById('pass-player-name');
+      const hint = document.getElementById('pass-hint');
+
+      const pName = gameState.turnPlayer === 1 ? gameState.p1Name : gameState.p2Name;
+      avatar.textContent = `P${gameState.turnPlayer}`;
+      avatar.className = `w-16 h-16 rounded-2xl ${gameState.turnPlayer === 1 ? 'bg-orange-500' : 'bg-purple-600'} flex items-center justify-center text-3xl font-black text-white shadow-xl`;
+
+      name.textContent = `${pName}'s Turn`;
+      hint.textContent = `Pass the iPad to ${pName}, then tap Ready to explore the map!`;
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function dismissPassModal() {
+      playSound('click');
+      document.getElementById('modal-pass').classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function startGame() {
+      playSound('click');
+      gameState.p1Name = document.getElementById('input-p1-name').value || "Player 1";
+      gameState.p2Name = document.getElementById('input-p2-name').value || "Player 2";
+      gameState.difficulty = document.getElementById('select-diff').value;
+      gameState.maxRounds = parseInt(document.getElementById('select-rounds').value) || 10;
+
+      gameState.currentRound = 1;
+      gameState.turnPlayer = 1;
+      gameState.p1Score = 0;
+      gameState.p2Score = 0;
+      gameState.p1Tickets = 0;
+      gameState.p2Tickets = 0;
+      gameState.p1RightCombo = 0;
+      gameState.p2RightCombo = 0;
+      gameState.p1Stamps = [];
+      gameState.p2Stamps = [];
+      gameState.countries = {};
+
+      renderMapPins();
+      updateHUD();
+
+      document.getElementById('modal-setup').classList.add('hidden');
+      showPassModal();
+    }
+
+    function confirmReset() {
+      if (confirm("Restart Passport Race from the beginning?")) {
+        showSetup();
+      }
+    }
+
+    function showSetup() {
+      document.getElementById('modal-summary').classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('modal-setup').classList.remove('hidden');
+    }
+
+    function restartGame() {
+      document.getElementById('modal-summary').classList.add('opacity-0', 'pointer-events-none');
+      startGame();
+    }
+
+    function endGame() {
+      playSound('fanfare');
+
+      const modal = document.getElementById('modal-summary');
+      const winnerTitle = document.getElementById('winner-title');
+
+      if (gameState.p1Score > gameState.p2Score) {
+        winnerTitle.textContent = `🏆 ${gameState.p1Name} Wins the Passport Race!`;
+      } else if (gameState.p2Score > gameState.p1Score) {
+        winnerTitle.textContent = `🏆 ${gameState.p2Name} Wins the Passport Race!`;
+      } else {
+        winnerTitle.textContent = "🤝 It's a Tie Game!";
+      }
+
+      document.getElementById('sum-p1-name').textContent = gameState.p1Name;
+      document.getElementById('sum-p1-score').textContent = `${gameState.p1Score} pts`;
+      document.getElementById('sum-p1-countries').textContent = `Countries Stamped: ${gameState.p1Stamps.length}`;
+
+      document.getElementById('sum-p2-name').textContent = gameState.p2Name;
+      document.getElementById('sum-p2-score').textContent = `${gameState.p2Score} pts`;
+      document.getElementById('sum-p2-countries').textContent = `Countries Stamped: ${gameState.p2Stamps.length}`;
+
+      // Render Passport Stamps
+      renderStamps('stamps-p1', gameState.p1Stamps);
+      renderStamps('stamps-p2', gameState.p2Stamps);
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function renderStamps(elementId, stamps) {
+      const container = document.getElementById(elementId);
+      container.innerHTML = '';
+
+      if (stamps.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-400 italic">No countries stamped yet</span>';
+        return;
+      }
+
+      stamps.forEach(s => {
+        const badge = document.createElement('span');
+        badge.className = "px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1";
+        badge.innerHTML = `<span>${s.f}</span> <span>${s.id}</span>`;
+        container.appendChild(badge);
+      });
+    }
+  </script>
 </body>
 </html>
