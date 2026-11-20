@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Orca-Mania">
+<meta name="theme-color" content="#0F1730">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<title>Orca-Mania: family trivia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Always dark: this is a TV game, usually played in a living room in the evening */
+:root{
+  --bg:#0F1730; --surface:#1A2546; --surface2:#26335E; --ink:#F3F5FB; --muted:#A5AFCB; --line:#34437A;
+  --fb:#239A5F; --geo:#2A86D8; --sci:#8E52DC; --fun:#F2B12A;
+  --animals:#8A5A3B; --art:#E0457B; --brain:#13A3A0; --music:#EE7B22;
+  --pick:#46507A; --double:#5B4A86; --steal:#A23B4C; --challenge:#8A5A1E;
+  --good:#22B46A; --bad:#E5533F; --gold:#F5C542;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
+  color-scheme: dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;font-size:clamp(15px, 1.2vw + .7vh, 28px);scroll-padding-top:env(safe-area-inset-top,0px);overscroll-behavior:none}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.35;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
+input{-webkit-user-select:text;user-select:text}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible{outline:3px solid var(--geo);outline-offset:3px}
+#app{height:100%;display:flex;flex-direction:column}
+#app::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:4;box-shadow:inset 0 0 0 .4rem var(--turn,transparent),inset 0 0 3rem color-mix(in srgb,var(--turn,transparent) 40%,transparent);transition:box-shadow .4s}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1}
+
+.btn{background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:.75em 1.6em;font-family:var(--display);font-weight:800;font-size:1.15rem}
+.btn:disabled{opacity:.3}
+.btn.big{font-size:1.4rem;padding:.8em 2em}
+.btn.go{background:var(--gold);color:#1E1A10}
+.ghost{background:transparent;border:2px solid var(--line);border-radius:999px;padding:.55em 1.2em;font-weight:700;color:var(--ink)}
+.ghost:disabled{opacity:.35}
+.btn:active,.ghost:active,.tile:active,.ans:active,.opp:active,.thief:active{transform:scale(.97)}
+
+/* scoreboard */
+.top{display:flex;align-items:center;gap:1rem;padding:.55rem 1.1rem;border-bottom:2px solid var(--line);background:var(--surface)}
+.board{display:flex;gap:.5rem;flex:1;overflow-x:auto;scrollbar-width:none}
+.chip{display:flex;align-items:center;gap:.45rem;padding:.25rem .85rem .25rem .25rem;border-radius:999px;border:3px solid transparent;flex:0 0 auto;transition:border-color .2s}
+.chip.on{border-color:var(--pc);background:var(--surface2)}
+.chipt{display:flex;flex-direction:column;line-height:1.1}
+.chipt b{font-family:var(--display);font-size:1.05rem}
+.chipt span{font-size:.72rem;color:var(--muted)}
+.pc{width:.65rem;height:.65rem;border-radius:50%;background:var(--pc);display:inline-block;margin-right:.3rem}
+.ring .ringn{font-family:var(--display);font-weight:800;font-size:28px;fill:var(--ink)}
+
+#stage{flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding:2.2vh 3vw;overflow:auto}
+#stage>*{margin:auto}
+
+/* home + info screens */
+.home{display:grid;grid-template-columns:auto 1fr;gap:4vw;align-items:center;max-width:62rem}
+.home h1{font-size:clamp(3rem,8vw,6.5rem);font-weight:800;letter-spacing:-.03em;line-height:.9}
+.home p{font-size:1.15rem;color:var(--muted);max-width:32ch;margin:.9rem 0 1.4rem}
+.home .row{display:flex;gap:.7rem;flex-wrap:wrap}
+.home .tip{font-size:.85rem;margin-top:1.4rem;max-width:44ch}
+.logo{width:min(40vh,30vw);height:auto;border-radius:22%}
+.bob{animation:bob 2.4s ease-in-out infinite alternate}
+@keyframes bob{from{transform:translate(0,3px)}to{transform:translate(0,-5px)}}
+.wm span:nth-of-type(1){color:#239A5F}.wm span:nth-of-type(2){color:#2A86D8}.wm span:nth-of-type(3){color:#8E52DC}.wm span:nth-of-type(4){color:#E0457B}.wm span:nth-of-type(5){color:#EE7B22}
+.winlogo{width:min(26vh,20vw);height:auto;border-radius:22%}
+@keyframes turn{to{transform:rotate(360deg)}}
+.sheetpage{width:min(100%,54rem);background:var(--surface);border-radius:24px;padding:1.6rem 2rem;max-height:100%;overflow:auto}
+.sheetpage h2{font-size:2.1rem;font-weight:800;margin-bottom:.6rem}
+.sheetpage h3{font-size:1.15rem;margin:1rem 0 .3rem}
+.sheetpage p,.sheetpage li{max-width:68ch}
+.sheetpage ul,.sheetpage ol{padding-left:1.3rem;margin:.3rem 0}
+.sheetpage li{margin:.35rem 0}
+
+/* setup */
+.setup{width:min(100%,58rem);display:flex;flex-direction:column;gap:.9rem}
+.setup .h1{font-size:2.3rem;font-weight:800}
+.setup .row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.setup h3{font-size:1.05rem;min-width:8.5rem}
+.seg{display:inline-flex;background:var(--surface2);border-radius:14px;padding:4px;gap:4px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;border-radius:10px;padding:.5em .95em;font-weight:700;color:var(--muted)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.seg button small{display:block;font-weight:400;font-size:.68rem}
+.plist{display:flex;flex-direction:column;gap:.6rem;background:var(--surface);border-radius:20px;padding:1rem}
+.prow{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.prow .dot{width:1.1rem;height:1.1rem;border-radius:50%;background:var(--pc);flex:0 0 auto}
+.pname{flex:1 1 9rem;min-width:8rem;font:inherit;font-size:1.1rem;padding:.55em .8em;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.x{border:0;background:transparent;color:var(--muted);font-size:1.1rem;padding:.4em}
+.note{font-size:.85rem;color:var(--muted);margin:0}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.cats{display:flex;flex-wrap:wrap;gap:.5rem}
+.catbtn{border:3px solid var(--line);background:var(--surface);border-radius:999px;padding:.45em 1em;font-weight:700;color:var(--ink)}
+.catbtn.on{background:var(--cc);border-color:var(--cc);color:#fff}
+.catbtn.on.fun{color:#1E1A10}
+
+/* turn + wheel */
+.turnwrap{display:grid;grid-template-columns:auto minmax(14rem,26rem);gap:5vw;align-items:center}
+.wheelbox{position:relative;width:min(62vh,46vw);aspect-ratio:1}
+.wheelbox svg{width:100%;height:100%;display:block}
+#wheel{transform-box:fill-box;transform-origin:center}
+.pointer{position:absolute;left:50%;top:-4%;transform:translateX(-50%);width:0;height:0;border-left:1.1rem solid transparent;border-right:1.1rem solid transparent;border-top:2rem solid var(--ink);z-index:2;filter:drop-shadow(0 2px 0 var(--bg))}
+.wl{font-family:var(--display);font-weight:800;font-size:8px}
+.wi{font-size:13px}
+.whose{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,4.6vw,4rem);line-height:1;margin:0 0 .5rem;letter-spacing:-.02em}
+.whose::before{content:"";display:inline-block;width:.42em;height:.42em;border-radius:50%;background:var(--pc);margin-right:.25em;vertical-align:.12em}
+.sub{color:var(--muted);font-size:1.05rem;margin:.2rem 0}
+.pill{display:inline-block;background:var(--surface2);border-radius:999px;padding:.25em .8em;font-weight:700;margin:.3rem .3rem .3rem 0}
+.pill.hot{background:var(--gold);color:#1E1A10}
+.spinres{font-family:var(--display);font-weight:800;font-size:2.6rem;min-height:1.3em;margin:.9rem 0 1.1rem;color:var(--sc,var(--ink));transform:scale(.6);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.spinres.show{transform:none;opacity:1}
+
+/* question */
+.qwrap{width:min(100%,64rem);display:flex;flex-direction:column;gap:1rem}
+.qhead{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.catpill{background:var(--cc);color:#fff;border-radius:999px;padding:.35em 1em;font-family:var(--display);font-weight:800;font-size:1.05rem}
+.catpill.fun{color:#1E1A10}
+.tag{border:2px solid var(--line);border-radius:999px;padding:.22em .8em;font-weight:700;font-size:.9rem}
+.tag.hot{border-color:var(--gold);color:var(--gold)}
+.forwho{color:var(--muted);font-size:1rem;margin-left:auto}
+.forwho b{color:var(--ink)}
+.qtext{font-family:var(--body);font-weight:700;font-size:clamp(1.7rem,5vh,3.2rem);line-height:1.2;max-width:36ch;border-left:.4rem solid var(--cc);padding-left:1rem}
+.qvis{font-size:clamp(4.5rem,13vh,9rem);line-height:1;margin:-.2rem 0 -.3rem}
+.timer{height:.55rem;background:var(--surface2);border-radius:999px;overflow:hidden;flex:1}
+.timer i{display:block;height:100%;background:var(--cc);transform-origin:left;transition:transform .2s linear}
+.tnum{font-family:var(--display);font-weight:800;font-size:1.2rem;color:var(--muted);min-width:2ch;text-align:right}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.ans{position:relative;display:flex;align-items:center;gap:.9rem;text-align:left;background:var(--surface);border:3px solid var(--line);border-radius:18px;padding:.7em 1em;min-height:4.8rem;font-size:clamp(1.25rem,2.3vw,1.85rem);font-weight:700;color:var(--ink);transition:border-color .15s,background .15s}
+.ans .k{flex:0 0 auto;width:2.1rem;height:2.1rem;border-radius:50%;display:grid;place-items:center;background:var(--surface2);font-family:var(--display);font-weight:800;font-size:1.1rem}
+.ans:disabled{cursor:default}
+.ans.sel{border-color:var(--you);background:color-mix(in srgb,var(--you) 22%,var(--surface));box-shadow:0 0 0 3px color-mix(in srgb,var(--you) 45%,transparent)}
+.ans.sel .k{background:var(--you);color:#111}
+.ans.locked{animation:throb .5s ease-in-out infinite alternate}
+@keyframes throb{to{box-shadow:0 0 0 .5rem color-mix(in srgb,var(--you) 35%,transparent)}}
+.ans.out,.ans.gone{opacity:.25}
+.ans.out{text-decoration:line-through}
+.ans.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 22%,var(--surface))}
+.ans.right .k{background:var(--good);color:#fff}
+.ans.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,var(--surface))}
+.ans.wrong .k{background:var(--bad);color:#fff}
+.answers.tf .ans{justify-content:center;min-height:19vh;font-family:var(--display);font-size:clamp(2rem,4vw,3.2rem)}
+.answers.tf .ans .k{display:none}
+.slots{display:flex;align-items:stretch;gap:.5rem;flex-wrap:wrap}
+.slots .end{align-self:center;font-weight:700;color:var(--muted);font-size:.95rem}
+.slot{flex:1 1 8rem;min-height:3.4rem;border:3px dashed var(--line);border-radius:14px;display:flex;align-items:center;gap:.5rem;padding:.4em .7em;font-weight:700;font-size:clamp(.95rem,1.6vw,1.3rem)}
+.slot.full{border-style:solid;border-color:var(--you);background:color-mix(in srgb,var(--you) 16%,var(--surface))}
+.slot.ok{border-style:solid;border-color:var(--good);background:color-mix(in srgb,var(--good) 18%,var(--surface))}
+.slot.no{border-style:solid;border-color:var(--bad)}
+.slot .n{font-family:var(--display);font-weight:800;color:var(--muted)}
+.ans .badge{position:absolute;top:-.6rem;right:-.6rem;width:2rem;height:2rem;border-radius:50%;background:var(--you);color:#111;display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.ans.placed{color:var(--muted);border-style:dashed;background:var(--bg)}
+.controls{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.life{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.life .lab{color:var(--muted);font-weight:700}
+.spacer{flex:1}
+.lockmsg{font-family:var(--display);font-weight:800;font-size:1.5rem;color:var(--gold)}
+.panel{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;background:var(--surface);border-radius:20px;padding:.9rem 1.2rem;border:3px solid var(--line)}
+.panel.good{border-color:var(--good)}
+.panel.bad{border-color:var(--bad)}
+.panel.steal{border-color:var(--gold)}
+.panel .msg{flex:1 1 18rem}
+.panel .msg b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:800;line-height:1.1}
+.panel .msg span{color:var(--muted);font-size:1.05rem}
+.thieves{display:flex;gap:.6rem;flex-wrap:wrap}
+.thief{border:3px solid var(--pc);background:var(--surface2);border-radius:999px;padding:.55em 1.2em;font-family:var(--display);font-weight:800;font-size:1.1rem}
+.medalpop{width:4.4rem;height:4.4rem;border-radius:50%;background:var(--cc);display:grid;place-items:center;font-size:2.2rem;flex:0 0 auto;box-shadow:0 0 0 .4rem color-mix(in srgb,var(--cc) 35%,transparent);animation:pop .7s cubic-bezier(.3,1.7,.5,1) both}
+@keyframes pop{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
+
+/* pick + lists */
+.pickwrap{width:min(100%,60rem);display:flex;flex-direction:column;gap:1.2rem}
+.pickwrap h2{font-size:clamp(1.9rem,3.6vw,3rem);font-weight:800;letter-spacing:-.02em}
+.pickwrap .sub{max-width:54ch}
+.center{text-align:center;align-items:center}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:1rem}
+.tiles.n5,.tiles.n6{grid-template-columns:repeat(3,1fr)}
+.tile{position:relative;border:0;border-radius:22px;background:var(--cc);color:#fff;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;font-family:var(--display);font-weight:800;font-size:1.3rem}
+.tiles.n5 .tile,.tiles.n6 .tile{aspect-ratio:1.7/1}
+.tile.fun{color:#1E1A10}
+.tile .ic{font-size:3.2rem}
+.tiles.n5 .tile .ic,.tiles.n6 .tile .ic{font-size:2.4rem}
+.tile:disabled{opacity:.25}
+.tile .own{position:absolute;top:.6rem;right:.8rem;font-size:.8rem;background:rgba(0,0,0,.3);color:#fff;border-radius:999px;padding:.15em .6em}
+.opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+.opp{display:flex;align-items:center;gap:.8rem;background:var(--surface);border:3px solid var(--pc);border-radius:20px;padding:.8rem 1rem;text-align:left}
+.opp b{font-family:var(--display);font-size:1.35rem}
+.opp.card{flex-direction:column;align-items:flex-start;cursor:default}
+.mbtns{display:flex;gap:.5rem;flex-wrap:wrap}
+.mbtn{border:0;border-radius:999px;background:var(--cc);color:#fff;padding:.5em 1em;font-weight:700}
+.mbtn.fun{color:#1E1A10}
+.score{font-family:var(--display);font-weight:800;font-size:clamp(3rem,7vw,5.5rem);letter-spacing:-.03em;line-height:1}
+
+/* showdown */
+.sdtitle{font-family:var(--display);font-weight:800;font-size:clamp(3rem,9vw,7rem);letter-spacing:-.04em;line-height:.9;color:var(--gold)}
+.sdq{font-weight:700;font-size:clamp(1.6rem,4.6vh,3rem);line-height:1.2;max-width:30ch}
+.sdunit{color:var(--muted);font-size:1.1rem}
+.entry{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;width:min(100%,60rem)}
+.dots{font-family:var(--display);font-weight:800;font-size:3rem;letter-spacing:.3em;min-height:1.3em;color:var(--gold)}
+.pad{display:grid;grid-template-columns:repeat(3,5.2rem);gap:.6rem}
+.key{height:4.4rem;border-radius:16px;border:0;background:var(--surface2);color:var(--ink);font-family:var(--display);font-weight:800;font-size:1.8rem}
+.key.wide{font-size:1.1rem}
+.sdlist{display:flex;flex-direction:column;gap:.4rem;width:min(100%,50rem)}
+.sdrev{gap:.7rem}
+.sdrev .sdq{font-size:clamp(1.15rem,3.4vh,2rem)}
+.board.many .chipt b{font-size:.92rem}
+.board.many .chip{padding-right:.55rem}
+.sdrow{display:flex;align-items:center;gap:1rem;text-align:left;background:var(--surface);border:3px solid var(--line);border-radius:16px;padding:.25rem 1rem;opacity:0;animation:rise .5s ease-out forwards}
+.sdrow b{font-family:var(--display);font-size:1.25rem;flex:1}
+.sdrow .g{font-family:var(--display);font-weight:800;font-size:1.4rem}
+.sdrow .off{color:var(--muted);min-width:9rem;text-align:right}
+.sdrow.top1{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,var(--surface))}
+.answerbig{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,9vh,5rem);color:var(--gold);line-height:1}
+.later{opacity:0;animation:rise .5s ease-out forwards}
+@keyframes rise{from{opacity:0;transform:translateY(.8rem)}to{opacity:1;transform:none}}
+
+/* win */
+.win{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.win h2{font-size:clamp(2.6rem,6vw,5rem);font-weight:800;letter-spacing:-.03em}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:5}
+
+/* overlays */
+.overlay{position:fixed;inset:0;background:rgba(6,10,24,.7);display:grid;place-items:center;z-index:10;padding:1rem}
+.sheet{background:var(--surface);border-radius:24px;padding:1.5rem;width:min(100%,34rem);max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:.6rem}
+.sheet h2{font-size:1.7rem;font-weight:800;margin-bottom:.2rem}
+.sheet h3{font-size:1rem;color:var(--muted);margin-top:.5rem}
+.sheet .ghost,.sheet .btn{width:100%}
+.rotate{display:none;position:fixed;inset:0;z-index:30;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;padding:2rem}
+.rotate .ic{font-size:5rem;animation:tilt 1.6s ease-in-out infinite alternate}
+@keyframes tilt{from{transform:rotate(0)}to{transform:rotate(-90deg)}}
+@media (orientation:portrait){ body.ingame .rotate{display:flex} }
+.toast{position:fixed;left:50%;bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.7em 1.3em;border-radius:999px;font-weight:700;z-index:20;max-width:90vw;text-align:center}
+
+@media (orientation:portrait){
+  .turnwrap,.home,.entry{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .home p{margin-left:auto;margin-right:auto}
+  .home .row{justify-content:center}
+  .wheelbox{width:min(80vw,46vh)}
+  .tiles,.tiles.n5,.tiles.n6{grid-template-columns:1fr 1fr}
+  .answers{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion: reduce){ .bob,.medalpop,.ans.locked,.rotate .ic{animation:none} .sdrow,.later{animation-duration:.01s} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="rotate" role="alert"><div class="ic">📱</div><h2 style="font-size:2rem">Turn the iPad sideways</h2><p class="sub">The game fills the TV best in landscape. It’s paused until you do.</p></div>
+<script>
+/* ---------- Question bank: [question, correct, wrong, wrong, wrong] ---------- */
+const QB = {
+fb:{
+kid:[
+["Which country has won the most men’s World Cups?","Brazil","Germany","Italy","Argentina"],
+["Which country won the 2022 men’s World Cup?","Argentina","France","Brazil","Croatia"],
+["What is it called when a player scores three goals in one game?","A hat-trick","A triple","A treble","A three-peat"],
+["Two yellow cards in one match add up to what?","A red card","A penalty","Nothing","A free kick"],
+["Which country hosted the 2014 men’s World Cup?","Brazil","Germany","South Africa","Russia"],
+["Which club’s home stadium is Camp Nou?","Barcelona","Real Madrid","Valencia","Juventus"],
+["Which English club plays at Anfield?","Liverpool","Everton","Manchester United","Arsenal"],
+["What is the nickname of Belgium’s national team?","The Red Devils","The Lions","The Eagles","The Oranje"],
+["Which countries are hosting the 2026 men’s World Cup?","USA, Canada and Mexico","USA only","Brazil and Argentina","Spain, Portugal and Morocco"],
+["What is the name of Seattle’s MLS team?","Sounders FC","Timbers","Whitecaps","Galaxy"],
+["Which country did Kylian Mbappé play for at the 2018 World Cup?","France","Belgium","Spain","Cameroon"],
+["Which country does Kevin De Bruyne play for?","Belgium","Netherlands","Germany","Denmark"],
+["Which country does Erling Haaland play for?","Norway","Sweden","Denmark","Iceland"],
+["Which country won the 2023 Women’s World Cup?","Spain","England","United States","Sweden"],
+["Which club did Lionel Messi play for before he joined PSG?","Barcelona","Real Madrid","Inter Miami","Manchester City"],
+["In which country is the Bundesliga played?","Germany","Austria","Netherlands","Switzerland"],
+["In which country is La Liga played?","Spain","Italy","Portugal","Mexico"],
+["How far is the penalty spot from the goal line?","12 yards (11 m)","6 yards (5.5 m)","18 yards (16.5 m)","20 yards (18 m)"]
+],
+junior:[
+["Who scored the famous “Hand of God” goal in 1986?","Diego Maradona","Pelé","Zico","Michel Platini"],
+["Which country won the first World Cup in 1930?","Uruguay","Brazil","Italy","Argentina"],
+["Who has won the most Ballon d’Or awards?","Lionel Messi","Cristiano Ronaldo","Johan Cruyff","Michel Platini"],
+["Which club has won the most European Cups and Champions League titles?","Real Madrid","AC Milan","Bayern Munich","Liverpool"],
+["Where did Belgium finish at the 2018 World Cup, its best ever result?","Third","Second","Fourth","Quarter-finals"],
+["Which country did Belgium beat in the 2018 World Cup third-place match?","England","France","Brazil","Croatia"],
+["Which country won Euro 2016?","Portugal","France","Germany","Wales"],
+["Which country won Euro 2024?","Spain","England","Germany","France"],
+["Which country won the 2014 men’s World Cup?","Germany","Argentina","Brazil","Netherlands"],
+["Which country won the 2018 men’s World Cup?","France","Croatia","Belgium","England"],
+["Which team went a whole Premier League season unbeaten in 2003–04?","Arsenal","Chelsea","Manchester United","Manchester City"],
+["In which season did Leicester City win the Premier League?","2015–16","2014–15","2016–17","2013–14"],
+["Which club did Pelé play for most of his career?","Santos","Flamengo","Corinthians","Palmeiras"],
+["How far is the edge of the penalty area from the goal line?","18 yards (16.5 m)","12 yards (11 m)","6 yards (5.5 m)","22 yards (20 m)"],
+["Which Belgian goalkeeper played for both Chelsea and Real Madrid?","Thibaut Courtois","Simon Mignolet","Koen Casteels","Jean-Marie Pfaff"],
+["Which club won the 2005 Champions League final after trailing 3–0 at half-time?","Liverpool","AC Milan","Chelsea","Barcelona"],
+["Who is the Premier League’s all-time top scorer?","Alan Shearer","Wayne Rooney","Harry Kane","Thierry Henry"]
+],
+adult:[
+["Who scored the winning goal in the 2010 World Cup final?","Andrés Iniesta","Xavi","David Villa","Fernando Torres"],
+["Who scored the winning goal in the 2014 World Cup final?","Mario Götze","Thomas Müller","Miroslav Klose","André Schürrle"],
+["Which country has played at every men’s World Cup?","Brazil","Germany","Italy","Argentina"],
+["Which club won the first European Cup in 1956?","Real Madrid","Benfica","AC Milan","Stade de Reims"],
+["Who is the only goalkeeper to have won the Ballon d’Or?","Lev Yashin","Gianluigi Buffon","Manuel Neuer","Dino Zoff"],
+["Which Belgian club has won the most league titles?","Anderlecht","Club Brugge","Standard Liège","Genk"],
+["Which country won Euro 2004 as huge underdogs?","Greece","Denmark","Portugal","Czech Republic"],
+["Which country won Euro 1992 after being called in as a late replacement?","Denmark","Sweden","Netherlands","Yugoslavia"],
+["Jean-Marc Bosman, whose 1995 court case changed player transfers, was from which country?","Belgium","Netherlands","France","Germany"],
+["Who scored in the 2006 World Cup final and was later sent off in it?","Zinedine Zidane","Marco Materazzi","Thierry Henry","Andrea Pirlo"],
+["Which English club won the treble in 1999?","Manchester United","Arsenal","Liverpool","Chelsea"],
+["Who managed Arsenal’s unbeaten “Invincibles” season?","Arsène Wenger","George Graham","Alex Ferguson","José Mourinho"],
+["Which country won the first Women’s World Cup in 1991?","United States","Norway","Germany","China"],
+["In which stadium did Uruguay shock Brazil to win the 1950 World Cup?","Maracanã","Estadio Centenario","Wembley","Estadio Azteca"],
+["How many teams play at the 2026 men’s World Cup?","48","32","40","64"],
+["Which club did Johan Cruyff coach to its first European Cup in 1992?","Barcelona","Ajax","Feyenoord","PSV"],
+["What is the fewest players a team can have on the field for a match to continue?","7","6","8","9"]
+]},
+geo:{
+kid:[
+["What is the biggest ocean?","Pacific","Atlantic","Indian","Arctic"],
+["Which icy continent is home to emperor penguins?","Antarctica","Africa","Europe","Asia"],
+["What is the capital of the United States?","Washington, D.C.","New York","Los Angeles","Seattle"],
+["Which country is shaped like a boot?","Italy","Spain","France","Japan"],
+["How many continents are there?","7","5","6","8"],
+["Which is the biggest country in the world?","Russia","Canada","China","United States"],
+["In which country are the Pyramids of Giza?","Egypt","Mexico","Peru","India"],
+["What is the tallest mountain in the world?","Mount Everest","Mount Rainier","Kilimanjaro","K2"],
+["Which state is Seattle in?","Washington","Oregon","California","Idaho"],
+["In which country do kangaroos live in the wild?","Australia","Brazil","Canada","India"],
+["What do you call land with water all around it?","An island","A valley","A desert","A mountain"],
+["In which country is the Eiffel Tower?","France","Belgium","Italy","Germany"],
+["What is the biggest hot desert in the world?","Sahara","Gobi","Mojave","Kalahari"],
+["Which way does a compass needle point?","North","South","East","West"],
+["In which city is the clock tower Big Ben?","London","Paris","New York","Dublin"]
+],
+junior:[
+["What is the capital of Japan?","Tokyo","Kyoto","Osaka","Seoul"],
+["What is the capital of Belgium?","Brussels","Antwerp","Bruges","Amsterdam"],
+["What is the longest river in Africa?","Nile","Congo","Niger","Zambezi"],
+["Which country has the most people?","India","China","United States","Indonesia"],
+["Which mountains mark part of the border between Europe and Asia?","Ural Mountains","Alps","Andes","Rocky Mountains"],
+["What is the capital of Canada?","Ottawa","Toronto","Vancouver","Montreal"],
+["Which US state is made up entirely of islands?","Hawaii","Alaska","Florida","Rhode Island"],
+["Most of the Amazon rainforest is in which country?","Brazil","Peru","Colombia","Venezuela"],
+["What is the smallest country in the world?","Vatican City","Monaco","San Marino","Liechtenstein"],
+["Which big volcano can you see from Seattle on a clear day?","Mount Rainier","Mount Fuji","Mount Hood","Mount Shasta"],
+["What is the capital of Australia?","Canberra","Sydney","Melbourne","Perth"],
+["Which ocean lies between Africa and Australia?","Indian Ocean","Atlantic Ocean","Pacific Ocean","Arctic Ocean"],
+["What language do most people speak in Brazil?","Portuguese","Spanish","English","French"],
+["The Great Barrier Reef is off the coast of which country?","Australia","Brazil","Mexico","Indonesia"],
+["Which continent has the most countries?","Africa","Asia","Europe","South America"]
+],
+adult:[
+["What is the capital of New Zealand?","Wellington","Auckland","Christchurch","Queenstown"],
+["Counting overseas territories, which country has the most time zones?","France","Russia","United States","United Kingdom"],
+["What is the deepest lake in the world?","Lake Baikal","Lake Tanganyika","Lake Superior","Caspian Sea"],
+["What is the driest non-polar desert on Earth?","Atacama","Sahara","Gobi","Namib"],
+["What is the capital of Kazakhstan?","Astana","Almaty","Tashkent","Bishkek"],
+["Which river flows through the most countries?","Danube","Nile","Rhine","Amazon"],
+["Which country was formerly known as Abyssinia?","Ethiopia","Eritrea","Somalia","Sudan"],
+["The Strait of Gibraltar separates Spain from which country?","Morocco","Algeria","Tunisia","Portugal"],
+["Which city is the highest seat of government in the world?","La Paz","Quito","Bogotá","Kathmandu"],
+["Which country has the longest coastline?","Canada","Russia","Norway","Indonesia"],
+["What are Belgium’s three official languages?","Dutch, French and German","Dutch, French and English","French, German and Luxembourgish","Flemish, Walloon and French"],
+["What is the largest island in the world?","Greenland","New Guinea","Borneo","Madagascar"],
+["In which country is Mount Kilimanjaro?","Tanzania","Kenya","Uganda","Ethiopia"],
+["Which two countries share the longest international border?","USA and Canada","Russia and Kazakhstan","Chile and Argentina","China and Mongolia"],
+["What is the capital of Türkiye?","Ankara","Istanbul","Izmir","Antalya"],
+["Which US state has the longest coastline?","Alaska","Florida","California","Hawaii"]
+]},
+sci:{
+kid:[
+["What do plants use to make their own food?","Sunlight","Moonlight","Wind","Sand"],
+["What is the closest star to Earth?","The Sun","The North Star","The Moon","Sirius"],
+["Which planet is called the Red Planet?","Mars","Jupiter","Venus","Saturn"],
+["What does a caterpillar turn into?","A butterfly or moth","A bee","A beetle","A dragonfly"],
+["What does water turn into when it freezes?","Ice","Steam","Sand","Cloud"],
+["How many legs does a spider have?","8","6","10","4"],
+["What is the biggest planet in our solar system?","Jupiter","Saturn","Earth","Neptune"],
+["Which gas do we breathe in to stay alive?","Oxygen","Carbon dioxide","Helium","Smoke"],
+["Which of these animals is a mammal?","Whale","Shark","Salmon","Octopus"],
+["What force pulls things down to the ground?","Gravity","Magnetism","Wind","Electricity"],
+["How many planets are in our solar system?","8","9","7","10"],
+["What is the hardest natural material?","Diamond","Gold","Iron","Granite"],
+["What is a baby frog called?","A tadpole","A kit","A cub","A chick"],
+["What does a thermometer measure?","Temperature","Weight","Speed","Time"],
+["Which body part pumps blood around your body?","Heart","Lungs","Brain","Stomach"]
+],
+junior:[
+["What is the chemical formula for water?","H₂O","CO₂","O₂","NaCl"],
+["Which gas do plants take in from the air?","Carbon dioxide","Oxygen","Nitrogen","Helium"],
+["Which planet is famous for its big, bright rings?","Saturn","Mars","Mercury","Venus"],
+["How many bones are in an adult human body?","206","106","306","156"],
+["At what temperature does water boil at sea level?","100 °C","90 °C","212 °C","50 °C"],
+["Which planet is closest to the Sun?","Mercury","Venus","Mars","Earth"],
+["What are the three common states of matter?","Solid, liquid, gas","Hot, cold, warm","Rock, water, air","Ice, snow, rain"],
+["Which part of a cell holds its DNA?","Nucleus","Cell wall","Membrane","Vacuole"],
+["What is the fastest land animal?","Cheetah","Lion","Horse","Greyhound"],
+["What do you call animals that eat only plants?","Herbivores","Carnivores","Omnivores","Predators"],
+["What is a group of stars that makes a picture in the sky called?","A constellation","A galaxy","A comet","An orbit"],
+["What is the largest organ of the human body?","Skin","Liver","Heart","Brain"],
+["What do bees collect from flowers to make honey?","Nectar","Seeds","Sap","Dew"],
+["About how long does Earth take to travel once around the Sun?","365 days","24 hours","30 days","100 days"],
+["Which metal is liquid at room temperature?","Mercury","Iron","Gold","Aluminium"]
+],
+adult:[
+["What is the chemical symbol for gold?","Au","Ag","Gd","Go"],
+["Roughly how fast does light travel?","300,000 km per second","30,000 km per second","3,000 km per second","3 million km per second"],
+["What is the most abundant gas in Earth’s atmosphere?","Nitrogen","Oxygen","Carbon dioxide","Argon"],
+["Which part of the cell is known as its powerhouse?","Mitochondria","Ribosome","Nucleus","Golgi apparatus"],
+["Who developed the theory of general relativity?","Albert Einstein","Isaac Newton","Niels Bohr","Stephen Hawking"],
+["What is the pH of pure water?","7","0","14","1"],
+["Which planet has the most known moons?","Saturn","Jupiter","Uranus","Neptune"],
+["Which element has atomic number 1?","Hydrogen","Helium","Oxygen","Carbon"],
+["Which blood type is the universal red-cell donor?","O negative","AB positive","A negative","B positive"],
+["Who discovered penicillin?","Alexander Fleming","Louis Pasteur","Marie Curie","Edward Jenner"],
+["How many chromosomes does a human cell normally have?","46","23","44","48"],
+["What is the unit of electrical resistance?","Ohm","Volt","Ampere","Watt"],
+["About how long does sunlight take to reach Earth?","8 minutes","8 seconds","8 hours","1 second"],
+["What does DNA stand for?","Deoxyribonucleic acid","Dinitrogen acid","Deoxyribose nitrate","Dual nucleic acid"],
+["What is the smallest unit of life?","The cell","The atom","The molecule","The organ"]
+]},
+fun:{
+kid:[
+["How many hearts does an octopus have?","3","1","2","8"],
+["What colour is a polar bear’s skin?","Black","White","Pink","Brown"],
+["What is the tallest animal?","Giraffe","Elephant","Horse","Ostrich"],
+["Which bird can fly backwards?","Hummingbird","Eagle","Penguin","Parrot"],
+["What do pandas mostly eat?","Bamboo","Fish","Berries","Grass"],
+["How many colours are in a rainbow?","7","5","6","8"],
+["Which of these animals can sleep standing up?","Horse","Cat","Dog","Snake"],
+["What is the biggest animal that has ever lived?","Blue whale","Elephant","T. rex","Giraffe"],
+["Which fruit has its seeds on the outside?","Strawberry","Banana","Apple","Grape"],
+["What is a group of lions called?","A pride","A pack","A herd","A flock"],
+["How many arms does a starfish usually have?","5","4","6","8"],
+["Which animal can change its colour?","Chameleon","Hamster","Rabbit","Owl"],
+["Which is the only mammal that can truly fly?","Bat","Flying squirrel","Eagle","Penguin"],
+["What is a baby kangaroo called?","A joey","A cub","A pup","A kit"],
+["Which animal has black and white stripes?","Zebra","Tiger","Giraffe","Leopard"]
+],
+junior:[
+["Which country invented LEGO?","Denmark","Sweden","Germany","United States"],
+["Which comic hero has a little white dog called Snowy?","Tintin","Asterix","Spirou","Lucky Luke"],
+["Which country do the Smurfs come from?","Belgium","France","Netherlands","Switzerland"],
+["Which animal has fingerprints almost like a human’s?","Koala","Panda","Kangaroo","Sloth"],
+["Which planet would float if you put it in a giant bathtub?","Saturn","Jupiter","Mars","Neptune"],
+["Which food has been found still edible in ancient Egyptian tombs?","Honey","Bread","Cheese","Milk"],
+["On which planet is a day longer than a year?","Venus","Mars","Earth","Jupiter"],
+["What is the most popular sport in the world?","Football","Basketball","Cricket","Tennis"],
+["Which instrument was invented by Belgian Adolphe Sax?","Saxophone","Trumpet","Clarinet","Tuba"],
+["How many keys does a standard piano have?","88","76","100","64"],
+["Which letter doesn’t appear in any US state name?","Q","Z","X","J"],
+["Which of these animals can’t jump?","Elephant","Kangaroo","Frog","Cat"],
+["What is a word that reads the same backwards, like “racecar”?","A palindrome","An anagram","An acronym","A homophone"],
+["Which country gave the Statue of Liberty to the United States?","France","United Kingdom","Spain","Italy"],
+["How many minutes are in a day?","1,440","1,000","2,400","1,200"]
+],
+adult:[
+["Fortune cookies as we know them were popularised in which country?","United States","China","South Korea","Vietnam"],
+["Which country has more lakes than any other?","Canada","Finland","Russia","Sweden"],
+["What is the national animal of Scotland?","Unicorn","Lion","Red deer","Golden eagle"],
+["What is usually called the shortest war in history?","Anglo-Zanzibar War","Six-Day War","Falklands War","Football War"],
+["Which of these fruits is botanically a berry?","Banana","Strawberry","Raspberry","Cherry"],
+["Which country says it invented fries, though English calls them French?","Belgium","France","Netherlands","Spain"],
+["How many dots are there in total on a standard six-sided die?","21","18","24","20"],
+["Which chess piece can only move diagonally?","Bishop","Rook","Knight","Queen"],
+["Which toy is often called the first one advertised on US television?","Mr. Potato Head","Barbie","Slinky","Etch A Sketch"],
+["Which country has the most islands?","Sweden","Norway","Indonesia","Philippines"],
+["What is a group of crows called?","A murder","A parliament","A gaggle","A flock"],
+["What shape is wombat poo?","Cube","Sphere","Pyramid","Star"],
+["Which Belgian city is known as the diamond capital of the world?","Antwerp","Brussels","Ghent","Liège"],
+["In which country were the first modern Olympic Games held in 1896?","Greece","France","United Kingdom","United States"],
+["What is the dot over a lowercase i or j called?","A tittle","A serif","An umlaut","A tilde"]
+]}};
+
+QB.geo.kid.push(
+["Which country’s flag is this?||🇺🇸","United States","United Kingdom","Australia","Liberia"],
+["Which country’s flag is this?||🇯🇵","Japan","China","South Korea","Canada"],
+["Which country’s flag is this?||🇨🇦","Canada","United States","Japan","Peru"],
+["Which country’s flag is this?||🇧🇪","Belgium","Germany","France","Spain"],
+["Which country’s flag is this?||🇧🇷","Brazil","Argentina","Portugal","Mexico"],
+["Which country’s flag is this?||🇬🇧","United Kingdom","United States","Australia","France"]);
+QB.geo.junior.push(
+["Which country’s flag is this?||🇮🇹","Italy","Ireland","Mexico","Hungary"],
+["Which country’s flag is this?||🇩🇪","Germany","Belgium","Spain","Uganda"],
+["Which country’s flag is this?||🇨🇭","Switzerland","Denmark","Austria","Georgia"],
+["Which country’s flag is this?||🇰🇷","South Korea","Japan","China","Taiwan"],
+["Which country’s flag is this?||🇳🇱","Netherlands","France","Russia","Luxembourg"],
+["Which country’s flag is this?||🇮🇳","India","Ireland","Niger","Côte d’Ivoire"],
+["Which country’s flag is this?||🇦🇺","Australia","New Zealand","United Kingdom","Fiji"]);
+QB.geo.adult.push(
+["Which country’s flag is this?||🇳🇿","New Zealand","Australia","Fiji","Tuvalu"],
+["Which country’s flag is this?||🇮🇪","Ireland","Côte d’Ivoire","Italy","India"],
+["Which country’s flag is this?||🇷🇴","Romania","Chad","Moldova","Andorra"],
+["Which country’s flag is this?||🇧🇹","Bhutan","Nepal","Tonga","Mongolia"],
+["Which country’s flag is this?||🇰🇮","Kiribati","Tuvalu","Fiji","Samoa"],
+["Which country’s flag is this?||🇲🇳","Mongolia","Kazakhstan","Kyrgyzstan","Bhutan"],
+["Which country’s flag is this?||🇱🇺","Luxembourg","Netherlands","Paraguay","Croatia"],
+["Which country has the only national flag that isn’t a rectangle?","Nepal","Bhutan","Switzerland","Vatican City"]);
+QB.sci.kid.push(
+["What is at the centre of our solar system?","The Sun","Earth","The Moon","Jupiter"],
+["What lights up the Moon at night?","The Sun","The Moon makes its own light","Street lights","Earth’s volcanoes"],
+["What do astronauts wear to stay safe outside their spacecraft?","A spacesuit","A raincoat","A wetsuit","A uniform"],
+["Who was the first person to walk on the Moon?","Neil Armstrong","Buzz Lightyear","Yuri Gagarin","Elon Musk"],
+["What is a scientist who studies stars and planets called?","An astronomer","A geologist","A biologist","An astrologer"]);
+QB.sci.junior.push(
+["What is the name of our galaxy?","The Milky Way","Andromeda","The Big Dipper","Orion"],
+["In which year did people first walk on the Moon?","1969","1959","1979","1989"],
+["Which planet spins on its side?","Uranus","Neptune","Saturn","Mars"],
+["Which planet has a giant storm called the Great Red Spot?","Jupiter","Mars","Saturn","Neptune"],
+["About how long does the Moon take to go around Earth?","About a month","About a day","About a week","About a year"],
+["What did scientists reclassify Pluto as in 2006?","A dwarf planet","A moon","An asteroid","A comet"]);
+QB.sci.adult.push(
+["Who was the first person in space?","Yuri Gagarin","Neil Armstrong","Alan Shepard","John Glenn"],
+["What was the first artificial satellite?","Sputnik 1","Explorer 1","Vostok 1","Telstar"],
+["Which space telescope launched in December 2021?","James Webb","Hubble","Kepler","Spitzer"],
+["What is the hottest planet in our solar system?","Venus","Mercury","Mars","Jupiter"],
+["What is the boundary around a black hole beyond which nothing can escape?","Event horizon","Singularity","Accretion disk","Photon sphere"]);
+QB.animals={
+kid:[
+["What do bees make?","Honey","Jam","Butter","Syrup"],
+["Which animal is called the king of the jungle?","Lion","Tiger","Elephant","Gorilla"],
+["How many legs does an insect have?","6","8","4","10"],
+["What do fish use to breathe underwater?","Gills","Lungs","Noses","Fins"],
+["What is a baby dog called?","A puppy","A kitten","A calf","A foal"],
+["Which animal has a long trunk?","Elephant","Rhino","Hippo","Giraffe"],
+["Which animal carries its shell home on its back?","Snail","Ant","Worm","Frog"],
+["Which bird can’t fly but is a great swimmer?","Penguin","Eagle","Parrot","Owl"],
+["Which bird hoots at night?","Owl","Duck","Crow","Robin"],
+["What is a baby cat called?","A kitten","A puppy","A cub","A chick"],
+["What does a frog use to catch flies?","Its tongue","Its hands","Its feet","Its tail"],
+["Which sea animal has eight arms?","Octopus","Jellyfish","Crab","Starfish"],
+["What do many bears do during winter?","Hibernate","Migrate to the sea","Lay eggs","Change colour"],
+["What is the biggest wild cat?","Tiger","Lion","Leopard","Cheetah"],
+["Which animal is this?||🦒","Giraffe","Zebra","Camel","Horse"]
+],
+junior:[
+["What is a group of wolves called?","A pack","A pride","A herd","A school"],
+["Which mammal lays eggs?","Platypus","Bat","Dolphin","Kangaroo"],
+["What is the largest bird in the world?","Ostrich","Emu","Eagle","Albatross"],
+["Which animal builds dams across rivers?","Beaver","Otter","Badger","Muskrat"],
+["What do you call animals that are active at night?","Nocturnal","Diurnal","Migratory","Dormant"],
+["What is the largest living land animal?","African elephant","Giraffe","Hippo","White rhino"],
+["What is a baby goat called?","A kid","A lamb","A calf","A foal"],
+["Which sea creature has no brain, heart or bones?","Jellyfish","Octopus","Shark","Seahorse"],
+["In which animal does the father give birth?","Seahorse","Penguin","Clownfish","Frog"],
+["Why do salmon swim up rivers in the Pacific Northwest each fall?","To lay their eggs","To find warmer water","To hide from orcas","To eat berries"],
+["Orcas are the largest members of which animal family?","Dolphins","Sharks","Seals","Porpoises"],
+["What does a snake use its forked tongue for?","Smelling the air","Drinking water","Scaring birds","Cooling down"],
+["Which animal can sleep up to about 20 hours a day?","Koala","Giraffe","Horse","Dolphin"],
+["What makes flamingos pink?","The food they eat","Sunburn","They’re born pink","Mud baths"],
+["How many legs does a lobster have, including its claws?","10","8","6","12"]
+],
+adult:[
+["What is the fastest bird in a dive?","Peregrine falcon","Golden eagle","Common swift","Albatross"],
+["Which land animal has the longest pregnancy?","Elephant","Giraffe","Rhino","Camel"],
+["What is a group of owls called?","A parliament","A murder","A clowder","A gaggle"],
+["What is another name for a tardigrade?","Water bear","Sea pig","Rock mouse","Glass worm"],
+["Which of these animals has blue blood?","Octopus","Shark","Salmon","Frog"],
+["How many compartments does a cow’s stomach have?","4","2","3","6"],
+["What is the largest species of shark?","Whale shark","Great white","Basking shark","Tiger shark"],
+["Axolotls are native to which country?","Mexico","Japan","Brazil","Australia"],
+["Which bird has the largest wingspan?","Wandering albatross","Andean condor","Golden eagle","Dalmatian pelican"],
+["What is a male bee called?","A drone","A worker","A king","A buck"],
+["Which big cat can purr but can’t roar?","Cheetah","Lion","Tiger","Jaguar"],
+["How many eyes does a honeybee have?","5","2","4","8"],
+["Which animal is nicknamed the “ship of the desert”?","Camel","Oryx","Fennec fox","Ostrich"],
+["What are the hippopotamus’s closest living relatives?","Whales and dolphins","Pigs","Elephants","Rhinos"],
+["Which is the only continent with no native ants?","Antarctica","Australia","Europe","South America"]
+]};
+QB.art={
+kid:[
+["Which two colours mix to make green?","Blue and yellow","Red and yellow","Red and blue","Black and white"],
+["What colour do you get when you mix red and yellow?","Orange","Purple","Green","Brown"],
+["What colour do you get when you mix red and blue?","Purple","Orange","Green","Pink"],
+["What do you call a picture of a person?","A portrait","A landscape","A cartoon","A sculpture"],
+["What is a statue made from stone or metal called?","A sculpture","A painting","A mosaic","A collage"],
+["What do painters mix their paints on?","A palette","An easel","A canvas","A frame"],
+["What are the three primary paint colours?","Red, yellow and blue","Green, orange and purple","Black, white and grey","Pink, brown and blue"],
+["What do you call a picture made by gluing paper and other things together?","A collage","A mosaic","A sketch","A print"],
+["What does an artist stand their canvas on?","An easel","A palette","A stool","A frame"],
+["What happens when you mix white paint into a colour?","It gets lighter","It gets darker","It disappears","It turns green"],
+["What do you call a painting of mountains, fields or the sea?","A landscape","A portrait","A still life","A self-portrait"],
+["Which tool helps you draw a perfect circle?","A compass","A ruler","An eraser","A protractor"],
+["Which famous painting shows a smiling woman and hangs in Paris?","Mona Lisa","The Scream","The Starry Night","Sunflowers"],
+["What do you call a picture made from lots of tiny tiles?","A mosaic","A collage","A sketch","A sculpture"],
+["If you mix lots of paint colours together, what do you usually get?","Brown","White","A rainbow","Pink"]
+],
+junior:[
+["Who painted The Starry Night?","Vincent van Gogh","Claude Monet","Pablo Picasso","Rembrandt"],
+["Who painted the Mona Lisa?","Leonardo da Vinci","Michelangelo","Raphael","Botticelli"],
+["Who painted the ceiling of the Sistine Chapel?","Michelangelo","Leonardo da Vinci","Raphael","Donatello"],
+["Which Belgian artist painted a pipe with the words “This is not a pipe”?","René Magritte","Peter Paul Rubens","James Ensor","Pieter Bruegel"],
+["What do you call colours opposite each other on the colour wheel?","Complementary","Primary","Matching","Neutral"],
+["Which of these are called warm colours?","Red, orange and yellow","Blue, green and purple","Black, white and grey","Blue, teal and silver"],
+["Pablo Picasso helped start which art style, built from cubes and angles?","Cubism","Impressionism","Pop Art","Surrealism"],
+["Which Japanese artist made The Great Wave off Kanagawa?","Hokusai","Hiroshige","Yayoi Kusama","Takashi Murakami"],
+["Which artist is famous for polka dots and giant pumpkins?","Yayoi Kusama","Andy Warhol","Keith Haring","Hokusai"],
+["Andy Warhol made famous paintings of which soup cans?","Campbell’s","Heinz","Knorr","Progresso"],
+["In design, what is a logo?","A symbol that stands for a brand","A type of font","A colour code","A slogan"],
+["What does 3D stand for?","Three-dimensional","Three-drawing","Third design","Three-direction"],
+["What is shading with crossing lines called?","Cross-hatching","Stippling","Blending","Smudging"],
+["In a perspective drawing, where do the lines seem to meet?","The vanishing point","The focal point","The end point","The centre line"],
+["Which famous painting shows a figure screaming on a bridge?","The Scream","The Starry Night","Guernica","The Thinker"]
+],
+adult:[
+["Who painted The Garden of Earthly Delights?","Hieronymus Bosch","Pieter Bruegel","Jan van Eyck","Peter Paul Rubens"],
+["Which brothers painted the Ghent Altarpiece?","Hubert and Jan van Eyck","The Bruegel brothers","The Limbourg brothers","The Le Nain brothers"],
+["In which country was the Bauhaus school founded?","Germany","Netherlands","Austria","Switzerland"],
+["Which typeface was designed for the London Underground in 1916?","Johnston","Helvetica","Gill Sans","Futura"],
+["Which painter is famous for his drip paintings?","Jackson Pollock","Mark Rothko","Willem de Kooning","Wassily Kandinsky"],
+["In which museum does Vermeer’s Girl with a Pearl Earring hang?","Mauritshuis","Rijksmuseum","Louvre","National Gallery"],
+["In colour theory, what does “value” mean?","How light or dark a colour is","How intense a colour is","Which colour family it is in","How warm or cool it is"],
+["Which art movement did Salvador Dalí belong to?","Surrealism","Cubism","Expressionism","Futurism"],
+["Mondrian’s black grid lines and primary colours belong to which movement?","De Stijl","Bauhaus","Cubism","Fauvism"],
+["What is the Japanese art of repairing pottery with gold?","Kintsugi","Ikebana","Origami","Raku"],
+["Who sculpted The Thinker?","Auguste Rodin","Michelangelo","Gian Lorenzo Bernini","Donatello"],
+["In typography, what is kerning?","The space between pairs of letters","The space between lines","The height of letters","The weight of a font"],
+["Which architect designed the Hôtel Tassel in Brussels?","Victor Horta","Henry van de Velde","Le Corbusier","Antoni Gaudí"],
+["Who painted Guernica?","Pablo Picasso","Salvador Dalí","Joan Miró","Francisco Goya"],
+["Which colour model do printers use?","CMYK","RGB","HSL","Pantone"]
+]};
+QB.brain={
+kid:[
+["What comes next: 2, 4, 6, 8, …?","10","9","12","11"],
+["What is 7 + 8?","15","14","16","13"],
+["You have 3 apples and eat 1. How many are left?","2","3","1","4"],
+["Red, blue, red, blue, red… what comes next?","Blue","Red","Green","Yellow"],
+["How many sides does a triangle have?","3","4","5","6"],
+["What is half of 10?","5","2","4","20"],
+["Which number is the biggest?","91","19","59","9"],
+["How many days are in a week?","7","5","6","10"],
+["What has hands but can’t clap?","A clock","A tree","A glove","A chair"],
+["What comes next: 5, 10, 15, 20, …?","25","30","21","24"],
+["If today is Monday, what day is tomorrow?","Tuesday","Sunday","Wednesday","Friday"],
+["How many corners does a square have?","4","3","5","6"],
+["What is double 6?","12","10","8","16"],
+["What gets wetter the more it dries?","A towel","A sponge","The sun","Rain"],
+["What is 10 − 4?","6","5","7","4"]
+],
+junior:[
+["What comes next: 1, 4, 9, 16, …?","25","20","24","32"],
+["What comes next: 1, 1, 2, 3, 5, 8, …?","13","11","12","16"],
+["What is 12 × 12?","144","124","132","154"],
+["3 cats catch 3 mice in 3 minutes. How many cats catch 100 mice in 100 minutes?","3","100","33","300"],
+["What is a quarter of 100?","25","50","20","40"],
+["How many minutes are in 3 hours?","180","300","120","160"],
+["Mary’s father has five daughters: Nana, Nene, Nini and Nono. What’s the fifth called?","Mary","Nunu","Nina","Nana"],
+["What has keys but can’t open locks?","A piano","A door","A car","A map"],
+["Which weighs more: a kilogram of feathers or a kilogram of bricks?","They weigh the same","The bricks","The feathers","It depends on the weather"],
+["What is 25% of 80?","20","25","16","40"],
+["I’m an odd number. Take away one letter and I become even. What am I?","Seven","Nine","Five","Three"],
+["What comes next: J, F, M, A, M, J, …?","J","A","S","M"],
+["How many months have 28 days?","All 12","1","2","6"],
+["What is 7 × 8?","56","54","63","48"],
+["How many sides does a hexagon have?","6","5","7","8"]
+],
+adult:[
+["A bat and a ball cost $1.10. The bat costs $1 more than the ball. How much is the ball?","5 cents","10 cents","1 cent","15 cents"],
+["Lily pads double daily and cover a lake on day 48. When was it half covered?","Day 47","Day 24","Day 46","Day 36"],
+["5 machines make 5 widgets in 5 minutes. How long do 100 machines take to make 100?","5 minutes","100 minutes","20 minutes","1 minute"],
+["What comes next: O, T, T, F, F, S, S, E, …?","N","T","E","O"],
+["What is the next prime number after 31?","37","33","35","39"],
+["How many times do a clock’s hands overlap in 12 hours?","11","12","10","24"],
+["“Brothers and sisters I have none, but that man’s father is my father’s son.” Who is in the photo?","My son","Myself","My father","My nephew"],
+["What is 2 to the power of 10?","1,024","1,000","512","2,048"],
+["Counting every size, how many squares are on a chessboard?","204","64","128","256"],
+["What is the sum of all whole numbers from 1 to 100?","5,050","5,000","10,100","4,950"],
+["You overtake the person in second place in a race. What place are you in?","Second","First","Third","It depends"],
+["What comes next: 2, 6, 12, 20, 30, …?","42","40","36","44"],
+["A farmer has 17 sheep. All but 9 run away. How many are left?","9","8","17","0"],
+["A drawer has black and white socks. How many must you take to be sure of a pair?","3","2","4","5"],
+["What do the interior angles of a hexagon add up to?","720°","360°","540°","1,080°"]
+]};
+QB.music={
+kid:[
+["How many strings does a standard guitar have?","6","4","5","8"],
+["Which instrument has black and white keys?","Piano","Guitar","Violin","Drum"],
+["Which instrument do you hit with sticks?","Drum","Violin","Flute","Piano"],
+["Which of these instruments do you blow into?","Flute","Drum","Piano","Guitar"],
+["What do you call a group of people singing together?","A choir","A team","A crew","An orchestra"],
+["Which instrument is this?||🎻","Violin","Guitar","Harp","Banjo"],
+["Which instrument is this?||🎺","Trumpet","Tuba","Saxophone","Flute"],
+["Which instrument is this?||🎷","Saxophone","Trumpet","Clarinet","Flute"],
+["Which instrument is this?||🪕","Banjo","Guitar","Ukulele","Violin"],
+["What do you call the person who leads an orchestra?","The conductor","The captain","The drummer","The singer"],
+["Which is the biggest instrument in the string section?","Double bass","Cello","Violin","Viola"],
+["How many musicians play in a duet?","2","3","4","1"],
+["Which tall, triangle-shaped instrument do you play by plucking lots of strings?","Harp","Piano","Cello","Banjo"],
+["What do you call music with no singing?","Instrumental","A cappella","A chorus","A lullaby"],
+["Which of these is a percussion instrument?","Xylophone","Flute","Violin","Trumpet"]
+],
+junior:[
+["How many lines are in a music staff?","5","4","6","7"],
+["What does “forte” mean in music?","Loud","Soft","Fast","Slow"],
+["What does “piano” mean as a music instruction?","Soft","Loud","Fast","High"],
+["Which instrument family does the trumpet belong to?","Brass","Woodwind","Strings","Percussion"],
+["Which instrument family does the flute belong to?","Woodwind","Brass","Strings","Percussion"],
+["Which composer kept writing music after he went deaf?","Ludwig van Beethoven","Wolfgang Amadeus Mozart","Johann Sebastian Bach","Antonio Vivaldi"],
+["Who composed The Four Seasons?","Antonio Vivaldi","Johann Sebastian Bach","Joseph Haydn","Frédéric Chopin"],
+["John, Paul, George and Ringo were in which band?","The Beatles","The Rolling Stones","Queen","The Who"],
+["Which clef is also called the G clef?","Treble clef","Bass clef","Alto clef","Tenor clef"],
+["What do you call three or more notes played together?","A chord","A scale","A beat","A rest"],
+["In 4/4 time, how many beats does a whole note last?","4","1","2","8"],
+["Which Belgian singer had a hit with “Alors on danse”?","Stromae","Angèle","Jacques Brel","Lost Frequencies"],
+["Which instrument did Seattle’s Jimi Hendrix play?","Guitar","Drums","Piano","Saxophone"],
+["Mozart was born in which present-day country?","Austria","Germany","Italy","France"],
+["RM, Jin, Suga, J-Hope, Jimin, V and Jungkook make up which group?","BTS","Blackpink","EXO","Stray Kids"]
+],
+adult:[
+["Who composed The Rite of Spring?","Igor Stravinsky","Sergei Prokofiev","Claude Debussy","Maurice Ravel"],
+["Which Italian term means gradually getting louder?","Crescendo","Diminuendo","Staccato","Legato"],
+["How many symphonies did Beethoven complete?","9","7","12","5"],
+["Which band was fronted by Kurt Cobain?","Nirvana","Pearl Jam","Soundgarden","Alice in Chains"],
+["Which Seattle label released early records by Nirvana and Soundgarden?","Sub Pop","Motown","Sun Records","Matador"],
+["Which instrument made Belgian jazz legend Toots Thielemans famous?","Harmonica","Saxophone","Trumpet","Accordion"],
+["How many semitones are in an octave?","12","8","7","10"],
+["Which Pink Floyd album has a prism on its cover?","The Dark Side of the Moon","The Wall","Wish You Were Here","Animals"],
+["Who was known as the Queen of Soul?","Aretha Franklin","Diana Ross","Tina Turner","Etta James"],
+["What is the highest female singing voice?","Soprano","Alto","Mezzo-soprano","Contralto"],
+["Who composed the opera The Magic Flute?","Wolfgang Amadeus Mozart","Giuseppe Verdi","Richard Wagner","Giacomo Puccini"],
+["Which band released “Bohemian Rhapsody”?","Queen","The Who","Led Zeppelin","Deep Purple"],
+["What does “a cappella” mean?","Singing without instruments","Singing in a church","Singing very fast","Singing in harmony"],
+["The tango was born in the dance halls of which country’s capital?","Argentina","Spain","Brazil","Cuba"],
+["Which composer wrote the Brandenburg Concertos?","Johann Sebastian Bach","George Frideric Handel","Antonio Vivaldi","Georg Philipp Telemann"]
+]};
+
+
+/* ---------- Expanded bank: ["tf", statement, 1|0] and ["order", prompt, firstLabel, lastLabel, item1..item4 in correct order] ---------- */
+const ADD = {
+fb:{
+kid:[
+["Which country won the 2026 men’s World Cup?","Spain","Argentina","France","Brazil"],
+["Which country does Mohamed Salah play for?","Egypt","Morocco","Senegal","Algeria"],
+["Which club plays at Old Trafford?","Manchester United","Manchester City","Liverpool","Chelsea"],
+["Which country does Harry Kane play for?","England","Scotland","Wales","Ireland"],
+["How many points does a team get for a win in most leagues?","3","1","2","4"],
+["What is it called when the referee lets play go on after a foul because the fouled team still has the ball?","Advantage","Offside","Injury time","A free kick"],
+["Which club did Kylian Mbappé join in 2024?","Real Madrid","PSG","Liverpool","Bayern Munich"],
+["Which country does Christian Pulisic play for?","United States","Canada","Mexico","England"],
+["Which English club is nicknamed “the Gunners”?","Arsenal","Chelsea","Tottenham","West Ham"],
+["What does it mean when a goalkeeper keeps a “clean sheet”?","Their team concedes no goals","They make no fouls","They get no yellow cards","They wear a new kit"],
+["tf","A goalkeeper can pick up a back-pass kicked to them by a teammate.",0],
+["tf","You can be offside straight from a throw-in.",0],
+["tf","Lionel Messi has played for Inter Miami.",1],
+["tf","Belgium has won the men’s World Cup.",0],
+["tf","A goal can be scored straight from a corner kick.",1],
+["tf","A goalkeeper may wear the same colour shirt as their teammates.",0],
+["order","Put these in order, closest to the goal first","Closest","Farthest","Goal line","Edge of the six-yard box","Penalty spot","Edge of the penalty area"],
+["order","Put these in the order they happen","First","Last","Kick-off","Half-time","Second half","Final whistle"],
+["order","Put these from smallest to biggest","Smallest","Biggest","Halves in a match","Players on one team","Minutes in one half","Minutes in a whole match"]
+],
+junior:[
+["Which country won the 2010 men’s World Cup?","Spain","Netherlands","Germany","Brazil"],
+["Who scored the winning goal in the 2026 World Cup final?","Ferran Torres","Lamine Yamal","Mikel Oyarzabal","Rodri"],
+["Which German club plays at the Allianz Arena?","Bayern Munich","Borussia Dortmund","Bayer Leverkusen","Schalke"],
+["Which club’s fans stand on the famous “Yellow Wall”?","Borussia Dortmund","Bayern Munich","Celtic","Galatasaray"],
+["Who is Belgium’s all-time top scorer?","Romelu Lukaku","Eden Hazard","Michy Batshuayi","Kevin De Bruyne"],
+["Which country did Zinedine Zidane play for?","France","Algeria","Italy","Spain"],
+["Which club did Kevin De Bruyne join in 2025 after leaving Manchester City?","Napoli","Inter Miami","Club Brugge","Genk"],
+["Which country won the 2006 men’s World Cup?","Italy","France","Germany","Brazil"],
+["In which country is the Eredivisie played?","Netherlands","Belgium","Denmark","Sweden"],
+["Which goalkeeper captained Spain to the 2010 World Cup?","Iker Casillas","Víctor Valdés","David de Gea","Pepe Reina"],
+["Fans of which English club sing “You’ll Never Walk Alone”?","Liverpool","Manchester United","Everton","Arsenal"],
+["tf","Belgium reached the men’s World Cup final in 2018.",0],
+["tf","Erling Haaland was born in England.",1],
+["tf","Lionel Messi has won the men’s World Cup.",1],
+["tf","The Champions League final is always played at one of the two finalists’ stadiums.",0],
+["tf","A player can be offside in their own half.",0],
+["tf","Spain has won the men’s World Cup twice.",1],
+["order","Put these countries in order of their FIRST World Cup win","Earliest","Latest","Uruguay","England","Argentina","Spain"],
+["order","Put these pitch measurements from shortest to longest","Shortest","Longest","Width of the goal","Radius of the centre circle","Goal line to penalty spot","Goal line to edge of the penalty area"],
+["order","Put these countries in order of their FIRST Euro title","Earliest","Latest","Spain","Netherlands","Denmark","Portugal"]
+],
+adult:[
+["Who was top scorer at the 2022 World Cup?","Kylian Mbappé","Lionel Messi","Olivier Giroud","Julián Álvarez"],
+["Which country hosted the 1986 World Cup?","Mexico","Colombia","Argentina","Spain"],
+["The Panenka penalty is named after a player from which country?","Czechoslovakia","Hungary","Poland","Yugoslavia"],
+["Which team did Liverpool beat in the 2019 Champions League final?","Tottenham","Real Madrid","Barcelona","Ajax"],
+["Which club won the first Premier League title in 1992–93?","Manchester United","Blackburn Rovers","Arsenal","Leeds United"],
+["Who has made the most appearances for Belgium’s men’s team?","Jan Vertonghen","Axel Witsel","Eden Hazard","Toby Alderweireld"],
+["With which club did Johan Cruyff win three straight European Cups?","Ajax","Barcelona","Feyenoord","PSV"],
+["Who managed Leicester City to the 2015–16 Premier League title?","Claudio Ranieri","Nigel Pearson","Brendan Rodgers","Craig Shakespeare"],
+["Which Belgian club reached the 1978 European Cup final?","Club Brugge","Anderlecht","Standard Liège","KV Mechelen"],
+["Who won the 2018 Ballon d’Or, ending Messi and Ronaldo’s run?","Luka Modrić","Antoine Griezmann","Mohamed Salah","Kylian Mbappé"],
+["tf","Pelé won three World Cups as a player.",1],
+["tf","Germany beat Brazil 7–1 in the 2014 World Cup semi-final.",1],
+["tf","The 1950 World Cup was decided by a final group stage, not a knockout final.",1],
+["tf","Johan Cruyff won a World Cup with the Netherlands.",0],
+["tf","Club Brugge has won a major European trophy.",0],
+["tf","The 2026 World Cup final went to extra time.",1],
+["order","Put these Ballon d’Or winners in order of their first win","Earliest","Latest","Johan Cruyff","Marco van Basten","Zinedine Zidane","Luka Modrić"],
+["order","Put these World Cup hosts in order","Earliest","Latest","Switzerland","Argentina","United States","South Africa"],
+["order","Put these Champions League winners (since 1993) in order of their first title in that era","Earliest","Latest","Ajax","Porto","Inter Milan","Chelsea"]
+]},
+geo:{
+kid:[
+["What is the capital of France?","Paris","Lyon","Marseille","Nice"],
+["In which country is the Taj Mahal?","India","Egypt","China","Turkey"],
+["In which country is Mount Fuji?","Japan","China","South Korea","Nepal"],
+["What covers most of Antarctica?","Ice","Sand","Forest","Grass"],
+["Which ocean is on the west coast of the United States?","Pacific","Atlantic","Indian","Arctic"],
+["Which country is just north of the United States?","Canada","Mexico","Russia","Brazil"],
+["On which continent is Brazil?","South America","Africa","Europe","Asia"],
+["What do you call a mountain that can erupt with lava?","A volcano","A glacier","A canyon","A cliff"],
+["Which country is famous for windmills and tulips?","Netherlands","Norway","Switzerland","Italy"],
+["tf","Australia is both a country and a continent.",1],
+["tf","The Sahara is the coldest desert in the world.",0],
+["tf","Seattle is in Canada.",0],
+["tf","Japan is made up of islands.",1],
+["tf","The Pacific is the smallest ocean.",0],
+["tf","Africa is a country.",0],
+["order","Put these places from smallest to biggest","Smallest","Biggest","Seattle","Washington State","United States","North America"],
+["order","Put these oceans from biggest to smallest","Biggest","Smallest","Pacific","Atlantic","Indian","Arctic"],
+["order","Put these continents from biggest to smallest","Biggest","Smallest","Asia","Africa","Europe","Australia"]
+],
+junior:[
+["What is the capital of Spain?","Madrid","Barcelona","Seville","Lisbon"],
+["Which river flows through Paris?","Seine","Rhine","Thames","Danube"],
+["Which river flows through London?","Thames","Seine","Severn","Rhine"],
+["Which is the largest country in South America?","Brazil","Argentina","Peru","Colombia"],
+["Which US state has the most people?","California","Texas","Florida","New York"],
+["What is the capital of Washington State?","Olympia","Seattle","Tacoma","Spokane"],
+["Which is the largest US state by area?","Alaska","Texas","California","Montana"],
+["Which sea lies between Europe and Africa?","Mediterranean Sea","Red Sea","Black Sea","North Sea"],
+["In which country is the city of Istanbul?","Türkiye","Greece","Egypt","Italy"],
+["tf","Russia lies on two continents.",1],
+["tf","The Amazon River flows into the Pacific Ocean.",0],
+["tf","Mount Everest is in the Himalayas.",1],
+["tf","The equator passes through Brazil.",1],
+["tf","Washington, D.C. is a US state.",0],
+["tf","Madagascar is an island off the coast of Africa.",1],
+["order","Put these mountains from tallest to shortest","Tallest","Shortest","Mount Everest","Kilimanjaro","Mont Blanc","Mount Rainier"],
+["order","Put these countries from biggest to smallest","Biggest","Smallest","Russia","Canada","Brazil","Belgium"],
+["order","Put these cities from north to south","Farthest north","Farthest south","Oslo","Brussels","Rome","Cairo"]
+],
+adult:[
+["Which country has the most pyramids?","Sudan","Egypt","Mexico","Peru"],
+["What is the capital of Myanmar?","Naypyidaw","Yangon","Mandalay","Bagan"],
+["Which African country has three capital cities?","South Africa","Nigeria","Kenya","Morocco"],
+["Lake Titicaca lies on the border of which two countries?","Peru and Bolivia","Chile and Bolivia","Peru and Ecuador","Argentina and Chile"],
+["What is the smallest US state by area?","Rhode Island","Delaware","Connecticut","New Jersey"],
+["What is the longest mountain range above sea level?","Andes","Rocky Mountains","Himalayas","Ural Mountains"],
+["Which country is completely surrounded by South Africa?","Lesotho","Eswatini","Botswana","Namibia"],
+["What is the capital of Switzerland?","Bern","Zurich","Geneva","Basel"],
+["What is the capital of Australia’s Northern Territory?","Darwin","Alice Springs","Perth","Cairns"],
+["tf","Brussels is farther north than London.",0],
+["tf","Russia and the United States are less than 5 km apart at their closest point.",1],
+["tf","Australia is wider than the Moon.",1],
+["tf","Africa is bigger than China, the United States and India combined.",1],
+["tf","The shore of the Dead Sea is the lowest land on Earth.",1],
+["tf","Measured from base to peak, Everest is the tallest mountain on Earth.",0],
+["order","Put these capitals from west to east","Farthest west","Farthest east","Lisbon","Madrid","Paris","Berlin"],
+["order","Put these rivers from longest to shortest","Longest","Shortest","Nile","Mississippi","Danube","Thames"],
+["order","Put these countries by population","Most people","Fewest people","Indonesia","Brazil","Japan","Germany"]
+]},
+sci:{
+kid:[
+["Which sense do you use your nose for?","Smell","Taste","Hearing","Touch"],
+["What makes a rainbow?","Sunlight and raindrops","Moonlight and snow","Wind and clouds","Lightning"],
+["What does a magnet stick to?","Iron","Wood","Plastic","Glass"],
+["Which part of a plant soaks up water from the soil?","Roots","Leaves","Petals","Seeds"],
+["What happens to ice when it gets warm?","It melts","It grows","It turns to sand","It gets harder"],
+["In which direction does the Sun rise?","East","West","North","South"],
+["tf","The Sun is a star.",1],
+["tf","Spiders are insects.",0],
+["tf","Whales are fish.",0],
+["tf","Ice floats in water.",1],
+["tf","There is air to breathe on the Moon.",0],
+["tf","Your heart is a muscle.",1],
+["order","Put these planets in order from the Sun","Closest","Farthest","Mercury","Venus","Earth","Mars"],
+["order","Put a butterfly’s life in order","First","Last","Egg","Caterpillar","Chrysalis","Butterfly"],
+["order","Put these from coldest to hottest","Coldest","Hottest","Ice","Cold water","Warm bath","Boiling water"]
+],
+junior:[
+["What force slows things down when they rub together?","Friction","Gravity","Magnetism","Inertia"],
+["Which vitamin does your skin make in sunlight?","Vitamin D","Vitamin A","Vitamin C","Vitamin B12"],
+["What is the black circle in the middle of your eye called?","Pupil","Iris","Retina","Lens"],
+["What is a scientist who studies rocks called?","A geologist","A biologist","A botanist","An astronomer"],
+["Which gas makes party balloons float?","Helium","Oxygen","Carbon dioxide","Nitrogen"],
+["Which organs clean your blood and make urine?","Kidneys","Lungs","Heart","Stomach"],
+["tf","Sound travels faster than light.",0],
+["tf","Lightning is hotter than the surface of the Sun.",1],
+["tf","Bats are blind.",0],
+["tf","Glass is made mostly from sand.",1],
+["tf","A day on Mars is about as long as a day on Earth.",1],
+["tf","Diamonds are made of carbon.",1],
+["order","Put these planets from biggest to smallest","Biggest","Smallest","Jupiter","Saturn","Earth","Mars"],
+["order","Put these from smallest to biggest","Smallest","Biggest","Atom","Cell","Ant","Human"],
+["order","Put Earth’s layers in order from the outside in","Outside","Centre","Crust","Mantle","Outer core","Inner core"]
+],
+adult:[
+["Which element has the chemical symbol K?","Potassium","Krypton","Calcium","Phosphorus"],
+["What is the hardest substance in the human body?","Tooth enamel","Bone","Cartilage","Fingernail"],
+["Who proposed evolution by natural selection in On the Origin of Species?","Charles Darwin","Gregor Mendel","Jean-Baptiste Lamarck","Thomas Huxley"],
+["Which particle has a negative charge?","Electron","Proton","Neutron","Photon"],
+["What is absolute zero in degrees Celsius?","−273.15 °C","−100 °C","−459.67 °C","−373.15 °C"],
+["What is the closest star to the Sun?","Proxima Centauri","Sirius","Betelgeuse","Polaris"],
+["What is the SI unit of force?","Newton","Joule","Pascal","Watt"],
+["tf","Water expands when it freezes.",1],
+["tf","Electrons are bigger than protons.",0],
+["tf","The Great Wall of China can be seen from the Moon with the naked eye.",0],
+["tf","Sharks have existed for longer than trees.",1],
+["tf","Old windows are thicker at the bottom because glass slowly flows.",0],
+["tf","Bananas are slightly radioactive.",1],
+["order","Put these from smallest to largest","Smallest","Largest","Proton","Atom","Virus","Bacterium"],
+["order","Put these discoveries in order","Earliest","Latest","Newton’s laws of motion","Darwin’s Origin of Species","Penicillin","DNA’s double helix"],
+["order","Put these by melting point, lowest first","Lowest","Highest","Mercury","Ice","Lead","Iron"]
+]},
+fun:{
+kid:[
+["What colour are baby flamingos when they hatch?","Grey","Pink","Orange","Yellow"],
+["Which animal can’t stick out its tongue?","Crocodile","Dog","Frog","Snake"],
+["What shape are the cells in a honeycomb?","Hexagons","Squares","Circles","Triangles"],
+["How many colours are on the Belgian flag?","3","2","4","5"],
+["Which fruit is used to make guacamole?","Avocado","Banana","Pear","Kiwi"],
+["Which treat is Belgium especially famous for?","Chocolate","Sushi","Tacos","Pizza"],
+["tf","A group of flamingos is called a flamboyance.",1],
+["tf","Goldfish can only remember things for three seconds.",0],
+["tf","A tomato is a fruit.",1],
+["tf","Sea otters hold hands while they sleep.",1],
+["tf","Penguins live at the North Pole.",0],
+["tf","Butterflies taste with their feet.",1],
+["order","Put these from lightest to heaviest","Lightest","Heaviest","Feather","Apple","Bicycle","Car"],
+["order","Put these from fewest legs to most","Fewest","Most","Snake","Bird","Dog","Spider"],
+["order","Put these from shortest to longest","Shortest","Longest","Second","Minute","Hour","Day"]
+],
+junior:[
+["Teddy bears are named after which US president?","Theodore Roosevelt","Abraham Lincoln","George Washington","John F. Kennedy"],
+["Which board game has properties called Boardwalk and Park Place?","Monopoly","Clue","Risk","Scrabble"],
+["Which Belgian city is famous for its canals and nicknamed “the Venice of the North”?","Bruges","Antwerp","Liège","Leuven"],
+["How many small squares are on one face of a standard Rubik’s Cube?","9","6","12","16"],
+["Which planet is named after the Roman god of war?","Mars","Jupiter","Saturn","Mercury"],
+["Which language has the most native speakers?","Mandarin Chinese","English","Spanish","Hindi"],
+["tf","Lightning never strikes the same place twice.",0],
+["tf","The Eiffel Tower gets a little taller in summer.",1],
+["tf","Bulls get angry because of the colour red.",0],
+["tf","Sloths can hold their breath longer than dolphins.",1],
+["tf","Humans only use 10% of their brains.",0],
+["tf","A shrimp’s heart is in its head.",1],
+["order","Put these inventions in order","Oldest","Newest","Wheel","Printing press","Telephone","Internet"],
+["order","Put these from shortest to tallest","Shortest","Tallest","Space Needle","Eiffel Tower","Empire State Building","Burj Khalifa"],
+["order","Put these US coins from least to most valuable","Least","Most","Penny","Nickel","Dime","Quarter"]
+],
+adult:[
+["Which dish is often called Belgium’s national dish?","Mussels and fries","Fondue","Paella","Fish and chips"],
+["Which is the most-visited art museum in the world?","The Louvre","The Met","The British Museum","The Uffizi"],
+["Bubble wrap was first invented as what?","Wallpaper","Shower curtains","Pool covers","Mattresses"],
+["What colour is a plane’s “black box” flight recorder?","Orange","Black","Yellow","Silver"],
+["How many time zones does China officially use?","1","3","5","4"],
+["Which is the only US state with a one-syllable name?","Maine","Utah","Iowa","Ohio"],
+["tf","Napoleon was unusually short for his time.",0],
+["tf","Cleopatra lived closer in time to the Moon landing than to the building of the Great Pyramid.",1],
+["tf","Oxford University is older than the Aztec capital, Tenochtitlan.",1],
+["tf","There are more possible games of chess than atoms in the observable universe.",1],
+["tf","Vikings wore horned helmets into battle.",0],
+["tf","The Hawaiian alphabet has 13 letters.",1],
+["order","Put these in order of when they were built","Oldest","Newest","Great Pyramid of Giza","Colosseum","Machu Picchu","Eiffel Tower"],
+["order","Put these companies in order of founding","Oldest","Newest","Nintendo","Coca-Cola","Ford","Apple"],
+["order","Put these numbers from smallest to biggest","Smallest","Biggest","Sides on a hexagon","Legs on a spider","Players on a football team","Cards in one suit"]
+]},
+animals:{
+kid:[
+["What do caterpillars eat?","Leaves","Fish","Bread","Cheese"],
+["Which insect lives in a hive?","Bee","Ant","Beetle","Ladybird"],
+["What is a baby cow called?","A calf","A foal","A kid","A lamb"],
+["Which animal has a shell and moves very slowly on land?","Tortoise","Rabbit","Squirrel","Fox"],
+["Which of these animals lays eggs?","Chicken","Cow","Dog","Horse"],
+["Where do polar bears live?","The Arctic","Antarctica","Africa","The Amazon"],
+["tf","Dolphins are mammals.",1],
+["tf","Bats hang upside down to sleep.",1],
+["tf","Frogs can soak up water through their skin.",1],
+["tf","Penguins can fly.",0],
+["tf","Giraffes have very short tongues.",0],
+["order","Put these from smallest to biggest","Smallest","Biggest","Ant","Mouse","Dog","Elephant"],
+["order","Put a frog’s life in order","First","Last","Egg","Tadpole","Froglet","Frog"],
+["order","Put these from fewest legs to most","Fewest","Most","Fish","Chicken","Cat","Ant"]
+],
+junior:[
+["What is a baby swan called?","A cygnet","A gosling","A duckling","A chick"],
+["Which animal’s eye is bigger than its brain?","Ostrich","Owl","Eagle","Horse"],
+["Which bird is a symbol of peace?","Dove","Eagle","Crow","Parrot"],
+["What do koalas eat?","Eucalyptus leaves","Bamboo","Insects","Fish"],
+["What is the largest meat-eating animal on land?","Polar bear","Lion","Tiger","Komodo dragon"],
+["tf","A group of fish is called a school.",1],
+["tf","Snakes have eyelids.",0],
+["tf","Starfish have no brain.",1],
+["tf","An ostrich lays the largest egg of any living bird.",1],
+["tf","Male lions do most of the hunting.",0],
+["tf","Owls can turn their heads all the way around.",0],
+["order","Put these from fastest to slowest","Fastest","Slowest","Cheetah","Horse","Human","Snail"],
+["order","Put these by typical lifespan, shortest first","Shortest","Longest","Mayfly","Mouse","Dog","Giant tortoise"],
+["order","Put these from lightest to heaviest","Lightest","Heaviest","Hummingbird","Rabbit","Gorilla","Blue whale"]
+],
+adult:[
+["What is the only marsupial native to the United States and Canada?","Virginia opossum","Sugar glider","Raccoon","Fisher"],
+["What is a baby echidna called?","A puggle","A joey","A kit","A pup"],
+["Which animal has the largest brain?","Sperm whale","Blue whale","African elephant","Orca"],
+["Which bird lays its eggs in other birds’ nests?","Cuckoo","Magpie","Starling","Wren"],
+["Which mammal has the densest fur?","Sea otter","Polar bear","Chinchilla","Arctic fox"],
+["tf","Crows can recognise individual human faces.",1],
+["tf","Some sharks must keep swimming to breathe.",1],
+["tf","Koalas are bears.",0],
+["tf","Bees can see ultraviolet light.",1],
+["tf","A polar bear’s hairs are actually transparent, not white.",1],
+["tf","Most salmon return to the stream where they hatched to spawn.",1],
+["order","Put these by top speed, fastest first","Fastest","Slowest","Peregrine falcon (diving)","Cheetah","Greyhound","Human"],
+["order","Put these by typical lifespan, shortest first","Shortest","Longest","Hamster","Cat","Elephant","Greenland shark"],
+["order","Put these eggs from smallest to largest","Smallest","Largest","Hummingbird","Chicken","Emu","Ostrich"]
+]},
+art:{
+kid:[
+["What do you mix into a colour to make it darker?","Black","White","Yellow","Water"],
+["What colour do you get by mixing blue and white?","Light blue","Green","Purple","Orange"],
+["What do you call a quick, rough drawing?","A sketch","A sculpture","A mosaic","A print"],
+["What do painters use to put paint on paper?","A brush","A spoon","A ruler","A stapler"],
+["What colour do you get by mixing black and white?","Grey","Brown","Pink","Blue"],
+["tf","Orange is a primary colour.",0],
+["tf","Sculptures can be made from clay.",1],
+["tf","A rainbow has purple in it.",1],
+["tf","You can make a whole picture using only dots.",1],
+["tf","Mixing yellow and blue makes red.",0],
+["order","Put the rainbow’s colours in order from the top","Top","Lower down","Red","Orange","Yellow","Green"],
+["order","Put these from lightest to darkest","Lightest","Darkest","White","Light grey","Dark grey","Black"],
+["order","Put these painting steps in order","First","Last","Sketch it","Paint it","Let it dry","Hang it up"]
+],
+junior:[
+["Which painter cut off part of his own ear?","Vincent van Gogh","Claude Monet","Pablo Picasso","Salvador Dalí"],
+["Which artist also drew designs for flying machines?","Leonardo da Vinci","Michelangelo","Rembrandt","Vermeer"],
+["Which Mexican artist painted many self-portraits with flowers in her hair?","Frida Kahlo","Georgia O’Keeffe","Mary Cassatt","Yayoi Kusama"],
+["What do you call the art of folding paper?","Origami","Ikebana","Calligraphy","Batik"],
+["What do you call a painting of objects like fruit and vases?","A still life","A landscape","A portrait","A mural"],
+["tf","The Mona Lisa has no visible eyebrows.",1],
+["tf","Pablo Picasso was Spanish.",1],
+["tf","Van Gogh sold hundreds of paintings while he was alive.",0],
+["tf","Claude Monet painted many pictures of water lilies.",1],
+["tf","Michelangelo painted the Mona Lisa.",0],
+["order","Put these artists in order of birth","Earliest","Latest","Leonardo da Vinci","Rembrandt","Vincent van Gogh","Andy Warhol"],
+["order","Put these paper sizes from smallest to biggest","Smallest","Biggest","A5","A4","A3","A2"],
+["order","Put the steps for making a clay pot in order","First","Last","Shape the clay","Let it dry","First firing in the kiln","Add the glaze"]
+],
+adult:[
+["Who painted The Hunters in the Snow?","Pieter Bruegel the Elder","Peter Paul Rubens","Anthony van Dyck","Jacob Jordaens"],
+["Who designed the Atomium in Brussels?","André Waterkeyn","Victor Horta","Le Corbusier","Henry van de Velde"],
+["Who painted The Persistence of Memory, with its melting clocks?","Salvador Dalí","René Magritte","Max Ernst","Joan Miró"],
+["Who designed the Helvetica typeface with Eduard Hoffmann?","Max Miedinger","Adrian Frutiger","Paul Renner","Eric Gill"],
+["Which art movement is named after a painting by Monet?","Impressionism","Fauvism","Cubism","Expressionism"],
+["tf","Peter Paul Rubens ran his studio in Antwerp.",1],
+["tf","Gustave Eiffel engineered the internal frame of the Statue of Liberty.",1],
+["tf","The Mona Lisa was once stolen from the Louvre.",1],
+["tf","Wassily Kandinsky was a Russian painter.",1],
+["tf","Helvetica was designed in Germany.",0],
+["order","Put these art movements in order","Earliest","Latest","Renaissance","Baroque","Impressionism","Pop Art"],
+["order","Put these buildings in order of completion","Earliest","Latest","Notre-Dame de Paris","Atomium","Sydney Opera House","Guggenheim Bilbao"],
+["order","Put these painters in order of birth","Earliest","Latest","Jan van Eyck","Pieter Bruegel the Elder","Peter Paul Rubens","René Magritte"]
+]},
+brain:{
+kid:[
+["What is 3 + 3 + 3?","9","6","12","10"],
+["Which shape has no corners?","Circle","Square","Triangle","Star"],
+["What comes next: Monday, Tuesday, Wednesday, …?","Thursday","Friday","Sunday","Saturday"],
+["You share 4 cookies equally with a friend. How many do you each get?","2","1","3","4"],
+["What is 20 − 5?","15","10","25","5"],
+["tf","6 is an even number.",1],
+["tf","A square has 5 sides.",0],
+["tf","10 is more than 7.",1],
+["tf","Half of 8 is 3.",0],
+["tf","3 + 4 = 7",1],
+["order","Put these numbers from smallest to biggest","Smallest","Biggest","3","8","15","21"],
+["order","Put these shapes from fewest sides to most","Fewest","Most","Triangle","Square","Pentagon","Hexagon"],
+["order","Put these in order through the day","Earliest","Latest","Breakfast","Lunch","Dinner","Bedtime"]
+],
+junior:[
+["What is 9 × 9?","81","72","99","89"],
+["What comes next: 3, 6, 12, 24, …?","48","36","30","42"],
+["How many seconds are in 5 minutes?","300","500","250","360"],
+["Which of these numbers is prime?","13","15","21","27"],
+["At 3 o’clock, what angle do a clock’s hands make?","90°","45°","180°","30°"],
+["tf","0.5 is bigger than 0.25.",1],
+["tf","Every square is a rectangle.",1],
+["tf","Every rectangle is a square.",0],
+["tf","1 is a prime number.",0],
+["tf","100 divided by 4 is 25.",1],
+["order","Put these from smallest to biggest","Smallest","Biggest","1/4","0.3","1/2","0.75"],
+["order","Put these from smallest to biggest","Smallest","Biggest","2³","3²","10","4²"],
+["order","Put these Roman numerals from smallest to biggest","Smallest","Biggest","IV","IX","XL","C"]
+],
+adult:[
+["What is 15% of 80?","12","15","8","16"],
+["What comes next: 1, 3, 6, 10, 15, …?","21","20","25","18"],
+["How many edges does a cube have?","12","8","6","24"],
+["A train covers 120 km in 1.5 hours. What is its average speed?","80 km/h","60 km/h","90 km/h","100 km/h"],
+["What is the smallest number divisible by every whole number from 1 to 6?","60","120","30","36"],
+["tf","0.999… repeating forever is exactly equal to 1.",1],
+["tf","There are more prime numbers between 1 and 10 than between 11 and 20.",0],
+["tf","A flat triangle can have two right angles.",0],
+["tf","With 23 people in a room, it’s more likely than not that two share a birthday.",1],
+["tf","Zero is an even number.",1],
+["order","Put these from smallest to biggest","Smallest","Biggest","√50","2³","3π","10"],
+["order","Put these lengths of time from shortest to longest","Shortest","Longest","100,000 seconds","1 week","1 million seconds","1 billion seconds"],
+["order","Put these from smallest to biggest","Smallest","Biggest","7/8","0.9","11/12","0.95"]
+]},
+music:{
+kid:[
+["Which instrument is this?||🥁","Drum","Trumpet","Guitar","Piano"],
+["Which instrument is this?||🎸","Guitar","Violin","Harp","Banjo"],
+["Which instrument is this?||🎹","Keyboard","Drum","Harp","Xylophone"],
+["What do you use to play a violin?","A bow","A stick","A hammer","A pick"],
+["How many people are in a trio?","3","2","4","5"],
+["tf","A piano has strings inside it.",1],
+["tf","You play a trumpet by blowing into it.",1],
+["tf","A drum has strings.",0],
+["tf","A lullaby is a song to help babies sleep.",1],
+["tf","A choir plays guitars.",0],
+["order","Put these instruments from smallest to biggest","Smallest","Biggest","Violin","Viola","Cello","Double bass"],
+["order","Put these from fewest musicians to most","Fewest","Most","Solo","Duet","Trio","Quartet"],
+["order","Put these from quietest to loudest","Quietest","Loudest","Whisper","Talking","Shouting","Rock concert"]
+],
+junior:[
+["How many different notes are in a major scale?","7","8","5","12"],
+["Who composed “Für Elise”?","Ludwig van Beethoven","Wolfgang Amadeus Mozart","Johann Sebastian Bach","Frédéric Chopin"],
+["Which instrument has 47 strings and 7 pedals?","Concert harp","Grand piano","Cello","Organ"],
+["What is the catchy repeated part of a song usually called?","The chorus","The verse","The bridge","The intro"],
+["Which singer was known as the King of Pop?","Michael Jackson","Elvis Presley","Prince","Freddie Mercury"],
+["tf","The saxophone is a woodwind instrument, even though it’s made of metal.",1],
+["tf","Beethoven was born in Germany.",1],
+["tf","A violin has six strings.",0],
+["tf","Mozart was writing music as a young child.",1],
+["tf","The Beatles came from Liverpool.",1],
+["order","Put these notes from longest to shortest","Longest","Shortest","Whole note","Half note","Quarter note","Eighth note"],
+["order","Put these singing voices from highest to lowest","Highest","Lowest","Soprano","Alto","Tenor","Bass"],
+["order","Put these composers in order of birth","Earliest","Latest","Johann Sebastian Bach","Wolfgang Amadeus Mozart","Ludwig van Beethoven","Pyotr Tchaikovsky"]
+],
+adult:[
+["Which Seattle band released the album Ten in 1991?","Pearl Jam","Nirvana","Soundgarden","Alice in Chains"],
+["Which Belgian singer wrote “Ne me quitte pas”?","Jacques Brel","Stromae","Toots Thielemans","Adamo"],
+["Which tempo marking means very slow?","Largo","Allegro","Presto","Vivace"],
+["Which instrument does Yo-Yo Ma play?","Cello","Violin","Piano","Viola"],
+["Who released the album Blue in 1971?","Joni Mitchell","Carole King","Joan Baez","Carly Simon"],
+["tf","Jimi Hendrix was born in Seattle.",1],
+["tf","Bob Dylan won the Nobel Prize in Literature.",1],
+["tf","Antonio Vivaldi was a priest.",1],
+["tf","Frédéric Chopin was born in France.",0],
+["tf","The harmonica and the accordion both make sound with free reeds.",1],
+["order","Put these Seattle albums in order of release","Earliest","Latest","Nirvana – Bleach","Pearl Jam – Ten","Soundgarden – Superunknown","Death Cab for Cutie – Transatlanticism"],
+["order","Put these musical eras in order","Earliest","Latest","Baroque","Classical","Romantic","Modern"],
+["order","Put these tempo markings from slowest to fastest","Slowest","Fastest","Largo","Andante","Allegro","Presto"]
+]}};
+for(const c in ADD)for(const l in ADD[c])QB[c][l].push(...ADD[c][l]);
+
+/* ---------- Showdown: [question, answer, unit, low hint, high hint] ---------- */
+const SHOWDOWN=[
+["How tall is the Space Needle?",605,"feet",100,2000],
+["How many countries are in Africa?",54,"countries",10,100],
+["How many countries are in the European Union?",27,"countries",5,60],
+["How tall is Mount Rainier?",14410,"feet",5000,30000],
+["In what year did the Titanic sink?",1912,"",1800,2000],
+["How many goals did Germany score against Brazil in the 2014 World Cup semi-final?",7,"goals",0,15],
+["How many kilometres long is a marathon, rounded?",42,"km",10,100],
+["How many teeth does an adult usually have, counting wisdom teeth?",32,"teeth",10,60],
+["How many Earth days does Mars take to go once around the Sun?",687,"days",100,2000],
+["How far away is the Moon, on average?",384400,"km",10000,1000000],
+["In what year did Belgium become independent?",1830,"",1500,2000],
+["How many stripes are on the US flag?",13,"stripes",5,30],
+["How many stars are on the European Union flag?",12,"stars",5,40],
+["How many seconds are in one hour?",3600,"seconds",500,10000],
+["How tall is the Eiffel Tower, to the tip?",330,"metres",100,1000],
+["In what year was the first FIFA World Cup?",1930,"",1880,1960],
+["In what year did the first iPhone come out?",2007,"",1995,2015],
+["How deep is the deepest point of the ocean, roughly?",10935,"metres",1000,30000],
+["In what year did the Berlin Wall fall?",1989,"",1950,2010],
+["How many years did the Hundred Years’ War last?",116,"years",50,200],
+["How many sides does a stop sign have?",8,"sides",3,20],
+["How many white keys are on a standard piano?",52,"keys",20,100],
+["At what temperature does water boil, in Fahrenheit?",212,"°F",50,500],
+["How far is it around the Earth at the equator, roughly?",40075,"km",5000,100000],
+["How old was Mozart when he died?",35,"years old",10,90],
+["In what year did the Premier League start?",1992,"",1950,2010],
+["How many time zones does Russia cover?",11,"time zones",2,20],
+["How many years did Queen Elizabeth II reign?",70,"years",20,100],
+["In what year did the Seattle Sounders join MLS?",2009,"",1990,2020],
+["How many hours are in a week?",168,"hours",50,500],
+["How many bones are in a giraffe’s neck?",7,"bones",1,50],
+["In what year was the Eiffel Tower finished?",1889,"",1800,1950],
+["How many players start a match for both teams together in a football game?",22,"players",10,40],
+["How many legs do 7 spiders have altogether?",56,"legs",10,100],
+["How many minutes are in a whole day?",1440,"minutes",500,5000],
+["How long is the Nile, roughly?",6650,"km",1000,15000],
+["In what year did the Space Needle open?",1962,"",1900,2000],
+["How many countries are in South America?",12,"countries",5,40],
+["How fast does sound travel through air, in metres per second?",343,"m/s",50,2000]
+];
+
+/* ---------- Constants ---------- */
+const ALL_CATS=[{id:'fb',name:'Football',icon:'⚽'},{id:'geo',name:'Geography',icon:'🌍'},{id:'sci',name:'Science',icon:'🔬'},{id:'fun',name:'Fun facts',icon:'💡'},{id:'animals',name:'Animals',icon:'🐾'},{id:'art',name:'Art and design',short:'Art',icon:'🎨'},{id:'brain',name:'Brain teasers',short:'Brain',icon:'🧩'},{id:'music',name:'Music',icon:'🎵'}];
+const CAT=Object.fromEntries(ALL_CATS.map(c=>[c.id,c]));
+const DEFAULT_CATS=['fb','geo','sci','fun'];
+const LEVELS={kid:{name:'Kid',hint:'about 6–8',rank:0,life:3},junior:{name:'Junior',hint:'about 9–12',rank:1,life:2},adult:{name:'Adult',hint:'grown-ups',rank:2,life:1}};
+const LEVEL_IDS=['kid','junior','adult'];
+const PCOLORS=['#FF7A59','#2FC4BE','#E77BC6','#9CCB3B','#8C9BFF','#FFA94D'];
+const SPECIAL={pick:{name:'Your pick',icon:'🎯',color:'var(--pick)'},double:{name:'Double',icon:'✨',color:'var(--double)'},steal:{name:'Steal',icon:'🧲',color:'var(--steal)'},challenge:{name:'Challenge',icon:'⚔️',color:'var(--challenge)'}};
+const SAVE='cleanSweep.game.v2', SEEN='cleanSweep.seen.v2', PREFS='cleanSweep.prefs.v1';
+let CATS=[], SEGS=[];
+function setCats(ids){
+  CATS=ids.map(id=>CAT[id]);
+  const seq=ids.concat(ids),n=seq.length,sp=['steal','pick','challenge','double'],at=[0,1,2,3].map(k=>Math.floor((k+1)*n/4)-1);
+  SEGS=[];seq.forEach((c,i)=>{SEGS.push(c);const k=at.indexOf(i);if(k>=0)SEGS.push(sp[k])});
+}
+setCats(DEFAULT_CATS);
+
+/* ---------- Storage ---------- */
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+let prefs=store.get(PREFS)||{sound:true};
+let seen=store.get(SEEN)||{};
+let draft=prefs.lastSetup||{mode:'players',length:'quick',timer:0,players:[{name:'',level:'kid'},{name:'',level:'adult'}]};
+if(!draft.cats)draft.cats=DEFAULT_CATS.slice();
+
+/* ---------- Runtime ---------- */
+let S=null, view='home', menuOpen=false, wheelRot=0, spinning=false, timerInt=null, confirmEnd=false, snap=null, lockTimer=null, wl=null;
+
+/* ---------- Helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const cur=()=>S.players[S.turn];
+const byId=id=>S.players.find(p=>p.id===id);
+const medalCount=p=>CATS.filter(c=>p.medals[c.id]).length;
+const hasAll=p=>medalCount(p)===CATS.length;
+const nextLevel=l=>LEVEL_IDS[Math.min(2,LEVELS[l].rank+1)];
+const catColor=id=>CAT[id]?`var(--${id})`:SPECIAL[id].color;
+const nextName=()=>S.players[(S.turn+1)%S.players.length].name;
+const poss=n=>n.endsWith('s')?n+'’':n+'’s';
+const fmt=n=>Number(n).toLocaleString('en-US');
+const portrait=()=>matchMedia('(orientation: portrait)').matches;
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2800)}
+
+/* ---------- Keep the iPad awake while mirroring ---------- */
+async function keepAwake(){
+  try{if('wakeLock' in navigator&&!wl){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}}catch(e){wl=null}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&view==='game')keepAwake()});
+
+/* ---------- Sound (plays through the TV when mirroring) ---------- */
+let ac=null;
+function tone(f,d,type='sine',when=0,vol=.12){
+  if(!prefs.sound)return;
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();
+    const t=ac.currentTime+when,o=ac.createOscillator(),g=ac.createGain();
+    o.type=type;o.frequency.value=f;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d+.05);}catch(e){}
+}
+function sfx(k){
+  if(k==='good'){tone(660,.15,'triangle');tone(990,.28,'triangle',.12)}
+  else if(k==='bad'){tone(240,.3,'square',0,.05);tone(170,.45,'square',.15,.05)}
+  else if(k==='medal'){[523,659,784,1047].forEach((f,i)=>tone(f,.3,'triangle',i*.1))}
+  else if(k==='land'){tone(880,.12)}
+  else if(k==='tap'){tone(520,.05,'sine',0,.05)}
+  else if(k==='drum'){for(let i=0;i<10;i++)tone(140+i*8,.06,'triangle',i*.11,.09)}
+  else if(k==='sd'){[392,523,659,784].forEach((f,i)=>tone(f,.22,'square',i*.12,.05))}
+  else if(k==='win'){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.35,'triangle',i*.13))}
+}
+
+/* ---------- SVG ---------- */
+function arc(r1,r2,a0,a1){
+  const rad=a=>(a-90)*Math.PI/180, pt=(r,a)=>[(r*Math.cos(rad(a))).toFixed(2),(r*Math.sin(rad(a))).toFixed(2)];
+  const [x0,y0]=pt(r2,a0),[x1,y1]=pt(r2,a1),[x2,y2]=pt(r1,a1),[x3,y3]=pt(r1,a0);
+  return `M${x0} ${y0}A${r2} ${r2} 0 0 1 ${x1} ${y1}L${x2} ${y2}A${r1} ${r1} 0 0 0 ${x3} ${y3}Z`;
+}
+function ringSVG(p,size){
+  const st=360/CATS.length;
+  let s=`<svg class="ring" width="${size}" height="${size}" viewBox="-50 -50 100 100" role="img" aria-label="${medalCount(p)} of ${CATS.length} medals">`;
+  CATS.forEach((c,i)=>{
+    const a0=i*st+4,a1=(i+1)*st-4,has=p.medals[c.id],f=has?1:p.progress[c.id]/S.target;
+    s+=`<path d="${arc(27,47,a0,a1)}" fill="var(--${c.id})" opacity="${has?1:.18}"/>`;
+    if(!has&&f>0)s+=`<path d="${arc(27,27+20*f,a0,a1)}" fill="var(--${c.id})" opacity=".9"/>`;
+  });
+  return s+`<text class="ringn" y="10" text-anchor="middle">${medalCount(p)}</text></svg>`;
+}
+function wheelSVG(){
+  const W=360/SEGS.length;
+  let s=`<svg viewBox="-104 -104 208 208" aria-hidden="true"><g id="wheel" style="transform:rotate(${wheelRot}deg)">`;
+  SEGS.forEach((seg,i)=>{
+    const a0=i*W,a1=a0+W,rad=a=>(a-90)*Math.PI/180;
+    const x0=(100*Math.cos(rad(a0))).toFixed(2),y0=(100*Math.sin(rad(a0))).toFixed(2),x1=(100*Math.cos(rad(a1))).toFixed(2),y1=(100*Math.sin(rad(a1))).toFixed(2);
+    const info=CAT[seg]||SPECIAL[seg],txt=seg==='fun'?'#1E1A10':'#fff';
+    s+=`<path d="M0 0L${x0} ${y0}A100 100 0 0 1 ${x1} ${y1}Z" fill="${catColor(seg)}" stroke="var(--bg)" stroke-width="1.5"/>`;
+    s+=`<g transform="rotate(${a0+W/2})"><text class="wi" y="-84" text-anchor="middle" dominant-baseline="middle">${info.icon}</text><text class="wl" transform="translate(0 -50) rotate(-90)" text-anchor="middle" dominant-baseline="middle" fill="${txt}">${info.short||info.name}</text></g>`;
+  });
+  return s+`</g><circle r="15" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/></svg>`;
+}
+const LOGO=`<svg class="logo" viewBox="60 30 220 220" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="sqlogo"><rect x="60" y="30" width="220" height="220" rx="0"/></clipPath></defs><rect x="60" y="30" width="220" height="220" rx="0" fill="#0F4C75"/><g clip-path="url(#sqlogo)"><path d="M60 238 q14 -9 28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 V260 H60 Z" fill="#1B6FA3"/><path d="M60 246 q14 -9 28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 V260 H60 Z" fill="#2A86D8"/><g transform="translate(170 150)"><path transform="rotate(0)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#239A5F"/><path transform="rotate(45)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#2A86D8"/><path transform="rotate(90)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#8E52DC"/><path transform="rotate(135)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#F2B12A"/><path transform="rotate(180)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#8A5A3B"/><path transform="rotate(225)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#E0457B"/><path transform="rotate(270)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#13A3A0"/><path transform="rotate(315)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#EE7B22"/><g class="bob"><g transform="rotate(-28) scale(0.85)"><path d="M-82 14 C-96 6 -106 -6 -116 -14 C-114 -2 -108 8 -100 13 C-109 19 -115 30 -117 42 C-104 34 -92 24 -80 18 Z" fill="#0A0E1A"/><path d="M-6 -33 C-2 -58 6 -80 16 -94 C20 -72 26 -50 32 -31 Z" fill="#0A0E1A"/><path d="M-92 8 C-66 -20 -8 -36 40 -31 C70 -27 92 -14 101 -1 C93 9 71 17 40 20 C2 25 -48 24 -80 16 Z" fill="#0A0E1A"/><path d="M-14 -30 C-4 -25 18 -25 34 -30 C24 -21 4 -19 -14 -30 Z" fill="#8C98AD"/><path d="M100 1 C86 10 60 17 30 18 C6 19 -16 17 -36 13 C-14 8 22 9 56 5 C76 3 90 1 100 1 Z" fill="#FFFFFF"/><ellipse cx="60" cy="-15" rx="13" ry="5" transform="rotate(-8 60 -15)" fill="#FFFFFF"/><path d="M28 17 C26 30 18 42 6 49 C24 47 40 36 46 19 Z" fill="#0A0E1A"/></g></g><path transform="rotate(225)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#E0457B"/><path transform="rotate(270)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#13A3A0"/></g><circle cx="84" cy="222" r="4" fill="#BFE3F7"/><circle cx="74" cy="210" r="3" fill="#BFE3F7"/><circle cx="96" cy="208" r="2.5" fill="#BFE3F7"/><circle cx="112" cy="226" r="3" fill="#BFE3F7"/></g></svg>`;
+const logoSVG=()=>LOGO;
+const WINLOGO=`<svg class="winlogo" viewBox="60 30 220 220" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="sqwinlogo"><rect x="60" y="30" width="220" height="220" rx="0"/></clipPath></defs><rect x="60" y="30" width="220" height="220" rx="0" fill="#0F4C75"/><g clip-path="url(#sqwinlogo)"><path d="M60 238 q14 -9 28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 V260 H60 Z" fill="#1B6FA3"/><path d="M60 246 q14 -9 28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 V260 H60 Z" fill="#2A86D8"/><g transform="translate(170 150)"><path transform="rotate(0)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#239A5F"/><path transform="rotate(45)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#2A86D8"/><path transform="rotate(90)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#8E52DC"/><path transform="rotate(135)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#F2B12A"/><path transform="rotate(180)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#8A5A3B"/><path transform="rotate(225)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#E0457B"/><path transform="rotate(270)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#13A3A0"/><path transform="rotate(315)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#EE7B22"/><g class="bob"><g transform="rotate(-28) scale(0.85)"><path d="M-82 14 C-96 6 -106 -6 -116 -14 C-114 -2 -108 8 -100 13 C-109 19 -115 30 -117 42 C-104 34 -92 24 -80 18 Z" fill="#0A0E1A"/><path d="M-6 -33 C-2 -58 6 -80 16 -94 C20 -72 26 -50 32 -31 Z" fill="#0A0E1A"/><path d="M-92 8 C-66 -20 -8 -36 40 -31 C70 -27 92 -14 101 -1 C93 9 71 17 40 20 C2 25 -48 24 -80 16 Z" fill="#0A0E1A"/><path d="M-14 -30 C-4 -25 18 -25 34 -30 C24 -21 4 -19 -14 -30 Z" fill="#8C98AD"/><path d="M100 1 C86 10 60 17 30 18 C6 19 -16 17 -36 13 C-14 8 22 9 56 5 C76 3 90 1 100 1 Z" fill="#FFFFFF"/><ellipse cx="60" cy="-15" rx="13" ry="5" transform="rotate(-8 60 -15)" fill="#FFFFFF"/><path d="M28 17 C26 30 18 42 6 49 C24 47 40 36 46 19 Z" fill="#0A0E1A"/></g></g><path transform="rotate(225)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#E0457B"/><path transform="rotate(270)" d="M-27.36 -75.18 A80 80 0 0 1 27.36 -75.18 L19.84 -54.5 A58 58 0 0 0 -19.84 -54.5 Z" fill="#13A3A0"/></g><circle cx="84" cy="222" r="4" fill="#BFE3F7"/><circle cx="74" cy="210" r="3" fill="#BFE3F7"/><circle cx="96" cy="208" r="2.5" fill="#BFE3F7"/><circle cx="112" cy="226" r="3" fill="#BFE3F7"/></g></svg>`;
+
+/* ---------- Questions ---------- */
+const qtype=it=>it[0]==='tf'?'tf':it[0]==='order'?'order':'mc';
+function parseQ(it){
+  const t=qtype(it);
+  if(t==='tf')return {type:'tf',text:it[1],vis:null,options:['True','False'],correct:it[2]?0:1};
+  if(t==='order'){let items=it.slice(4).map((x,r)=>({t:x,rank:r}));do{items=shuffle(items)}while(items.every((x,i)=>x.rank===i));
+    return {type:'order',text:it[1],vis:null,from:it[2],to:it[3],items};}
+  const [raw,...ans]=it,order=shuffle([0,1,2,3]),[text,vis]=raw.split('||');
+  return {type:'mc',text,vis:vis||null,options:order.map(o=>ans[o]),correct:order.indexOf(0)};
+}
+function drawQ(cat,level,types){
+  types=types||['mc','tf','order'];
+  const pool=QB[cat][level],key=cat+'.'+level,ok=i=>types.includes(qtype(pool[i]));
+  let used=seen[key]||[],avail=pool.map((_,i)=>i).filter(i=>ok(i)&&!used.includes(i));
+  if(!avail.length){used=used.filter(i=>!ok(i));avail=pool.map((_,i)=>i).filter(ok)}
+  const idx=avail[Math.floor(Math.random()*avail.length)];
+  used.push(idx);seen[key]=used;store.set(SEEN,seen);
+  return parseQ(pool[idx]);
+}
+function askQuestion(ctx){
+  const types=ctx.kind==='final'?['mc']:ctx.kind==='steal-medal'?['mc','order']:null;
+  S.q={...ctx,...drawQ(ctx.cat,ctx.level,types),sel:null,seq:[],removed:[],disabled:[],locked:false,done:false,ok:null,msg:null,next:null,timeout:false};
+  setDeadline();snap=null;S.phase='question';render();
+}
+function setDeadline(){
+  const q=S.q;
+  if(S.settings.timer){const secs=S.settings.timer+(q.type==='order'?15:0);q.total=secs*1000;q.deadline=Date.now()+q.total}else q.deadline=null;
+}
+const isRight=q=>q.type==='order'?q.seq.length===q.items.length&&q.seq.every((ix,pos)=>q.items[ix].rank===pos):q.sel===q.correct;
+const rightText=q=>q.type==='order'?q.items.slice().sort((a,b)=>a.rank-b.rank).map(x=>x.t).join(', '):q.options[q.correct];
+const canLock=q=>q.type==='order'?q.seq.length===q.items.length:q.sel!==null;
+
+/* ---------- Game setup ---------- */
+function newGame(d){
+  setCats(d.cats);
+  const noun=d.mode==='teams'?'Team':'Player',zero=v=>Object.fromEntries(d.cats.map(id=>[id,v]));
+  S={settings:{mode:d.mode,length:d.length,timer:+d.timer},cats:d.cats.slice(),target:d.length==='quick'?2:3,
+    players:d.players.map((p,i)=>({id:'p'+i,name:(p.name.trim()||`${noun} ${i+1}`),level:p.level,color:PCOLORS[i],progress:zero(0),medals:zero(false),life:LEVELS[p.level].life})),
+    turn:Math.floor(Math.random()*d.players.length),streak:0,turnsTaken:0,phase:'turn',q:null,ch:null,sd:null,pickFor:null,note:null,winner:null};
+  view='game';keepAwake();beginTurn();
+}
+function gain(p,cat,n){
+  const c=CAT[cat].name;
+  if(p.medals[cat])return {t:`${p.name} already has the ${c} medal.`};
+  p.progress[cat]=Math.min(S.target,p.progress[cat]+n);
+  if(p.progress[cat]>=S.target){p.medals[cat]=true;return {t:`${p.name} wins the ${c} medal!`,medal:cat}}
+  const left=S.target-p.progress[cat];
+  return {t:`+${n} ${c}. ${left} more right answer${left>1?'s':''} wins the medal.`};
+}
+/* medals can only be stolen from players at your level or harder */
+function stealTargets(p){
+  const out=[];
+  S.players.forEach(o=>{if(o.id===p.id||LEVELS[o.level].rank<LEVELS[p.level].rank)return;CATS.forEach(c=>{if(o.medals[c.id]&&!p.medals[c.id])out.push({id:o.id,cat:c.id})})});
+  return out;
+}
+/* missed questions can be stolen by players at the same level or easier */
+const thievesFor=q=>S.players.filter(p=>p.id!==q.playerId&&LEVELS[p.level].rank<=LEVELS[q.level].rank);
+
+/* ---------- Answering: select, lock in, reveal ---------- */
+function choose(i){
+  const q=S.q;if(S.phase!=='question'||q.locked)return;
+  if(q.type==='order'){const k=q.seq.indexOf(i);if(k>=0)q.seq.splice(k,1);else q.seq.push(i)}
+  else{if(q.removed.includes(i)||q.disabled.includes(i))return;q.sel=q.sel===i?null:i}
+  sfx('tap');render();
+}
+function lockIn(){
+  const q=S.q;if(S.phase!=='question'||q.locked||!canLock(q))return;
+  q.locked=true;stopTimer();render();sfx('drum');
+  clearTimeout(lockTimer);lockTimer=setTimeout(resolve,1300);
+}
+function resolve(){
+  const q=S.q;if(!q||q.done)return;
+  q.locked=false;snap=JSON.stringify(S);
+  applyResult(isRight(q));
+}
+function applyResult(ok){
+  const q=S.q,who=byId(q.playerId),ans=rightText(q),miss=q.timeout?'Time’s up':'Not this time';
+  q.done=true;q.ok=ok;
+  if(q.kind==='normal'||q.kind==='double'){
+    if(ok){const g=gain(who,q.cat,q.kind==='double'?2:1);S.streak++;q.msg={tone:'good',head:'Correct!',t:g.t,medal:g.medal};q.next=(S.streak<3&&!hasAll(who))?'again':'pass';S.phase='reveal'}
+    else if(q.type==='mc'&&thievesFor(q).length){if(q.sel!==null)q.disabled.push(q.sel);q.sel=null;q.missedBy=who.id;q.done=false;q.ok=null;S.phase='steal-offer'}
+    else{q.msg={tone:'bad',head:miss,t:`The answer: ${ans}.`};q.next='pass';S.phase='reveal'}
+  }else if(q.kind==='steal-open'){
+    if(ok){const g=gain(who,q.cat,1);q.msg={tone:'good',head:`${who.name} stole it!`,t:g.t,medal:g.medal}}
+    else q.msg={tone:'bad',head:'Nobody got it',t:`The answer: ${ans}.`};
+    q.next='pass';S.phase='reveal';
+  }else if(q.kind==='steal-medal'){
+    const t=byId(q.targetId),c=CAT[q.cat].name;
+    if(ok){t.medals[q.cat]=false;t.progress[q.cat]=Math.max(0,S.target-1);who.medals[q.cat]=true;who.progress[q.cat]=S.target;
+      q.msg={tone:'good',head:'Medal stolen!',t:`${who.name} takes the ${c} medal from ${t.name}. ${t.name} needs one right answer to win it back.`,medal:q.cat}}
+    else q.msg={tone:'bad',head:'Steal failed',t:`${t.name} keeps the ${c} medal. The answer: ${ans}.`};
+    q.next='pass';S.phase='reveal';
+  }else if(q.kind==='challenge'){
+    if(ok)S.ch.scores[who.id]++;S.ch.round++;
+    q.msg={tone:ok?'good':'bad',head:ok?'Correct!':miss,t:ok?`${who.name} scores a point.`:`The answer: ${ans}.`};
+    q.next='challenge';S.phase='reveal';
+  }else if(q.kind==='final'){
+    if(ok){S.winner=who.id;q.msg={tone:'good',head:'Champion!',t:`${who.name} answered the final question.`};q.next='win'}
+    else{q.msg={tone:'bad',head:'So close',t:`The answer: ${ans}. ${who.name} gets a new final question next turn.`};q.next='pass'}
+    S.phase='reveal';
+  }
+  if(S.phase==='reveal'){sfx(ok?'good':'bad');if(q.msg.medal)setTimeout(()=>sfx('medal'),350)}else sfx('bad');
+  render();
+}
+function startSteal(pid){
+  const q=S.q;q.kind='steal-open';q.playerId=pid;q.sel=null;q.locked=false;q.timeout=false;
+  setDeadline();snap=null;S.phase='question';render();
+}
+function noSteal(){const q=S.q;q.done=true;q.ok=false;q.msg={tone:'bad',head:'No steal',t:`The answer: ${rightText(q)}.`};q.next='pass';S.phase='reveal';render()}
+
+/* ---------- Lifelines ---------- */
+const canLife=q=>q&&S.phase==='question'&&!q.locked&&q.kind!=='steal-open'&&byId(q.playerId).life>0;
+function fifty(){
+  const q=S.q;if(!canLife(q)||q.type!=='mc'||q.removed.length)return;
+  q.removed=shuffle([0,1,2,3].filter(i=>i!==q.correct&&!q.disabled.includes(i))).slice(0,2);
+  if(q.removed.includes(q.sel))q.sel=null;
+  byId(q.playerId).life--;sfx('tap');render();
+}
+function swapQ(){
+  const q=S.q;if(!canLife(q))return;
+  byId(q.playerId).life--;
+  askQuestion({kind:q.kind,cat:q.cat,level:q.level,playerId:q.playerId,targetId:q.targetId});
+}
+
+/* ---------- Referee (menu) ---------- */
+const canReferee=()=>snap&&S.q&&(S.phase==='reveal'||S.phase==='steal-offer');
+function referee(ok){S=JSON.parse(snap);menuOpen=false;applyResult(ok)}
+function redo(){
+  const old=JSON.parse(snap),q=old.q;S=old;menuOpen=false;
+  askQuestion({kind:q.kind,cat:q.cat,level:q.level,playerId:q.playerId,targetId:q.targetId});
+}
+
+/* ---------- Turns ---------- */
+const showdownEvery=()=>S.players.length*(S.players.length<=2?2:1);
+const turnsToShowdown=()=>showdownEvery()-(S.turnsTaken%showdownEvery());
+function beginTurn(){const p=cur();S.q=null;S.note=null;if(hasAll(p)){S.pickFor='final';S.phase='pick'}else S.phase='turn';render()}
+function nextTurn(){
+  S.turn=(S.turn+1)%S.players.length;S.streak=0;S.ch=null;S.q=null;snap=null;S.turnsTaken++;
+  if(S.turnsTaken%showdownEvery()===0)startShowdown();else beginTurn();
+}
+function proceed(){
+  const n=S.q&&S.q.next;
+  if(n==='again'){S.q=null;snap=null;S.phase='turn';render()}
+  else if(n==='pass')nextTurn();
+  else if(n==='challenge'){S.q=null;snap=null;if(S.ch.round<S.ch.total){S.phase='challenge-handoff';render()}else resolveChallenge()}
+  else if(n==='win'){snap=null;S.phase='win';sfx('win');render()}
+}
+function landed(seg){
+  const p=cur();
+  if(CAT[seg]){
+    if(p.medals[seg]){S.note=`You already have the ${CAT[seg].name} medal, so pick one you still need.`;S.pickFor='normal';S.phase='pick';return render()}
+    return askQuestion({kind:'normal',cat:seg,level:p.level,playerId:p.id});
+  }
+  if(seg==='pick'||seg==='double'){S.pickFor=seg==='pick'?'normal':'double';S.phase='pick';return render()}
+  if(seg==='steal'){
+    if(stealTargets(p).length){S.phase='steal-target';return render()}
+    S.note='There’s no medal you can steal yet, so pick any category.';S.pickFor='normal';S.phase='pick';return render();
+  }
+  if(seg==='challenge'){S.phase='challenge-opp';return render()}
+}
+function pickCat(cat){
+  const p=cur(),f=S.pickFor;S.note=null;
+  if(f==='normal'||f==='double')askQuestion({kind:f,cat,level:p.level,playerId:p.id});
+  else if(f==='final')askQuestion({kind:'final',cat,level:p.level,playerId:p.id});
+  else if(f==='challenge'){S.ch.cat=cat;S.phase='challenge-handoff';render()}
+  else if(f==='sd'){
+    const w=byId(S.sd.cur),g=gain(w,cat,S.sd.pts);toast(g.t);if(g.medal)sfx('medal');else sfx('good');
+    sdNextPick();
+  }
+}
+const chPlayer=()=>S.ch.round%2===0?S.ch.a:S.ch.b;
+function resolveChallenge(){
+  const {a,b,cat}=S.ch,A=byId(a),B=byId(b),sa=S.ch.scores[a],sb=S.ch.scores[b];
+  let head,t='';S.ch.medal=null;
+  if(sa===sb){head=`Tie, ${sa}–${sb}`;t='Nobody gains or loses anything.'}
+  else{
+    const W=sa>sb?A:B,L=sa>sb?B:A,g=gain(W,cat,1);head=`${W.name} wins ${Math.max(sa,sb)}–${Math.min(sa,sb)}`;t=g.t;
+    if(!L.medals[cat]&&L.progress[cat]>0){L.progress[cat]--;t+=` ${L.name} drops a ${CAT[cat].name} point.`}
+    if(g.medal){S.ch.medal=g.medal;setTimeout(()=>sfx('medal'),300)}
+  }
+  S.ch.head=head;S.ch.result=t;S.phase='challenge-result';render();
+}
+
+/* ---------- Showdown: everyone guesses a number, closest wins ---------- */
+function startShowdown(){
+  const key='sd';let used=seen[key]||[],avail=SHOWDOWN.map((_,i)=>i).filter(i=>!used.includes(i));
+  if(!avail.length){used=[];avail=SHOWDOWN.map((_,i)=>i)}
+  const idx=avail[Math.floor(Math.random()*avail.length)];used.push(idx);seen[key]=used;store.set(SEEN,seen);
+  const [text,answer,unit,lo,hi]=SHOWDOWN[idx],n=S.players.length;
+  S.sd={text,answer,unit,lo,hi,order:Array.from({length:n},(_,k)=>S.players[(S.turn+k)%n].id),idx:0,guesses:{},entry:'',queue:[],cur:null,pts:1};
+  S.phase='sd-intro';sfx('sd');render();
+}
+function sdKey(k){
+  const sd=S.sd;if(S.phase!=='sd-entry')return;
+  if(k==='del')sd.entry=sd.entry.slice(0,-1);
+  else if(sd.entry.length<9&&!(sd.entry===''&&k==='0'))sd.entry+=k;
+  sfx('tap');render();
+}
+function sdLock(){
+  const sd=S.sd;if(S.phase!=='sd-entry'||sd.entry==='')return;
+  sd.guesses[sd.order[sd.idx]]=+sd.entry;sd.entry='';sd.idx++;
+  sfx('tap');S.phase=sd.idx<sd.order.length?'sd-pass':'sd-reveal';render();
+}
+function sdResults(){
+  const sd=S.sd,rows=sd.order.map(id=>({id,g:sd.guesses[id],d:Math.abs(sd.guesses[id]-sd.answer)}));
+  const best=Math.min(...rows.map(r=>r.d));
+  rows.forEach(r=>r.win=r.d===best);
+  return {rows:rows.sort((x,y)=>y.d-x.d),best};
+}
+function sdContinue(){
+  const sd=S.sd,{rows,best}=sdResults();
+  sd.pts=best===0?2:1;
+  sd.queue=rows.filter(r=>r.win&&!hasAll(byId(r.id))).map(r=>r.id);
+  sdNextPick();
+}
+function sdNextPick(){
+  const sd=S.sd;
+  if(sd.queue.length){sd.cur=sd.queue.shift();S.pickFor='sd';S.phase='pick';render()}
+  else{S.sd=null;beginTurn()}
+}
+
+/* ---------- Spin ---------- */
+function spin(){
+  if(spinning||S.phase!=='turn')return;
+  spinning=true;
+  const W=360/SEGS.length,idx=Math.floor(Math.random()*SEGS.length),center=idx*W+W/2,target=(360-center)%360,now=((wheelRot%360)+360)%360;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,dur=reduce?900:3600;
+  wheelRot+=(reduce?1:5)*360+((target-now+360)%360);
+  const w=$('#wheel');w.style.transition=`transform ${dur}ms cubic-bezier(.15,.7,.2,1)`;w.style.transform=`rotate(${wheelRot}deg)`;
+  const b=$('[data-act="spin"]');if(b)b.disabled=true;
+  tone(300,.05,'sine',0,.04);
+  setTimeout(()=>{
+    const seg=SEGS[idx],info=CAT[seg]||SPECIAL[seg],r=$('#spinResult');
+    if(r){r.textContent=`${info.icon} ${info.name}`;r.style.setProperty('--sc',catColor(seg));r.classList.add('show')}
+    sfx('land');
+    setTimeout(()=>{spinning=false;landed(seg)},1200);
+  },dur);
+}
+
+/* ---------- Timer (pauses while the iPad is in portrait) ---------- */
+function stopTimer(){clearInterval(timerInt);timerInt=null}
+function startTimer(){
+  stopTimer();if(!S||S.phase!=='question'||!S.q.deadline||S.q.locked)return;
+  const tick=()=>{
+    const q=S.q;if(!q||S.phase!=='question'){stopTimer();return}
+    if(portrait()||menuOpen)q.deadline+=200;
+    const left=q.deadline-Date.now(),bar=$('#tbar'),n=$('#tnum');
+    if(bar)bar.style.transform=`scaleX(${Math.max(0,left/q.total)})`;if(n)n.textContent=Math.max(0,Math.ceil(left/1000));
+    if(left<=0){stopTimer();if(canLock(q))lockIn();else{q.timeout=true;resolve()}}
+  };
+  tick();timerInt=setInterval(tick,200);
+}
+
+/* ---------- Views ---------- */
+function homeHTML(){
+  const saved=store.get(SAVE),standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+  return `<main class="home">${logoSVG()}<div><h1 class="wm">Orca-<br><span>M</span><span>a</span><span>n</span><span>i</span><span>a</span></h1>
+  <p>Family trivia for the big screen. Pick your categories, then race to win a medal in every one.</p>
+  <div class="row"><button class="btn big" data-act="setup">New game</button>${saved?'<button class="ghost" data-act="resume">Resume game</button>':''}<button class="ghost" data-act="rules">How to play</button><button class="ghost" data-act="tv">TV setup</button></div>
+  ${standalone?'':'<p class="tip">For a clean full-screen picture on the TV, add Orca-Mania to your Home Screen first. Tap TV setup for the steps.</p>'}</div></main>`;
+}
+function tvHTML(){
+  return `<main class="sheetpage"><h2>Playing on the TV</h2>
+  <ol>
+  <li><b>Add it to your Home Screen.</b> In Safari, tap Share, then Add to Home Screen, and open Orca-Mania from there. That hides Safari’s address bar and tabs, which would otherwise show on the TV.</li>
+  <li><b>Stop the iPad from locking.</b> Set Settings › Display &amp; Brightness › Auto-Lock to Never for game night. The game also asks the iPad to stay awake, but a locked iPad drops the TV picture.</li>
+  <li><b>Mirror to the Apple TV.</b> Open Control Center, tap Screen Mirroring and choose your Apple TV. Sound plays through the TV too.</li>
+  <li><b>Turn the iPad sideways.</b> Landscape fills the TV. In portrait the game pauses.</li>
+  </ol>
+  <h3>Secret guesses</h3><p>Taps on the iPad don’t show on the TV, so in showdown rounds your guess stays hidden as long as nobody can see your fingers.</p>
+  <div class="actions" style="margin-top:1rem"><span></span><button class="btn" data-act="home">Got it</button></div></main>`;
+}
+function setupHTML(){
+  const d=draft,noun=d.mode==='teams'?'Team':'Player';
+  const opt=(k,v,l)=>`<button data-act="set" data-k="${k}" data-v="${v}" class="${String(d[k])===String(v)?'on':''}">${l}</button>`;
+  return `<main class="setup"><h1 class="h1">New game</h1>
+  <div class="row"><h3>Play as</h3><div class="seg">${opt('mode','players','Players')}${opt('mode','teams','Teams')}</div></div>
+  <div class="row"><h3>Length</h3><div class="seg">${opt('length','quick','Quick, 2 right per medal')}${opt('length','full','Long, 3 right per medal')}</div></div>
+  <div class="row"><h3>Categories</h3><div class="cats">${ALL_CATS.map(c=>`<button class="catbtn ${c.id} ${d.cats.includes(c.id)?'on':''}" style="--cc:var(--${c.id})" data-act="cat" data-c="${c.id}" aria-pressed="${d.cats.includes(c.id)}">${c.icon} ${c.name}</button>`).join('')}</div></div>
+  <p class="note">Pick 4 to 6 categories. A quick game with 4 takes about 25 minutes, and each extra category adds 5 to 10.</p>
+  <div class="row"><h3>Answer timer</h3><div class="seg">${opt('timer',0,'Off')}${opt('timer',30,'30 seconds')}${opt('timer',20,'20 seconds')}</div></div>
+  <div class="plist">${d.players.map((p,i)=>`<div class="prow" style="--pc:${PCOLORS[i]}"><span class="dot"></span>
+    <input class="pname" data-i="${i}" placeholder="${noun} ${i+1}" value="${esc(p.name)}" maxlength="16" aria-label="${noun} ${i+1} name" autocomplete="off">
+    <div class="seg">${LEVEL_IDS.map(l=>`<button data-act="lvl" data-i="${i}" data-l="${l}" class="${p.level===l?'on':''}">${LEVELS[l].name}<small>${LEVELS[l].hint}</small></button>`).join('')}</div>
+    ${d.players.length>2?`<button class="x" data-act="rm" data-i="${i}" aria-label="Remove ${noun.toLowerCase()} ${i+1}">✕</button>`:''}</div>`).join('')}
+    ${d.players.length<6?`<div><button class="ghost" data-act="add">Add ${noun.toLowerCase()}</button></div>`:''}
+    <p class="note">Each ${noun.toLowerCase()} gets questions at their own level. Lifelines per game: Kid 3, Junior 2, Adult 1.${d.mode==='teams'?' For a mixed team, pick the level of the youngest player.':''}</p></div>
+  <div class="actions"><button class="ghost" data-act="home">Back</button><button class="btn big" data-act="start">Start game</button></div></main>`;
+}
+function rulesHTML(){
+  return `<main class="sheetpage"><h2>How to play</h2>
+  <p>Win a medal in every category, then answer one final question to win. One iPad runs the game: pass it around, or let one person be quizmaster and tap whatever players call out.</p>
+  <h3>Your turn</h3><ul>
+  <li>Spin the wheel and answer a question at your level. Tap an answer, then tap Lock it in.</li>
+  <li>Questions come in three kinds: four choices, true or false, and put four things in order.</li>
+  <li>Right answers fill your medal ring: 2 per medal in a quick game, 3 in a long one. A right answer earns another spin, up to three questions a turn.</li>
+  <li>Land on a category you’ve already won and you pick one you still need instead.</li></ul>
+  <h3>Lifelines</h3>
+  <p>50:50 removes two wrong answers. Swap gives you a new question in the same category. Kids get 3 per game, juniors 2 and adults 1.</p>
+  <h3>Special spaces</h3><ul>
+  <li><b>Your pick:</b> choose any category you still need.</li>
+  <li><b>Double:</b> choose a category, and a right answer counts twice.</li>
+  <li><b>Steal:</b> take a medal you don’t have by answering a harder question. You can only steal from players at your level or harder, so kids’ medals are safe from grown-ups.</li>
+  <li><b>Challenge:</b> go head to head in a category you choose, each answering your own questions. The winner gets a point and the loser drops one. Medals are always safe in a challenge.</li></ul>
+  <h3>Stealing missed questions</h3>
+  <p>When someone misses a four-choice question, anyone at the same level or younger can try to steal it for a point.</p>
+  <h3>Showdowns</h3>
+  <p>After every round (every two rounds with two players), everyone secretly guesses a number. Closest wins a free point in any category. Exactly right wins two.</p>
+  <h3>The final question</h3>
+  <p>Once you hold every medal, your next turn is the final question, and everyone else picks the category. Until then, they can still steal your medals.</p>
+  <div class="actions" style="margin-top:1.2rem"><span></span><button class="btn" data-act="${view==='rules-game'?'closerules':'home'}">Got it</button></div></main>`;
+}
+function boardHTML(){
+  const many=S.players.length>4;
+  return `<header class="top"><div class="board ${many?'many':''}">${S.players.map((p,i)=>`<div class="chip ${i===S.turn?'on':''}" style="--pc:${p.color}">${ringSVG(p,many?38:46)}<div class="chipt"><b><span class="pc"></span>${esc(p.name)}</b><span>${LEVELS[p.level].name} · 🛟 ${p.life}</span></div></div>`).join('')}</div><button class="ghost" data-act="menu">Menu</button></header>`;
+}
+function turnHTML(){
+  const p=cur(),soon=turnsToShowdown()===1;
+  return `<div class="turnwrap"><div class="wheelbox"><div class="pointer"></div>${wheelSVG()}</div>
+  <div style="--pc:${p.color}"><p class="whose">${esc(poss(p.name))} turn</p>
+  ${S.streak?`<span class="pill">Bonus spin ${S.streak+1} of 3</span>`:''}${soon?'<span class="pill hot">Showdown after this turn</span>':''}
+  <p class="sub">${LEVELS[p.level].name} questions. ${medalCount(p)} of ${CATS.length} medals. ${p.life} lifeline${p.life===1?'':'s'} left.</p>
+  <div id="spinResult" class="spinres"></div>
+  <button class="btn big" data-act="spin">Spin the wheel</button></div></div>`;
+}
+function choicesHTML(q,reveal,offer){
+  return `<div class="answers ${q.type}">${q.options.map((o,i)=>{
+    let cls='ans';
+    if(q.disabled.includes(i))cls+=' out';
+    if(q.removed.includes(i))cls+=' gone';
+    if(reveal){if(i===q.correct)cls+=' right';else if(i===q.sel)cls+=' wrong'}
+    else if(q.sel===i){cls+=' sel';if(q.locked)cls+=' locked'}
+    const dis=reveal||offer||q.locked||q.disabled.includes(i)||q.removed.includes(i);
+    return `<button class="${cls}" data-act="opt" data-i="${i}" ${dis?'disabled':''}><span class="k">${'ABCD'[i]}</span>${esc(o)}</button>`;
+  }).join('')}</div>`;
+}
+function orderHTML(q,reveal){
+  if(reveal){
+    const sorted=q.items.map((x,i)=>({...x,i})).sort((a,b)=>a.rank-b.rank);
+    return `<div class="slots"><span class="end">${esc(q.from)}</span>${sorted.map((x,pos)=>{const good=q.seq[pos]!==undefined&&q.items[q.seq[pos]].rank===pos;
+      return `<div class="slot ${good?'ok':'no'}"><span class="n">${good?'✓':'✗'}</span>${esc(x.t)}</div>`}).join('')}<span class="end">${esc(q.to)}</span></div>`;
+  }
+  const slots=[0,1,2,3].map(pos=>{const ix=q.seq[pos];return ix===undefined?`<div class="slot"><span class="n">${pos+1}</span></div>`:`<div class="slot full"><span class="n">${pos+1}</span>${esc(q.items[ix].t)}</div>`}).join('');
+  return `<div class="slots"><span class="end">${esc(q.from)}</span>${slots}<span class="end">${esc(q.to)}</span></div>
+  <div class="answers">${q.items.map((x,i)=>{const pos=q.seq.indexOf(i);
+    return `<button class="ans ${pos>=0?'placed':''} ${q.locked&&pos>=0?'locked':''}" data-act="opt" data-i="${i}" ${q.locked?'disabled':''}>${pos>=0?`<span class="badge">${pos+1}</span>`:''}${esc(x.t)}</button>`}).join('')}</div>`;
+}
+function controlsHTML(q){
+  if(q.locked)return `<div class="controls"><span class="lockmsg">Locked in…</span></div>`;
+  const who=byId(q.playerId),lifeOK=q.kind!=='steal-open';
+  const life=lifeOK?`<div class="life"><span class="lab">🛟 ${who.life} left</span>
+    <button class="ghost" data-act="fifty" ${who.life>0&&q.type==='mc'&&!q.removed.length?'':'disabled'}>50:50</button>
+    <button class="ghost" data-act="swap" ${who.life>0?'':'disabled'}>Swap</button></div>`:'';
+  const clear=q.type==='order'&&q.seq.length?'<button class="ghost" data-act="clear">Clear</button>':'';
+  return `<div class="controls">${life}<span class="spacer"></span>${clear}<button class="btn go big" data-act="lock" ${canLock(q)?'':'disabled'}>Lock it in</button></div>`;
+}
+function questionHTML(){
+  const q=S.q,c=CAT[q.cat],who=byId(q.playerId),reveal=S.phase==='reveal',offer=S.phase==='steal-offer',live=S.phase==='question';
+  const kindTag={double:'Double points','steal-open':'Steal attempt','steal-medal':`Medal steal from ${q.targetId?esc(byId(q.targetId).name):''}`,final:'Final question',
+    challenge:S.ch?`Challenge, question ${Math.floor((S.ch.round-(reveal?1:0))/2)+1} of ${S.ch.total/2}`:''}[q.kind];
+  const fmtTag={tf:'True or false',order:'Put in order'}[q.type];
+  let bottom='';
+  if(reveal){
+    const m=q.msg,labels={again:'Spin again',pass:`Pass to ${esc(nextName())}`,challenge:S.ch&&S.ch.round>=S.ch.total?'See who won':'Next question',win:'Celebrate'};
+    bottom=`<div class="panel ${m.tone}">${m.medal?`<div class="medalpop" style="--cc:var(--${m.medal})">${CAT[m.medal].icon}</div>`:''}
+      <div class="msg"><b>${esc(m.head)}</b><span>${esc(m.t)}</span></div><button class="btn big" data-act="next">${labels[q.next]}</button></div>`;
+  }else if(offer){
+    bottom=`<div class="panel steal"><div class="msg"><b>${esc(byId(q.missedBy).name)} missed. Steal it?</b><span>First to call it gets the iPad. A right answer earns a ${c.name} point.</span></div>
+      <div class="thieves">${thievesFor(q).map(p=>`<button class="thief" style="--pc:${p.color}" data-act="thief" data-id="${p.id}">${esc(p.name)}</button>`).join('')}<button class="ghost" data-act="nosteal">No steal</button></div></div>`;
+  }else bottom=controlsHTML(q);
+  return `<div class="qwrap" style="--cc:var(--${q.cat});--you:${who.color}">
+    <div class="qhead"><span class="catpill ${q.cat}">${c.icon} ${c.name}</span>${kindTag?`<span class="tag hot">${kindTag}</span>`:''}${fmtTag?`<span class="tag">${fmtTag}</span>`:''}
+    <span class="forwho">For <b>${esc(who.name)}</b>, ${LEVELS[q.level].name} level</span></div>
+    ${q.vis?`<div class="qvis" role="img" aria-label="Picture for the question">${q.vis}</div>`:''}
+    <h2 class="qtext">${esc(q.text)}</h2>
+    ${live&&q.deadline&&!q.locked?`<div style="display:flex;align-items:center;gap:.8rem"><div class="timer"><i id="tbar"></i></div><span class="tnum" id="tnum"></span></div>`:''}
+    ${q.type==='order'?orderHTML(q,reveal):choicesHTML(q,reveal,offer)}
+    ${bottom}</div>`;
+}
+function pickHTML(){
+  const p=cur(),f=S.pickFor,sdw=f==='sd'?byId(S.sd.cur):null,owner=sdw||p;
+  const head={normal:['Pick a category',S.note||`${esc(p.name)} chooses a category they still need.`],
+    double:['Double points',`${esc(p.name)}, pick a category. A right answer counts twice.`],
+    final:[`${esc(poss(p.name))} final question`,`${esc(p.name)} has every medal. Everyone else: choose the category. Get it right and ${esc(p.name)} wins.`],
+    challenge:['Challenge category',`${esc(p.name)} picks the category for the challenge with ${esc(S.ch?byId(S.ch.b).name:'')}.`],
+    sd:[`${esc(sdw?sdw.name:'')} wins the showdown!`,`Pick a category for ${S.sd&&S.sd.pts===2?'two free points (exactly right!)':'a free point'}.`]}[f];
+  const blockOwned=f==='normal'||f==='double'||f==='sd';
+  return `<div class="pickwrap"><h2>${head[0]}</h2><p class="sub">${head[1]}</p>
+  <div class="tiles n${CATS.length}">${CATS.map(c=>{const own=owner.medals[c.id];
+    return `<button class="tile ${c.id}" style="--cc:var(--${c.id})" data-act="choose" data-c="${c.id}" ${blockOwned&&own?'disabled':''}><span class="ic">${c.icon}</span>${c.name}${f!=='final'&&own?'<span class="own">Medal won</span>':''}</button>`}).join('')}</div></div>`;
+}
+function stealTargetHTML(){
+  const p=cur(),by={};
+  stealTargets(p).forEach(x=>(by[x.id]=by[x.id]||[]).push(x.cat));
+  return `<div class="pickwrap"><h2>🧲 Steal a medal</h2><p class="sub">${esc(p.name)}, pick a medal you don’t have yet. You’ll get a ${LEVELS[nextLevel(p.level)].name}-level question. Get it right and the medal is yours.</p>
+  <div class="opps">${Object.keys(by).map(id=>{const o=byId(id);return `<div class="opp card" style="--pc:${o.color}"><div style="display:flex;align-items:center;gap:.7rem">${ringSVG(o,52)}<b>${esc(o.name)}</b></div>
+    <div class="mbtns">${by[id].map(c=>`<button class="mbtn ${c}" style="--cc:var(--${c})" data-act="stealmedal" data-id="${id}" data-c="${c}">${CAT[c].icon} ${CAT[c].name}</button>`).join('')}</div></div>`}).join('')}</div></div>`;
+}
+function challengeOppHTML(){
+  const p=cur(),opps=S.players.filter(o=>o.id!==p.id),n=S.target===2?2:3;
+  return `<div class="pickwrap"><h2>⚔️ Challenge</h2><p class="sub">${esc(p.name)}, who do you challenge? You each answer ${n} questions at your own level. The winner gets a point in the category and the loser drops one.</p>
+  <div class="opps">${opps.map(o=>`<button class="opp" style="--pc:${o.color}" data-act="opp" data-id="${o.id}">${ringSVG(o,52)}<b>${esc(o.name)}</b></button>`).join('')}</div></div>`;
+}
+function challengeHandoffHTML(){
+  const ch=S.ch,A=byId(ch.a),B=byId(ch.b),who=byId(chPlayer()),c=CAT[ch.cat];
+  return `<div class="pickwrap center"><span class="catpill ${ch.cat}" style="--cc:var(--${ch.cat})">${c.icon} ${c.name} challenge</span>
+  <p class="score">${esc(A.name)} ${ch.scores[A.id]}–${ch.scores[B.id]} ${esc(B.name)}</p>
+  <h2 style="--pc:${who.color}" class="whose">Pass to ${esc(who.name)}</h2>
+  <p class="sub">Question ${Math.floor(ch.round/2)+1} of ${ch.total/2}</p>
+  <button class="btn big" data-act="chq">Show ${esc(poss(who.name))} question</button></div>`;
+}
+function challengeResultHTML(){
+  const ch=S.ch;
+  return `<div class="pickwrap center">${ch.medal?`<div class="medalpop" style="--cc:var(--${ch.medal})">${CAT[ch.medal].icon}</div>`:''}
+  <h2>${esc(ch.head)}</h2><p class="sub">${esc(ch.result)}</p><button class="btn big" data-act="pass">Pass to ${esc(nextName())}</button></div>`;
+}
+const sdQ=sd=>`<p class="sdq">${esc(sd.text)}</p><p class="sdunit">${sd.unit?`Answer in ${esc(sd.unit)}. `:''}Somewhere between ${fmt(sd.lo)} and ${fmt(sd.hi)}.</p>`;
+function sdIntroHTML(){
+  return `<div class="pickwrap center"><div class="sdtitle">Showdown!</div>
+  <p class="sub">Everyone plays. Closest guess wins a free point in any category. Exactly right wins two.</p>
+  ${sdQ(S.sd)}<button class="btn big go" data-act="sdstart">Start guessing</button></div>`;
+}
+function sdPassHTML(){
+  const sd=S.sd,who=byId(sd.order[sd.idx]);
+  return `<div class="pickwrap center"><p class="sub">Showdown guess ${sd.idx+1} of ${sd.order.length}</p>
+  <h2 class="whose" style="--pc:${who.color}">Pass to ${esc(who.name)}</h2>
+  <p class="sub">Hold the iPad so nobody can see your fingers. The TV only shows dots.</p>
+  <button class="btn big" data-act="sdready">I’m ${esc(who.name)}: enter my guess</button></div>`;
+}
+function sdEntryHTML(){
+  const sd=S.sd,who=byId(sd.order[sd.idx]);
+  const keys=['1','2','3','4','5','6','7','8','9','del','0','ok'].map(k=>k==='del'?'<button class="key wide" data-act="key" data-k="del">Delete</button>':k==='ok'?`<button class="key wide" data-act="sdlock" ${sd.entry?'':'disabled'}>Lock in</button>`:`<button class="key" data-act="key" data-k="${k}">${k}</button>`).join('');
+  return `<div class="entry" style="--pc:${who.color}"><div><p class="whose" style="font-size:2rem">${esc(poss(who.name))} secret guess</p>${sdQ(sd)}
+    <div class="dots" aria-live="polite">${sd.entry?'•'.repeat(sd.entry.length):'&nbsp;'}</div></div><div class="pad">${keys}</div></div>`;
+}
+function sdRevealHTML(){
+  const sd=S.sd,{rows,best}=sdResults(),step=.8;
+  return `<div class="pickwrap center sdrev"><p class="sdq">${esc(sd.text)}</p>
+  <div class="answerbig later">${fmt(sd.answer)} <span style="font-size:.35em;color:var(--muted)">${esc(sd.unit)}</span></div>
+  <div class="sdlist">${rows.map((r,i)=>{const p=byId(r.id);return `<div class="sdrow ${r.win?'top1':''}" style="--pc:${p.color};animation-delay:${(i+1)*step}s"><span class="pc"></span><b>${esc(p.name)}${r.win?' 🏆':''}</b><span class="g">${fmt(r.g)}</span><span class="off">${r.d===0?'Exactly right!':'off by '+fmt(r.d)}</span></div>`}).join('')}</div>
+  <div class="later" style="animation-delay:${(rows.length+1)*step}s"><button class="btn big go" data-act="sdcont">${best===0?'Bullseye! Claim two points':'Claim the point'}</button></div></div>`;
+}
+function winHTML(){
+  const w=byId(S.winner);
+  return `<div class="win">${WINLOGO}<h2 style="--pc:${w.color}">${esc(w.name)} is the Orca-Mania champion!</h2><div style="display:flex;align-items:center;gap:.8rem">${ringSVG(w,64)}<p class="sub">Every medal and the final question.</p></div>
+  <div style="display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center"><button class="btn big" data-act="again">Play again</button><button class="ghost" data-act="setup">Change players</button></div></div>`;
+}
+function menuHTML(){
+  const q=S.q,ref=canReferee();
+  return `<div class="overlay" data-act="closemenu"><div class="sheet" data-stop="1"><h2>Game menu</h2>
+  <button class="btn" data-act="closemenu">Back to the game</button>
+  ${ref?`<h3>Referee</h3>
+    ${q.ok===true?'<button class="ghost" data-act="refwrong">Count that answer as wrong</button>':'<button class="ghost" data-act="refright">Count that answer as right</button>'}
+    ${q.kind!=='steal-open'?'<button class="ghost" data-act="redo">Mis-tap: replay with a new question</button>':''}`:''}
+  <h3>Game</h3>
+  <button class="ghost" data-act="rulesgame">How to play</button>
+  <button class="ghost" data-act="sound">Sound: ${prefs.sound?'on':'off'}</button>
+  <button class="ghost" data-act="endgame" style="border-color:var(--bad);color:var(--bad)">${confirmEnd?'Tap again to end the game':'End game'}</button></div></div>`;
+}
+
+/* ---------- Render ---------- */
+function turnColor(){
+  if(!S||view!=='game')return 'transparent';
+  if(S.q&&['question','reveal'].includes(S.phase))return byId(S.q.playerId).color;
+  if(S.sd&&['sd-pass','sd-entry'].includes(S.phase))return byId(S.sd.order[S.sd.idx]).color;
+  if(S.phase==='pick'&&S.pickFor==='sd')return byId(S.sd.cur).color;
+  if(S.phase==='challenge-handoff')return byId(chPlayer()).color;
+  if(['sd-intro','sd-reveal','steal-offer'].includes(S.phase))return 'var(--gold)';
+  return cur().color;
+}
+function render(){
+  stopTimer();
+  const app=$('#app');
+  document.body.classList.toggle('ingame',view==='game');
+  if(view==='home')app.innerHTML=`<div id="stage">${homeHTML()}</div>`;
+  else if(view==='setup')app.innerHTML=`<div id="stage">${setupHTML()}</div>`;
+  else if(view==='tv')app.innerHTML=`<div id="stage">${tvHTML()}</div>`;
+  else if(view==='rules'||view==='rules-game')app.innerHTML=`<div id="stage">${rulesHTML()}</div>`;
+  else{
+    const body={turn:turnHTML,question:questionHTML,reveal:questionHTML,'steal-offer':questionHTML,pick:pickHTML,'steal-target':stealTargetHTML,
+      'challenge-opp':challengeOppHTML,'challenge-handoff':challengeHandoffHTML,'challenge-result':challengeResultHTML,
+      'sd-intro':sdIntroHTML,'sd-pass':sdPassHTML,'sd-entry':sdEntryHTML,'sd-reveal':sdRevealHTML,win:winHTML}[S.phase]();
+    app.innerHTML=boardHTML()+`<div id="stage">${body}</div>`+(menuOpen?menuHTML():'');
+    if(S.phase==='win'){store.del(SAVE);confetti()}else store.set(SAVE,S);
+    if(S.phase==='question')startTimer();
+  }
+  app.style.setProperty('--turn',turnColor());
+}
+
+/* ---------- Confetti ---------- */
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||$('#confetti'))return;
+  const c=document.createElement('canvas');c.id='confetti';document.body.appendChild(c);
+  const x=c.getContext('2d'),W=c.width=innerWidth,H=c.height=innerHeight;
+  const cols=['#239A5F','#2A86D8','#8E52DC','#F2B12A','#E0457B','#13A3A0','#EE7B22'];
+  const ps=Array.from({length:160},()=>({x:Math.random()*W,y:-Math.random()*H*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:Math.random()*6.28,s:6+Math.random()*8,c:cols[Math.floor(Math.random()*cols.length)]}));
+  const t0=performance.now();
+  (function f(t){x.clearRect(0,0,W,H);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+    if(t-t0<4500)requestAnimationFrame(f);else c.remove()})(t0);
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('input',e=>{if(e.target.classList.contains('pname'))draft.players[+e.target.dataset.i].name=e.target.value});
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  if(el.classList.contains('overlay')&&e.target.closest('[data-stop]'))return;
+  if(view==='game')keepAwake();
+  const a=el.dataset.act,d=el.dataset;
+  switch(a){
+    case 'setup':view='setup';render();break;
+    case 'home':view='home';render();break;
+    case 'rules':view='rules';render();break;
+    case 'tv':view='tv';render();break;
+    case 'resume':{const s=store.get(SAVE);if(!s)return;S=s;setCats(S.cats);view='game';
+      if(S.q){S.q.locked=false;if(S.phase==='question')setDeadline()}
+      keepAwake();render();break}
+    case 'set':draft[d.k]=d.k==='timer'?+d.v:d.v;render();break;
+    case 'lvl':draft.players[+d.i].level=d.l;render();break;
+    case 'add':if(draft.players.length<6){draft.players.push({name:'',level:'adult'});render();setTimeout(()=>{const ins=document.querySelectorAll('.pname');ins[ins.length-1].focus()},0)}break;
+    case 'rm':draft.players.splice(+d.i,1);render();break;
+    case 'cat':{const i=draft.cats.indexOf(d.c);
+      if(i>=0){if(draft.cats.length<=4){toast('Keep at least 4 categories.');return}draft.cats.splice(i,1)}
+      else{if(draft.cats.length>=6){toast('You can pick up to 6 categories.');return}draft.cats.push(d.c)}
+      draft.cats=ALL_CATS.map(c=>c.id).filter(id=>draft.cats.includes(id));render();break}
+    case 'start':prefs.lastSetup=draft;store.set(PREFS,prefs);newGame(draft);break;
+    case 'spin':spin();break;
+    case 'opt':choose(+d.i);break;
+    case 'lock':lockIn();break;
+    case 'clear':if(S.q&&!S.q.locked){S.q.seq=[];render()}break;
+    case 'fifty':fifty();break;
+    case 'swap':swapQ();break;
+    case 'next':proceed();break;
+    case 'thief':startSteal(d.id);break;
+    case 'nosteal':noSteal();break;
+    case 'choose':pickCat(d.c);break;
+    case 'stealmedal':askQuestion({kind:'steal-medal',cat:d.c,level:nextLevel(cur().level),playerId:cur().id,targetId:d.id});break;
+    case 'opp':{const n=S.target===2?4:6;S.ch={a:cur().id,b:d.id,cat:null,round:0,total:n,scores:{[cur().id]:0,[d.id]:0}};S.pickFor='challenge';S.phase='pick';render();break}
+    case 'chq':{const pid=chPlayer();askQuestion({kind:'challenge',cat:S.ch.cat,level:byId(pid).level,playerId:pid});break}
+    case 'pass':nextTurn();break;
+    case 'sdstart':S.phase='sd-pass';render();break;
+    case 'sdready':S.phase='sd-entry';render();break;
+    case 'key':sdKey(d.k);break;
+    case 'sdlock':sdLock();break;
+    case 'sdcont':sdContinue();break;
+    case 'again':newGame({cats:S.cats,mode:S.settings.mode,length:S.settings.length,timer:S.settings.timer,players:S.players.map(p=>({name:p.name,level:p.level}))});break;
+    case 'menu':if(spinning||(S.q&&S.q.locked))return;menuOpen=true;confirmEnd=false;render();break;
+    case 'closemenu':menuOpen=false;render();break;
+    case 'refright':referee(true);break;
+    case 'refwrong':referee(false);break;
+    case 'redo':redo();break;
+    case 'rulesgame':menuOpen=false;view='rules-game';render();break;
+    case 'closerules':view='game';render();break;
+    case 'sound':prefs.sound=!prefs.sound;store.set(PREFS,prefs);render();break;
+    case 'endgame':if(!confirmEnd){confirmEnd=true;render()}else{store.del(SAVE);S=null;snap=null;menuOpen=false;confirmEnd=false;view='home';render()}break;
+  }
+});
+render();
+</script>
+</body>
+</html>
