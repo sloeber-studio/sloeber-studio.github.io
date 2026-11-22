@@ -16,7 +16,7 @@
 <style>
 /* Always dark: this is a TV game, usually played in a living room in the evening */
 :root{
-  --bg:#0F1730; --surface:#1A2546; --surface2:#26335E; --ink:#F3F5FB; --muted:#A5AFCB; --line:#34437A;
+  --bg:#0F1730; --surface:#1A2546; --surface2:#26335E; --ink:#F3F5FB; --muted:#C5CCE3; --line:#34437A;
   --fb:#239A5F; --geo:#2A86D8; --sci:#8E52DC; --fun:#F2B12A;
   --animals:#8A5A3B; --art:#E0457B; --brain:#13A3A0; --music:#EE7B22;
   --pick:#46507A; --double:#5B4A86; --steal:#A23B4C; --challenge:#8A5A1E;
@@ -153,6 +153,13 @@ h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1}
 .slot.ok{border-style:solid;border-color:var(--good);background:color-mix(in srgb,var(--good) 18%,var(--surface))}
 .slot.no{border-style:solid;border-color:var(--bad)}
 .slot .n{font-family:var(--display);font-weight:800;color:var(--muted)}
+.slot.sol{border-style:solid;border-color:var(--gold)}
+.rowlab{font-family:var(--display);font-weight:800;font-size:1.05rem;margin-bottom:-.6rem}
+.homes{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;flex-basis:100%;padding-left:1.8rem}
+.homes .lab{font-size:.85rem;color:var(--muted);font-weight:700;margin-right:.3rem}
+.hbtn{border:2px solid var(--line);background:var(--bg);border-radius:999px;padding:.25em .7em;font-size:.9rem;font-weight:700;color:var(--ink)}
+.hbtn.on{background:var(--cc);border-color:var(--cc);color:#fff}
+.hbtn.on.fun{color:#1E1A10}
 .ans .badge{position:absolute;top:-.6rem;right:-.6rem;width:2rem;height:2rem;border-radius:50%;background:var(--you);color:#111;display:grid;place-items:center;font-family:var(--display);font-weight:800}
 .ans.placed{color:var(--muted);border-style:dashed;background:var(--bg)}
 .controls{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
@@ -307,7 +314,7 @@ adult:[
 ["Who managed Arsenal’s unbeaten “Invincibles” season?","Arsène Wenger","George Graham","Alex Ferguson","José Mourinho"],
 ["Which country won the first Women’s World Cup in 1991?","United States","Norway","Germany","China"],
 ["In which stadium did Uruguay shock Brazil to win the 1950 World Cup?","Maracanã","Estadio Centenario","Wembley","Estadio Azteca"],
-["How many teams play at the 2026 men’s World Cup?","48","32","40","64"],
+["How many teams played at the 2026 men’s World Cup?","48","32","40","64"],
 ["Which club did Johan Cruyff coach to its first European Cup in 1992?","Barcelona","Ajax","Feyenoord","PSV"],
 ["What is the fewest players a team can have on the field for a match to continue?","7","6","8","9"]
 ]},
@@ -1187,15 +1194,971 @@ const SHOWDOWN=[
 ["How fast does sound travel through air, in metres per second?",343,"m/s",50,2000]
 ];
 
+const GEN={"fb": {"kid": [["Which club plays its home games at the Santiago Bernabéu?", "Real Madrid", "Arsenal", "Borussia Dortmund", "Seattle Sounders"], ["Which club plays its home games at the Etihad Stadium?", "Manchester City", "Seattle Sounders", "Manchester United", "Arsenal"], ["Which club plays its home games at the Emirates Stadium?", "Arsenal", "Bayern Munich", "Liverpool", "Barcelona"], ["Which club plays its home games at Stamford Bridge?", "Chelsea", "Seattle Sounders", "AC Milan", "Liverpool"], ["Which club plays its home games at the Allianz Arena?", "Bayern Munich", "Seattle Sounders", "Barcelona", "Newcastle United"], ["Which club plays its home games at the Parc des Princes?", "Paris Saint-Germain", "Atlético Madrid", "Liverpool", "Newcastle United"], ["Which club plays its home games at Signal Iduna Park?", "Borussia Dortmund", "Chelsea", "Real Madrid", "Liverpool"], ["Which club plays its home games at the San Siro?", "AC Milan", "Manchester City", "Atlético Madrid", "Bayern Munich"], ["Which club plays its home games at St James’ Park?", "Newcastle United", "Manchester City", "AC Milan", "Real Madrid"], ["Which club plays its home games at Lumen Field?", "Seattle Sounders", "Manchester United", "AC Milan", "Atlético Madrid"], ["Which club plays its home games at Anfield?", "Liverpool", "Paris Saint-Germain", "Chelsea", "Borussia Dortmund"], ["Which club plays its home games at Old Trafford?", "Manchester United", "Bayern Munich", "Paris Saint-Germain", "Barcelona"], ["Which club plays its home games at Camp Nou?", "Barcelona", "Atlético Madrid", "Borussia Dortmund", "Newcastle United"], ["Which club plays its home games at the Metropolitano?", "Atlético Madrid", "Liverpool", "Manchester City", "Paris Saint-Germain"], ["Which national team has Vinícius Júnior played for?", "Brazil", "Australia", "Argentina", "Portugal"], ["Which national team has Jude Bellingham played for?", "England", "France", "Italy", "Spain"], ["Which national team has Lamine Yamal played for?", "Spain", "Germany", "Norway", "Australia"], ["Which national team has Bukayo Saka played for?", "England", "Croatia", "Australia", "Argentina"], ["Which national team has Pedri played for?", "Spain", "Morocco", "Australia", "South Korea"], ["Which national team has Robert Lewandowski played for?", "Poland", "France", "Portugal", "Spain"], ["Which national team has Luka Modrić played for?", "Croatia", "Japan", "Morocco", "Portugal"], ["Which national team has Virgil van Dijk played for?", "Netherlands", "Nigeria", "Poland", "Canada"], ["Which national team has Son Heung-min played for?", "South Korea", "France", "Croatia", "Australia"], ["Which national team has Alphonso Davies played for?", "Canada", "Brazil", "Spain", "Japan"], ["Which national team has Thibaut Courtois played for?", "Belgium", "Australia", "Mexico", "Italy"], ["Which national team has Romelu Lukaku played for?", "Belgium", "Spain", "United States", "South Korea"], ["Which national team has Neymar played for?", "Brazil", "Belgium", "Croatia", "Spain"], ["Which national team has Achraf Hakimi played for?", "Morocco", "Italy", "Belgium", "Nigeria"], ["Which national team has Florian Wirtz played for?", "Germany", "Croatia", "Brazil", "Norway"], ["Which national team has Jamal Musiala played for?", "Germany", "Mexico", "Japan", "Portugal"], ["Which national team has Martin Ødegaard played for?", "Norway", "Croatia", "Italy", "Canada"], ["Which national team has Victor Osimhen played for?", "Nigeria", "Portugal", "Mexico", "Croatia"], ["Which national team has Sadio Mané played for?", "Senegal", "United States", "Argentina", "Morocco"], ["Which national team has Rodri played for?", "Spain", "Poland", "France", "South Korea"], ["Which national team has Antoine Griezmann played for?", "France", "Croatia", "Mexico", "Morocco"], ["Which national team has Jérémy Doku played for?", "Belgium", "Argentina", "France", "Senegal"], ["Which national team has Alexia Putellas played for?", "Spain", "Netherlands", "Argentina", "Canada"], ["Which national team has Sam Kerr played for?", "Australia", "Nigeria", "Brazil", "Poland"], ["Which national team has Aitana Bonmatí played for?", "Spain", "Senegal", "Poland", "England"], ["Which national team has Bruno Fernandes played for?", "Portugal", "Norway", "Japan", "Brazil"], ["Which national team has Julián Álvarez played for?", "Argentina", "Brazil", "Portugal", "Australia"], ["Which national team has Gianluigi Donnarumma played for?", "Italy", "Germany", "Morocco", "France"], ["Which country won the 2018 men’s World Cup?", "France", "Netherlands", "Germany", "Argentina"], ["Which country won the 2014 men’s World Cup?", "Germany", "Italy", "England", "Argentina"], ["Which country won the 2010 men’s World Cup?", "Spain", "England", "France", "Italy"], ["Which country won the 2006 men’s World Cup?", "Italy", "Spain", "Germany", "England"], ["Which country won the 2002 men’s World Cup?", "Brazil", "Spain", "France", "Netherlands"], ["Which country won the 1998 men’s World Cup?", "France", "Brazil", "Italy", "England"], ["Which country hosted the 2022 men’s World Cup?", "Qatar", "France", "Argentina", "South Africa"], ["Which country hosted the 2018 men’s World Cup?", "Russia", "France", "Italy", "United States"], ["Which country hosted the 2010 men’s World Cup?", "South Africa", "England", "Qatar", "Mexico"], ["Which country hosted the 2006 men’s World Cup?", "Germany", "United States", "Japan and South Korea", "Mexico"], ["Which country lost the 2022 men’s World Cup final?", "France", "Brazil", "England", "Spain"], ["Which country lost the 2018 men’s World Cup final?", "Croatia", "Spain", "Brazil", "France"], ["Which country won Euro 2020?", "Italy", "England", "Spain", "Denmark"], ["Which club won the Champions League in 2025?", "Paris Saint-Germain", "Chelsea", "Inter Milan", "Barcelona"], ["Which club won the Champions League in 2024?", "Real Madrid", "Bayern Munich", "AC Milan", "Liverpool"], ["Which club won the Champions League in 2023?", "Manchester City", "Barcelona", "Bayern Munich", "Borussia Dortmund"]], "junior": [["Which club plays its home games at the Johan Cruyff Arena?", "Ajax", "Benfica", "Porto", "Roma"], ["Which club plays its home games at Celtic Park?", "Celtic", "West Ham United", "Flamengo", "Marseille"], ["Which club plays its home games at the Estádio da Luz?", "Benfica", "Boca Juniors", "Rangers", "Leeds United"], ["Which club plays its home games at La Bombonera?", "Boca Juniors", "West Ham United", "Ajax", "Club Brugge"], ["Which club plays its home games at Villa Park?", "Aston Villa", "Club Brugge", "Marseille", "Napoli"], ["Which club plays its home games at the London Stadium?", "West Ham United", "Celtic", "Napoli", "Leeds United"], ["Which club plays its home games at the Jan Breydel Stadium?", "Club Brugge", "Porto", "Marseille", "Celtic"], ["Which club plays its home games at the Stadio Diego Armando Maradona?", "Napoli", "Club Brugge", "Porto", "Leeds United"], ["Which club plays its home games at the Stade Vélodrome?", "Marseille", "Napoli", "Club Brugge", "Porto"], ["Which club plays its home games at the Estádio do Dragão?", "Porto", "Aston Villa", "Club Brugge", "Leeds United"], ["Which club plays its home games at Elland Road?", "Leeds United", "Napoli", "Marseille", "Roma"], ["Which club plays its home games at Ibrox?", "Rangers", "Flamengo", "Ajax", "Porto"], ["Which club plays its home games at the Stadio Olimpico?", "Roma", "Boca Juniors", "Benfica", "Ajax"], ["Which club plays its home games at the Maracanã?", "Flamengo", "Rangers", "Marseille", "Leeds United"], ["Which national team has Khvicha Kvaratskhelia played for?", "Georgia", "Denmark", "Greece", "Switzerland"], ["Which national team has Jan Oblak played for?", "Slovenia", "Gabon", "Iceland", "Algeria"], ["Which national team has Dominik Szoboszlai played for?", "Hungary", "Liberia", "Norway", "Turkey"], ["Which national team has Alexander Isak played for?", "Sweden", "Colombia", "Uruguay", "Liberia"], ["Which national team has Granit Xhaka played for?", "Switzerland", "Côte d’Ivoire", "Ecuador", "Bosnia and Herzegovina"], ["Which national team has Federico Valverde played for?", "Uruguay", "Norway", "Denmark", "Algeria"], ["Which national team has Luis Díaz played for?", "Colombia", "Norway", "Ghana", "Egypt"], ["Which national team has Moisés Caicedo played for?", "Ecuador", "Ukraine", "Hungary", "Cameroon"], ["Which national team has Mohammed Kudus played for?", "Ghana", "Wales", "Slovenia", "Colombia"], ["Which national team has Takefusa Kubo played for?", "Japan", "Brazil", "Greece", "Uruguay"], ["Which national team has Kim Min-jae played for?", "South Korea", "Slovenia", "Brazil", "Cameroon"], ["Which national team has Christian Eriksen played for?", "Denmark", "Greece", "Peru", "Slovenia"], ["Which national team has Andrew Robertson played for?", "Scotland", "Algeria", "Senegal", "Croatia"], ["Which national team has Gareth Bale played for?", "Wales", "Brazil", "Colombia", "Gabon"], ["Which national team has Edin Džeko played for?", "Bosnia and Herzegovina", "Ukraine", "Egypt", "Austria"], ["Which national team has Riyad Mahrez played for?", "Algeria", "Georgia", "Switzerland", "Brazil"], ["Which national team has Pierre-Emerick Aubameyang played for?", "Gabon", "Côte d’Ivoire", "Colombia", "Turkey"], ["Which national team has Zlatan Ibrahimović played for?", "Sweden", "Austria", "Côte d’Ivoire", "Iceland"], ["Which national team has Didier Drogba played for?", "Côte d’Ivoire", "Switzerland", "Uruguay", "Egypt"], ["Which national team has Samuel Eto’o played for?", "Cameroon", "Senegal", "Uruguay", "Scotland"], ["Which national team has George Weah played for?", "Liberia", "Ghana", "Wales", "Côte d’Ivoire"], ["Which national team has Ada Hegerberg played for?", "Norway", "Wales", "Senegal", "Hungary"], ["Which national team has Marta played for?", "Brazil", "Scotland", "Japan", "Uruguay"], ["Which national team has Mohamed Salah played for?", "Egypt", "Denmark", "Uruguay", "Ghana"], ["Which national team has Andriy Shevchenko played for?", "Ukraine", "Bosnia and Herzegovina", "Algeria", "Croatia"], ["Which country won the 1994 men’s World Cup?", "Brazil", "West Germany", "Uruguay", "France"], ["Which country won the 1990 men’s World Cup?", "West Germany", "Argentina", "Brazil", "Italy"], ["Which country won the 1986 men’s World Cup?", "Argentina", "Brazil", "Uruguay", "Netherlands"], ["Which country won the 1982 men’s World Cup?", "Italy", "Netherlands", "Argentina", "France"], ["Which country won the 1978 men’s World Cup?", "Argentina", "Uruguay", "England", "Netherlands"], ["Which country won the 1974 men’s World Cup?", "West Germany", "France", "Uruguay", "Netherlands"], ["Which country won the 1970 men’s World Cup?", "Brazil", "West Germany", "England", "Italy"], ["Which country won the 1966 men’s World Cup?", "England", "Netherlands", "West Germany", "Uruguay"], ["Which country hosted the 2002 men’s World Cup?", "Japan and South Korea", "Qatar", "Argentina", "Russia"], ["Which country hosted the 1998 men’s World Cup?", "France", "South Africa", "England", "Russia"], ["Which country hosted the 1994 men’s World Cup?", "United States", "Russia", "Qatar", "South Africa"], ["Which country hosted the 1990 men’s World Cup?", "Italy", "Mexico", "France", "England"], ["Which country lost the 2014 men’s World Cup final?", "Argentina", "England", "Spain", "Germany"], ["Which country lost the 2010 men’s World Cup final?", "Netherlands", "Italy", "France", "England"], ["Which country lost the 2006 men’s World Cup final?", "France", "Argentina", "Croatia", "Brazil"], ["Which country won Euro 2012?", "Spain", "Denmark", "Germany", "Portugal"], ["Which country won Euro 2008?", "Spain", "Portugal", "England", "Germany"], ["Which country won Euro 2000?", "France", "Italy", "Portugal", "Denmark"], ["Which club won the Champions League in 2021?", "Chelsea", "Barcelona", "Manchester United", "Arsenal"], ["Which club won the Champions League in 2020?", "Bayern Munich", "AC Milan", "Manchester United", "Juventus"], ["Which club won the Champions League in 2019?", "Liverpool", "Bayern Munich", "Chelsea", "Manchester City"], ["Which club won the Champions League in 2015?", "Barcelona", "Arsenal", "Inter Milan", "Manchester City"]], "adult": [["Which club plays its home games at El Monumental?", "River Plate", "Feyenoord", "Fulham", "Sheffield Wednesday"], ["Which club plays its home games at San Mamés?", "Athletic Bilbao", "Sevilla", "Standard Liège", "Genoa and Sampdoria"], ["Which club plays its home games at De Kuip?", "Feyenoord", "Galatasaray", "Athletic Bilbao", "Sevilla"], ["Which club plays its home games at the Stade Maurice Dufrasne?", "Standard Liège", "Genoa and Sampdoria", "Sevilla", "Valencia"], ["Which club plays its home games at Rams Park?", "Galatasaray", "Red Star Belgrade", "Valencia", "Sheffield Wednesday"], ["Which club plays its home games at the Rajko Mitić Stadium?", "Red Star Belgrade", "Genoa and Sampdoria", "Galatasaray", "Valencia"], ["Which club plays its home games at the City Ground?", "Nottingham Forest", "Genoa and Sampdoria", "Valencia", "Sevilla"], ["Which club plays its home games at Hillsborough?", "Sheffield Wednesday", "Nottingham Forest", "Genoa and Sampdoria", "Standard Liège"], ["Which club plays its home games at the Ramón Sánchez-Pizjuán?", "Sevilla", "Galatasaray", "Genoa and Sampdoria", "River Plate"], ["Which club plays its home games at the Mestalla?", "Valencia", "River Plate", "Feyenoord", "Sheffield Wednesday"], ["Which club plays its home games at Craven Cottage?", "Fulham", "Sevilla", "Sheffield Wednesday", "Red Star Belgrade"], ["Which club plays its home games at the Stadio Luigi Ferraris?", "Genoa and Sampdoria", "Standard Liège", "Galatasaray", "Sheffield Wednesday"], ["Which country did Ferenc Puskás play for?", "Hungary", "Republic of Ireland", "Mexico", "Japan"], ["Which country did Eusébio play for?", "Portugal", "Nigeria", "Croatia", "Colombia"], ["Which country did George Best play for?", "Northern Ireland", "Poland", "Trinidad and Tobago", "Nigeria"], ["Which country did Hristo Stoichkov play for?", "Bulgaria", "Romania", "Poland", "Scotland"], ["Which country did Gheorghe Hagi play for?", "Romania", "Poland", "Scotland", "Finland"], ["Which country did Roger Milla play for?", "Cameroon", "Republic of Ireland", "Bulgaria", "Yugoslavia"], ["Which country did Davor Šuker play for?", "Croatia", "Czech Republic", "Denmark", "Hungary"], ["Which country did Pavel Nedvěd play for?", "Czech Republic", "Northern Ireland", "Paraguay", "Nigeria"], ["Which country did Michael Laudrup play for?", "Denmark", "Sweden", "Colombia", "Mexico"], ["Which country did Jari Litmanen play for?", "Finland", "France", "Scotland", "Republic of Ireland"], ["Which country did Hidetoshi Nakata play for?", "Japan", "Yugoslavia", "Australia", "Cameroon"], ["Which country did Carlos Valderrama play for?", "Colombia", "Hungary", "Uruguay", "Yugoslavia"], ["Which country did Enzo Francescoli play for?", "Uruguay", "Cameroon", "Colombia", "France"], ["Which country did Teófilo Cubillas play for?", "Peru", "Australia", "Brazil", "Scotland"], ["Which country did Hugo Sánchez play for?", "Mexico", "France", "Croatia", "Bulgaria"], ["Which country did Jay-Jay Okocha play for?", "Nigeria", "Wales", "Belgium", "Denmark"], ["Which country did Dwight Yorke play for?", "Trinidad and Tobago", "France", "Austria", "Brazil"], ["Which country did Zbigniew Boniek play for?", "Poland", "Chile", "Croatia", "Brazil"], ["Which country did Just Fontaine play for?", "France", "Finland", "Brazil", "Denmark"], ["Which country did Garrincha play for?", "Brazil", "Australia", "Poland", "Romania"], ["Which country did Ryan Giggs play for?", "Wales", "Bulgaria", "Scotland", "Denmark"], ["Which country did Henrik Larsson play for?", "Sweden", "Bulgaria", "Peru", "Cameroon"], ["Which country did Tim Cahill play for?", "Australia", "Bulgaria", "Sweden", "Portugal"], ["Which country did Paul Van Himst play for?", "Belgium", "Austria", "Colombia", "Chile"], ["Which country did Enzo Scifo play for?", "Belgium", "Scotland", "Cameroon", "Wales"], ["Which country won the 1962 men’s World Cup?", "Brazil", "Hungary", "Argentina", "West Germany"], ["Which country won the 1958 men’s World Cup?", "Brazil", "Czechoslovakia", "Italy", "Sweden"], ["Which country won the 1954 men’s World Cup?", "West Germany", "Czechoslovakia", "Italy", "Hungary"], ["Which country won the 1950 men’s World Cup?", "Uruguay", "Italy", "Argentina", "Brazil"], ["Which country won the 1938 men’s World Cup?", "Italy", "Czechoslovakia", "Argentina", "Hungary"], ["Which country won the 1934 men’s World Cup?", "Italy", "Brazil", "Uruguay", "Czechoslovakia"], ["Which country hosted the 1982 men’s World Cup?", "Spain", "Brazil", "Sweden", "Japan and South Korea"], ["Which country hosted the 1974 men’s World Cup?", "West Germany", "Qatar", "United States", "Mexico"], ["Which country hosted the 1970 men’s World Cup?", "Mexico", "South Africa", "France", "United States"], ["Which country hosted the 1966 men’s World Cup?", "England", "United States", "Sweden", "Germany"], ["Which country hosted the 1930 men’s World Cup?", "Uruguay", "Argentina", "United States", "England"], ["Which country lost the 2002 men’s World Cup final?", "Germany", "England", "Italy", "Croatia"], ["Which country lost the 1998 men’s World Cup final?", "Brazil", "Spain", "Netherlands", "Argentina"], ["Which country lost the 1994 men’s World Cup final?", "Italy", "Germany", "England", "Croatia"], ["Which country won Euro 1996?", "Germany", "Portugal", "Spain", "Netherlands"], ["Which country won Euro 1988?", "Netherlands", "Italy", "Spain", "England"], ["Which club won the Champions League in 2012?", "Chelsea", "Manchester United", "Paris Saint-Germain", "Barcelona"], ["Which club won the Champions League in 2010?", "Inter Milan", "AC Milan", "Barcelona", "Paris Saint-Germain"], ["Which club won the Champions League in 2008?", "Manchester United", "Arsenal", "Manchester City", "Real Madrid"], ["Which club won the Champions League in 2007?", "AC Milan", "Bayern Munich", "Liverpool", "Manchester United"], ["Which club won the Champions League in 2004?", "Porto", "Arsenal", "Bayern Munich", "Manchester City"]]}, "geo": {"kid": [["What is the capital of Japan?", "Tokyo", "Mumbai", "Ho Chi Minh City", "Bangkok"], ["What is the capital of Italy?", "Rome", "Brussels", "Barcelona", "Helsinki"], ["What is the capital of Germany?", "Berlin", "Kraków", "Edinburgh", "Geneva"], ["What is the capital of China?", "Beijing", "New Delhi", "Tashkent", "Muscat"], ["What is the capital of Belgium?", "Brussels", "Munich", "Vienna", "Milan"], ["What is the capital of Canada?", "Ottawa", "Canberra", "Auckland", "Sydney"], ["What is the capital of Mexico?", "Mexico City", "Guayaquil", "Brasília", "Caracas"], ["What is the capital of Egypt?", "Cairo", "Addis Ababa", "Abidjan", "Nairobi"], ["What is the capital of Netherlands?", "Amsterdam", "Kraków", "Copenhagen", "Vienna"], ["What is the capital of Portugal?", "Lisbon", "Kyiv", "Barcelona", "Bratislava"], ["What is the capital of Greece?", "Athens", "Stockholm", "Vilnius", "Copenhagen"], ["What is the capital of Ireland?", "Dublin", "Rome", "Gothenburg", "Tirana"], ["What is the capital of Russia?", "Moscow", "Belgrade", "Bratislava", "Barcelona"], ["What is the capital of India?", "New Delhi", "Manila", "Ho Chi Minh City", "Doha"], ["What is the capital of Australia?", "Canberra", "Ottawa", "Sydney", "Toronto"], ["What is the capital of Argentina?", "Buenos Aires", "Havana", "Santiago", "Mexico City"], ["What is the capital of South Korea?", "Seoul", "Bangkok", "Doha", "Osaka"], ["What is the capital of Norway?", "Oslo", "Rome", "Riga", "Lisbon"], ["What is the capital of Sweden?", "Stockholm", "Riga", "Edinburgh", "Helsinki"], ["What is the capital of Spain?", "Madrid", "Barcelona", "Stockholm", "Gothenburg"], ["Which flag is this?||🇫🇷", "France", "Wales", "Switzerland", "United Kingdom"], ["Which flag is this?||🇩🇪", "Germany", "Wales", "Greece", "Austria"], ["Which flag is this?||🇮🇹", "Italy", "Scotland", "Ireland", "Austria"], ["Which flag is this?||🇪🇸", "Spain", "Portugal", "Italy", "Scotland"], ["Which flag is this?||🇲🇽", "Mexico", "El Salvador", "Jamaica", "Haiti"], ["Which flag is this?||🇨🇳", "China", "Vietnam", "India", "Mongolia"], ["Which flag is this?||🇰🇷", "South Korea", "Uzbekistan", "Sri Lanka", "Philippines"], ["Which flag is this?||🇦🇷", "Argentina", "Jamaica", "Ecuador", "Paraguay"], ["Which flag is this?||🇵🇹", "Portugal", "Italy", "Belgium", "Luxembourg"], ["Which flag is this?||🇳🇱", "Netherlands", "Italy", "Ireland", "France"], ["Which flag is this?||🇸🇪", "Sweden", "Denmark", "Finland", "Norway"], ["Which flag is this?||🇨🇭", "Switzerland", "Greece", "Wales", "Scotland"], ["Which flag is this?||🇬🇷", "Greece", "Belgium", "Austria", "France"], ["Which flag is this?||🇹🇷", "Türkiye", "Algeria", "Morocco", "Qatar"], ["Which flag is this?||🇮🇳", "India", "Pakistan", "Mongolia", "Japan"], ["Which flag is this?||🇦🇺", "Australia", "United Kingdom", "Fiji", "Canada"], ["Which flag is this?||🇧🇪", "Belgium", "Netherlands", "Italy", "Ireland"], ["Which flag is this?||🇧🇷", "Brazil", "Dominican Republic", "Argentina", "Guatemala"], ["Which flag is this?||🇯🇵", "Japan", "China", "South Korea", "Thailand"], ["Which flag is this?||🇨🇦", "Canada", "United States", "Fiji", "New Zealand"]], "junior": [["What is the capital of Austria?", "Vienna", "Prague", "Oslo", "Dublin"], ["What is the capital of Poland?", "Warsaw", "Bern", "Skopje", "Dublin"], ["What is the capital of Denmark?", "Copenhagen", "Lisbon", "Vilnius", "Zagreb"], ["What is the capital of Finland?", "Helsinki", "Edinburgh", "Moscow", "Bratislava"], ["What is the capital of Thailand?", "Bangkok", "Vientiane", "Seoul", "Muscat"], ["What is the capital of Vietnam?", "Hanoi", "Doha", "Islamabad", "Dubai"], ["What is the capital of Peru?", "Lima", "São Paulo", "Rio de Janeiro", "Medellín"], ["What is the capital of Chile?", "Santiago", "Cusco", "Valparaíso", "Asunción"], ["What is the capital of Colombia?", "Bogotá", "São Paulo", "Buenos Aires", "Cusco"], ["What is the capital of Kenya?", "Nairobi", "Mombasa", "Rabat", "Abidjan"], ["What is the capital of Morocco?", "Rabat", "Yamoussoukro", "Mombasa", "Addis Ababa"], ["What is the capital of Hungary?", "Budapest", "Zagreb", "Helsinki", "Madrid"], ["What is the capital of Czech Republic?", "Prague", "Bern", "Belgrade", "Milan"], ["What is the capital of Croatia?", "Zagreb", "Antwerp", "Ljubljana", "Bern"], ["What is the capital of Philippines?", "Manila", "Ho Chi Minh City", "Osaka", "Vientiane"], ["What is the capital of Iceland?", "Reykjavík", "Tallinn", "Bern", "Vienna"], ["What is the capital of Cuba?", "Havana", "Montevideo", "Guayaquil", "Quito"], ["What is the capital of Saudi Arabia?", "Riyadh", "Islamabad", "Mumbai", "Dhaka"], ["What is the capital of Ukraine?", "Kyiv", "Bratislava", "Sofia", "Kraków"], ["What is the capital of Scotland?", "Edinburgh", "Vilnius", "Copenhagen", "Stockholm"], ["What is the capital of Brazil?", "Brasília", "Cusco", "São Paulo", "Asunción"], ["What is the capital of Portugal?", "Lisbon", "Stockholm", "Belgrade", "Reykjavík"], ["What is the capital of Switzerland?", "Bern", "Ljubljana", "Moscow", "Edinburgh"], ["Which flag is this?||🇳🇴", "Norway", "Sweden", "Iceland", "Finland"], ["Which flag is this?||🇩🇰", "Denmark", "Sweden", "Norway", "Finland"], ["Which flag is this?||🇫🇮", "Finland", "Norway", "Sweden", "Denmark"], ["Which flag is this?||🇵🇱", "Poland", "Bulgaria", "Belarus", "Latvia"], ["Which flag is this?||🇦🇹", "Austria", "Netherlands", "Italy", "Belgium"], ["Which flag is this?||🇨🇴", "Colombia", "Guatemala", "Haiti", "Uruguay"], ["Which flag is this?||🇨🇱", "Chile", "Paraguay", "Peru", "Venezuela"], ["Which flag is this?||🇿🇦", "South Africa", "Guinea", "Tanzania", "Uganda"], ["Which flag is this?||🇳🇬", "Nigeria", "Zambia", "Tanzania", "Kenya"], ["Which flag is this?||🇪🇬", "Egypt", "Morocco", "Oman", "Libya"], ["Which flag is this?||🇹🇭", "Thailand", "Japan", "India", "Pakistan"], ["Which flag is this?||🇻🇳", "Vietnam", "Philippines", "Japan", "Taiwan"], ["Which flag is this?||🇯🇲", "Jamaica", "Peru", "Panama", "Haiti"], ["Which flag is this?||🇨🇺", "Cuba", "Panama", "Mexico", "Chile"], ["Which flag is this?||🇺🇦", "Ukraine", "Hungary", "Czech Republic", "Albania"], ["Which flag is this?||🇭🇷", "Croatia", "Albania", "Russia", "Poland"], ["Which flag is this?||🇮🇸", "Iceland", "Finland", "Denmark", "Norway"], ["Which flag is this?||🇸🇦", "Saudi Arabia", "Algeria", "Tunisia", "Jordan"], ["Which flag is this?||🇮🇱", "Israel", "Saudi Arabia", "Egypt", "Libya"], ["Which flag is this?||🇵🇪", "Peru", "El Salvador", "Uruguay", "Paraguay"], ["Which flag is this?||🇰🇪", "Kenya", "Tanzania", "Mali", "South Africa"], ["Which flag is this?||🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Scotland", "Ireland", "Wales", "Belgium"], ["Which flag is this?||🏴󠁧󠁢󠁷󠁬󠁳󠁿", "Wales", "Netherlands", "United Kingdom", "Portugal"]], "adult": [["What is the capital of Nigeria?", "Abuja", "Addis Ababa", "Kumasi", "Yamoussoukro"], ["What is the capital of Tanzania?", "Dodoma", "Addis Ababa", "Rabat", "Lagos"], ["What is the capital of Pakistan?", "Islamabad", "Shanghai", "Ulaanbaatar", "Riyadh"], ["What is the capital of Mongolia?", "Ulaanbaatar", "Kathmandu", "Bangkok", "Muscat"], ["What is the capital of Uruguay?", "Montevideo", "Santiago", "Bogotá", "Cusco"], ["What is the capital of Ecuador?", "Quito", "Cusco", "Rio de Janeiro", "Brasília"], ["What is the capital of Ethiopia?", "Addis Ababa", "Dakar", "Cairo", "Lagos"], ["What is the capital of Ghana?", "Accra", "Johannesburg", "Addis Ababa", "Dar es Salaam"], ["What is the capital of Senegal?", "Dakar", "Accra", "Addis Ababa", "Nairobi"], ["What is the capital of Slovenia?", "Ljubljana", "Skopje", "Barcelona", "Munich"], ["What is the capital of Slovakia?", "Bratislava", "Copenhagen", "Belgrade", "Ljubljana"], ["What is the capital of Latvia?", "Riga", "Bern", "Amsterdam", "Tallinn"], ["What is the capital of Lithuania?", "Vilnius", "Vienna", "Rome", "Zagreb"], ["What is the capital of Estonia?", "Tallinn", "Antwerp", "Prague", "Oslo"], ["What is the capital of Bulgaria?", "Sofia", "Bern", "Kraków", "Tallinn"], ["What is the capital of Serbia?", "Belgrade", "Tirana", "Bern", "Rome"], ["What is the capital of Jordan?", "Amman", "Beijing", "Karachi", "Riyadh"], ["What is the capital of Nepal?", "Kathmandu", "Shanghai", "Seoul", "Osaka"], ["What is the capital of Bangladesh?", "Dhaka", "Islamabad", "Amman", "Tokyo"], ["What is the capital of Uzbekistan?", "Tashkent", "Karachi", "Manila", "Almaty"], ["What is the capital of Georgia?", "Tbilisi", "Phnom Penh", "Doha", "Islamabad"], ["What is the capital of Malta?", "Valletta", "Bratislava", "Athens", "Antwerp"], ["What is the capital of Côte d’Ivoire?", "Yamoussoukro", "Johannesburg", "Abuja", "Lagos"], ["What is the capital of Venezuela?", "Caracas", "Mexico City", "Buenos Aires", "Lima"], ["What is the capital of Paraguay?", "Asunción", "Rio de Janeiro", "Santiago", "Montevideo"], ["What is the capital of Cambodia?", "Phnom Penh", "Manila", "Yerevan", "Osaka"], ["What is the capital of Laos?", "Vientiane", "Hanoi", "Mumbai", "Ulaanbaatar"], ["What is the capital of Qatar?", "Doha", "New Delhi", "Baku", "Tashkent"], ["What is the capital of Oman?", "Muscat", "Mumbai", "Vientiane", "Osaka"], ["What is the capital of Azerbaijan?", "Baku", "Muscat", "Doha", "Bangkok"], ["What is the capital of Armenia?", "Yerevan", "Seoul", "Tokyo", "Islamabad"], ["What is the capital of Belarus?", "Minsk", "Tallinn", "Brussels", "Vienna"], ["What is the capital of Albania?", "Tirana", "Antwerp", "Milan", "Helsinki"], ["What is the capital of North Macedonia?", "Skopje", "Minsk", "Bern", "Ljubljana"], ["What is the capital of Morocco?", "Rabat", "Accra", "Casablanca", "Yamoussoukro"], ["Abuja is the capital of which country?", "Nigeria", "Ghana", "Senegal", "Morocco"], ["Dodoma is the capital of which country?", "Tanzania", "Côte d’Ivoire", "Kenya", "Egypt"], ["Ulaanbaatar is the capital of which country?", "Mongolia", "Cambodia", "Philippines", "Bangladesh"], ["Montevideo is the capital of which country?", "Uruguay", "Brazil", "Colombia", "Chile"], ["Tbilisi is the capital of which country?", "Georgia", "India", "Oman", "Vietnam"], ["Baku is the capital of which country?", "Azerbaijan", "Saudi Arabia", "Philippines", "Uzbekistan"], ["Rabat is the capital of which country?", "Morocco", "Côte d’Ivoire", "Kenya", "Ethiopia"], ["Which flag is this?||🇪🇪", "Estonia", "Croatia", "Moldova", "Bulgaria"], ["Which flag is this?||🇱🇻", "Latvia", "Albania", "Estonia", "Romania"], ["Which flag is this?||🇱🇹", "Lithuania", "Hungary", "Czech Republic", "Poland"], ["Which flag is this?||🇸🇮", "Slovenia", "Ukraine", "Serbia", "Poland"], ["Which flag is this?||🇸🇰", "Slovakia", "Ukraine", "Czech Republic", "Hungary"], ["Which flag is this?||🇧🇬", "Bulgaria", "Estonia", "Slovenia", "Romania"], ["Which flag is this?||🇭🇺", "Hungary", "Belarus", "Serbia", "Slovakia"], ["Which flag is this?||🇨🇿", "Czech Republic", "Poland", "Latvia", "Moldova"], ["Which flag is this?||🇵🇭", "Philippines", "Bangladesh", "Thailand", "China"], ["Which flag is this?||🇲🇾", "Malaysia", "Japan", "Cambodia", "India"], ["Which flag is this?||🇸🇳", "Senegal", "Kenya", "Zambia", "Cameroon"], ["Which flag is this?||🇬🇭", "Ghana", "South Africa", "Zambia", "Nigeria"], ["Which flag is this?||🇨🇲", "Cameroon", "Zambia", "Uganda", "Nigeria"], ["Which flag is this?||🇪🇹", "Ethiopia", "Cameroon", "Kenya", "Ghana"], ["Which flag is this?||🇰🇿", "Kazakhstan", "Myanmar", "Malaysia", "Bangladesh"], ["Which flag is this?||🇺🇿", "Uzbekistan", "Nepal", "Malaysia", "Cambodia"], ["Which flag is this?||🇱🇰", "Sri Lanka", "Malaysia", "Laos", "Bangladesh"], ["Which flag is this?||🇧🇩", "Bangladesh", "Indonesia", "South Korea", "Myanmar"], ["Which flag is this?||🇵🇰", "Pakistan", "Malaysia", "Vietnam", "Nepal"], ["Which flag is this?||🇺🇾", "Uruguay", "Cuba", "Colombia", "Guatemala"], ["Which flag is this?||🇪🇨", "Ecuador", "Honduras", "El Salvador", "Bolivia"], ["Which flag is this?||🇻🇪", "Venezuela", "Mexico", "El Salvador", "Chile"], ["Which flag is this?||🇧🇴", "Bolivia", "Costa Rica", "Argentina", "Dominican Republic"], ["Which flag is this?||🇵🇾", "Paraguay", "Honduras", "Chile", "Ecuador"], ["Which flag is this?||🇨🇷", "Costa Rica", "Peru", "Dominican Republic", "Venezuela"], ["Which flag is this?||🇵🇦", "Panama", "Uruguay", "Costa Rica", "Mexico"], ["Which flag is this?||🇲🇦", "Morocco", "Tunisia", "Iraq", "Qatar"], ["Which flag is this?||🇩🇿", "Algeria", "Saudi Arabia", "Qatar", "Egypt"], ["Which flag is this?||🇹🇳", "Tunisia", "Iraq", "Algeria", "Israel"], ["Which flag is this?||🇱🇧", "Lebanon", "Iraq", "Egypt", "Qatar"], ["Which flag is this?||🇯🇴", "Jordan", "Saudi Arabia", "Lebanon", "Tunisia"], ["Which flag is this?||🇶🇦", "Qatar", "Kuwait", "Egypt", "Libya"], ["Which flag is this?||🇰🇭", "Cambodia", "Indonesia", "Pakistan", "China"], ["Which flag is this?||🇷🇸", "Serbia", "Slovakia", "Estonia", "Poland"], ["Which flag is this?||🇦🇱", "Albania", "Bulgaria", "Lithuania", "Montenegro"]]}, "sci": {"kid": [["Which element has the chemical symbol O?", "Oxygen", "Manganese", "Phosphorus", "Silver"], ["Which element has the chemical symbol H?", "Hydrogen", "Antimony", "Neon", "Helium"], ["Which element has the chemical symbol C?", "Carbon", "Tin", "Lead", "Arsenic"], ["Which element has the chemical symbol He?", "Helium", "Carbon", "Silicon", "Gold"]], "junior": [["Which element has the chemical symbol Fe?", "Iron", "Argon", "Carbon", "Zinc"], ["Which element has the chemical symbol Na?", "Sodium", "Potassium", "Helium", "Magnesium"], ["Which element has the chemical symbol Ag?", "Silver", "Sodium", "Neon", "Iron"], ["Which element has the chemical symbol Cu?", "Copper", "Manganese", "Tin", "Oxygen"], ["Which element has the chemical symbol Pb?", "Lead", "Magnesium", "Carbon", "Potassium"], ["Which element has the chemical symbol N?", "Nitrogen", "Antimony", "Iron", "Boron"], ["Which element has the chemical symbol Ca?", "Calcium", "Neon", "Fluorine", "Boron"], ["Which element has the chemical symbol Ne?", "Neon", "Mercury", "Aluminium", "Helium"], ["Which element has the chemical symbol Cl?", "Chlorine", "Boron", "Silicon", "Tungsten"], ["Which element has the chemical symbol Zn?", "Zinc", "Boron", "Titanium", "Gold"]], "adult": [["Which element has the chemical symbol Sn?", "Tin", "Sodium", "Mercury", "Carbon"], ["Which element has the chemical symbol W?", "Tungsten", "Oxygen", "Cobalt", "Sulfur"], ["Which element has the chemical symbol Hg?", "Mercury", "Sodium", "Arsenic", "Neon"], ["Which element has the chemical symbol Sb?", "Antimony", "Calcium", "Tungsten", "Chlorine"], ["Which element has the chemical symbol Mn?", "Manganese", "Argon", "Lithium", "Titanium"], ["Which element has the chemical symbol Mg?", "Magnesium", "Antimony", "Calcium", "Gold"], ["Which element has the chemical symbol Pt?", "Platinum", "Sodium", "Hydrogen", "Silicon"], ["Which element has the chemical symbol U?", "Uranium", "Iron", "Lead", "Fluorine"], ["Which element has the chemical symbol Li?", "Lithium", "Tungsten", "Potassium", "Nitrogen"], ["Which element has the chemical symbol Si?", "Silicon", "Platinum", "Neon", "Aluminium"], ["Which element has the chemical symbol P?", "Phosphorus", "Copper", "Lead", "Oxygen"], ["Which element has the chemical symbol S?", "Sulfur", "Phosphorus", "Sodium", "Aluminium"], ["Which element has the chemical symbol Ti?", "Titanium", "Cobalt", "Uranium", "Argon"], ["Which element has the chemical symbol Co?", "Cobalt", "Lithium", "Sodium", "Hydrogen"], ["Which element has the chemical symbol Ni?", "Nickel", "Mercury", "Tungsten", "Copper"], ["Which element has the chemical symbol As?", "Arsenic", "Phosphorus", "Tungsten", "Magnesium"]]}, "fun": {"kid": [], "junior": [], "adult": []}, "animals": {"kid": [["What is a baby kangaroo called?", "a joey", "a cub", "a kit", "a porcupette"], ["What is a baby goat called?", "a kid", "a kit", "a porcupette", "a pup"], ["What is a baby deer called?", "a fawn", "an elver", "a puffling", "a joey"], ["What is a baby horse called?", "a foal", "a joey", "a squab", "a pup"], ["What is a baby goose called?", "a gosling", "a chick", "an alevin", "a porcupette"], ["What is a baby owl called?", "an owlet", "a foal", "a lamb", "a kit"], ["What is a baby seal called?", "a pup", "a spat", "an owlet", "a cub"], ["What is a baby eagle called?", "an eaglet", "a hoglet", "a kit", "a spat"], ["What is a baby sheep called?", "a lamb", "a foal", "a fawn", "a gosling"], ["What is a group of wolves called?", "a pack", "a raft", "a mob", "a colony"], ["What is a group of bees called?", "a swarm", "an exaltation", "a business", "a pack"], ["What is a group of orcas called?", "a pod", "a tower", "a flock", "a dazzle"], ["What is a group of geese on the ground called?", "a gaggle", "a flock", "a troop", "a bloat"], ["What is a group of ants called?", "a colony", "a smack", "a flock", "a herd"], ["What is a group of lions called?", "a pride", "a raft", "a mob", "a parliament"]], "junior": [["What is a baby hare called?", "a leveret", "a joey", "a cub", "a hoglet"], ["What is a baby eel called?", "an elver", "a leveret", "a gosling", "a cygnet"], ["What is a baby pigeon called?", "a squab", "a lamb", "a joey", "an alevin"], ["What is a baby alpaca called?", "a cria", "a cub", "a leveret", "a gosling"], ["What is a baby turkey called?", "a poult", "a cria", "a calf", "a joey"], ["What is a baby swan called?", "a cygnet", "an alevin", "a porcupette", "a foal"], ["What is a baby hedgehog called?", "a hoglet", "a lamb", "a cygnet", "a leveret"], ["What is a group of kangaroos called?", "a mob", "a gaggle", "a smack", "a bloat"], ["What is a group of giraffes called?", "a tower", "a colony", "an exaltation", "a raft"], ["What is a group of jellyfish called?", "a smack", "a murmuration", "a business", "a bloat"], ["What is a group of rhinos called?", "a crash", "a mob", "an exaltation", "a business"], ["What is a group of zebras called?", "a dazzle", "a crash", "a business", "a bloat"], ["What is a group of otters floating together called?", "a raft", "a flock", "a smack", "a flamboyance"], ["What is a group of flamingos called?", "a flamboyance", "an unkindness", "a tower", "a pride"]], "adult": [["What is a baby salmon (just hatched) called?", "an alevin", "a foal", "an eaglet", "an elver"], ["What is a baby oyster called?", "a spat", "a cygnet", "a fawn", "a cria"], ["What is a baby puffin called?", "a puffling", "a lamb", "a cygnet", "a cub"], ["What is a baby porcupine called?", "a porcupette", "a poult", "an alevin", "a leveret"], ["What is a group of hippos called?", "a bloat", "a prickle", "a crash", "a swarm"], ["What is a group of lemurs called?", "a conspiracy", "a school", "an exaltation", "a mob"], ["What is a group of ravens called?", "an unkindness", "a crash", "a pride", "a bloat"], ["What is a group of parrots called?", "a pandemonium", "a herd", "a murder", "a colony"], ["What is a group of porcupines called?", "a prickle", "a conspiracy", "a flamboyance", "a murmuration"], ["What is a group of ferrets called?", "a business", "an unkindness", "a herd", "a swarm"], ["What is a group of crows called?", "a murder", "an exaltation", "a crash", "a school"], ["What is a group of larks called?", "an exaltation", "a swarm", "a parliament", "a murder"], ["What is a group of starlings in flight called?", "a murmuration", "a pandemonium", "a dazzle", "a prickle"]]}, "art": {"kid": [["Who painted the Mona Lisa?", "Leonardo da Vinci", "Grant Wood", "Auguste Rodin", "Johannes Vermeer"], ["Who painted Sunflowers?", "Vincent van Gogh", "Diego Velázquez", "Grant Wood", "Georges Seurat"], ["Who painted The Scream?", "Edvard Munch", "Diego Velázquez", "Pablo Picasso", "Auguste Rodin"], ["Who painted the Water Lilies series?", "Claude Monet", "Pablo Picasso", "Georges Seurat", "Gustav Klimt"], ["Who painted The Last Supper?", "Leonardo da Vinci", "Sandro Botticelli", "Vincent van Gogh", "Rembrandt"], ["Who painted Girl with a Pearl Earring?", "Johannes Vermeer", "Diego Velázquez", "Auguste Rodin", "Rembrandt"], ["Who painted The Great Wave off Kanagawa?", "Hokusai", "Pablo Picasso", "Sandro Botticelli", "Gustav Klimt"], ["Who made the statue of David?", "Michelangelo", "Georges Seurat", "Pablo Picasso", "Auguste Rodin"], ["Who painted The Starry Night?", "Vincent van Gogh", "Leonardo da Vinci", "Johannes Vermeer", "Banksy"], ["In which city is the Louvre?", "Paris", "Florence", "Brussels", "New York"], ["In which city is the Van Gogh Museum?", "Amsterdam", "Rome", "Paris", "Brussels"], ["In which city is the Vatican Museums?", "Rome", "Madrid", "London", "Brussels"]], "junior": [["Who painted The Night Watch?", "Rembrandt", "Michelangelo", "Hokusai", "Sandro Botticelli"], ["Who painted The Birth of Venus?", "Sandro Botticelli", "Georges Seurat", "Banksy", "Auguste Rodin"], ["Who painted The Kiss?", "Gustav Klimt", "Hokusai", "Auguste Rodin", "Sandro Botticelli"], ["Who painted American Gothic?", "Grant Wood", "Michelangelo", "Pablo Picasso", "Leonardo da Vinci"], ["Who painted The Son of Man, a man with an apple over his face?", "René Magritte", "Edvard Munch", "Claude Monet", "Vincent van Gogh"], ["Who painted Guernica?", "Pablo Picasso", "Michelangelo", "Georges Seurat", "Vincent van Gogh"], ["Who painted A Sunday Afternoon on the Island of La Grande Jatte?", "Georges Seurat", "Edward Hopper", "René Magritte", "Grant Wood"], ["Who made The Thinker?", "Auguste Rodin", "Diego Velázquez", "Claude Monet", "Michelangelo"], ["Who painted The Creation of Adam?", "Michelangelo", "Sandro Botticelli", "René Magritte", "Johannes Vermeer"], ["Who painted Nighthawks?", "Edward Hopper", "Leonardo da Vinci", "Claude Monet", "Auguste Rodin"], ["Who made Balloon Girl?", "Banksy", "Edvard Munch", "Grant Wood", "Edward Hopper"], ["Who painted The Milkmaid?", "Johannes Vermeer", "Hokusai", "Edward Hopper", "René Magritte"], ["Who painted Las Meninas?", "Diego Velázquez", "Georges Seurat", "Claude Monet", "Grant Wood"], ["Which architect designed the Sagrada Família in Barcelona?", "Antoni Gaudí", "Rem Koolhaas", "Frank Lloyd Wright", "Christopher Wren"], ["Which architect designed Seattle’s Museum of Pop Culture?", "Frank Gehry", "Le Corbusier", "Norman Foster", "Zaha Hadid"], ["In which city is the Prado?", "Madrid", "Venice", "New York", "Rome"], ["In which city is the Uffizi Gallery?", "Florence", "Vienna", "New York", "Madrid"], ["In which city is the Rijksmuseum?", "Amsterdam", "Brussels", "New York", "Rome"], ["In which city is the Tate Modern?", "London", "Brussels", "Paris", "Venice"], ["In which city is the Magritte Museum?", "Brussels", "New York", "London", "Saint Petersburg"], ["In which city is the Museum of Modern Art, MoMA?", "New York", "Brussels", "Rome", "Paris"]], "adult": [["Who painted The Arnolfini Portrait?", "Jan van Eyck", "Michelangelo", "Pablo Picasso", "Henri Matisse"], ["Who painted Liberty Leading the People?", "Eugène Delacroix", "Hans Holbein the Younger", "Édouard Manet", "René Magritte"], ["Who painted The Raft of the Medusa?", "Théodore Géricault", "Rembrandt", "Hokusai", "John Constable"], ["Who painted The Third of May 1808?", "Francisco Goya", "Edward Hopper", "Gustav Klimt", "Frida Kahlo"], ["Who painted Olympia?", "Édouard Manet", "Henri Rousseau", "Michelangelo", "Henri Matisse"], ["Who painted The Hay Wain?", "John Constable", "Andrew Wyeth", "Sandro Botticelli", "Hokusai"], ["Who painted The Fighting Temeraire?", "J. M. W. Turner", "Vincent van Gogh", "Henri Rousseau", "Andrew Wyeth"], ["Who painted Wanderer above the Sea of Fog?", "Caspar David Friedrich", "Johannes Vermeer", "Frida Kahlo", "Hans Holbein the Younger"], ["Who painted Les Demoiselles d’Avignon?", "Pablo Picasso", "Claude Monet", "Frida Kahlo", "Jean-Honoré Fragonard"], ["Who painted Black Square?", "Kazimir Malevich", "Édouard Manet", "Michelangelo", "Claude Monet"], ["Who made Fountain, a signed urinal?", "Marcel Duchamp", "Kazimir Malevich", "René Magritte", "Andrew Wyeth"], ["Who painted Christina’s World?", "Andrew Wyeth", "Johannes Vermeer", "Banksy", "Raphael"], ["Who painted The Two Fridas?", "Frida Kahlo", "James Ensor", "Edward Hopper", "Marcel Duchamp"], ["Who painted The Sleeping Gypsy?", "Henri Rousseau", "Michelangelo", "Édouard Manet", "Grant Wood"], ["Who painted The Swing?", "Jean-Honoré Fragonard", "Leonardo da Vinci", "Gustav Klimt", "Eugène Delacroix"], ["Who painted The Ambassadors?", "Hans Holbein the Younger", "Banksy", "Marcel Duchamp", "Michelangelo"], ["Who painted The Tower of Babel?", "Pieter Bruegel the Elder", "Auguste Rodin", "John Constable", "Johannes Vermeer"], ["Who painted Christ’s Entry into Brussels in 1889?", "James Ensor", "Kazimir Malevich", "Hokusai", "James McNeill Whistler"], ["Who painted The School of Athens?", "Raphael", "Banksy", "Théodore Géricault", "Marcel Duchamp"], ["Who painted The Dance?", "Henri Matisse", "Eugène Delacroix", "Auguste Rodin", "Pieter Bruegel the Elder"], ["Who painted Whistler’s Mother?", "James McNeill Whistler", "René Magritte", "Pieter Bruegel the Elder", "Kazimir Malevich"], ["Which architect designed Fallingwater?", "Frank Lloyd Wright", "Filippo Brunelleschi", "Rem Koolhaas", "Christopher Wren"], ["Which architect designed the glass pyramid at the Louvre?", "I. M. Pei", "Renzo Piano", "Rem Koolhaas", "Ludwig Mies van der Rohe"], ["Which architect designed the Guggenheim Museum in Bilbao?", "Frank Gehry", "Norman Foster", "Rem Koolhaas", "Jørn Utzon"], ["Which architect designed the Sydney Opera House?", "Jørn Utzon", "Norman Foster", "Oscar Niemeyer", "Victor Horta"], ["Which architect designed Seattle’s Central Library?", "Rem Koolhaas", "Filippo Brunelleschi", "Renzo Piano", "I. M. Pei"], ["Which architect designed the Villa Savoye?", "Le Corbusier", "Rem Koolhaas", "Christopher Wren", "Jørn Utzon"], ["Which architect designed the Barcelona Pavilion?", "Ludwig Mies van der Rohe", "Jørn Utzon", "Victor Horta", "Frank Lloyd Wright"], ["Which architect designed The Shard in London?", "Renzo Piano", "Victor Horta", "Filippo Brunelleschi", "Frank Gehry"], ["Which architect designed St Paul’s Cathedral in London?", "Christopher Wren", "Antoni Gaudí", "Frank Gehry", "Filippo Brunelleschi"], ["Which architect designed the dome of Florence Cathedral?", "Filippo Brunelleschi", "Christopher Wren", "Rem Koolhaas", "Norman Foster"], ["In which city is the Hermitage?", "Saint Petersburg", "Vienna", "Brussels", "New York"], ["In which city is the Guggenheim with the white spiral ramp?", "New York", "Vienna", "Paris", "Saint Petersburg"], ["In which city is the Musée d’Orsay?", "Paris", "Berlin", "Venice", "Madrid"]]}, "brain": {"kid": [["What is 6 × 8?", "48", "54", "40", "56"], ["What is 7 × 6?", "42", "49", "36", "48"], ["What is 7 × 5?", "35", "42", "30", "40"], ["What is 9 × 9?", "81", "90", "72", "91"], ["What is 6 × 5?", "30", "36", "25", "35"], ["What is 8 × 5?", "40", "48", "35", "45"], ["What is 6 × 9?", "54", "60", "45", "63"], ["What is 9 × 5?", "45", "54", "40", "50"], ["What is 9 × 8?", "72", "81", "64", "80"], ["What is 9 × 7?", "63", "72", "56", "70"], ["What is 9 × 4?", "36", "45", "32", "40"], ["What is 8 × 9?", "72", "80", "63", "81"], ["What is 6 × 6?", "36", "42", "30", "43"], ["What is 8 × 7?", "56", "64", "49", "63"], ["What is 8 × 6?", "48", "56", "42", "54"], ["What is 7 × 7?", "49", "56", "42", "57"], ["What is 42 ÷ 7?", "6", "7", "5", "8"], ["What is 36 ÷ 4?", "9", "10", "8", "11"], ["What is 45 ÷ 9?", "5", "6", "4", "7"], ["What is 72 ÷ 8?", "9", "10", "8", "11"], ["What is 54 ÷ 6?", "9", "10", "8", "11"], ["What is 63 ÷ 9?", "7", "8", "6", "9"], ["What is 49 ÷ 7?", "7", "8", "6", "9"], ["What is 24 ÷ 4?", "6", "7", "5", "8"], ["What is 20 ÷ 4?", "5", "6", "4", "7"], ["What is 40 ÷ 8?", "5", "6", "4", "7"], ["Fill in the blank: 9 × ? = 72", "8", "9", "7", "10"], ["Fill in the blank: 6 × ? = 48", "8", "9", "7", "10"], ["Fill in the blank: 8 × ? = 40", "5", "6", "4", "7"], ["Fill in the blank: 6 × ? = 30", "5", "6", "4", "7"], ["Fill in the blank: 9 × ? = 45", "5", "6", "4", "7"], ["Fill in the blank: 9 × ? = 27", "3", "4", "2", "5"], ["Fill in the blank: 8 × ? = 48", "6", "7", "5", "8"], ["Fill in the blank: 8 × ? = 64", "8", "9", "7", "10"], ["What is 65 − 31?", "34", "44", "24", "36"], ["What is 64 − 46?", "18", "28", "8", "20"], ["What is 94 − 27?", "67", "77", "57", "69"], ["What is 75 − 47?", "28", "38", "18", "30"], ["What is 80 − 23?", "57", "67", "47", "59"], ["What is 51 − 42?", "9", "19", "11", "8"], ["What is 69 − 33?", "36", "46", "26", "38"], ["What is 69 − 42?", "27", "37", "17", "29"], ["What comes next: 6, 12, 18, 24, …?", "30", "31", "29", "36"], ["What comes next: 5, 14, 23, 32, …?", "41", "42", "40", "50"], ["What comes next: 4, 10, 16, 22, …?", "28", "29", "27", "34"], ["What comes next: 7, 16, 25, 34, …?", "43", "44", "42", "52"], ["What comes next: 5, 12, 19, 26, …?", "33", "34", "32", "40"], ["What comes next: 8, 17, 26, 35, …?", "44", "45", "43", "53"], ["What comes next: 2, 11, 20, 29, …?", "38", "39", "37", "47"], ["What comes next: 8, 16, 24, 32, …?", "40", "41", "39", "48"], ["How many minutes are in 2 hours and 30 minutes?", "150", "180", "120", "230"], ["How many minutes are in 1 hours and 45 minutes?", "105", "135", "75", "145"], ["How many minutes are in 3 hours and 15 minutes?", "195", "225", "165", "315"], ["How many minutes are in 2 hours and 20 minutes?", "140", "170", "110", "220"], ["How many minutes are in 4 hours and 10 minutes?", "250", "280", "220", "410"]], "junior": [["What is 10% of 250?", "25", "30", "20", "50"], ["What is 20% of 150?", "30", "35", "25", "60"], ["What is 25% of 120?", "30", "35", "25", "60"], ["What is 50% of 86?", "43", "48", "38", "86"], ["What is 15% of 200?", "30", "35", "25", "60"], ["What is 30% of 90?", "27", "32", "22", "54"], ["What is 75% of 40?", "30", "35", "25", "60"], ["What is 5% of 300?", "15", "20", "10", "30"], ["What is 40% of 60?", "24", "29", "19", "48"], ["What is 12% of 50?", "6", "11", "1", "12"], ["What is 3/4 of 80?", "60", "20", "64", "57"], ["What is 2/3 of 60?", "40", "20", "43", "38"], ["What is 3/5 of 45?", "27", "9", "32", "24"], ["What is 5/8 of 64?", "40", "8", "48", "35"], ["What is 2/5 of 150?", "60", "30", "65", "58"], ["What is 7/10 of 90?", "63", "9", "73", "56"], ["What is 3/8 of 72?", "27", "9", "35", "24"], ["What is 5/6 of 54?", "45", "9", "51", "40"], ["What is 3 + 4 × 5?", "23", "35", "28", "19"], ["What is 6 + 2 × 7?", "20", "56", "27", "18"], ["What is 10 + 3 × 4?", "22", "52", "26", "19"], ["What is 8 + 5 × 2?", "18", "26", "20", "13"], ["What is 2 + 9 × 3?", "29", "33", "32", "20"], ["What is 20 + 4 × 3?", "32", "72", "35", "28"], ["What is 7 + 6 × 2?", "19", "26", "21", "13"], ["What is 5 + 5 × 5?", "30", "50", "35", "25"], ["What is 11 squared?", "121", "132", "110", "22"], ["What is 13 squared?", "169", "182", "156", "26"], ["What is 14 squared?", "196", "210", "182", "28"], ["What is 15 squared?", "225", "240", "210", "30"], ["What is 16 squared?", "256", "272", "240", "32"], ["What is 25 squared?", "625", "650", "600", "50"], ["What is the average of 4, 8, 12?", "8", "10", "7", "24"], ["What is the average of 10, 20, 60?", "30", "32", "29", "90"], ["What is the average of 5, 7, 9, 11?", "8", "10", "7", "32"], ["What is the average of 2, 4, 6, 8, 10?", "6", "8", "5", "30"], ["What is the average of 15, 25, 35?", "25", "27", "24", "75"], ["What is the average of 3, 9, 12, 16?", "10", "12", "9", "40"], ["A rectangle is 7 cm by 9 cm. What is its area?", "63 cm²", "32 cm²", "70 cm²", "16 cm²"], ["A rectangle is 12 cm by 5 cm. What is its area?", "60 cm²", "34 cm²", "72 cm²", "17 cm²"], ["A rectangle is 8 cm by 8 cm. What is its area?", "64 cm²", "32 cm²", "72 cm²", "16 cm²"], ["A rectangle is 15 cm by 4 cm. What is its area?", "60 cm²", "38 cm²", "75 cm²", "19 cm²"], ["A rectangle is 11 cm by 6 cm. What is its area?", "66 cm²", "34 cm²", "77 cm²", "17 cm²"], ["A rectangle is 7 cm by 9 cm. What is its perimeter?", "32 cm", "63 cm", "16 cm", "36 cm"], ["A rectangle is 12 cm by 5 cm. What is its perimeter?", "34 cm", "60 cm", "17 cm", "38 cm"], ["A rectangle is 10 cm by 6 cm. What is its perimeter?", "32 cm", "60 cm", "16 cm", "36 cm"], ["A rectangle is 15 cm by 4 cm. What is its perimeter?", "38 cm", "60 cm", "19 cm", "42 cm"], ["What comes next: 2, 6, 18, 54, …?", "162", "164", "72", "159"], ["What comes next: 3, 6, 12, 24, …?", "48", "51", "36", "46"], ["What comes next: 5, 10, 20, 40, …?", "80", "85", "60", "78"], ["What comes next: 1, 4, 16, 64, …?", "256", "257", "80", "252"], ["What comes next: 4, 12, 36, 108, …?", "324", "328", "144", "321"]], "adult": [["What is 17 × 6?", "102", "119", "96", "112"], ["What is 23 × 7?", "161", "184", "154", "171"], ["What is 14 × 15?", "210", "224", "195", "220"], ["What is 25 × 24?", "600", "625", "576", "610"], ["What is 19 × 19?", "361", "380", "342", "371"], ["What is 32 × 25?", "800", "832", "775", "810"], ["What is 45 × 12?", "540", "585", "528", "550"], ["What is 99 × 7?", "693", "792", "686", "703"], ["What is 16 × 16?", "256", "272", "240", "266"], ["What is 13 × 17?", "221", "234", "204", "231"], ["A price rises from 80 to 100. What is the percentage change?", "25%", "20%", "30%", "40%"], ["A price rises from 50 to 65. What is the percentage change?", "30%", "23%", "35%", "25%"], ["A price falls from 200 to 150. What is the percentage change?", "25%", "33%", "30%", "20%"], ["A price rises from 40 to 50. What is the percentage change?", "25%", "20%", "30%", "10%"], ["A price falls from 120 to 90. What is the percentage change?", "25%", "33%", "30%", "20%"], ["A price rises from 60 to 75. What is the percentage change?", "25%", "20%", "30%", "15%"], ["A price falls from 250 to 200. What is the percentage change?", "20%", "25%", "15%", "50%"], ["A price rises from 20 to 25. What is the percentage change?", "25%", "20%", "30%", "5%"], ["What is 2 to the power of 8?", "256", "16", "512", "128"], ["What is 3 to the power of 4?", "81", "12", "243", "27"], ["What is 5 to the power of 3?", "125", "15", "625", "25"], ["What is 2 to the power of 12?", "4096", "24", "8192", "2048"], ["What is 4 to the power of 4?", "256", "16", "1024", "64"], ["What is 7 to the power of 3?", "343", "21", "2401", "49"], ["What is 6 to the power of 3?", "216", "18", "1296", "36"], ["What is 3 to the power of 5?", "243", "15", "729", "81"], ["What is the square root of 196?", "14", "15", "13", "16"], ["What is the square root of 225?", "15", "16", "14", "17"], ["What is the square root of 289?", "17", "18", "16", "19"], ["What is the square root of 324?", "18", "19", "17", "20"], ["What is the square root of 441?", "21", "22", "20", "23"], ["What is the square root of 576?", "24", "25", "23", "26"], ["What is the square root of 169?", "13", "14", "12", "15"], ["What is the square root of 676?", "26", "27", "25", "28"], ["Solve for x: 3x + 7 = 31", "8", "9", "7", "10"], ["Solve for x: 5x − 4 = 41", "9", "10", "8", "11"], ["Solve for x: 2x + 15 = 39", "12", "13", "11", "14"], ["Solve for x: 7x + 3 = 45", "6", "7", "5", "8"], ["Solve for x: 4x − 9 = 35", "11", "12", "10", "13"], ["Solve for x: 6x + 6 = 48", "7", "8", "6", "9"], ["Solve for x: 9x − 5 = 40", "5", "6", "4", "7"], ["Solve for x: 8x + 12 = 44", "4", "5", "3", "6"], ["A car covers 150 km in 2.5 hours. What is its average speed?", "60 km/h", "70 km/h", "50 km/h", "65 km/h"], ["A car covers 210 km in 3.5 hours. What is its average speed?", "60 km/h", "70 km/h", "50 km/h", "65 km/h"], ["A car covers 90 km in 1.5 hours. What is its average speed?", "60 km/h", "70 km/h", "50 km/h", "65 km/h"], ["A car covers 400 km in 5 hours. What is its average speed?", "80 km/h", "90 km/h", "70 km/h", "85 km/h"], ["A car covers 126 km in 1.75 hours. What is its average speed?", "72 km/h", "82 km/h", "62 km/h", "77 km/h"], ["A car covers 330 km in 5.5 hours. What is its average speed?", "60 km/h", "70 km/h", "50 km/h", "65 km/h"], ["An item costs 100. It is cut by 20%, then the new price is cut by 20%. What does it cost now?", "64", "60", "68", "74"], ["An item costs 200. It is cut by 10%, then the new price is cut by 10%. What does it cost now?", "162", "160", "166", "158"], ["An item costs 100. It is cut by 50%, then the new price is cut by 20%. What does it cost now?", "40", "30", "44", "36"], ["An item costs 80. It is cut by 25%, then the new price is cut by 50%. What does it cost now?", "30", "20", "34", "26"], ["An item costs 100. It is cut by 30%, then the new price is cut by 10%. What does it cost now?", "63", "60", "67", "59"]]}, "music": {"kid": [["Who sings “Shake It Off”?", "Taylor Swift", "Ed Sheeran", "Pharrell Williams", "Katy Perry"], ["Who sings “Happy”?", "Pharrell Williams", "BTS", "Sabrina Carpenter", "Justin Timberlake"], ["Who sings “Firework”?", "Katy Perry", "Pharrell Williams", "Bruno Mars and Mark Ronson", "Justin Timberlake"], ["Who sings “Roar”?", "Katy Perry", "Pharrell Williams", "Taylor Swift", "Bruno Mars and Mark Ronson"], ["Who sings “Bad Guy”?", "Billie Eilish", "Dua Lipa", "Ariana Grande", "Pharrell Williams"], ["Who sings “Dynamite”?", "BTS", "Ed Sheeran", "Miley Cyrus", "Billie Eilish"], ["Who sings “Shape of You”?", "Ed Sheeran", "Billie Eilish", "Bruno Mars and Mark Ronson", "BTS"], ["Who sings “Uptown Funk”?", "Bruno Mars and Mark Ronson", "Pharrell Williams", "BTS", "Miley Cyrus"], ["Who sings “Can’t Stop the Feeling!”?", "Justin Timberlake", "Miley Cyrus", "Pharrell Williams", "Imagine Dragons"], ["Who sings “Espresso”?", "Sabrina Carpenter", "Pharrell Williams", "Harry Styles", "Billie Eilish"], ["Who sings “Flowers”?", "Miley Cyrus", "Justin Timberlake", "Sabrina Carpenter", "Ed Sheeran"], ["Who sings “Levitating”?", "Dua Lipa", "Olivia Rodrigo", "Imagine Dragons", "Katy Perry"], ["Who composed The Nutcracker?", "Pyotr Tchaikovsky", "Johann Strauss II", "Ludwig van Beethoven", "Gioachino Rossini"], ["Who composed Swan Lake?", "Pyotr Tchaikovsky", "Nikolai Rimsky-Korsakov", "Johann Pachelbel", "Gioachino Rossini"], ["Who composed The Four Seasons?", "Antonio Vivaldi", "Claude Debussy", "Ludwig van Beethoven", "Edvard Grieg"], ["Who composed the “Ode to Joy”?", "Ludwig van Beethoven", "Johann Strauss II", "Antonio Vivaldi", "Gioachino Rossini"], ["Who composed Peter and the Wolf?", "Sergei Prokofiev", "Antonio Vivaldi", "Gustav Holst", "Johann Sebastian Bach"], ["Who composed The Carnival of the Animals?", "Camille Saint-Saëns", "Johann Sebastian Bach", "Johann Pachelbel", "Johann Strauss II"], ["Who composed Flight of the Bumblebee?", "Nikolai Rimsky-Korsakov", "Johann Sebastian Bach", "Sergei Prokofiev", "Georges Bizet"], ["Who composed The Magic Flute?", "Wolfgang Amadeus Mozart", "Richard Wagner", "Ludwig van Beethoven", "Sergei Prokofiev"], ["Who composed the William Tell Overture?", "Gioachino Rossini", "Gustav Holst", "Richard Wagner", "Claude Debussy"], ["Who composed Für Elise?", "Ludwig van Beethoven", "Edvard Grieg", "Sergei Prokofiev", "Frédéric Chopin"], ["Which song title do these emoji spell?||🦈👶", "Baby Shark", "The Lion Sleeps Tonight", "Let It Go", "Twinkle, Twinkle, Little Star"], ["Which song title do these emoji spell?||⭐✨👶", "Twinkle, Twinkle, Little Star", "Old MacDonald Had a Farm", "Yellow Submarine", "We Will Rock You"], ["Which song title do these emoji spell?||🚌🛞", "The Wheels on the Bus", "Sunflower", "Yellow Submarine", "Let It Go"], ["Which song title do these emoji spell?||😀", "Happy", "Row, Row, Row Your Boat", "Baby Shark", "Eye of the Tiger"], ["Which song title do these emoji spell?||🎆", "Firework", "Baby Shark", "Yellow Submarine", "Twinkle, Twinkle, Little Star"], ["Which song title do these emoji spell?||🔔🔔", "Jingle Bells", "Dynamite", "We Will Rock You", "Sunflower"], ["Which song title do these emoji spell?||🚣🚣🚣", "Row, Row, Row Your Boat", "Yellow Submarine", "Dynamite", "The Lion Sleeps Tonight"], ["Which song title do these emoji spell?||👁️🐯", "Eye of the Tiger", "Baby Shark", "Firework", "Twinkle, Twinkle, Little Star"], ["Which song title do these emoji spell?||🦁😴🌙", "The Lion Sleeps Tonight", "Jingle Bells", "Twinkle, Twinkle, Little Star", "Eye of the Tiger"], ["Which song title do these emoji spell?||🧨", "Dynamite", "We Will Rock You", "The Lion Sleeps Tonight", "Baby Shark"], ["Which song title do these emoji spell?||🌻", "Sunflower", "Roar", "Twinkle, Twinkle, Little Star", "Happy"], ["Which song title do these emoji spell?||🟡🚢🌊", "Yellow Submarine", "Happy", "Let It Go", "Sunflower"]], "junior": [["Who had a hit with “Bad Guy”?", "Billie Eilish", "The Weeknd", "Benson Boone", "BTS"], ["Who had a hit with “Birds of a Feather”?", "Billie Eilish", "Justin Bieber", "Hozier", "The Weeknd"], ["Who had a hit with “Shake It Off”?", "Taylor Swift", "Billie Eilish", "Ed Sheeran", "Olivia Rodrigo"], ["Who had a hit with “Anti-Hero”?", "Taylor Swift", "Sabrina Carpenter", "Miley Cyrus", "Harry Styles"], ["Who had a hit with “drivers license”?", "Olivia Rodrigo", "Taylor Swift", "Hozier", "Lil Nas X"], ["Who had a hit with “Espresso”?", "Sabrina Carpenter", "Justin Bieber", "Imagine Dragons", "Beyoncé"], ["Who had a hit with “Pink Pony Club”?", "Chappell Roan", "Tate McRae", "Sabrina Carpenter", "Teddy Swims"], ["Who had a hit with “Levitating”?", "Dua Lipa", "Imagine Dragons", "Beyoncé", "Lorde"], ["Who had a hit with “As It Was”?", "Harry Styles", "Stromae", "Imagine Dragons", "Taylor Swift"], ["Who had a hit with “Shape of You”?", "Ed Sheeran", "BTS", "Chappell Roan", "Sabrina Carpenter"], ["Who had a hit with “Flowers”?", "Miley Cyrus", "Justin Bieber", "Noah Kahan", "Ed Sheeran"], ["Who had a hit with “Blinding Lights”?", "The Weeknd", "Sabrina Carpenter", "Hozier", "Olivia Rodrigo"], ["Who had a hit with “Dynamite”?", "BTS", "Sabrina Carpenter", "Katy Perry", "Olivia Rodrigo"], ["Who had a hit with “thank u, next”?", "Ariana Grande", "Coldplay", "Justin Bieber", "Gracie Abrams"], ["Who had a hit with “Old Town Road”?", "Lil Nas X", "Gracie Abrams", "Benson Boone", "Taylor Swift"], ["Who had a hit with “Beautiful Things”?", "Benson Boone", "Chappell Roan", "Tate McRae", "Shawn Mendes"], ["Who had a hit with “Stick Season”?", "Noah Kahan", "Beyoncé", "Gracie Abrams", "Billie Eilish"], ["Who had a hit with “Cruel Summer”?", "Taylor Swift", "Lady Gaga", "Justin Bieber", "BTS"], ["Who had a hit with “vampire”?", "Olivia Rodrigo", "Noah Kahan", "Lil Nas X", "Beyoncé"], ["Who had a hit with “Good Luck, Babe!”?", "Chappell Roan", "Teddy Swims", "Shawn Mendes", "Katy Perry"], ["Who had a hit with “greedy”?", "Tate McRae", "Noah Kahan", "Harry Styles", "Taylor Swift"], ["Who had a hit with “Rolling in the Deep”?", "Adele", "Benson Boone", "The Weeknd", "Chappell Roan"], ["Who had a hit with “Royals”?", "Lorde", "Miley Cyrus", "Stromae", "Beyoncé"], ["Who had a hit with “Halo”?", "Beyoncé", "Dua Lipa", "Imagine Dragons", "Lil Nas X"], ["Who had a hit with “Viva la Vida”?", "Coldplay", "Hozier", "Taylor Swift", "Olivia Rodrigo"], ["Who had a hit with “Believer”?", "Imagine Dragons", "Noah Kahan", "Beyoncé", "Benson Boone"], ["Who had a hit with “Papaoutai”?", "Stromae", "Shawn Mendes", "Tate McRae", "Noah Kahan"], ["Who had a hit with “Ocean Eyes”?", "Billie Eilish", "Stromae", "Dua Lipa", "Katy Perry"], ["Who had a hit with “What Was I Made For?”?", "Billie Eilish", "Taylor Swift", "BTS", "Lady Gaga"], ["Who had a hit with “Please Please Please”?", "Sabrina Carpenter", "Lady Gaga", "Chappell Roan", "Katy Perry"], ["Who had a hit with “Watermelon Sugar”?", "Harry Styles", "Chappell Roan", "Noah Kahan", "Ed Sheeran"], ["Who had a hit with “Houdini”?", "Dua Lipa", "The Weeknd", "Gracie Abrams", "Tate McRae"], ["Who had a hit with “Lose Control”?", "Teddy Swims", "Adele", "Coldplay", "Chappell Roan"], ["Who had a hit with “Too Sweet”?", "Hozier", "Harry Styles", "BTS", "Dua Lipa"], ["Who had a hit with “Texas Hold ’Em”?", "Beyoncé", "Lady Gaga", "Katy Perry", "Hozier"], ["Who composed the Moonlight Sonata?", "Ludwig van Beethoven", "Pyotr Tchaikovsky", "Wolfgang Amadeus Mozart", "Joseph Haydn"], ["Who composed Eine kleine Nachtmusik?", "Wolfgang Amadeus Mozart", "Claude Debussy", "Johann Sebastian Bach", "Joseph Haydn"], ["Who composed Clair de lune?", "Claude Debussy", "Antonio Vivaldi", "Joseph Haydn", "Gustav Holst"], ["Who composed Boléro?", "Maurice Ravel", "Pyotr Tchaikovsky", "Wolfgang Amadeus Mozart", "Joseph Haydn"], ["Who composed The Planets?", "Gustav Holst", "Pyotr Tchaikovsky", "Maurice Ravel", "Nikolai Rimsky-Korsakov"], ["Who composed Messiah, with its “Hallelujah” chorus?", "George Frideric Handel", "Richard Wagner", "Wolfgang Amadeus Mozart", "Johann Strauss II"], ["Who composed In the Hall of the Mountain King?", "Edvard Grieg", "Ludwig van Beethoven", "Georges Bizet", "Johann Pachelbel"], ["Who composed Ride of the Valkyries?", "Richard Wagner", "Sergei Prokofiev", "Gustav Holst", "George Frideric Handel"], ["Who composed the opera Carmen?", "Georges Bizet", "Nikolai Rimsky-Korsakov", "Gioachino Rossini", "Antonio Vivaldi"], ["Who composed The Blue Danube?", "Johann Strauss II", "Ludwig van Beethoven", "Camille Saint-Saëns", "Richard Wagner"], ["Who composed the 1812 Overture?", "Pyotr Tchaikovsky", "Johann Strauss II", "Ludwig van Beethoven", "Johann Sebastian Bach"], ["Who composed the Canon in D?", "Johann Pachelbel", "Ludwig van Beethoven", "Camille Saint-Saëns", "Georges Bizet"], ["Who composed the Toccata and Fugue in D minor?", "Johann Sebastian Bach", "Johann Strauss II", "Pyotr Tchaikovsky", "Gustav Holst"], ["Which song title do these emoji spell?||🐦🪶", "Birds of a Feather", "Dance Monkey", "Pink Pony Club", "Vampire"], ["Which song title do these emoji spell?||😈👦", "Bad Guy", "Umbrella", "Rocket Man", "Counting Stars"], ["Which song title do these emoji spell?||🌊👀", "Ocean Eyes", "Believer", "Diamonds", "Drivers License"], ["Which song title do these emoji spell?||☕", "Espresso", "Shake It Off", "Ice Ice Baby", "Cruel Summer"], ["Which song title do these emoji spell?||🍉🍬", "Watermelon Sugar", "Dance Monkey", "Set Fire to the Rain", "Umbrella"], ["Which song title do these emoji spell?||💃🐒", "Dance Monkey", "Anti-Hero", "Bad Guy", "Shake It Off"], ["Which song title do these emoji spell?||🧛", "Vampire", "Cruel Summer", "Watermelon Sugar", "Espresso"], ["Which song title do these emoji spell?||🚗🪪", "Drivers License", "Anti-Hero", "Rocket Man", "Umbrella"], ["Which song title do these emoji spell?||🌸💐", "Flowers", "Shake It Off", "Espresso", "Dance Monkey"], ["Which song title do these emoji spell?||👑👑", "Royals", "Espresso", "Vampire", "Cruel Summer"], ["Which song title do these emoji spell?||🧈", "Butter", "Counting Stars", "Umbrella", "Bad Guy"], ["Which song title do these emoji spell?||🩷🐴🪩", "Pink Pony Club", "Set Fire to the Rain", "Bad Guy", "Birds of a Feather"], ["Which song title do these emoji spell?||⭐🔢", "Counting Stars", "Dance Monkey", "Watermelon Sugar", "Vampire"], ["Which song title do these emoji spell?||☂️", "Umbrella", "Houdini", "Counting Stars", "Anti-Hero"], ["Which song title do these emoji spell?||💎💎", "Diamonds", "Rocket Man", "Counting Stars", "Levitating"], ["Which song title do these emoji spell?||🌧️🔥", "Set Fire to the Rain", "Butter", "Vampire", "Flowers"], ["Which song title do these emoji spell?||🧊🧊👶", "Ice Ice Baby", "Drivers License", "Watermelon Sugar", "Set Fire to the Rain"], ["Which song title do these emoji spell?||🥶🌞", "Cruel Summer", "Royals", "Counting Stars", "Butter"], ["Which song title do these emoji spell?||🎩🐇🪄", "Houdini", "Butter", "Bad Guy", "Ocean Eyes"], ["Which song title do these emoji spell?||🚀👨", "Rocket Man", "Vampire", "Believer", "Pink Pony Club"]], "adult": [["Which 1960s act recorded “Like a Rolling Stone”?", "Bob Dylan", "The Kinks", "The Who", "Janis Joplin with Big Brother and the Holding Company"], ["Which 1960s act recorded “Good Vibrations”?", "The Beach Boys", "The Velvet Underground", "Procol Harum", "The Byrds"], ["Which 1960s act recorded “Light My Fire”?", "The Doors", "Leonard Cohen", "Cream", "Procol Harum"], ["Which 1960s act recorded “The Sound of Silence”?", "Simon & Garfunkel", "Buffalo Springfield", "Led Zeppelin", "Van Morrison"], ["Which 1960s act recorded “Suzanne”?", "Leonard Cohen", "Creedence Clearwater Revival", "Janis Joplin with Big Brother and the Holding Company", "The Hollies"], ["Which 1960s act recorded “My Generation”?", "The Who", "The Kinks", "Creedence Clearwater Revival", "Van Morrison"], ["Which 1960s act recorded “Waterloo Sunset”?", "The Kinks", "The Doors", "Led Zeppelin", "The Beatles"], ["Which 1960s act recorded “Piece of My Heart”?", "Janis Joplin with Big Brother and the Holding Company", "Leonard Cohen", "The Beatles", "David Bowie"], ["Which 1960s act recorded “California Dreamin’”?", "The Mamas & the Papas", "The Velvet Underground", "The Beach Boys", "Creedence Clearwater Revival"], ["Which 1960s act recorded “A Whiter Shade of Pale”?", "Procol Harum", "Janis Joplin with Big Brother and the Holding Company", "Donovan", "The Mamas & the Papas"], ["Which 1960s act recorded “Space Oddity”?", "David Bowie", "Van Morrison", "Led Zeppelin", "The Beach Boys"], ["Which 1960s act recorded “Paint It Black”?", "The Rolling Stones", "Procol Harum", "Leonard Cohen", "The Mamas & the Papas"], ["Which 1960s act recorded “Fortunate Son”?", "Creedence Clearwater Revival", "The Band", "Cream", "The Animals"], ["Which 1960s act recorded “Sunshine of Your Love”?", "Cream", "Simon & Garfunkel", "The Kinks", "Procol Harum"], ["Which 1960s act recorded “Son of a Preacher Man”?", "Dusty Springfield", "Simon & Garfunkel", "The Mamas & the Papas", "The Byrds"], ["Which 1960s act recorded “The Weight”?", "The Band", "Cream", "The Doors", "Van Morrison"], ["Which 1960s act recorded “Brown Eyed Girl”?", "Van Morrison", "David Bowie", "Procol Harum", "Leonard Cohen"], ["Which 1960s act recorded “White Rabbit”?", "Jefferson Airplane", "The Animals", "The Beach Boys", "The Doors"], ["Which 1960s act recorded “Pale Blue Eyes”?", "The Velvet Underground", "Procol Harum", "The Hollies", "Cream"], ["Which 1960s act recorded “For What It’s Worth”?", "Buffalo Springfield", "The Doors", "The Kinks", "Led Zeppelin"], ["Which 1960s act recorded “Sunny Afternoon”?", "The Kinks", "Janis Joplin with Big Brother and the Holding Company", "The Velvet Underground", "Bob Dylan"], ["Which 1960s act recorded “Gimme Shelter”?", "The Rolling Stones", "Bob Dylan", "David Bowie", "The Kinks"], ["Which 1960s act recorded “Eleanor Rigby”?", "The Beatles", "Bob Dylan", "Led Zeppelin", "David Bowie"], ["Which 1960s act recorded “Mrs. Robinson”?", "Simon & Garfunkel", "Leonard Cohen", "Procol Harum", "Van Morrison"], ["Which 1960s act recorded “Whole Lotta Love”?", "Led Zeppelin", "Van Morrison", "Cream", "The Byrds"], ["Which 1960s act recorded “Blowin’ in the Wind”?", "Bob Dylan", "The Rolling Stones", "The Velvet Underground", "Donovan"], ["Which 1960s act recorded “God Only Knows”?", "The Beach Boys", "The Beatles", "The Mamas & the Papas", "The Doors"], ["Which band recorded “Float On”?", "Modest Mouse", "The Postal Service", "Beach House", "M83"], ["Which band recorded “Skinny Love”?", "Bon Iver", "Wilco", "MGMT", "The Killers"], ["Which band recorded “White Winter Hymnal”?", "Fleet Foxes", "M83", "The Killers", "MGMT"], ["Which band recorded “Wake Up”?", "Arcade Fire", "The War on Drugs", "Bon Iver", "Peter Bjorn and John"], ["Which band recorded “Bloodbuzz Ohio”?", "The National", "Peter Bjorn and John", "Death Cab for Cutie", "LCD Soundsystem"], ["Which band recorded “Do I Wanna Know?”?", "Arctic Monkeys", "The Postal Service", "Tame Impala", "The White Stripes"], ["Which band recorded “Last Nite”?", "The Strokes", "The Shins", "The White Stripes", "Peter Bjorn and John"], ["Which band recorded “The Less I Know the Better”?", "Tame Impala", "Franz Ferdinand", "The Postal Service", "Spoon"], ["Which band recorded “Karma Police”?", "Radiohead", "Sufjan Stevens", "The White Stripes", "LCD Soundsystem"], ["Which band recorded “New Slang”?", "The Shins", "Big Thief", "Fleet Foxes", "Peter Bjorn and John"], ["Which band recorded “A-Punk”?", "Vampire Weekend", "Peter Bjorn and John", "Interpol", "Big Thief"], ["Which band recorded “I Will Follow You into the Dark”?", "Death Cab for Cutie", "Spoon", "Modest Mouse", "The War on Drugs"], ["Which band recorded “Such Great Heights”?", "The Postal Service", "Yeah Yeah Yeahs", "M83", "Bon Iver"], ["Which band recorded “Chicago”?", "Sufjan Stevens", "Peter Bjorn and John", "Grizzly Bear", "Bon Iver"], ["Which band recorded “Red Eyes”?", "The War on Drugs", "The Killers", "The National", "LCD Soundsystem"], ["Which band recorded “Maps”?", "Yeah Yeah Yeahs", "M83", "The Killers", "The Postal Service"], ["Which band recorded “Mr. Brightside”?", "The Killers", "Arcade Fire", "MGMT", "Peter Bjorn and John"], ["Which band recorded “Take Me Out”?", "Franz Ferdinand", "LCD Soundsystem", "Death Cab for Cutie", "Arcade Fire"], ["Which band recorded “Seven Nation Army”?", "The White Stripes", "Radiohead", "Arcade Fire", "Tame Impala"], ["Which band recorded “Jesus, Etc.”?", "Wilco", "Sufjan Stevens", "Tame Impala", "Peter Bjorn and John"], ["Which band recorded “Two Weeks”?", "Grizzly Bear", "The Strokes", "Radiohead", "The War on Drugs"], ["Which band recorded “Young Folks”?", "Peter Bjorn and John", "M83", "Modest Mouse", "Arcade Fire"], ["Which band recorded “Midnight City”?", "M83", "Bon Iver", "Daft Punk", "The Killers"], ["Which band recorded “Kids”?", "MGMT", "Yeah Yeah Yeahs", "Death Cab for Cutie", "Arctic Monkeys"], ["Which band recorded “Instant Crush”?", "Daft Punk", "The Postal Service", "Interpol", "Spoon"], ["Which band recorded “Shark Smile”?", "Big Thief", "Grizzly Bear", "The National", "Beach House"], ["Who recorded “Motion Sickness”?", "Phoebe Bridgers", "Tracy Chapman", "Tori Amos", "Björk"], ["Who recorded “Nobody”?", "Mitski", "Tori Amos", "PJ Harvey", "Adele"], ["Who recorded “Dog Days Are Over”?", "Florence + the Machine", "PJ Harvey", "Tracy Chapman", "Feist"], ["Who recorded “Video Games”?", "Lana Del Rey", "St. Vincent", "Japanese Breakfast", "Norah Jones"], ["Who recorded “Rehab”?", "Amy Winehouse", "Dolly Parton", "Aimee Mann", "Carole King"], ["Who recorded “Running Up That Hill”?", "Kate Bush", "The Cranberries", "Joni Mitchell", "Alanis Morissette"], ["Who recorded “1234”?", "Feist", "Kate Bush", "Tracy Chapman", "Lorde"], ["Who recorded “The Story”?", "Brandi Carlile", "Björk", "Kate Bush", "Angel Olsen"], ["Who recorded “Seventeen”?", "Sharon Van Etten", "Björk", "Carly Simon", "Tori Amos"], ["Who recorded “Avant Gardener”?", "Courtney Barnett", "Angèle", "Angel Olsen", "Florence + the Machine"], ["Who recorded “Criminal”?", "Fiona Apple", "Lorde", "Adele", "Kate Bush"], ["Who recorded “Because the Night”?", "Patti Smith", "Florence + the Machine", "Lorde", "Angel Olsen"], ["Who recorded “Army of Me”?", "Björk", "Alanis Morissette", "Amy Winehouse", "Japanese Breakfast"], ["Who recorded “Fast Car”?", "Tracy Chapman", "PJ Harvey", "The Cranberries", "Angèle"], ["Who recorded “Jolene”?", "Dolly Parton", "Kate Bush", "Brandi Carlile", "Lorde"], ["Who recorded “You’re So Vain”?", "Carly Simon", "Brandi Carlile", "Lana Del Rey", "Sharon Van Etten"], ["Who recorded “Big Yellow Taxi”?", "Joni Mitchell", "Carly Simon", "The Cranberries", "Dolly Parton"], ["Who recorded “It’s Too Late”?", "Carole King", "Joni Mitchell", "Lorde", "Phoebe Bridgers"], ["Who recorded “Royals”?", "Lorde", "Adele", "Fiona Apple", "Carole King"], ["Who recorded “Someone Like You”?", "Adele", "Weyes Blood", "Carole King", "Angel Olsen"], ["Who recorded “Cornflake Girl”?", "Tori Amos", "Amy Winehouse", "Sharon Van Etten", "Carole King"], ["Who recorded “Zombie”?", "The Cranberries", "Carole King", "St. Vincent", "Phoebe Bridgers"], ["Who recorded “Ironic”?", "Alanis Morissette", "Patti Smith", "St. Vincent", "Kate Bush"], ["Who recorded “Diamonds & Rust”?", "Joan Baez", "Norah Jones", "St. Vincent", "Phoebe Bridgers"], ["Who recorded “Don’t Know Why”?", "Norah Jones", "Phoebe Bridgers", "Amy Winehouse", "Lana Del Rey"], ["Who recorded “Be Sweet”?", "Japanese Breakfast", "Mitski", "Florence + the Machine", "Tori Amos"], ["Who recorded “Los Ageless”?", "St. Vincent", "Sharon Van Etten", "Mitski", "Aimee Mann"], ["Who recorded “Balance ton quoi”?", "Angèle", "Lana Del Rey", "Mitski", "Feist"], ["Who composed the Goldberg Variations?", "Johann Sebastian Bach", "Jean Sibelius", "George Frideric Handel", "Gustav Holst"], ["Who composed Pictures at an Exhibition?", "Modest Mussorgsky", "Richard Wagner", "Gustav Mahler", "Camille Saint-Saëns"], ["Who composed Rhapsody in Blue?", "George Gershwin", "Edvard Grieg", "Jean Sibelius", "Sergei Prokofiev"], ["Who composed Appalachian Spring?", "Aaron Copland", "Claude Debussy", "Jean Sibelius", "Wolfgang Amadeus Mozart"], ["Who composed the Gymnopédies?", "Erik Satie", "Gustav Mahler", "Edward Elgar", "Gioachino Rossini"], ["Who composed Carmina Burana?", "Carl Orff", "Giuseppe Verdi", "Sergei Rachmaninoff", "Gioachino Rossini"], ["Who composed La Bohème?", "Giacomo Puccini", "Claude Debussy", "Wolfgang Amadeus Mozart", "Modest Mussorgsky"], ["Who composed La Traviata?", "Giuseppe Verdi", "Jean Sibelius", "Antonio Vivaldi", "Hector Berlioz"], ["Who composed the Ring cycle?", "Richard Wagner", "Ralph Vaughan Williams", "Carl Orff", "Erik Satie"], ["Who composed the “New World” Symphony?", "Antonín Dvořák", "Johann Pachelbel", "Franz Liszt", "Aaron Copland"], ["Who composed Symphonie fantastique?", "Hector Berlioz", "Sergei Prokofiev", "Igor Stravinsky", "Antonín Dvořák"], ["Who composed the Enigma Variations?", "Edward Elgar", "Georges Bizet", "Erik Satie", "Wolfgang Amadeus Mozart"], ["Who composed The Firebird?", "Igor Stravinsky", "Antonín Dvořák", "Jean Sibelius", "Hector Berlioz"], ["Who composed Winterreise?", "Franz Schubert", "Bedřich Smetana", "Maurice Ravel", "Aaron Copland"], ["Who composed the Adagio for Strings?", "Samuel Barber", "Franz Schubert", "Edvard Grieg", "Johann Pachelbel"], ["Who composed Scheherazade?", "Nikolai Rimsky-Korsakov", "Sergei Rachmaninoff", "Wolfgang Amadeus Mozart", "Maurice Ravel"], ["Who composed The Lark Ascending?", "Ralph Vaughan Williams", "Johann Sebastian Bach", "Gioachino Rossini", "Franz Schubert"], ["Who composed Don Giovanni?", "Wolfgang Amadeus Mozart", "George Frideric Handel", "Antonín Dvořák", "Johann Sebastian Bach"], ["Who composed Fidelio, his only opera?", "Ludwig van Beethoven", "Johann Strauss II", "Edward Elgar", "Hector Berlioz"], ["Who composed Finlandia?", "Jean Sibelius", "Maurice Ravel", "Bedřich Smetana", "Gustav Holst"], ["Who composed Danse macabre?", "Camille Saint-Saëns", "Dmitri Shostakovich", "Antonio Vivaldi", "Edvard Grieg"], ["Who composed Prelude to the Afternoon of a Faun?", "Claude Debussy", "Pyotr Tchaikovsky", "Bedřich Smetana", "Maurice Ravel"], ["Who composed the “Symphony of a Thousand”?", "Gustav Mahler", "George Gershwin", "Maurice Ravel", "Antonio Vivaldi"], ["Who composed The Barber of Seville?", "Gioachino Rossini", "George Gershwin", "Maurice Ravel", "Hector Berlioz"], ["Who composed Má vlast?", "Bedřich Smetana", "Gustav Holst", "Gustav Mahler", "Georges Bizet"], ["Which song title do these emoji spell?||🟣🌧️", "Purple Rain", "Bridge over Troubled Water", "Stairway to Heaven", "Space Oddity"], ["Which song title do these emoji spell?||🧱🧱", "Another Brick in the Wall", "Light My Fire", "Wish You Were Here", "Stairway to Heaven"], ["Which song title do these emoji spell?||🪜☁️", "Stairway to Heaven", "Video Games", "Paint It Black", "Space Oddity"], ["Which song title do these emoji spell?||🏨🌴", "Hotel California", "White Rabbit", "Stairway to Heaven", "Space Oddity"], ["Which song title do these emoji spell?||🌉🌊", "Bridge over Troubled Water", "Light My Fire", "Brown Eyed Girl", "White Rabbit"], ["Which song title do these emoji spell?||🔥💍", "Ring of Fire", "Stairway to Heaven", "Goodbye Yellow Brick Road", "Hotel California"], ["Which song title do these emoji spell?||🟣🌫️", "Purple Haze", "Ring of Fire", "Brown Eyed Girl", "The House of the Rising Sun"], ["Which song title do these emoji spell?||🖤🎨", "Paint It Black", "Strawberry Fields Forever", "Goodbye Yellow Brick Road", "Dog Days Are Over"], ["Which song title do these emoji spell?||🍓🌾♾️", "Strawberry Fields Forever", "Stairway to Heaven", "Video Games", "Running Up That Hill"], ["Which song title do these emoji spell?||🏠🌅", "The House of the Rising Sun", "Blowin’ in the Wind", "Dog Days Are Over", "Another Brick in the Wall"], ["Which song title do these emoji spell?||🟡🚕", "Big Yellow Taxi", "Dancing Queen", "Blowin’ in the Wind", "Goodbye Yellow Brick Road"], ["Which song title do these emoji spell?||🏃⛰️", "Running Up That Hill", "Video Games", "Blowin’ in the Wind", "Purple Rain"], ["Which song title do these emoji spell?||🐕📅", "Dog Days Are Over", "Brown Eyed Girl", "Hotel California", "Big Yellow Taxi"], ["Which song title do these emoji spell?||🚗💨", "Fast Car", "Strawberry Fields Forever", "Purple Haze", "Hotel California"], ["Which song title do these emoji spell?||🎮📼", "Video Games", "Dog Days Are Over", "Stairway to Heaven", "Another Brick in the Wall"], ["Which song title do these emoji spell?||7️⃣🌍🪖", "Seven Nation Army", "Purple Haze", "Goodbye Yellow Brick Road", "Purple Rain"], ["Which song title do these emoji spell?||⚪🐇", "White Rabbit", "Bridge over Troubled Water", "Ring of Fire", "Running Up That Hill"], ["Which song title do these emoji spell?||💎☁️👧", "Lucy in the Sky with Diamonds", "Purple Rain", "Ring of Fire", "Hotel California"], ["Which song title do these emoji spell?||🌬️", "Blowin’ in the Wind", "Running Up That Hill", "Fire and Rain", "Ring of Fire"], ["Which song title do these emoji spell?||⚫🐦", "Blackbird", "Purple Rain", "Running Up That Hill", "Light My Fire"], ["Which song title do these emoji spell?||💃👑", "Dancing Queen", "Hotel California", "Stairway to Heaven", "Strawberry Fields Forever"], ["Which song title do these emoji spell?||👋🟡🧱🛣️", "Goodbye Yellow Brick Road", "Lucy in the Sky with Diamonds", "Bridge over Troubled Water", "Blackbird"], ["Which song title do these emoji spell?||🌕💃", "Dancing in the Moonlight", "Dancing Queen", "Strawberry Fields Forever", "Fire and Rain"]]}};
+
+const HAND_A = {
+fb:{
+kid:[
+["Who scored the winning goal in the 2026 World Cup final?","Ferran Torres","Lamine Yamal","Lionel Messi","Kylian Mbappé"],
+["Which country did Spain beat in the 2026 World Cup final?","Argentina","France","Brazil","England"],
+["Which club did Lionel Messi join in 2023?","Inter Miami","Barcelona","Al-Hilal","Manchester City"],
+["Which country did Cristiano Ronaldo move to at the start of 2023 to play club football?","Saudi Arabia","United States","Qatar","Turkey"],
+["What does VAR stand for?","Video Assistant Referee","Video Action Review","Very Accurate Referee","Video And Replay"],
+["How many substitutions can a team usually make in a league match?","5","3","4","7"],
+["Which country’s league is called Serie A?","Italy","Spain","Portugal","Brazil"],
+["Which country’s league is called Ligue 1?","France","Belgium","Switzerland","Canada"],
+["What is the name of the top league in the United States and Canada?","Major League Soccer","Premier League","A-League","USL One"],
+["Which trophy do European clubs fight for every season, with a star-ball logo?","The Champions League","The World Cup","The Copa América","The Gold Cup"],
+["Which tournament is the championship for South American national teams?","Copa América","The Euros","Gold Cup","Africa Cup of Nations"],
+["What is a goalkeeper not allowed to do outside their penalty area?","Handle the ball","Kick the ball","Head the ball","Take a free kick"],
+["How far must defenders stand from a free kick?","10 yards (9.15 m)","5 yards (4.5 m)","15 yards (13.7 m)","20 yards (18.3 m)"],
+["What happens if the ball hits the referee and goes into the goal?","A dropped ball is given","The goal counts","A penalty is given","A corner is given"],
+["Which award goes to the top scorer at a World Cup?","The Golden Boot","The Golden Ball","The Golden Glove","The Ballon d’Or"],
+["Which award goes to the best goalkeeper at a World Cup?","The Golden Glove","The Golden Boot","The Golden Ball","The Silver Shield"],
+["Which English club is nicknamed “the Red Devils”, like Belgium?","Manchester United","Liverpool","Arsenal","Nottingham Forest"],
+["Which Spanish club is nicknamed “Los Blancos”?","Real Madrid","Barcelona","Sevilla","Valencia"],
+["Which Seattle women’s team plays in the NWSL?","Seattle Reign","Seattle Storm","Seattle Kraken","Seattle Sounders"],
+["tf","A goal can be scored directly from a throw-in.",0],
+["tf","A player cannot be offside from a goal kick.",1],
+["tf","Extra time in a knockout match lasts 30 minutes in total.",1],
+["tf","Spain won both Euro 2024 and the 2026 World Cup.",1],
+["tf","A penalty shoot-out starts with five kicks for each team.",1],
+["tf","The Ballon d’Or is given to the best team of the year.",0],
+["order","Put these from fewest to most","Fewest","Most","Players on one team","Teams in the Premier League","Teams at Euro 2024","Teams at the 2026 World Cup"],
+["order","Put these World Cup winners in order, most recent first","Most recent","Longest ago","Spain","Argentina","France","Germany"],
+["order","Put these positions from the back of the team to the front","Back","Front","Goalkeeper","Centre-back","Midfielder","Striker"]
+],
+junior:[
+["Which player won the Ballon d’Or in 2024?","Rodri","Vinícius Júnior","Jude Bellingham","Erling Haaland"],
+["Who won the Ballon d’Or in 2025?","Ousmane Dembélé","Lamine Yamal","Kylian Mbappé","Mohamed Salah"],
+["Which player scored a hat-trick in the 2022 World Cup final and still lost?","Kylian Mbappé","Lionel Messi","Olivier Giroud","Ángel Di María"],
+["Which club is known as “the Old Lady”?","Juventus","AC Milan","Inter Milan","Roma"],
+["Which Scottish city is home to both Celtic and Rangers?","Glasgow","Edinburgh","Aberdeen","Dundee"],
+["What is the match between Real Madrid and Barcelona called?","El Clásico","El Derbi","La Liga Final","El Gran Partido"],
+["Which country’s national team is nicknamed “La Albiceleste”?","Argentina","Uruguay","Italy","Greece"],
+["Which country’s team is nicknamed “the Three Lions”?","England","Netherlands","Cameroon","Belgium"],
+["Which African country reached the World Cup semi-finals in 2022, a first for the continent?","Morocco","Senegal","Ghana","Cameroon"],
+["Who managed Manchester City to the treble in 2023?","Pep Guardiola","Jürgen Klopp","Carlo Ancelotti","Mikel Arteta"],
+["Which country won the Women’s Euro in 2022?","England","Germany","Spain","Sweden"],
+["Which player is nicknamed “the Egyptian King”?","Mohamed Salah","Omar Marmoush","Mohamed Elneny","Ahmed Hegazi"],
+["tf","Kevin De Bruyne was born in Brussels.",0],
+["tf","A goalkeeper has scored in a Champions League match.",1],
+["tf","Brazil has never hosted a men’s World Cup.",0],
+["tf","Belgium was ranked number one in the world for several years without winning a trophy.",1],
+["order","Put these Belgian players by year of birth, oldest first","Oldest","Youngest","Vincent Kompany","Kevin De Bruyne","Youri Tielemans","Jérémy Doku"],
+["order","Put these clubs by the year of their FIRST European Cup or Champions League title","Earliest","Latest","Real Madrid","Chelsea","Manchester City","Paris Saint-Germain"]
+],
+adult:[
+["Which club did Vincent Kompany captain to four Premier League titles?","Manchester City","Anderlecht","Hamburg","Chelsea"],
+["Which country beat Belgium in the Euro 1980 final?","West Germany","Italy","France","Czechoslovakia"],
+["Who scored the “Goal of the Century” against England in 1986?","Diego Maradona","Jorge Burruchaga","Jorge Valdano","Mario Kempes"],
+["Which manager won the European Cup with both Borussia Dortmund and Bayern Munich?","Ottmar Hitzfeld","Jupp Heynckes","Udo Lattek","Franz Beckenbauer"],
+["Which country’s “Mighty Magyars” lost the 1954 World Cup final?","Hungary","Austria","Czechoslovakia","Yugoslavia"],
+["Who is the only player to win three World Cups?","Pelé","Cafu","Franz Beckenbauer","Mario Zagallo"],
+["Which KV Mechelen triumph came in 1988?","The Cup Winners’ Cup","The UEFA Cup","The European Cup","The Intertoto Cup"],
+["Which Dutchman scored a famous volley in the Euro 1988 final?","Marco van Basten","Ruud Gullit","Frank Rijkaard","Ronald Koeman"],
+["Which English club won back-to-back European Cups in 1979 and 1980 under Brian Clough?","Nottingham Forest","Liverpool","Aston Villa","Leeds United"],
+["Which striker scored 13 goals at a single World Cup, in 1958?","Just Fontaine","Pelé","Sándor Kocsis","Gerd Müller"],
+["Which goalkeeper both saved and scored a penalty in the 2012 Champions League final shoot-out?","Manuel Neuer","Petr Čech","Oliver Kahn","Iker Casillas"],
+["tf","Anderlecht has won a European trophy.",1],
+["tf","England has reached a men’s World Cup final only once.",1],
+["tf","Lionel Messi scored in the 2022 World Cup final.",1],
+["order","Put these managers by year of birth, oldest first","Oldest","Youngest","Alex Ferguson","Carlo Ancelotti","Pep Guardiola","Mikel Arteta"],
+["order","Put these Belgian football eras in order","Earliest","Latest","Paul Van Himst’s playing days","Mexico ’86 semi-final","Marc Wilmots at the 2002 World Cup","Third place in Russia"]
+]},
+geo:{
+kid:[
+["Which is the longest river in South America?","Amazon","Orinoco","Paraná","Magdalena"],
+["Which mountain range runs along the west of South America?","The Andes","The Alps","The Rockies","The Himalayas"],
+["Which mountain range is Mount Everest in?","The Himalayas","The Andes","The Alps","The Urals"],
+["Which country has the most people in the world?","India","China","United States","Russia"],
+["Which is the smallest continent?","Australia","Europe","Antarctica","South America"],
+["Which US state is the biggest by area?","Alaska","Texas","California","Montana"],
+["Which two countries share the island of Ireland?","Ireland and the United Kingdom","Ireland and Iceland","Ireland and France","Ireland and Norway"],
+["Which sea lies between Europe and Africa?","Mediterranean Sea","North Sea","Black Sea","Red Sea"],
+["Which city is known as the Big Apple?","New York","Los Angeles","Chicago","London"],
+["In which country is the Great Wall?","China","Japan","India","Mongolia"],
+["Which river flows through Egypt?","Nile","Amazon","Danube","Congo"],
+["Which line divides Earth into northern and southern halves?","The equator","The prime meridian","The Tropic of Cancer","The date line"],
+["Which country is home to the city of Dubai?","United Arab Emirates","Saudi Arabia","Qatar","Egypt"],
+["Which is the largest country in Africa by area?","Algeria","Nigeria","Egypt","South Africa"],
+["Which state is directly south of Washington State?","Oregon","Idaho","California","Montana"],
+["Which Canadian province is just north of Washington State?","British Columbia","Alberta","Ontario","Quebec"],
+["Which body of water is Seattle on?","Puget Sound","Lake Michigan","San Francisco Bay","Hudson Bay"],
+["Which three languages are official in Belgium?","Dutch, French and German","Dutch, French and English","French, German and Italian","Dutch, English and Spanish"],
+["Which countries border Belgium?","Netherlands, Germany, Luxembourg and France","Netherlands, Germany and Denmark","France, Spain and Germany","Netherlands, France and Switzerland"],
+["Which is the tallest mountain in Africa?","Kilimanjaro","Mount Kenya","Table Mountain","Mount Sinai"],
+["Which desert covers much of northern Africa?","Sahara","Gobi","Kalahari","Atacama"],
+["Which island country lies southeast of Australia and is famous for kiwi birds?","New Zealand","Fiji","Iceland","Madagascar"],
+["Which is the biggest city in Japan?","Tokyo","Osaka","Kyoto","Sapporo"],
+["On which continent is the country of Kenya?","Africa","Asia","South America","Europe"],
+["Which canal links the Atlantic and Pacific Oceans?","Panama Canal","Suez Canal","Erie Canal","Kiel Canal"],
+["tf","The Nile flows north into the Mediterranean Sea.",1],
+["tf","Greenland is a continent.",0],
+["tf","Brussels is the capital of Belgium.",1],
+["tf","The Atlantic Ocean lies between Europe and North America.",1],
+["tf","Mount Rainier is a volcano.",1],
+["tf","Europe has more people than Asia.",0],
+["tf","The South Pole is in Antarctica.",1],
+["order","Put these countries from biggest to smallest","Biggest","Smallest","Russia","United States","France","Belgium"],
+["order","Put these US cities from west to east","Farthest west","Farthest east","Seattle","Denver","Chicago","New York"],
+["order","Put these cities from north to south","Farthest north","Farthest south","Reykjavík","London","Madrid","Cape Town"],
+["order","Put these from tallest to shortest","Tallest","Shortest","Mount Everest","Mount Rainier","Eiffel Tower","Space Needle"]
+],
+junior:[
+["Which strait separates Asia from North America?","Bering Strait","Strait of Gibraltar","Strait of Hormuz","Drake Passage"],
+["Which is the largest lake in Africa?","Lake Victoria","Lake Tanganyika","Lake Chad","Lake Malawi"],
+["Which country has the most islands in Southeast Asia and over 270 million people?","Indonesia","Philippines","Malaysia","Thailand"],
+["Which European city is built on more than 100 small islands with canals for streets?","Venice","Amsterdam","Bruges","Stockholm"],
+["Which large desert is shared by China and Mongolia?","Gobi","Thar","Karakum","Taklamakan"],
+["Which country is both in Europe and Asia and has Istanbul as its largest city?","Türkiye","Greece","Russia","Georgia"],
+["Which waterfall lies on the border of Zambia and Zimbabwe?","Victoria Falls","Angel Falls","Niagara Falls","Iguazu Falls"],
+["Which mountain is the tallest in North America?","Denali","Mount Rainier","Mount Logan","Mount Whitney"],
+["Which river forms much of the border between Texas and Mexico?","Rio Grande","Colorado River","Mississippi","Columbia River"],
+["Which river runs between Washington and Oregon to the Pacific?","Columbia River","Snake River","Fraser River","Willamette River"],
+["tf","Australia is wider than the distance from London to Moscow.",1],
+["tf","The Dead Sea is saltier than the ocean.",1],
+["tf","Alaska is closer to Russia than Seattle is to Vancouver.",1],
+["order","Put these Belgian cities from west to east","Farthest west","Farthest east","Bruges","Ghent","Brussels","Liège"],
+["order","Put these countries by population","Most people","Fewest people","India","United States","Japan","Belgium"]
+],
+adult:[
+["Which country has the most land borders with other countries, tied with Russia?","China","Brazil","Germany","Democratic Republic of the Congo"],
+["Which desert in southern Africa covers much of Botswana?","Kalahari","Namib","Karoo","Sahel"],
+["Which city is the northernmost capital of a sovereign country?","Reykjavík","Helsinki","Oslo","Tallinn"],
+["Which sea has no coastline at all, bounded only by ocean currents?","Sargasso Sea","Coral Sea","Sea of Marmara","Weddell Sea"],
+["Which two countries are doubly landlocked?","Liechtenstein and Uzbekistan","Andorra and Nepal","Switzerland and Mongolia","Lesotho and Bhutan"],
+["Which Belgian province borders both the Netherlands and Germany?","Liège","Limburg","Antwerp","Namur"],
+["Which river flows through Baghdad?","Tigris","Euphrates","Jordan","Karun"],
+["Which is the largest island in the Mediterranean?","Sicily","Sardinia","Cyprus","Crete"],
+["tf","Reno, Nevada is farther west than Los Angeles.",1],
+["tf","Istanbul is the capital of Türkiye.",0],
+["tf","The Canary Islands belong to Portugal.",0],
+["order","Put these lakes from largest to smallest by area","Largest","Smallest","Caspian Sea","Lake Superior","Lake Victoria","Lake Geneva"],
+["order","Put these cities by population, largest metro area first","Largest","Smallest","Tokyo","Mexico City","London","Brussels"]
+]}};
+
+const HAND_B = {
+sci:{
+kid:[
+["Which planet is known for its rings?","Saturn","Mars","Venus","Mercury"],
+["Which planet is closest to the Sun?","Mercury","Venus","Earth","Mars"],
+["What is the name of the galaxy we live in?","The Milky Way","Andromeda","Orion","The Big Dipper"],
+["What gas do plants take in from the air?","Carbon dioxide","Oxygen","Helium","Hydrogen"],
+["What is the process plants use to make food from sunlight?","Photosynthesis","Digestion","Evaporation","Hibernation"],
+["What are the three states of matter?","Solid, liquid and gas","Hot, warm and cold","Rock, water and air","Big, medium and small"],
+["At what temperature does water freeze?","0 °C","10 °C","100 °C","−10 °C"],
+["At what temperature does water boil at sea level?","100 °C","50 °C","90 °C","212 °C"],
+["How many bones does an adult human have?","206","106","306","52"],
+["Which part of your body controls everything you do?","The brain","The heart","The lungs","The stomach"],
+["What do we call animals with a backbone?","Vertebrates","Invertebrates","Mammals","Reptiles"],
+["What is the hardest part of your body?","Tooth enamel","Skull","Fingernails","Knee"],
+["Which organ do you use to breathe?","Lungs","Kidneys","Liver","Heart"],
+["What is the centre of the Earth called?","The core","The crust","The mantle","The pole"],
+["What causes day and night?","Earth spinning","The Sun moving around Earth","Clouds","The Moon blocking the Sun"],
+["What causes the seasons?","Earth’s tilt as it orbits the Sun","Earth getting closer to the Sun","The Moon","Ocean tides"],
+["How long does Earth take to go once around the Sun?","One year","One day","One month","One week"],
+["How long does Earth take to spin once?","24 hours","12 hours","7 days","365 days"],
+["What do you call a rock from space that lands on Earth?","A meteorite","A comet","A planet","A satellite"],
+["What is the Moon’s pull on the oceans called?","Tides","Waves","Currents","Storms"],
+["Which force keeps the planets orbiting the Sun?","Gravity","Magnetism","Friction","Electricity"],
+["What is a scientist who studies dinosaurs and fossils called?","A palaeontologist","A geologist","An astronomer","A chemist"],
+["What is the fastest thing in the universe?","Light","Sound","A rocket","Lightning"],
+["What type of energy comes from the Sun?","Solar energy","Wind energy","Nuclear power stations","Coal power"],
+["What do we call water falling from clouds as rain, snow or hail?","Precipitation","Evaporation","Condensation","Erosion"],
+["What is water vapour turning back into liquid called?","Condensation","Evaporation","Freezing","Melting"],
+["Which blood cells fight infection?","White blood cells","Red blood cells","Platelets","Nerve cells"],
+["What carries blood away from your heart?","Arteries","Veins","Nerves","Tendons"],
+["Which is the largest planet in our solar system?","Jupiter","Saturn","Neptune","Earth"],
+["Which planet is famous for being red?","Mars","Venus","Jupiter","Mercury"],
+["How many moons does Earth have?","1","2","0","4"],
+["Who was the first person to walk on the Moon?","Neil Armstrong","Buzz Aldrin","Yuri Gagarin","John Glenn"],
+["What do you call a baby plant growing from a seed?","A seedling","A twig","A root","A bulb"],
+["Which part of a flower makes pollen?","The stamen","The petal","The root","The stem"],
+["What is the smallest planet in our solar system?","Mercury","Mars","Venus","Pluto"],
+["What kind of rock is formed from cooled lava?","Igneous rock","Sedimentary rock","Metamorphic rock","Limestone"],
+["Which metal is attracted to magnets?","Iron","Gold","Copper","Aluminium"],
+["What is the main gas in the air we breathe?","Nitrogen","Oxygen","Carbon dioxide","Hydrogen"],
+["What kind of animal was a Tyrannosaurus rex?","A dinosaur","A mammal","A bird of today","A fish"],
+["What does a telescope help you see?","Things far away","Very tiny things","Things inside your body","Sound"],
+["What does a microscope help you see?","Very tiny things","Stars","Radio waves","Things in the dark"],
+["How many colours of light make up white light in a rainbow?","7","3","5","10"],
+["What are the tiny building blocks that all living things are made of?","Cells","Atoms only","Crystals","Seeds"],
+["Which simple machine is a seesaw?","A lever","A pulley","A wedge","A screw"],
+["tf","The Moon is bigger than Earth.",0],
+["tf","Sound cannot travel through empty space.",1],
+["tf","A year on Mars is longer than a year on Earth.",1],
+["tf","Humans and dinosaurs lived at the same time.",0],
+["tf","Your skin is an organ.",1],
+["tf","Lightning comes before thunder because light travels faster than sound.",1],
+["tf","All metals are magnetic.",0],
+["tf","Pluto is now called a dwarf planet.",1],
+["tf","Mushrooms are plants.",0],
+["tf","The Sun is the biggest star in the universe.",0],
+["order","Put these planets in order from the Sun","Closest","Farthest","Mars","Jupiter","Saturn","Neptune"],
+["order","Put the water cycle in order, starting with the ocean","First","Last","Evaporation","Condensation into clouds","Rain","Rivers flow to the sea"],
+["order","Put these from smallest to biggest","Smallest","Biggest","Moon","Earth","Sun","Milky Way"],
+["order","Put these from slowest to fastest","Slowest","Fastest","A car","A jet plane","Sound","Light"]
+],
+junior:[
+["What is the chemical formula for table salt?","NaCl","H₂O","CO₂","KCl"],
+["What is the chemical formula for carbon dioxide?","CO₂","CO","C₂O","O₂"],
+["Which organ makes insulin?","Pancreas","Liver","Kidney","Stomach"],
+["How many chambers does the human heart have?","4","2","3","5"],
+["Which blood vessels carry blood back to the heart?","Veins","Arteries","Capillaries only","Nerves"],
+["What is the longest bone in the human body?","Femur","Tibia","Spine","Humerus"],
+["Which planet has the tallest volcano in the solar system, Olympus Mons?","Mars","Venus","Jupiter","Mercury"],
+["Which planet rotates in the opposite direction to most others?","Venus","Mars","Jupiter","Saturn"],
+["What is the name of the force that opposes motion through air?","Air resistance","Gravity","Magnetism","Tension"],
+["What is the unit of electric current?","Ampere","Volt","Watt","Ohm"],
+["What does a light-year measure?","Distance","Time","Brightness","Speed"],
+["What do we call a substance made of only one kind of atom?","An element","A compound","A mixture","A solution"],
+["Which scientist is famous for the laws of motion and gravity?","Isaac Newton","Albert Einstein","Galileo Galilei","Charles Darwin"],
+["Who discovered that Earth orbits the Sun and published it in 1543?","Nicolaus Copernicus","Isaac Newton","Aristotle","Johannes Kepler"],
+["Which scientist won Nobel Prizes in both physics and chemistry?","Marie Curie","Albert Einstein","Rosalind Franklin","Niels Bohr"],
+["What is the pH of a neutral liquid like pure water?","7","0","14","10"],
+["What type of rock is marble?","Metamorphic","Igneous","Sedimentary","Volcanic glass"],
+["What is the name for molten rock under Earth’s surface?","Magma","Lava","Basalt","Ash"],
+["Which layer of the atmosphere protects us from ultraviolet rays?","The ozone layer","The troposphere","The ionosphere","The exosphere"],
+["Which gas is most responsible for human-caused global warming?","Carbon dioxide","Oxygen","Nitrogen","Argon"],
+["What kind of energy does a moving object have?","Kinetic energy","Potential energy","Chemical energy","Nuclear energy"],
+["Which part of the plant cell makes food using sunlight?","Chloroplast","Nucleus","Cell wall","Vacuole"],
+["What is the study of living things called?","Biology","Geology","Physics","Astronomy"],
+["How many planets in our solar system have rings?","4","1","2","8"],
+["Which spacecraft carried the first people to the Moon?","Apollo 11","Apollo 13","Voyager 1","Sputnik 1"],
+["What is a group of billions of stars held together by gravity?","A galaxy","A solar system","A nebula","A constellation"],
+["Which element do all living things on Earth have as their backbone?","Carbon","Iron","Helium","Silicon"],
+["What kind of lens is thicker in the middle and makes things look bigger?","Convex","Concave","Flat","Prism"],
+["tf","An atom is mostly empty space.",1],
+["tf","Sound travels faster in water than in air.",1],
+["tf","Antibiotics kill viruses.",0],
+["tf","Jupiter is made mostly of gas.",1],
+["tf","Your body contains trillions of bacteria.",1],
+["tf","Hot air rises.",1],
+["tf","The Sun will keep shining for billions more years.",1],
+["order","Put these from lightest to heaviest element","Lightest","Heaviest","Hydrogen","Carbon","Iron","Gold"],
+["order","Put these events in order","Earliest","Latest","The Big Bang","Earth forms","Dinosaurs appear","First humans"],
+["order","Put these scientists in order of birth","Earliest","Latest","Galileo Galilei","Isaac Newton","Charles Darwin","Albert Einstein"]
+],
+adult:[
+["Which scientist first described the structure of the benzene ring, said to be inspired by a dream of a snake?","August Kekulé","Friedrich Wöhler","Dmitri Mendeleev","Robert Bunsen"],
+["Who created the first periodic table of the elements?","Dmitri Mendeleev","Antoine Lavoisier","John Dalton","Marie Curie"],
+["Which Belgian priest first proposed what became the Big Bang theory?","Georges Lemaître","Ernest Solvay","Andreas Vesalius","Jules Bordet"],
+["Which Brussels-born anatomist wrote the landmark 1543 book on the human body?","Andreas Vesalius","William Harvey","Galen","Ambroise Paré"],
+["Whose X-ray image “Photo 51” was key to finding DNA’s structure?","Rosalind Franklin","Barbara McClintock","Dorothy Hodgkin","Lise Meitner"],
+["What is the most abundant element in Earth’s crust?","Oxygen","Silicon","Iron","Aluminium"],
+["Which particle gives other particles mass and was confirmed at CERN in 2012?","Higgs boson","Gluon","Neutrino","Muon"],
+["What is the name of the boundary between Earth’s crust and mantle?","The Moho","The Karman line","The Roche limit","The tropopause"],
+["Which organ contains the islets of Langerhans?","Pancreas","Liver","Spleen","Thyroid"],
+["Which vitamin deficiency causes scurvy?","Vitamin C","Vitamin D","Vitamin B12","Vitamin A"],
+["Which nerve carries signals from the eye to the brain?","Optic nerve","Vagus nerve","Sciatic nerve","Auditory nerve"],
+["Which law says that pressure and volume of a gas are inversely related?","Boyle’s law","Ohm’s law","Hooke’s law","Charles’s law"],
+["What is the term for an animal that maintains a constant body temperature?","Endotherm","Ectotherm","Autotroph","Detritivore"],
+["Which moon of Saturn has a thick atmosphere and lakes of methane?","Titan","Enceladus","Europa","Ganymede"],
+["Which moon of Jupiter is the most volcanically active body in the solar system?","Io","Europa","Callisto","Triton"],
+["Which space probe has travelled farthest from Earth?","Voyager 1","Voyager 2","New Horizons","Pioneer 10"],
+["What kind of star is the Sun?","A yellow dwarf","A red giant","A white dwarf","A neutron star"],
+["What is the half-life of carbon-14, roughly?","5,700 years","570 years","57,000 years","5.7 million years"],
+["Which scale measures the hardness of minerals?","Mohs scale","Richter scale","Beaufort scale","Kelvin scale"],
+["What does CRISPR let scientists do?","Edit genes","Detect gravity waves","Split atoms","Measure earthquakes"],
+["Which acid is found in your stomach?","Hydrochloric acid","Sulfuric acid","Citric acid","Acetic acid"],
+["What is the approximate age of the universe?","13.8 billion years","4.5 billion years","1 trillion years","650 million years"],
+["What is the approximate age of the Earth?","4.5 billion years","13.8 billion years","65 million years","1 billion years"],
+["Which element is named after the creator of the periodic table?","Mendelevium","Einsteinium","Curium","Nobelium"],
+["Which scientist formulated the uncertainty principle?","Werner Heisenberg","Erwin Schrödinger","Max Planck","Paul Dirac"],
+["What is the powerhouse reaction of the Sun?","Nuclear fusion","Nuclear fission","Combustion","Radioactive decay"],
+["Which bone is the smallest in the human body?","Stapes","Patella","Hyoid","Pisiform"],
+["Which gas makes up most of the Sun?","Hydrogen","Helium","Oxygen","Carbon"],
+["tf","Humans share about half their DNA with bananas.",1],
+["tf","Venus is hotter than Mercury.",1],
+["tf","Light takes about eight minutes to reach us from the Moon.",0],
+["tf","A teaspoon of neutron star would weigh billions of tonnes.",1],
+["tf","Evolution says humans descended from chimpanzees.",0],
+["tf","There are more trees on Earth than stars in the Milky Way.",1],
+["tf","Absolute zero has been reached in a laboratory.",0],
+["order","Put these electromagnetic waves from longest to shortest wavelength","Longest","Shortest","Radio waves","Microwaves","Visible light","X-rays"],
+["order","Put these units from smallest to largest","Smallest","Largest","Nanometre","Micrometre","Millimetre","Kilometre"],
+["order","Put these space milestones in order","Earliest","Latest","Sputnik 1","First Moon landing","Hubble launch","James Webb launch"]
+]},
+animals:{
+kid:[
+["Which is the largest animal on Earth?","Blue whale","African elephant","Giraffe","Great white shark"],
+["Which is the fastest land animal?","Cheetah","Lion","Horse","Ostrich"],
+["Which animal is the tallest in the world?","Giraffe","Elephant","Ostrich","Moose"],
+["Which mammal can truly fly?","Bat","Flying squirrel","Penguin","Ostrich"],
+["Which big cat has stripes?","Tiger","Lion","Cheetah","Jaguar"],
+["What do you call animals that eat both plants and meat?","Omnivores","Herbivores","Carnivores","Insectivores"],
+["What do you call animals that are active at night?","Nocturnal","Diurnal","Migratory","Aquatic"],
+["Which bird is the largest in the world?","Ostrich","Eagle","Emu","Albatross"],
+["Which animal has the longest neck?","Giraffe","Ostrich","Camel","Llama"],
+["Which animal is known for building dams?","Beaver","Otter","Muskrat","Badger"],
+["Which marsupial carries its baby in a pouch and lives in Australia?","Kangaroo","Beaver","Meerkat","Lemur"],
+["Which sea animal has five arms and no brain?","Starfish","Octopus","Squid","Crab"],
+["How many legs does a spider have?","8","6","10","12"],
+["How many hearts does an octopus have?","3","1","2","8"],
+["What do pandas mainly eat?","Bamboo","Fish","Honey","Eucalyptus"],
+["What do koalas mainly eat?","Eucalyptus leaves","Bamboo","Insects","Fruit"],
+["Which animal is the largest of the great apes?","Gorilla","Chimpanzee","Orangutan","Baboon"],
+["Which is the only bird that can fly backwards?","Hummingbird","Swallow","Kingfisher","Sparrow"],
+["Which black and white whale is really the largest kind of dolphin?","Orca","Beluga","Narwhal","Humpback"],
+["What do orcas in the Salish Sea near Seattle mostly eat?","Salmon","Seaweed","Crabs","Plankton"],
+["Which fish swims up rivers in the Pacific Northwest to lay its eggs?","Salmon","Tuna","Cod","Halibut"],
+["Which large bird is the national symbol of the United States?","Bald eagle","Golden eagle","Turkey","Condor"],
+["Which reptile can change colour?","Chameleon","Crocodile","Tortoise","Cobra"],
+["Which animal sleeps hanging upside down?","Bat","Sloth","Monkey","Owl"],
+["Which insect makes honey?","Honeybee","Wasp","Ant","Butterfly"],
+["What is the hard outer covering of an insect called?","Exoskeleton","Shell","Scales","Hide"],
+["Which animal group do frogs belong to?","Amphibians","Reptiles","Fish","Mammals"],
+["Which animal group do snakes belong to?","Reptiles","Amphibians","Fish","Insects"],
+["Which is the biggest shark?","Whale shark","Great white shark","Hammerhead shark","Tiger shark"],
+["Which bear lives in the Arctic?","Polar bear","Grizzly bear","Black bear","Panda"],
+["Which penguin is the tallest?","Emperor penguin","King penguin","Adélie penguin","Little penguin"],
+["Which animal has black and white stripes and lives in Africa?","Zebra","Okapi","Tiger","Skunk"],
+["What is a female deer called?","A doe","A hen","A mare","A sow"],
+["What is a male chicken called?","A rooster","A drake","A gander","A buck"],
+["Which animal has tusks and a trunk?","Elephant","Walrus","Rhino","Hippo"],
+["Which slow animal lives in trees in Central and South America?","Sloth","Koala","Lemur","Panda"],
+["What do you call an animal that hunts other animals?","A predator","Prey","A scavenger","A grazer"],
+["Which bird cannot fly but can run up to 70 km/h?","Ostrich","Penguin","Kiwi","Dodo"],
+["tf","A whale is a fish.",0],
+["tf","Spiders are insects.",0],
+["tf","Sharks have bones.",0],
+["tf","An octopus has eight arms.",1],
+["tf","Owls can turn their heads more than halfway around.",1],
+["tf","All birds can fly.",0],
+["tf","Elephants are the largest land animals.",1],
+["tf","Butterflies start life as caterpillars.",1],
+["tf","Camels store water in their humps.",0],
+["order","Put these from slowest to fastest","Slowest","Fastest","Sloth","Elephant","Horse","Cheetah"],
+["order","Put these from smallest to biggest","Smallest","Biggest","Bee","Sparrow","Wolf","Orca"],
+["order","Put a butterfly’s life in order","First","Last","Egg","Caterpillar","Chrysalis","Butterfly"],
+["order","Put these sea animals from smallest to biggest","Smallest","Biggest","Seahorse","Sea otter","Orca","Blue whale"]
+],
+junior:[
+["What is the fastest fish in the ocean?","Sailfish","Tuna","Great white shark","Barracuda"],
+["Which animal has the largest eyes in the animal kingdom?","Colossal squid","Blue whale","Ostrich","Owl"],
+["Which is the largest living reptile?","Saltwater crocodile","Komodo dragon","Green anaconda","Leatherback turtle"],
+["Which is the largest living lizard?","Komodo dragon","Green iguana","Nile monitor","Gila monster"],
+["Which bird migrates the farthest, from the Arctic to the Antarctic?","Arctic tern","Swallow","Albatross","Canada goose"],
+["Which animal can sleep with one half of its brain at a time?","Dolphin","Cat","Elephant","Rabbit"],
+["How do bats find their way in the dark?","Echolocation","Night vision","Smell","Whiskers"],
+["What is the only mammal covered in scales?","Pangolin","Armadillo","Hedgehog","Porcupine"],
+["Which animal’s stripes are unique, like a fingerprint?","Zebra","Skunk","Raccoon","Badger"],
+["What is the name for animals that carry their young in a pouch?","Marsupials","Monotremes","Rodents","Primates"],
+["Which is the largest rodent in the world?","Capybara","Beaver","Porcupine","Nutria"],
+["Which bird can mimic human speech and chainsaws, and lives in Australia?","Lyrebird","Kookaburra","Emu","Cockatoo"],
+["Which fish can puff itself up into a spiky ball?","Pufferfish","Lionfish","Stonefish","Anglerfish"],
+["Which animal has the longest lifespan of any land animal?","Giant tortoise","Elephant","Parrot","Horse"],
+["Which insect can carry many times its own body weight and lives in colonies?","Ant","Mosquito","Dragonfly","Moth"],
+["What is a wolf’s home called?","A den","A sett","A warren","A lodge"],
+["What is a beaver’s home called?","A lodge","A den","A burrow","A drey"],
+["How many tentacles does a squid have, plus its eight arms?","2","4","6","0"],
+["Which whale has a long spiral tusk?","Narwhal","Beluga","Sperm whale","Minke whale"],
+["What are the three resident orca pods near Seattle called?","J, K and L","A, B and C","North, South and West","Alpha, Beta and Gamma"],
+["Which animal is the symbol of the World Wildlife Fund?","Giant panda","Tiger","Elephant","Polar bear"],
+["Which big cat is the best climber and often drags prey into trees?","Leopard","Lion","Cheetah","Tiger"],
+["What is the offspring of a male donkey and a female horse called?","A mule","A hinny","A pony","A zebroid"],
+["tf","A group of orcas is led by an older female.",1],
+["tf","Crocodiles are more closely related to birds than to lizards.",1],
+["tf","Bats are rodents.",0],
+["tf","A mother kangaroo can pause a pregnancy.",1],
+["tf","Giraffes have more neck bones than humans.",0],
+["tf","Sea otters use rocks as tools.",1],
+["tf","Ostriches bury their heads in the sand.",0],
+["order","Put these by number of legs, fewest first","Fewest","Most","Snail","Ostrich","Beetle","Crab"],
+["order","Put these from smallest to biggest","Smallest","Biggest","Hummingbird","Bald eagle","Emperor penguin","Ostrich"],
+["order","Put these big cats from lightest to heaviest","Lightest","Heaviest","Cheetah","Leopard","Lion","Tiger"]
+],
+adult:[
+["Which animal has the highest blood pressure of any land animal?","Giraffe","Elephant","Horse","Camel"],
+["Which shark may live for 400 years?","Greenland shark","Whale shark","Basking shark","Goblin shark"],
+["Which land mammal makes the longest migration, across the Arctic tundra?","Caribou","Wildebeest","Bison","Pronghorn"],
+["Which fish was thought extinct for 66 million years until one was caught in 1938?","Coelacanth","Sturgeon","Lungfish","Arapaima"],
+["What is the only venomous primate?","Slow loris","Tarsier","Aye-aye","Marmoset"],
+["Which bird has the largest wingspan of any living land bird?","Andean condor","Bald eagle","Marabou stork","Mute swan"],
+["What is the term for animals that lay eggs?","Oviparous","Viviparous","Marsupial","Placental"],
+["Which two mammals lay eggs?","Platypus and echidna","Platypus and pangolin","Echidna and armadillo","Bat and shrew"],
+["Which species is the closest living relative of humans, along with the chimpanzee?","Bonobo","Gorilla","Orangutan","Gibbon"],
+["Which animal’s name means “river horse” in Greek?","Hippopotamus","Rhinoceros","Manatee","Tapir"],
+["Which bird lays the largest egg relative to its body size?","Kiwi","Ostrich","Emu","Hummingbird"],
+["Which Belgian horse breed is one of the strongest draft horses?","Brabant","Friesian","Percheron","Clydesdale"],
+["Which Belgian dog breed is widely used by police and the military?","Malinois","Rottweiler","Dobermann","Schipperke"],
+["Which sense do sharks have that detects electric fields?","Electroreception","Echolocation","Magnetoception only","Thermoreception"],
+["Which animal can survive being frozen, dried out and exposed to space?","Tardigrade","Cockroach","Brine shrimp","Nematode worm"],
+["What do you call the study of birds?","Ornithology","Entomology","Herpetology","Ichthyology"],
+["What do you call the study of insects?","Entomology","Etymology","Ornithology","Mycology"],
+["Which extinct bird from Mauritius was last seen in the 1600s?","Dodo","Great auk","Moa","Passenger pigeon"],
+["Which animal has the most teeth of any land mammal, up to 100?","Giant armadillo","Opossum","Aardvark","Hippo"],
+["Which is the only big cat that lives in groups?","Lion","Cheetah","Tiger","Leopard"],
+["Which whale dives the deepest of any mammal?","Cuvier’s beaked whale","Sperm whale","Blue whale","Orca"],
+["Which spider builds the largest webs, spanning rivers in Madagascar?","Darwin’s bark spider","Golden orb weaver","Goliath birdeater","Black widow"],
+["tf","Southern Resident orcas are listed as endangered.",1],
+["tf","A female orca can live to 80 or more.",1],
+["tf","Mosquitoes kill more people each year than any other animal.",1],
+["tf","Dolphins give each other names using signature whistles.",1],
+["tf","Lemmings throw themselves off cliffs in mass suicide.",0],
+["tf","A rhino’s horn is made of bone.",0],
+["tf","Goldfish have a memory of only a few seconds.",0],
+["order","Put these by top speed, slowest first","Slowest","Fastest","Giant tortoise","Elephant","Greyhound","Peregrine falcon"],
+["order","Put these animals by gestation length, shortest first","Shortest","Longest","Mouse","Dog","Human","Elephant"],
+["order","Put these whales from smallest to largest","Smallest","Largest","Beluga","Orca","Humpback","Blue whale"]
+]}};
+
+const HAND_C = {
+fun:{
+kid:[
+["Which country is home to the Atomium, a giant model of an iron crystal?","Belgium","France","Netherlands","Germany"],
+["What is the famous little statue of a boy in Brussels called?","Manneken Pis","The Little Mermaid","David","Peter Pan"],
+["Which Seattle market is famous for people throwing fish?","Pike Place Market","Fisherman’s Wharf","Granville Island","Reading Terminal"],
+["Which coffee company opened its first shop in Seattle in 1971?","Starbucks","Dunkin’","Tim Hortons","Peet’s"],
+["What is the tall tower built for Seattle’s 1962 World’s Fair?","The Space Needle","The CN Tower","The Gateway Arch","The Smith Tower"],
+["Which sport uses a shuttlecock?","Badminton","Tennis","Squash","Volleyball"],
+["How many rings are on the Olympic flag?","5","4","6","7"],
+["How many players are on a basketball team on the court?","5","6","7","11"],
+["How many squares are on a chessboard?","64","36","81","100"],
+["How many sides does an octagon have?","8","6","7","10"],
+["Which month has the fewest days?","February","April","June","November"],
+["How many days are in a leap year?","366","365","364","367"],
+["How many letters are in the English alphabet?","26","24","25","28"],
+["How many strings does a violin have?","4","5","6","3"],
+["How many zeros are in one million?","6","5","7","9"],
+["Which planet is named after the king of the Roman gods?","Jupiter","Mars","Saturn","Neptune"],
+["Which toy is made of small plastic bricks that click together?","LEGO","Play-Doh","Jenga","Meccano"],
+["In which country was LEGO invented?","Denmark","Sweden","Germany","United States"],
+["Which Belgian comic character is a young reporter with a quiff?","Tintin","Asterix","Spirou the bellboy","Lucky Luke"],
+["What colour are the Smurfs?","Blue","Green","Yellow","Purple"],
+["Which food are Belgian fries traditionally served with?","Mayonnaise","Maple syrup","Soy sauce","Honey"],
+["Which vegetable is named after Belgium’s capital?","Brussels sprouts","Belgian carrots","Antwerp beans","Liège leeks"],
+["Which is the tallest building in the world?","Burj Khalifa","Empire State Building","Eiffel Tower","Shanghai Tower"],
+["Which ancient wonder still stands in Egypt?","The Great Pyramid of Giza","The Colossus of Rhodes","The Hanging Gardens","The Lighthouse of Alexandria"],
+["Which language is spoken by the most people as a first language?","Mandarin Chinese","English","Spanish","Hindi"],
+["What do you call a person who writes books?","An author","An editor","A librarian","A publisher"],
+["Which holiday is on 31 October?","Halloween","Thanksgiving","Valentine’s Day","Easter"],
+["Which Saint brings presents to Belgian children on 6 December?","Saint Nicholas (Sinterklaas)","Saint Patrick","Saint Valentine","Saint George"],
+["What do you call the Japanese art of paper folding?","Origami","Karate","Sushi","Manga"],
+["What is the Japanese word for a comic book?","Manga","Anime","Sushi","Kimono"],
+["What do bees collect from flowers?","Nectar and pollen","Honey","Wax","Seeds"],
+["Which metal is the Statue of Liberty made of, which turned it green?","Copper","Iron","Gold","Silver"],
+["Which fruit do raisins come from?","Grapes","Plums","Cherries","Figs"],
+["What are dried plums called?","Prunes","Raisins","Dates","Sultanas"],
+["What is the main ingredient in guacamole?","Avocado","Peas","Lime","Cucumber"],
+["What is the main ingredient of chocolate?","Cocoa beans","Coffee beans","Vanilla pods","Sugar cane"],
+["Which nut is used to make marzipan?","Almond","Hazelnut","Walnut","Peanut"],
+["What is the hottest continent on average?","Africa","Asia","Australia","South America"],
+["Which sport is played at Wimbledon?","Tennis","Cricket","Golf","Rugby"],
+["How long is an Olympic swimming pool?","50 metres","25 metres","100 metres","75 metres"],
+["In which sport can you score a “strike” and a “spare”?","Bowling","Golf","Archery","Darts"],
+["Which piece can jump over others in chess?","The knight","The bishop","The rook","The queen"],
+["Which instrument has 88 keys?","Piano","Organ","Accordion","Harp"],
+["What do the letters “www” stand for?","World Wide Web","Wide World Web","Web World Wide","World Web Wide"],
+["Which company makes the iPad?","Apple","Samsung","Google","Microsoft"],
+["What is the name of Mario’s brother in the Nintendo games?","Luigi","Wario","Toad","Yoshi"],
+["Which game has you place blocks to clear lines, invented in 1984?","Tetris","Pac-Man","Minecraft","Snake"],
+["In Minecraft, which green enemy explodes?","Creeper","Zombie","Enderman","Skeleton"],
+["How many players are on the field for one baseball team?","9","10","11","8"],
+["Which ocean did the Titanic sink in?","Atlantic","Pacific","Indian","Arctic"],
+["tf","A leap year happens every four years, with a few exceptions.",1],
+["tf","Bananas grow on trees.",0],
+["tf","The Great Wall of China is the longest wall in the world.",1],
+["tf","Peanuts are nuts.",0],
+["tf","Sound travels faster through water than through air.",1],
+["tf","Belgium and France both claim to have invented fries.",1],
+["tf","A dozen means 12.",1],
+["tf","Honey can stay good to eat for thousands of years.",1],
+["tf","The Eiffel Tower was built for a world’s fair.",1],
+["tf","Your fingernails grow faster than your toenails.",1],
+["order","Put these from shortest to longest","Shortest","Longest","Week","Month","Year","Decade"],
+["order","Put these from smallest to largest number","Smallest","Largest","Hundred","Thousand","Million","Billion"],
+["order","Put these inventions in order","Oldest","Newest","Paper","Bicycle","Television","Smartphone"],
+["order","Put these from fewest to most","Fewest","Most","Rings on the Olympic flag","Players on a football team","Letters in the alphabet","Squares on a chessboard"],
+["order","Put these from coldest to hottest","Coldest","Hottest","Antarctica in winter","A fridge","A hot bath","The surface of the Sun"]
+],
+junior:[
+["Which Belgian detective was created by Agatha Christie?","Hercule Poirot","Inspector Maigret","Sherlock Holmes","Tintin"],
+["Which Belgian invented the plastic called Bakelite?","Leo Baekeland","Adolphe Sax","Ernest Solvay","Georges Nagelmackers"],
+["Which Belgian cyclist won the Tour de France five times?","Eddy Merckx","Tom Boonen","Remco Evenepoel","Wout van Aert"],
+["Which company is headquartered near Seattle and makes Windows?","Microsoft","Apple","Google","IBM"],
+["Which online shop was founded in Seattle in 1994 as a bookshop?","Amazon","eBay","Etsy","Alibaba"],
+["Which aircraft maker was founded in Seattle in 1916?","Boeing","Airbus","Lockheed","Cessna"],
+["Which planet is named after the Roman goddess of love?","Venus","Mars","Juno","Mercury"],
+["How many time zones are there in the contiguous United States?","4","3","5","6"],
+["Which is the only continent with land in all four hemispheres?","Africa","Asia","South America","Antarctica"],
+["What was the first feature-length animated film by Disney?","Snow White and the Seven Dwarfs","Pinocchio","Bambi","Fantasia"],
+["Which country gave the world sushi, karate and origami?","Japan","China","South Korea","Thailand"],
+["What is the Japanese cartoon style called?","Anime","Manga","Kawaii","Kabuki"],
+["Which Japanese company makes the Switch console?","Nintendo","Sony","Sega","Bandai"],
+["What does “sayonara” mean in Japanese?","Goodbye","Hello","Thank you","Please"],
+["What does “arigato” mean in Japanese?","Thank you","Goodbye","Sorry","Good morning"],
+["Which mountain is the tallest in Japan?","Mount Fuji","Mount Aso","Mount Tate","Mount Kita"],
+["Which sport has events called the slalom and the giant slalom?","Alpine skiing","Figure skating","Rowing","Cycling"],
+["How long is a marathon in miles, roughly?","26.2 miles","13.1 miles","20 miles","31 miles"],
+["Which country has won the most Olympic gold medals of all time?","United States","China","Russia","Great Britain"],
+["Which city hosted the 2024 Summer Olympics?","Paris","Tokyo","Los Angeles","London"],
+["Which city will host the 2028 Summer Olympics?","Los Angeles","Brisbane","Paris","Rome"],
+["In which sport would you perform an ollie?","Skateboarding","Surfing only","Gymnastics","Diving"],
+["What is the most widely eaten staple food in the world?","Rice","Wheat bread","Potatoes","Corn tortillas"],
+["Which spice is the most expensive in the world by weight?","Saffron","Vanilla","Cinnamon","Cardamom"],
+["Which country is the largest producer of coffee?","Brazil","Colombia","Ethiopia","Vietnam"],
+["From which country does the dish paella come?","Spain","Italy","Portugal","Mexico"],
+["Which country do croque-monsieur and crêpes come from?","France","Belgium","Switzerland","Italy"],
+["What is the currency of Japan?","Yen","Won","Yuan","Baht"],
+["What is the currency of the United Kingdom?","Pound sterling","Euro","Dollar","Franc"],
+["Which inventor is linked with the light bulb and the phonograph?","Thomas Edison","Nikola Tesla","Alexander Graham Bell","Benjamin Franklin"],
+["Who is credited with inventing the telephone?","Alexander Graham Bell","Thomas Edison","Guglielmo Marconi","Samuel Morse"],
+["Which brothers made the first powered aeroplane flight in 1903?","The Wright brothers","The Montgolfier brothers","The Lumière brothers","The Grimm brothers"],
+["Who wrote the Harry Potter books?","J. K. Rowling","Roald Dahl","Rick Riordan","Suzanne Collins"],
+["Who wrote Charlie and the Chocolate Factory?","Roald Dahl","Dr. Seuss","C. S. Lewis","Lewis Carroll"],
+["Which ship sank on its first voyage in 1912?","Titanic","Lusitania","Mayflower","Bismarck"],
+["tf","The unicorn is the national animal of Scotland.",1],
+["tf","Mount Rainier is taller than Mount Fuji.",1],
+["tf","Belgium is often said to have more castles per square kilometre than any other country.",1],
+["tf","The Great Fire of London happened in 1666.",1],
+["tf","A tomato was once legally ruled a vegetable in the United States.",1],
+["tf","The first modern Olympics were held in Paris.",0],
+["tf","Lightning can strike the same place twice.",1],
+["order","Put these companies by founding year, oldest first","Oldest","Newest","Boeing","Microsoft","Amazon","Google"],
+["order","Put these Olympic host cities in order","Earliest","Latest","London","Rio de Janeiro","Tokyo","Paris"],
+["order","Put these from shortest to longest race","Shortest","Longest","100 metres","1,500 metres","Marathon","Tour de France"]
+],
+adult:[
+["Which Belgian invented the saxophone and also the saxhorn?","Adolphe Sax","Leo Baekeland","Zénobe Gramme","Ernest Solvay"],
+["Which Belgian founded the Orient Express?","Georges Nagelmackers","Ernest Solvay","King Leopold II","Édouard Empain"],
+["Which Flemish cartographer created the world map projection of 1569?","Gerardus Mercator","Abraham Ortelius","Simon Stevin","Willem Blaeu"],
+["Which Antwerp printer ran one of the largest publishing houses of the 1500s?","Christophe Plantin","Johannes Gutenberg","Aldus Manutius","William Caxton"],
+["Which battle of 1815 was fought in what is now Belgium?","Waterloo","Austerlitz","Leipzig","Trafalgar"],
+["Which Belgian city hosted the 1920 Summer Olympics?","Antwerp","Brussels","Ghent","Liège"],
+["Which treaty of 1992 created the European Union?","Maastricht Treaty","Treaty of Rome","Lisbon Treaty","Schengen Agreement"],
+["In which year did Belgium gain independence?","1830","1815","1848","1789"],
+["Which Seattle company did Bill Gates and Paul Allen found in 1975?","Microsoft","Amazon","RealNetworks","Nintendo of America"],
+["Which Seattle-born guitarist has a statue on Capitol Hill?","Jimi Hendrix","Kurt Cobain","Eddie Vedder","Chris Cornell"],
+["Which volcano in Washington State erupted violently in 1980?","Mount St. Helens","Mount Rainier","Mount Baker","Glacier Peak"],
+["Which author wrote One Hundred Years of Solitude?","Gabriel García Márquez","Jorge Luis Borges","Isabel Allende","Mario Vargas Llosa"],
+["Which novel begins “Call me Ishmael”?","Moby-Dick","The Old Man and the Sea","Treasure Island","Heart of Darkness"],
+["Which Belgian author created Inspector Maigret?","Georges Simenon","Hergé","Maurice Maeterlinck","Amélie Nothomb"],
+["Who wrote War and Peace?","Leo Tolstoy","Fyodor Dostoevsky","Anton Chekhov","Ivan Turgenev"],
+["Which city hosted the first modern Olympic Games in 1896?","Athens","Paris","London","St. Louis"],
+["Which chess world champion lost to the computer Deep Blue in 1997?","Garry Kasparov","Anatoly Karpov","Bobby Fischer","Vladimir Kramnik"],
+["Which cyclist is nicknamed “the Cannibal”?","Eddy Merckx","Bernard Hinault","Fausto Coppi","Miguel Induráin"],
+["Which Belgian tennis players were both world number one in the 2000s?","Justine Henin and Kim Clijsters","Kim Clijsters and Elise Mertens","Justine Henin and Sabine Appelmans","Dominique Monami and Kim Clijsters"],
+["Which Belgian racing circuit is home to the Eau Rouge corner?","Spa-Francorchamps","Zolder","Zandvoort","Nürburgring"],
+["Which cocktail is made with gin, vermouth and Campari?","Negroni","Martini","Manhattan","Aperol Spritz"],
+["Which grape is used for Chablis?","Chardonnay","Sauvignon Blanc","Riesling","Pinot Gris"],
+["Which monks brew Belgium’s Westvleteren and Chimay beers?","Trappists","Benedictines","Franciscans","Jesuits"],
+["Which country drinks the most coffee per person?","Finland","Italy","Brazil","United States"],
+["What is the most widely spoken language in the world, counting second-language speakers?","English","Mandarin Chinese","Spanish","Hindi"],
+["Which philosopher wrote “I think, therefore I am”?","René Descartes","Immanuel Kant","Plato","Friedrich Nietzsche"],
+["Which empire was ruled by Suleiman the Magnificent?","Ottoman Empire","Mughal Empire","Persian Empire","Byzantine Empire"],
+["Which wall fell in November 1989?","The Berlin Wall","Hadrian’s Wall","The Western Wall","The Great Wall"],
+["Which document did King John seal in 1215?","Magna Carta","Domesday Book","Bill of Rights","Treaty of Verdun"],
+["Which pandemic killed about a third of Europe in the 1300s?","The Black Death","The Spanish flu","Cholera","Smallpox"],
+["Which explorer’s expedition was the first to sail around the world?","Ferdinand Magellan","Christopher Columbus","Vasco da Gama","James Cook"],
+["Which US president appears on the one-dollar bill?","George Washington","Abraham Lincoln","Thomas Jefferson","Andrew Jackson"],
+["Which company’s first product was the Apple I?","Apple","Atari","Commodore","IBM"],
+["What does “HTTP” stand for?","HyperText Transfer Protocol","High Transfer Text Protocol","HyperText Transmission Program","Home Tool Transfer Protocol"],
+["tf","Belgium went 541 days without a formal government in 2010–2011.",1],
+["tf","The Brussels sprout was first widely grown near Brussels.",1],
+["tf","The Space Needle was the tallest structure west of the Mississippi when it opened.",1],
+["tf","Albert Einstein failed mathematics at school.",0],
+["tf","A day on Earth is exactly 24 hours long.",0],
+["tf","The Hundred Years’ War lasted exactly 100 years.",0],
+["tf","Seattle gets more rain per year than New York City.",0],
+["order","Put these events in order","Earliest","Latest","Battle of Waterloo","Belgian independence","First World War begins","Maastricht Treaty"],
+["order","Put these books by publication, earliest first","Earliest","Latest","Don Quixote","Pride and Prejudice","Moby-Dick","1984"],
+["order","Put these empires by when they began","Earliest","Latest","Roman Empire","Mongol Empire","Ottoman Empire","British Empire"]
+]},
+brain:{
+kid:[
+["I have a face and two hands but no arms or legs. What am I?","A clock","A robot","A coin","A doll"],
+["What has to be broken before you can use it?","An egg","A pencil","A window","A lock"],
+["What goes up but never comes down?","Your age","A balloon","Smoke","A kite"],
+["What has many teeth but cannot bite?","A comb","A shark","A zebra","A dog"],
+["What can you catch but not throw?","A cold","A ball","A fish","A frisbee"],
+["What has one eye but cannot see?","A needle","A pirate","A sock","A spoon"],
+["If two’s company and three’s a crowd, what are four and five?","Nine","A party","A team","Too many"],
+["A farmer has 5 haystacks in one field and 4 in another. If he puts them all together, how many haystacks does he have?","1","9","20","5"],
+["How many months have 30 days exactly?","4","6","5","7"],
+["Which weighs more: a kilogram of feathers or a kilogram of rocks?","They weigh the same","The rocks","The feathers","It depends on the wind"],
+["Which word is spelled wrong in every dictionary?","Wrong","Misspelled","Dictionary","Error"],
+["What comes once in a minute, twice in a moment, but never in a thousand years?","The letter M","A second","A heartbeat","A blink"],
+["Tom is taller than Ann. Ann is taller than Raj. Who is shortest?","Raj","Tom","Ann","They’re all the same"],
+["How many sides do two triangles and one square have altogether?","10","9","11","12"],
+["tf","Double 25 is the same as half of 100.",1],
+["tf","An odd number plus an odd number is always odd.",0],
+["tf","A quarter of an hour is 15 minutes.",1],
+["tf","Three dozen is 36.",1],
+["order","Put these from smallest to biggest","Smallest","Biggest","Half of 10","Double 4","3 × 4","100 ÷ 5"],
+["order","Put these coins and notes from least to most value","Least","Most","A nickel","A quarter","A dollar","A ten-dollar bill"]
+],
+junior:[
+["A plane crashes exactly on the border of the US and Canada. Where do they bury the survivors?","Nowhere: survivors aren’t buried","In the US","In Canada","Half in each"],
+["What gets bigger the more you take away from it?","A hole","A debt","A balloon","A pile"],
+["The more you take, the more you leave behind. What are they?","Footsteps","Coins","Breaths","Photos"],
+["A doctor gives you three pills and says take one every half hour. How long do they last?","1 hour","1.5 hours","2 hours","30 minutes"],
+["Some months have 31 days. How many have at least 28?","12","1","11","7"],
+["What can travel around the world while staying in a corner?","A stamp","A shadow","The wind","A compass"],
+["Forwards I’m heavy, backwards I’m not. What am I?","The word “ton”","A feather","A mirror","The word “lead”"],
+["If there are 6 apples and you take away 4, how many do you have?","4","2","6","10"],
+["What has cities but no houses, forests but no trees, and water but no fish?","A map","A dream","A photo","A desert"],
+["Two fathers and two sons go fishing and catch one fish each: three fish in total. How?","They are a grandfather, father and son","One fish got away","Two shared a fish","They counted wrong"],
+["How many times can you subtract 5 from 25?","Once: after that it’s 20","5 times","4 times","25 times"],
+["tf","The sum of the angles in any triangle is 180 degrees.",1],
+["tf","A number is divisible by 3 if its digits add up to a multiple of 3.",1],
+["tf","A kilometre is longer than a mile.",0],
+["order","Put these from smallest to biggest","Smallest","Biggest","10% of 50","A quarter of 40","Half of 30","Double 9"]
+],
+adult:[
+["Three switches control three bulbs in another room; you may enter that room once. This classic is solved using what besides light?","Heat from the bulbs","Sound","Colour","Smell"],
+["With only a 3-litre jug and a 5-litre jug, what is the fewest fills, pours and empties needed to measure exactly 4 litres?","6","4","8","10"],
+["In the Monty Hall problem, should you switch doors?","Yes: switching wins two-thirds of the time","No: staying is better","It makes no difference","Only if the host hesitates"],
+["A snail climbs 3 metres up a 10-metre well each day and slips back 2 each night. On which day does it get out?","Day 8","Day 10","Day 7","Day 9"],
+["A rope ladder hangs off a boat with rungs 30 cm apart. The tide rises 1 metre. How many rungs go under?","None: the boat rises too","3","4","1"],
+["How many handshakes happen if 6 people each shake hands once with everyone else?","15","12","30","36"],
+["What is the next number: 1, 11, 21, 1211, 111221, …?","312211","1112211","122221","211211"],
+["If it takes 8 people 6 hours to build a wall, how long would 12 people take at the same rate?","4 hours","9 hours","3 hours","5 hours"],
+["A clock strikes six in 5 seconds. How long does it take to strike twelve?","11 seconds","10 seconds","12 seconds","6 seconds"],
+["How many times does the digit 9 appear from 1 to 100?","20","19","10","11"],
+["What is the probability of rolling a total of 7 with two dice?","1 in 6","1 in 12","1 in 9","1 in 36"],
+["tf","The square root of 2 is an irrational number.",1],
+["tf","Every prime number is odd.",0],
+["tf","If you flip a fair coin 5 times and get 5 heads, tails is more likely next.",0],
+["order","Put these numbers from smallest to largest","Smallest","Largest","A million seconds in days","Days in a year","Minutes in a day","Seconds in a day"]
+]}};
+
+const HAND_D = {
+art:{
+kid:[
+["What are the three primary colours in painting?","Red, yellow and blue","Red, green and purple","Orange, green and purple","Black, white and grey"],
+["Which two colours make purple?","Red and blue","Red and yellow","Blue and yellow","Green and red"],
+["Which two colours make orange?","Red and yellow","Red and blue","Yellow and green","Blue and white"],
+["What do you get when you mix a colour with white?","A tint","A shade","A tone","A stain"],
+["What do you get when you mix a colour with black?","A shade","A tint","A glow","A wash"],
+["What are colours like red, orange and yellow called?","Warm colours","Cool colours","Neutral colours","Pastel colours"],
+["What are colours like blue and green called?","Cool colours","Warm colours","Hot colours","Bright colours"],
+["Which colour is opposite red on the colour wheel?","Green","Blue","Yellow","Purple"],
+["Which colour is opposite blue on the colour wheel?","Orange","Green","Red","Yellow"],
+["What is a painting of a person’s face called?","A portrait","A landscape","A still life","A mural"],
+["What is a painting of fruit, flowers or objects on a table called?","A still life","A portrait","A seascape","A collage"],
+["What is a painting done straight onto a wall called?","A mural","A canvas","A sketch","A print"],
+["What is a picture an artist makes of themselves called?","A self-portrait","A sketchbook","A landscape","A caricature"],
+["What is the line where the sky meets the land called in a drawing?","The horizon","The border","The outline","The margin"],
+["What do you call a statue or 3D artwork?","A sculpture","A canvas","A fresco","A print"],
+["Which material do potters shape on a wheel?","Clay","Marble","Glass","Wax"],
+["What oven is used to bake clay pots?","A kiln","A furnace","A forge","A grill"],
+["Which art uses folded paper to make cranes and frogs?","Origami","Collage","Mosaic","Batik"],
+["What is art made from tiny coloured tiles called?","Mosaic","Collage","Fresco","Tapestry"],
+["What do you call beautiful, decorative handwriting?","Calligraphy","Typography","Graffiti","Doodling"],
+["What tool does a painter rest a canvas on?","An easel","A palette","A tripod","A frame"],
+["Which paint is mixed with water and looks see-through?","Watercolour","Oil paint","Spray paint","Acrylic gel"],
+["Which famous artist painted swirling skies and cut off part of his ear?","Vincent van Gogh","Pablo Picasso","Claude Monet","Leonardo da Vinci"],
+["Which artist is famous for paintings of water lilies and his garden?","Claude Monet","Vincent van Gogh","Andy Warhol","Salvador Dalí"],
+["Which artist painted melting clocks?","Salvador Dalí","René Magritte","Pablo Picasso","Henri Matisse"],
+["Which Belgian artist painted a man in a bowler hat with an apple in front of his face?","René Magritte","Peter Paul Rubens","Vincent van Gogh","Hergé"],
+["Which Belgian artist drew the Tintin comics?","Hergé","Peyo","Magritte","Morris"],
+["Which Belgian artist created the Smurfs?","Peyo","Hergé","Franquin","Magritte"],
+["Which artist made colourful pictures of soup cans and movie stars?","Andy Warhol","Jackson Pollock","Keith Haring","Banksy"],
+["Which Spanish artist helped invent Cubism?","Pablo Picasso","Salvador Dalí","Joan Miró","Francisco Goya"],
+["Which Japanese artist made a famous print of a giant wave?","Hokusai","Hiroshige","Kusama","Miyazaki"],
+["Which Japanese director made My Neighbor Totoro and Spirited Away?","Hayao Miyazaki","Akira Kurosawa","Satoshi Kon","Makoto Shinkai"],
+["Which artist covers rooms and pumpkins in polka dots?","Yayoi Kusama","Frida Kahlo","Georgia O’Keeffe","Bridget Riley"],
+["Which Mexican painter is famous for her self-portraits?","Frida Kahlo","Diego Rivera","Georgia O’Keeffe","Tarsila do Amaral"],
+["Which Italian artist painted the ceiling of the Sistine Chapel?","Michelangelo","Leonardo da Vinci","Raphael","Donatello"],
+["In which museum does the Mona Lisa hang?","The Louvre","The Prado","The British Museum","The Uffizi"],
+["Which glass artist has a museum and garden next to the Space Needle?","Dale Chihuly","Louis Tiffany","René Lalique","Lino Tagliapietra"],
+["What is a person who designs buildings called?","An architect","A sculptor","A curator","A plumber"],
+["What is a person who designs clothes called?","A fashion designer","A weaver","A model","A cobbler"],
+["What do you call the plan drawing of a building?","A blueprint","A portrait","A canvas","A sketchbook"],
+["What is a pattern that repeats the same on both sides called?","Symmetry","Perspective","Contrast","Texture"],
+["What is the rough or smooth feel of a surface called in art?","Texture","Tone","Shape","Scale"],
+["Which style of art uses bold outlines and speech bubbles?","Comics","Impressionism","Cubism","Abstract"],
+["What is the Japanese style of comics called?","Manga","Anime","Haiku","Kabuki"],
+["tf","Green is a primary colour in painting.",0],
+["tf","Leonardo da Vinci painted the Mona Lisa.",1],
+["tf","A sculpture is flat like a painting.",0],
+["tf","Vincent van Gogh was Dutch.",1],
+["tf","The Atomium in Brussels is shaped like an iron crystal.",1],
+["tf","Abstract art always shows things exactly as they look.",0],
+["tf","Charcoal can be used for drawing.",1],
+["order","Put these from lightest to darkest","Lightest","Darkest","Yellow","Orange","Red","Navy blue"],
+["order","Put these steps of a comic in order","First","Last","Write the story","Pencil sketch","Ink the lines","Add colour"],
+["order","Put these artworks from oldest to newest","Oldest","Newest","Cave paintings","Mona Lisa","The Starry Night","Tintin comics"],
+["order","Put these artists by when they lived, earliest first","Earliest","Latest","Leonardo da Vinci","Vincent van Gogh","Pablo Picasso","Yayoi Kusama"]
+],
+junior:[
+["Which art movement did Claude Monet help start?","Impressionism","Cubism","Surrealism","Pop Art"],
+["Which art movement is Salvador Dalí linked with?","Surrealism","Impressionism","Minimalism","Baroque"],
+["Which art movement used comic strips, adverts and soup cans?","Pop Art","Cubism","Romanticism","Art Nouveau"],
+["Which technique builds a picture from tiny dots of colour?","Pointillism","Fresco","Collage","Engraving"],
+["Which artist dripped and splashed paint across huge canvases?","Jackson Pollock","Mark Rothko","Andy Warhol","Roy Lichtenstein"],
+["Which pop artist painted giant comic-strip panels with dots?","Roy Lichtenstein","Andy Warhol","Keith Haring","Jasper Johns"],
+["Which street artist keeps their identity secret and once shredded a painting at auction?","Banksy","Shepard Fairey","Keith Haring","JR"],
+["Which Dutch painter is famous for squares of red, yellow and blue with black lines?","Piet Mondrian","Vincent van Gogh","Rembrandt","M. C. Escher"],
+["Which Dutch artist drew impossible staircases and tessellating lizards?","M. C. Escher","Piet Mondrian","Rembrandt","Hieronymus Bosch"],
+["Which American painter is known for giant close-up flowers?","Georgia O’Keeffe","Mary Cassatt","Frida Kahlo","Louise Bourgeois"],
+["Which sculptor made giant spiders called Maman?","Louise Bourgeois","Barbara Hepworth","Yayoi Kusama","Niki de Saint Phalle"],
+["Which Spanish architect designed the Sagrada Família and Park Güell?","Antoni Gaudí","Santiago Calatrava","Pablo Picasso","Joan Miró"],
+["What is the curvy, plant-inspired style of Victor Horta’s Brussels houses called?","Art Nouveau","Art Deco","Bauhaus","Gothic"],
+["Which style gave us the Chrysler Building’s zigzags and sunbursts?","Art Deco","Art Nouveau","Brutalism","Rococo"],
+["What is the term for the way objects look smaller as they get farther away?","Perspective","Proportion","Symmetry","Contrast"],
+["What are the three secondary colours in painting?","Orange, green and purple","Red, yellow and blue","Pink, brown and grey","Black, white and gold"],
+["What do you call a print made by carving an image into wood?","A woodcut","An etching","A fresco","A lithograph"],
+["What is a fresco painted on?","Wet plaster","Canvas","Wood panels","Glass"],
+["Which Seattle sculpture is a troll under a bridge?","The Fremont Troll","The Hammering Man","The Gum Wall","The Olympic Iliad"],
+["Which fashion house uses two interlocking Cs as its logo?","Chanel","Gucci","Dior","Prada"],
+["Which fabric is made by silkworms?","Silk","Linen","Wool","Cotton"],
+["Which fabric comes from the flax plant?","Linen","Silk","Denim","Velvet"],
+["What is the Japanese robe worn on special occasions called?","Kimono","Sari","Hanbok","Kilt"],
+["Which shoe company’s logo is called the Swoosh?","Nike","Adidas","Puma","Reebok"],
+["In colour codes, what do the letters RGB stand for?","Red, green, blue","Red, grey, black","Rose, gold, bronze","Real, good, bright"],
+["Which font style has small feet on the ends of letters?","Serif","Sans serif","Script","Monospace"],
+["tf","Impressionist painters often worked outdoors.",1],
+["tf","Michelangelo carved David from a single block of marble.",1],
+["tf","The Statue of Liberty was a gift from France.",1],
+["tf","Picasso only ever painted in blue.",0],
+["tf","Antwerp is famous for its fashion academy and the “Antwerp Six” designers.",1],
+["tf","Denim was named after the French city of Nîmes.",1],
+["order","Put these styles in order, earliest first","Earliest","Latest","Gothic","Renaissance","Impressionism","Pop Art"],
+["order","Put these buildings from oldest to newest","Oldest","Newest","The Parthenon","Notre-Dame de Paris","The Eiffel Tower","The Space Needle"]
+],
+adult:[
+["Which fashion designer introduced the “New Look” in 1947?","Christian Dior","Coco Chanel","Yves Saint Laurent","Cristóbal Balenciaga"],
+["Which designer popularised the little black dress in the 1920s?","Coco Chanel","Elsa Schiaparelli","Jeanne Lanvin","Madeleine Vionnet"],
+["Which Belgian designer was creative director at Dior and Calvin Klein before Prada?","Raf Simons","Dries Van Noten","Martin Margiela","Ann Demeulemeester"],
+["Which group of Belgian designers shook up London Fashion Week in the 1980s?","The Antwerp Six","The Brussels Seven","The Ghent Group","The Flemish Five"],
+["Which Belgian designer founded a famously anonymous Paris fashion house in 1988?","Martin Margiela","Walter Van Beirendonck","Dirk Bikkembergs","Olivier Theyskens"],
+["Which designer created the wrap dress in the 1970s?","Diane von Furstenberg","Donna Karan","Vivienne Westwood","Mary Quant"],
+["Which British designer is the “godmother of punk” fashion?","Vivienne Westwood","Stella McCartney","Mary Quant","Zandra Rhodes"],
+["Which Japanese designer founded Comme des Garçons?","Rei Kawakubo","Issey Miyake","Yohji Yamamoto","Kenzo Takada"],
+["Which fabric weave gives denim its diagonal lines?","Twill","Satin","Plain weave","Jacquard"],
+["Which German school of design ran from 1919 to 1933?","Bauhaus","De Stijl","Jugendstil","Memphis"],
+["Who designed the 1956 lounge chair and ottoman for Herman Miller?","Charles and Ray Eames","Arne Jacobsen","Eero Saarinen","Le Corbusier"],
+["Which designer said “less, but better” and shaped Braun’s products?","Dieter Rams","Jony Ive","Philippe Starck","Raymond Loewy"],
+["Which artist wrapped the Reichstag and the Arc de Triomphe in fabric?","Christo and Jeanne-Claude","Anish Kapoor","Olafur Eliasson","Ai Weiwei"],
+["Which artist made The Dinner Party, a triangular table honouring women?","Judy Chicago","Cindy Sherman","Louise Bourgeois","Barbara Kruger"],
+["Which painter is known for large floating rectangles of colour?","Mark Rothko","Barnett Newman","Franz Kline","Willem de Kooning"],
+["Which artist made the giant mirrored “Bean” in Chicago?","Anish Kapoor","Jeff Koons","Richard Serra","Antony Gormley"],
+["Which Italian painter pioneered dramatic light and shadow around 1600?","Caravaggio","Titian","Tintoretto","Canaletto"],
+["What is the term for strong contrast between light and dark in painting?","Chiaroscuro","Sfumato","Impasto","Trompe-l’œil"],
+["What is the term for thick, textured paint you can see standing off the canvas?","Impasto","Glaze","Fresco","Gouache"],
+["Which Flemish city was home to Rubens and Van Dyck?","Antwerp","Bruges","Ghent","Leuven"],
+["Which Bruges-based painter made the Madonna with Canon van der Paele?","Jan van Eyck","Hans Memling","Rogier van der Weyden","Hugo van der Goes"],
+["Which colour system is used by designers to match exact ink colours?","Pantone","Munsell","RGB","Kelvin"],
+["tf","The Bauhaus school was closed under pressure from the Nazis.",1],
+["tf","Vermeer painted more than 200 known works.",0],
+["tf","The Ghent Altarpiece is one of the most stolen artworks in history.",1],
+["tf","Frank Lloyd Wright designed the Guggenheim Museum in New York.",1],
+["tf","Yves Saint Laurent introduced the women’s tuxedo, “Le Smoking”.",1],
+["order","Put these fashion eras in order","Earliest","Latest","Flapper dresses","Dior’s New Look","Miniskirts","Grunge flannel"],
+["order","Put these artists by year of birth","Earliest","Latest","Caravaggio","Vermeer","Monet","Rothko"]
+]},
+music:{
+kid:[
+["Which family of instruments does the violin belong to?","Strings","Brass","Woodwind","Percussion"],
+["Which family does the trumpet belong to?","Brass","Strings","Woodwind","Percussion"],
+["Which family does the drum belong to?","Percussion","Brass","Strings","Woodwind"],
+["Which instrument is the largest in the brass family?","Tuba","Trumpet","Trombone","French horn"],
+["Which brass instrument has a slide?","Trombone","Trumpet","Tuba","Bugle"],
+["Which woodwind instrument is played sideways?","Flute","Clarinet","Oboe","Bassoon"],
+["Who leads an orchestra with a baton?","The conductor","The composer","The first violin","The drummer"],
+["What do you call a person who writes music?","A composer","A conductor","A roadie","A critic"],
+["Which composer went deaf but kept writing music?","Beethoven","Mozart","Bach","Vivaldi"],
+["Which composer was a child star who wrote music at age five?","Mozart","Beethoven","Tchaikovsky","Chopin"],
+["In Peter and the Wolf, which instrument plays the duck?","Oboe","Flute","Clarinet","Bassoon"],
+["In Peter and the Wolf, which instrument plays the bird?","Flute","Oboe","Violin","French horn"],
+["Which ballet features the Sugar Plum Fairy?","The Nutcracker","Swan Lake","Sleeping Beauty","Cinderella"],
+["Which Disney film has the song “Let It Go”?","Frozen","Moana","Tangled","Encanto"],
+["Which Disney film has the song “How Far I’ll Go”?","Moana","Frozen","Coco","Brave"],
+["Which Disney film has “We Don’t Talk About Bruno”?","Encanto","Coco","Luca","Moana"],
+["Which film has the songs “Defying Gravity” and “Popular”?","Wicked","Frozen","Matilda","Annie"],
+["Which animated film features the group HUNTR/X and the hit “Golden”?","KPop Demon Hunters","Trolls","Sing","Turning Red"],
+["Which singer is famous for the Eras Tour?","Taylor Swift","Billie Eilish","Ariana Grande","Dua Lipa"],
+["Which singer often performs with her brother Finneas?","Billie Eilish","Olivia Rodrigo","Taylor Swift","Sabrina Carpenter"],
+["Which boy band was Harry Styles in?","One Direction","BTS","The Jonas Brothers","NSYNC"],
+["Which country does the group BTS come from?","South Korea","Japan","China","Thailand"],
+["Which band were John, Paul, George and Ringo in?","The Beatles","The Rolling Stones","Queen","ABBA"],
+["Which band sang “We Will Rock You” and “Bohemian Rhapsody”?","Queen","The Beatles","ABBA","Coldplay"],
+["Which Swedish group sang “Dancing Queen” and “Mamma Mia”?","ABBA","Roxette","Ace of Base","A-ha"],
+["Which singer was known as the King of Pop?","Michael Jackson","Elvis Presley","Prince","Justin Timberlake"],
+["Which singer was known as the King of Rock and Roll?","Elvis Presley","Michael Jackson","Chuck Berry","Bruce Springsteen"],
+["Which composer wrote the music for Star Wars and Harry Potter?","John Williams","Hans Zimmer","Danny Elfman","Alan Menken"],
+["How many musicians are in a quartet?","4","3","5","2"],
+["What do you call singing without any instruments?","A cappella","Karaoke","Opera","Rap"],
+["What is a play where the story is sung called?","An opera","A ballet","A concerto","A symphony"],
+["Which instrument does a pianist play?","Piano","Violin","Flute","Drums"],
+["Which instrument from Australia is a long wooden tube?","Didgeridoo","Bagpipes","Sitar","Banjo"],
+["Which instrument is linked with Scotland and has a bag and pipes?","Bagpipes","Accordion","Harmonica","Ukulele"],
+["Which small four-string guitar comes from Hawaii?","Ukulele","Banjo","Mandolin","Lute"],
+["Which Belgian invented the saxophone?","Adolphe Sax","Antonio Stradivari","Bartolomeo Cristofori","Theobald Boehm"],
+["tf","A cello is bigger than a violin.",1],
+["tf","Mozart was born in Austria.",1],
+["tf","A flute is a brass instrument.",0],
+["tf","Taylor Swift writes many of her own songs.",1],
+["tf","The saxophone was invented by a Belgian.",1],
+["tf","An orchestra has only string instruments.",0],
+["tf","Beethoven wrote “Ode to Joy”.",1],
+["order","Put these string instruments from highest sound to lowest","Highest","Lowest","Violin","Viola","Cello","Double bass"],
+["order","Put these from fewest players to most","Fewest","Most","Solo","Duet","Quartet","Orchestra"],
+["order","Put these composers in order of birth","Earliest","Latest","Bach","Mozart","Beethoven","John Williams"]
+],
+junior:[
+["What is the name of Billie Eilish’s brother and co-writer?","Finneas","Phineas","Felix","Fletcher"],
+["For which film did Billie Eilish write “What Was I Made For?”","Barbie","Wicked","Inside Out 2","Wonka"],
+["Which James Bond film has a theme song by Billie Eilish?","No Time to Die","Skyfall","Spectre","Casino Royale"],
+["Which Billie Eilish album came out in 2024?","Hit Me Hard and Soft","Happier Than Ever","When We All Fall Asleep, Where Do We Go?","Don’t Smile at Me"],
+["Which song was Billie Eilish’s breakout, first posted online in 2015?","Ocean Eyes","Bad Guy","Lovely","Bellyache"],
+["In which city did Billie Eilish grow up?","Los Angeles","New York","Nashville","Seattle"],
+["Which Taylor Swift album is named after the year she was born?","1989","Red","Fearless","Lover"],
+["Which Taylor Swift album was a surprise release in 2020, with a folk sound?","Folklore","Midnights","Reputation","Speak Now"],
+["What is Taylor Swift’s record-breaking tour of 2023–2024 called?","The Eras Tour","The Reputation Tour","The Midnights Tour","The Fearless Tour"],
+["Which album by Olivia Rodrigo includes “drivers license”?","Sour","Guts","Happier","Bitter"],
+["Which album by Sabrina Carpenter includes “Espresso”?","Short n’ Sweet","Emails I Can’t Send","Singular","Fruitcake"],
+["Which singer played Glinda in the film Wicked?","Ariana Grande","Sabrina Carpenter","Dua Lipa","Selena Gomez"],
+["Which K-pop group has members Jisoo, Jennie, Rosé and Lisa?","Blackpink","Twice","NewJeans","Red Velvet"],
+["Which duo had a hit with “APT.” in 2024?","Rosé and Bruno Mars","Lady Gaga and Bruno Mars","Jennie and Dua Lipa","Lisa and Rosalía"],
+["Which duo sang “Die with a Smile”?","Lady Gaga and Bruno Mars","Ariana Grande and The Weeknd","Miley Cyrus and Beyoncé","Billie Eilish and Khalid"],
+["Which singer released the country album Cowboy Carter?","Beyoncé","Taylor Swift","Kacey Musgraves","Miley Cyrus"],
+["Which rapper headlined the Super Bowl halftime show in 2025?","Kendrick Lamar","Drake","Travis Scott","Eminem"],
+["Which British singer names her albums after her age: 19, 21, 25 and 30?","Adele","Dua Lipa","Ellie Goulding","Jessie J"],
+["Which singer names his albums with maths symbols like + and ÷?","Ed Sheeran","Shawn Mendes","Sam Smith","Lewis Capaldi"],
+["Which New Zealand singer broke through at 16 with “Royals”?","Lorde","Benee","Kimbra","Tate McRae"],
+["Which Belgian singer performed “Formidable” while pretending to be drunk in Brussels?","Stromae","Angèle","Loïc Nottet","Gotye"],
+["Which Belgian singer is the sister of rapper Roméo Elvis?","Angèle","Selah Sue","Lous and the Yakuza","Axelle Red"],
+["Which music festival takes place each summer in the Belgian town of Boom?","Tomorrowland","Rock Werchter","Pukkelpop","Glastonbury"],
+["Which streaming service sends out “Wrapped” every December?","Spotify","Apple Music","YouTube Music","Tidal"],
+["Which award is shaped like a golden gramophone?","Grammy","Oscar","Emmy","Tony"],
+["Which instrument does Lizzo famously play?","Flute","Violin","Trumpet","Harp"],
+["Which composer wrote the music for The Lion King, Interstellar and Dune?","Hans Zimmer","John Williams","Howard Shore","Ludwig Göransson"],
+["Which composer wrote the scores for Star Wars, Jaws and Jurassic Park?","John Williams","Hans Zimmer","James Horner","Ennio Morricone"],
+["Which Russian composer wrote Swan Lake and The Nutcracker?","Tchaikovsky","Stravinsky","Rachmaninoff","Prokofiev"],
+["Which composer’s Ninth Symphony includes the “Ode to Joy”, the anthem of the European Union?","Beethoven","Mozart","Haydn","Brahms"],
+["Which composer wrote more than 600 works before dying at 35?","Mozart","Schubert","Chopin","Mendelssohn"],
+["Which Polish composer wrote almost only for the piano?","Chopin","Liszt","Dvořák","Paderewski"],
+["Which Baroque composer had 20 children and wrote the Brandenburg Concertos?","Bach","Handel","Vivaldi","Telemann"],
+["tf","Billie Eilish won an Oscar before she turned 21.",1],
+["tf","Taylor Swift re-recorded her early albums as “Taylor’s Version”.",1],
+["tf","BTS is from Japan.",0],
+["tf","Mozart and Beethoven were both born in Vienna.",0],
+["tf","A piano is both a string and a percussion instrument.",1],
+["tf","Stromae’s stage name is “Maestro” with the syllables swapped.",1],
+["order","Put these Taylor Swift albums in order of release","Earliest","Latest","Fearless","1989","Folklore","Midnights"],
+["order","Put these Billie Eilish songs in order of release","Earliest","Latest","Ocean Eyes","Bad Guy","What Was I Made For?","Birds of a Feather"],
+["order","Put these music formats from oldest to newest","Oldest","Newest","Vinyl record","Cassette tape","CD","Streaming"]
+],
+adult:[
+["At which 1965 festival did Bob Dylan shock folk fans by going electric?","Newport Folk Festival","Woodstock","Monterey Pop","Isle of Wight"],
+["Which 1967 Beatles album has a crowd of famous faces on its cover?","Sgt. Pepper’s Lonely Hearts Club Band","Revolver","Abbey Road","Rubber Soul"],
+["Which Beach Boys album of 1966 inspired the Beatles to make Sgt. Pepper?","Pet Sounds","Surfin’ U.S.A.","Smiley Smile","Wild Honey"],
+["Who designed the banana cover of The Velvet Underground & Nico?","Andy Warhol","Roy Lichtenstein","Peter Blake","Robert Crumb"],
+["In which year was the Woodstock festival held?","1969","1967","1970","1965"],
+["Which Canadian wrote “Both Sides, Now” and the album Blue?","Joni Mitchell","Buffy Sainte-Marie","Anne Murray","k.d. lang"],
+["Which Canadian poet-turned-singer wrote “Hallelujah”?","Leonard Cohen","Neil Young","Gordon Lightfoot","Bruce Cockburn"],
+["Which Carole King album of 1971 stayed on the charts for years?","Tapestry","Blue","Pearl","Rumours"],
+["Which English folk singer made Pink Moon and died at 26?","Nick Drake","Bert Jansch","John Martyn","Syd Barrett"],
+["Which Van Morrison album of 1968 is a stream-of-consciousness classic?","Astral Weeks","Moondance","Tupelo Honey","Veedon Fleece"],
+["Which band recorded Music from Big Pink after backing Bob Dylan?","The Band","The Byrds","Buffalo Springfield","The Grateful Dead"],
+["Which band’s album The Suburbs won the Album of the Year Grammy in 2011?","Arcade Fire","The National","Vampire Weekend","Mumford & Sons"],
+["Whose album For Emma, Forever Ago was recorded in a Wisconsin cabin?","Bon Iver","Iron & Wine","Fleet Foxes","Sufjan Stevens"],
+["Which Seattle band is led by Robin Pecknold?","Fleet Foxes","Band of Horses","The Head and the Heart","Death Cab for Cutie"],
+["Which Washington State band is fronted by Ben Gibbard?","Death Cab for Cutie","Modest Mouse","Fleet Foxes","Sleater-Kinney"],
+["Which band from Issaquah, Washington is led by Isaac Brock?","Modest Mouse","Built to Spill","Pavement","The Shins"],
+["Which Olympia, Washington band features Carrie Brownstein and Corin Tucker?","Sleater-Kinney","Bikini Kill","Heart","L7"],
+["Which member of The National co-produced Taylor Swift’s Folklore?","Aaron Dessner","Matt Berninger","Bryce Dessner","Bryan Devendorf"],
+["Which band released In Rainbows in 2007 as a pay-what-you-want download?","Radiohead","Wilco","Nine Inch Nails","Arcade Fire"],
+["Which Sheffield band is fronted by Alex Turner?","Arctic Monkeys","Pulp","The Libertines","Kasabian"],
+["Which Australian project is essentially one man, Kevin Parker?","Tame Impala","Pond","King Gizzard & the Lizard Wizard","Rüfüs Du Sol"],
+["Which supergroup is made up of Phoebe Bridgers, Julien Baker and Lucy Dacus?","boygenius","Haim","The Highwomen","MUNA"],
+["Which Japanese Breakfast leader wrote the memoir Crying in H Mart?","Michelle Zauner","Mitski Miyawaki","Karen O","Adrianne Lenker"],
+["What is the stage name of musician Annie Clark?","St. Vincent","Cat Power","Lorde","Feist"],
+["Which singer’s 2006 album Back to Black won five Grammys?","Amy Winehouse","Adele","Duffy","Norah Jones"],
+["Which Kate Bush song topped charts in 2022 after featuring in Stranger Things?","Running Up That Hill","Wuthering Heights","Cloudbusting","Babooshka"],
+["Which Patti Smith album of 1975 opens with “Gloria”?","Horses","Easter","Radio Ethiopia","Wave"],
+["Which singer from Washington State won Grammys for By the Way, I Forgive You?","Brandi Carlile","Neko Case","Kacey Musgraves","Maren Morris"],
+["Which Icelandic singer began in the band The Sugarcubes?","Björk","Emilíana Torrini","Laufey","Jónsi"],
+["Which Antwerp band released the albums Worst Case Scenario and The Ideal Crash?","dEUS","Soulwax","Hooverphonic","Balthazar"],
+["Which Belgian brothers perform as Soulwax and 2manydjs?","The Dewaele brothers","The Dardenne brothers","The Borlée brothers","The Hazard brothers"],
+["Which Belgian jazz guitarist with two working fingers on his left hand pioneered gypsy jazz?","Django Reinhardt","Toots Thielemans","Philip Catherine","René Thomas"],
+["Which Liège-born composer wrote a famous Violin Sonata in A major and Symphony in D minor?","César Franck","Eugène Ysaÿe","Henri Vieuxtemps","Guillaume Lekeu"],
+["Which Brussels music competition is one of the most prestigious for violin, piano, cello and voice?","Queen Elisabeth Competition","Chopin Competition","Tchaikovsky Competition","Leeds Competition"],
+["Whose Ninth Symphony premiered in 1824 with the composer unable to hear the applause?","Beethoven","Schubert","Bruckner","Mahler"],
+["Which ballet caused a riot at its Paris premiere in 1913?","The Rite of Spring","The Firebird","Swan Lake","Boléro"],
+["Which Mozart work was left unfinished at his death?","Requiem","Don Giovanni","The Magic Flute","Jupiter Symphony"],
+["Which Puccini aria ends with “Vincerò!” and was sung by Pavarotti at the 1990 World Cup?","Nessun dorma","O mio babbino caro","La donna è mobile","Che gelida manina"],
+["Which pianist’s 1955 and 1981 recordings of the Goldberg Variations are legendary?","Glenn Gould","Vladimir Horowitz","Martha Argerich","Arthur Rubinstein"],
+["Which composer wrote four operas making up the Ring cycle and built a theatre in Bayreuth?","Richard Wagner","Giuseppe Verdi","Richard Strauss","Carl Maria von Weber"],
+["Which composer is called the “father of the symphony”?","Joseph Haydn","Johann Sebastian Bach","Wolfgang Amadeus Mozart","Franz Schubert"],
+["Which Venetian composer was known as the “Red Priest”?","Antonio Vivaldi","Claudio Monteverdi","Tomaso Albinoni","Arcangelo Corelli"],
+["tf","Bob Dylan’s birth name was Robert Zimmerman.",1],
+["tf","The Beatles’ last public performance was on a London rooftop.",1],
+["tf","Joni Mitchell performed at Woodstock in 1969.",0],
+["tf","Jimi Hendrix closed Woodstock with his version of the US national anthem.",1],
+["tf","Clara Schumann was a celebrated concert pianist as well as a composer.",1],
+["tf","Sub Pop, the label that launched Nirvana, is based in Seattle.",1],
+["tf","Simon & Garfunkel’s “Mrs. Robinson” featured in the film The Graduate.",1],
+["order","Put these Beatles albums in order of release","Earliest","Latest","Rubber Soul","Revolver","Sgt. Pepper’s","Abbey Road"],
+["order","Put these festivals in order","Earliest","Latest","Newport, when Dylan went electric","Monterey Pop","Woodstock","Live Aid"],
+["order","Put these albums in order of release","Earliest","Latest","Pet Sounds","Blue","Horses","OK Computer"],
+["order","Put these composers in order of birth","Earliest","Latest","Vivaldi","Haydn","Schubert","Debussy"]
+]}};
+
+/* ---------- Rebuild: harder Kid level, new music mix, generated and hand-written additions ---------- */
+for(const c in QB)QB[c].kid=[];
+QB.music={kid:[],junior:[],adult:[]};
+const HAND=Object.assign({},HAND_A,HAND_B,HAND_C,HAND_D);
+for(const src of [HAND,GEN])for(const c in src)for(const l in src[c])QB[c][l].push(...src[c][l]);
+for(const c in QB)for(const l in QB[c]){const seenT=new Set();QB[c][l]=QB[c][l].filter(q=>{const k=q[0]==='order'?'o'+q[1]+q.slice(4).join('|'):q[0]==='tf'?'t'+q[1]:q[0];if(seenT.has(k))return false;seenT.add(k);return true})}
+SHOWDOWN.push(
+["In what year did the First World War begin?",1914,"",1850,1950],
+["In what year did the Second World War end?",1945,"",1900,1980],
+["In what year did Columbus first reach the Americas?",1492,"",1200,1700],
+["In what year was the US Declaration of Independence signed?",1776,"",1600,1900],
+["In what year did the French Revolution begin?",1789,"",1600,1900],
+["In what year was the Battle of Waterloo?",1815,"",1700,1900],
+["In what year did euro notes and coins come into use?",2002,"",1980,2015],
+["In what year did Spain win its first men’s World Cup?",2010,"",1950,2026],
+["In what year was the first Harry Potter book published?",1997,"",1980,2010],
+["In what year was YouTube founded?",2005,"",1990,2015],
+["In what year did Mount St. Helens erupt?",1980,"",1900,2010],
+["In what year was Billie Eilish born?",2001,"",1990,2010],
+["In what year was Taylor Swift born?",1989,"",1975,2000],
+["In what year was Lionel Messi born?",1987,"",1975,2000],
+["In what year was Amazon founded?",1994,"",1975,2010],
+["In what year did the Beatles release Abbey Road?",1969,"",1955,1980],
+["How many countries are members of the United Nations?",193,"countries",100,300],
+["How many elements are in the periodic table?",118,"elements",50,200],
+["How many bones are in one human hand, including the wrist?",27,"bones",5,60],
+["How many steps lead to the top of the Eiffel Tower, roughly?",1665,"steps",300,5000],
+["How tall is the Atomium in Brussels?",102,"metres",30,400],
+["How many spheres does the Atomium have?",9,"spheres",3,30],
+["How many strings does a concert harp have?",47,"strings",10,100],
+["How tall is Mount Everest?",8849,"metres",3000,15000],
+["How many US states touch the Pacific Ocean?",5,"states",1,15],
+["How many countries border Germany?",9,"countries",2,15],
+["How many provinces does Belgium have?",10,"provinces",3,30],
+["How many provinces and territories does Canada have altogether?",13,"provinces and territories",5,30],
+["How many cards are in a standard deck, without jokers?",52,"cards",30,80],
+["How many dots are on a pair of dice altogether?",42,"dots",20,80],
+["How many small coloured squares are on a whole Rubik’s Cube?",54,"squares",20,100],
+["How many grams are in one pound, rounded?",454,"grams",100,1000],
+["How many feet are in one mile?",5280,"feet",1000,10000],
+["How many numbered symphonies did Mozart write?",41,"symphonies",5,120],
+["How old was Pelé when he won his first World Cup?",17,"years old",14,30],
+["How many goals did Lionel Messi score at the 2022 World Cup?",7,"goals",1,15],
+["How many Ballon d’Or awards has Lionel Messi won?",8,"awards",2,12],
+["How many floors does the Empire State Building have?",102,"floors",40,200],
+["How tall is the Burj Khalifa?",828,"metres",300,1500],
+["How many years did the Berlin Wall stand?",28,"years",5,60],
+["How many wives did Henry VIII have?",6,"wives",1,12],
+["How far is it from Seattle to Brussels in a straight line, roughly?",7950,"km",3000,15000]
+);
+
 /* ---------- Constants ---------- */
 const ALL_CATS=[{id:'fb',name:'Football',icon:'⚽'},{id:'geo',name:'Geography',icon:'🌍'},{id:'sci',name:'Science',icon:'🔬'},{id:'fun',name:'Fun facts',icon:'💡'},{id:'animals',name:'Animals',icon:'🐾'},{id:'art',name:'Art and design',short:'Art',icon:'🎨'},{id:'brain',name:'Brain teasers',short:'Brain',icon:'🧩'},{id:'music',name:'Music',icon:'🎵'}];
 const CAT=Object.fromEntries(ALL_CATS.map(c=>[c.id,c]));
 const DEFAULT_CATS=['fb','geo','sci','fun'];
-const LEVELS={kid:{name:'Kid',hint:'about 6–8',rank:0,life:3},junior:{name:'Junior',hint:'about 9–12',rank:1,life:2},adult:{name:'Adult',hint:'grown-ups',rank:2,life:1}};
+const LEVELS={kid:{name:'Kid',hint:'about 7–9',rank:0,life:3},junior:{name:'Junior',hint:'about 10–13',rank:1,life:2},adult:{name:'Adult',hint:'grown-ups',rank:2,life:1}};
 const LEVEL_IDS=['kid','junior','adult'];
 const PCOLORS=['#FF7A59','#2FC4BE','#E77BC6','#9CCB3B','#8C9BFF','#FFA94D'];
 const SPECIAL={pick:{name:'Your pick',icon:'🎯',color:'var(--pick)'},double:{name:'Double',icon:'✨',color:'var(--double)'},steal:{name:'Steal',icon:'🧲',color:'var(--steal)'},challenge:{name:'Challenge',icon:'⚔️',color:'var(--challenge)'}};
-const SAVE='cleanSweep.game.v2', SEEN='cleanSweep.seen.v2', PREFS='cleanSweep.prefs.v1';
+const SAVE='cleanSweep.game.v3', SEEN='cleanSweep.seen.v3', PREFS='cleanSweep.prefs.v1';
 let CATS=[], SEGS=[];
 function setCats(ids){
   CATS=ids.map(id=>CAT[id]);
@@ -1223,10 +2186,14 @@ const byId=id=>S.players.find(p=>p.id===id);
 const medalCount=p=>CATS.filter(c=>p.medals[c.id]).length;
 const hasAll=p=>medalCount(p)===CATS.length;
 const nextLevel=l=>LEVEL_IDS[Math.min(2,LEVELS[l].rank+1)];
+/* home turf: harder questions in your best category; adults need one extra right answer there */
+const levelFor=(p,cat)=>p.home===cat?nextLevel(p.level):p.level;
+const tgt=(p,cat)=>S.target+(p.home===cat&&p.level==='adult'?1:0);
 const catColor=id=>CAT[id]?`var(--${id})`:SPECIAL[id].color;
 const nextName=()=>S.players[(S.turn+1)%S.players.length].name;
 const poss=n=>n.endsWith('s')?n+'’':n+'’s';
 const fmt=n=>Number(n).toLocaleString('en-US');
+const sdFmt=(sd,n)=>sd.unit===''?String(n):fmt(n);
 const portrait=()=>matchMedia('(orientation: portrait)').matches;
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2800)}
 
@@ -1266,7 +2233,7 @@ function ringSVG(p,size){
   const st=360/CATS.length;
   let s=`<svg class="ring" width="${size}" height="${size}" viewBox="-50 -50 100 100" role="img" aria-label="${medalCount(p)} of ${CATS.length} medals">`;
   CATS.forEach((c,i)=>{
-    const a0=i*st+4,a1=(i+1)*st-4,has=p.medals[c.id],f=has?1:p.progress[c.id]/S.target;
+    const a0=i*st+4,a1=(i+1)*st-4,has=p.medals[c.id],f=has?1:p.progress[c.id]/tgt(p,c.id);
     s+=`<path d="${arc(27,47,a0,a1)}" fill="var(--${c.id})" opacity="${has?1:.18}"/>`;
     if(!has&&f>0)s+=`<path d="${arc(27,27+20*f,a0,a1)}" fill="var(--${c.id})" opacity=".9"/>`;
   });
@@ -1325,16 +2292,17 @@ function newGame(d){
   setCats(d.cats);
   const noun=d.mode==='teams'?'Team':'Player',zero=v=>Object.fromEntries(d.cats.map(id=>[id,v]));
   S={settings:{mode:d.mode,length:d.length,timer:+d.timer},cats:d.cats.slice(),target:d.length==='quick'?2:3,
-    players:d.players.map((p,i)=>({id:'p'+i,name:(p.name.trim()||`${noun} ${i+1}`),level:p.level,color:PCOLORS[i],progress:zero(0),medals:zero(false),life:LEVELS[p.level].life})),
+    players:d.players.map((p,i)=>({id:'p'+i,name:(p.name.trim()||`${noun} ${i+1}`),level:p.level,color:PCOLORS[i],home:p.home,progress:zero(0),medals:zero(false),life:LEVELS[p.level].life})),
     turn:Math.floor(Math.random()*d.players.length),streak:0,turnsTaken:0,phase:'turn',q:null,ch:null,sd:null,pickFor:null,note:null,winner:null};
   view='game';keepAwake();beginTurn();
 }
 function gain(p,cat,n){
   const c=CAT[cat].name;
   if(p.medals[cat])return {t:`${p.name} already has the ${c} medal.`};
-  p.progress[cat]=Math.min(S.target,p.progress[cat]+n);
-  if(p.progress[cat]>=S.target){p.medals[cat]=true;return {t:`${p.name} wins the ${c} medal!`,medal:cat}}
-  const left=S.target-p.progress[cat];
+  const T=tgt(p,cat);
+  p.progress[cat]=Math.min(T,p.progress[cat]+n);
+  if(p.progress[cat]>=T){p.medals[cat]=true;return {t:`${p.name} wins the ${c} medal!`,medal:cat}}
+  const left=T-p.progress[cat];
   return {t:`+${n} ${c}. ${left} more right answer${left>1?'s':''} wins the medal.`};
 }
 /* medals can only be stolen from players at your level or harder */
@@ -1364,29 +2332,29 @@ function resolve(){
   applyResult(isRight(q));
 }
 function applyResult(ok){
-  const q=S.q,who=byId(q.playerId),ans=rightText(q),miss=q.timeout?'Time’s up':'Not this time';
+  const q=S.q,who=byId(q.playerId),ansLine=q.type==='order'?'The correct order is shown above.':`The answer: ${rightText(q)}.`,miss=q.timeout?'Time’s up':'Not this time';
   q.done=true;q.ok=ok;
   if(q.kind==='normal'||q.kind==='double'){
     if(ok){const g=gain(who,q.cat,q.kind==='double'?2:1);S.streak++;q.msg={tone:'good',head:'Correct!',t:g.t,medal:g.medal};q.next=(S.streak<3&&!hasAll(who))?'again':'pass';S.phase='reveal'}
     else if(q.type==='mc'&&thievesFor(q).length){if(q.sel!==null)q.disabled.push(q.sel);q.sel=null;q.missedBy=who.id;q.done=false;q.ok=null;S.phase='steal-offer'}
-    else{q.msg={tone:'bad',head:miss,t:`The answer: ${ans}.`};q.next='pass';S.phase='reveal'}
+    else{q.msg={tone:'bad',head:miss,t:`${ansLine}`};q.next='pass';S.phase='reveal'}
   }else if(q.kind==='steal-open'){
     if(ok){const g=gain(who,q.cat,1);q.msg={tone:'good',head:`${who.name} stole it!`,t:g.t,medal:g.medal}}
-    else q.msg={tone:'bad',head:'Nobody got it',t:`The answer: ${ans}.`};
+    else q.msg={tone:'bad',head:'Nobody got it',t:`${ansLine}`};
     q.next='pass';S.phase='reveal';
   }else if(q.kind==='steal-medal'){
     const t=byId(q.targetId),c=CAT[q.cat].name;
-    if(ok){t.medals[q.cat]=false;t.progress[q.cat]=Math.max(0,S.target-1);who.medals[q.cat]=true;who.progress[q.cat]=S.target;
+    if(ok){t.medals[q.cat]=false;t.progress[q.cat]=Math.max(0,tgt(t,q.cat)-1);who.medals[q.cat]=true;who.progress[q.cat]=tgt(who,q.cat);
       q.msg={tone:'good',head:'Medal stolen!',t:`${who.name} takes the ${c} medal from ${t.name}. ${t.name} needs one right answer to win it back.`,medal:q.cat}}
-    else q.msg={tone:'bad',head:'Steal failed',t:`${t.name} keeps the ${c} medal. The answer: ${ans}.`};
+    else q.msg={tone:'bad',head:'Steal failed',t:`${t.name} keeps the ${c} medal. ${ansLine}`};
     q.next='pass';S.phase='reveal';
   }else if(q.kind==='challenge'){
     if(ok)S.ch.scores[who.id]++;S.ch.round++;
-    q.msg={tone:ok?'good':'bad',head:ok?'Correct!':miss,t:ok?`${who.name} scores a point.`:`The answer: ${ans}.`};
+    q.msg={tone:ok?'good':'bad',head:ok?'Correct!':miss,t:ok?`${who.name} scores a point.`:`${ansLine}`};
     q.next='challenge';S.phase='reveal';
   }else if(q.kind==='final'){
     if(ok){S.winner=who.id;q.msg={tone:'good',head:'Champion!',t:`${who.name} answered the final question.`};q.next='win'}
-    else{q.msg={tone:'bad',head:'So close',t:`The answer: ${ans}. ${who.name} gets a new final question next turn.`};q.next='pass'}
+    else{q.msg={tone:'bad',head:'So close',t:`${ansLine} ${who.name} gets a new final question next turn.`};q.next='pass'}
     S.phase='reveal';
   }
   if(S.phase==='reveal'){sfx(ok?'good':'bad');if(q.msg.medal)setTimeout(()=>sfx('medal'),350)}else sfx('bad');
@@ -1439,7 +2407,7 @@ function landed(seg){
   const p=cur();
   if(CAT[seg]){
     if(p.medals[seg]){S.note=`You already have the ${CAT[seg].name} medal, so pick one you still need.`;S.pickFor='normal';S.phase='pick';return render()}
-    return askQuestion({kind:'normal',cat:seg,level:p.level,playerId:p.id});
+    return askQuestion({kind:'normal',cat:seg,level:levelFor(p,seg),playerId:p.id});
   }
   if(seg==='pick'||seg==='double'){S.pickFor=seg==='pick'?'normal':'double';S.phase='pick';return render()}
   if(seg==='steal'){
@@ -1450,8 +2418,8 @@ function landed(seg){
 }
 function pickCat(cat){
   const p=cur(),f=S.pickFor;S.note=null;
-  if(f==='normal'||f==='double')askQuestion({kind:f,cat,level:p.level,playerId:p.id});
-  else if(f==='final')askQuestion({kind:'final',cat,level:p.level,playerId:p.id});
+  if(f==='normal'||f==='double')askQuestion({kind:f,cat,level:levelFor(p,cat),playerId:p.id});
+  else if(f==='final')askQuestion({kind:'final',cat,level:levelFor(p,cat),playerId:p.id});
   else if(f==='challenge'){S.ch.cat=cat;S.phase='challenge-handoff';render()}
   else if(f==='sd'){
     const w=byId(S.sd.cur),g=gain(w,cat,S.sd.pts);toast(g.t);if(g.medal)sfx('medal');else sfx('good');
@@ -1572,9 +2540,10 @@ function setupHTML(){
   <div class="plist">${d.players.map((p,i)=>`<div class="prow" style="--pc:${PCOLORS[i]}"><span class="dot"></span>
     <input class="pname" data-i="${i}" placeholder="${noun} ${i+1}" value="${esc(p.name)}" maxlength="16" aria-label="${noun} ${i+1} name" autocomplete="off">
     <div class="seg">${LEVEL_IDS.map(l=>`<button data-act="lvl" data-i="${i}" data-l="${l}" class="${p.level===l?'on':''}">${LEVELS[l].name}<small>${LEVELS[l].hint}</small></button>`).join('')}</div>
-    ${d.players.length>2?`<button class="x" data-act="rm" data-i="${i}" aria-label="Remove ${noun.toLowerCase()} ${i+1}">✕</button>`:''}</div>`).join('')}
+    ${d.players.length>2?`<button class="x" data-act="rm" data-i="${i}" aria-label="Remove ${noun.toLowerCase()} ${i+1}">✕</button>`:''}
+    <div class="homes"><span class="lab">🏠 Home turf</span>${d.cats.map(id=>`<button class="hbtn ${id} ${p.home===id?'on':''}" style="--cc:var(--${id})" data-act="turf" data-i="${i}" data-c="${id}" aria-pressed="${p.home===id}">${CAT[id].icon} ${CAT[id].short||CAT[id].name}</button>`).join('')}</div></div>`).join('')}
     ${d.players.length<6?`<div><button class="ghost" data-act="add">Add ${noun.toLowerCase()}</button></div>`:''}
-    <p class="note">Each ${noun.toLowerCase()} gets questions at their own level. Lifelines per game: Kid 3, Junior 2, Adult 1.${d.mode==='teams'?' For a mixed team, pick the level of the youngest player.':''}</p></div>
+    <p class="note">Each ${noun.toLowerCase()} gets questions at their own level and must pick a home turf: their best category, where questions come one level harder. Adults need one extra right answer there instead. Lifelines per game: Kid 3, Junior 2, Adult 1.${d.mode==='teams'?' For a mixed team, pick the level of the youngest player.':''}</p></div>
   <div class="actions"><button class="ghost" data-act="home">Back</button><button class="btn big" data-act="start">Start game</button></div></main>`;
 }
 function rulesHTML(){
@@ -1585,6 +2554,8 @@ function rulesHTML(){
   <li>Questions come in three kinds: four choices, true or false, and put four things in order.</li>
   <li>Right answers fill your medal ring: 2 per medal in a quick game, 3 in a long one. A right answer earns another spin, up to three questions a turn.</li>
   <li>Land on a category you’ve already won and you pick one you still need instead.</li></ul>
+  <h3>Home turf</h3>
+  <p>Before the game, everyone picks a home turf: the category they know best. Questions there come one level harder. Adults already get the hardest questions, so they need one extra right answer to win that medal.</p>
   <h3>Lifelines</h3>
   <p>50:50 removes two wrong answers. Swap gives you a new question in the same category. Kids get 3 per game, juniors 2 and adults 1.</p>
   <h3>Special spaces</h3><ul>
@@ -1602,14 +2573,14 @@ function rulesHTML(){
 }
 function boardHTML(){
   const many=S.players.length>4;
-  return `<header class="top"><div class="board ${many?'many':''}">${S.players.map((p,i)=>`<div class="chip ${i===S.turn?'on':''}" style="--pc:${p.color}">${ringSVG(p,many?38:46)}<div class="chipt"><b><span class="pc"></span>${esc(p.name)}</b><span>${LEVELS[p.level].name} · 🛟 ${p.life}</span></div></div>`).join('')}</div><button class="ghost" data-act="menu">Menu</button></header>`;
+  return `<header class="top"><div class="board ${many?'many':''}">${S.players.map((p,i)=>`<div class="chip ${i===S.turn?'on':''}" style="--pc:${p.color}">${ringSVG(p,many?38:46)}<div class="chipt"><b><span class="pc"></span>${esc(p.name)}</b><span>${LEVELS[p.level].name} · 🛟 ${p.life} · 🏠${CAT[p.home]?CAT[p.home].icon:''}</span></div></div>`).join('')}</div><button class="ghost" data-act="menu">Menu</button></header>`;
 }
 function turnHTML(){
   const p=cur(),soon=turnsToShowdown()===1;
   return `<div class="turnwrap"><div class="wheelbox"><div class="pointer"></div>${wheelSVG()}</div>
   <div style="--pc:${p.color}"><p class="whose">${esc(poss(p.name))} turn</p>
   ${S.streak?`<span class="pill">Bonus spin ${S.streak+1} of 3</span>`:''}${soon?'<span class="pill hot">Showdown after this turn</span>':''}
-  <p class="sub">${LEVELS[p.level].name} questions. ${medalCount(p)} of ${CATS.length} medals. ${p.life} lifeline${p.life===1?'':'s'} left.</p>
+  <p class="sub">${LEVELS[p.level].name} questions. ${medalCount(p)} of ${CATS.length} medals. ${p.life} lifeline${p.life===1?'':'s'} left. Home turf: ${CAT[p.home].icon} ${CAT[p.home].name}.</p>
   <div id="spinResult" class="spinres"></div>
   <button class="btn big" data-act="spin">Spin the wheel</button></div></div>`;
 }
@@ -1626,9 +2597,12 @@ function choicesHTML(q,reveal,offer){
 }
 function orderHTML(q,reveal){
   if(reveal){
-    const sorted=q.items.map((x,i)=>({...x,i})).sort((a,b)=>a.rank-b.rank);
-    return `<div class="slots"><span class="end">${esc(q.from)}</span>${sorted.map((x,pos)=>{const good=q.seq[pos]!==undefined&&q.items[q.seq[pos]].rank===pos;
-      return `<div class="slot ${good?'ok':'no'}"><span class="n">${good?'✓':'✗'}</span>${esc(x.t)}</div>`}).join('')}<span class="end">${esc(q.to)}</span></div>`;
+    const sorted=q.items.slice().sort((a,b)=>a.rank-b.rank);
+    const yours=[0,1,2,3].map(pos=>{const ix=q.seq[pos];if(ix===undefined)return `<div class="slot no"><span class="n">${pos+1}</span>No answer</div>`;
+      const good=q.items[ix].rank===pos;return `<div class="slot ${good?'ok':'no'}"><span class="n">${good?'✓':'✗'}</span>${esc(q.items[ix].t)}</div>`}).join('');
+    const right=sorted.map((x,pos)=>`<div class="slot sol"><span class="n">${pos+1}</span>${esc(x.t)}</div>`).join('');
+    return `<div class="rowlab">Your order</div><div class="slots"><span class="end">${esc(q.from)}</span>${yours}<span class="end">${esc(q.to)}</span></div>
+    ${q.ok?'':`<div class="rowlab">Correct order</div><div class="slots"><span class="end">${esc(q.from)}</span>${right}<span class="end">${esc(q.to)}</span></div>`}`;
   }
   const slots=[0,1,2,3].map(pos=>{const ix=q.seq[pos];return ix===undefined?`<div class="slot"><span class="n">${pos+1}</span></div>`:`<div class="slot full"><span class="n">${pos+1}</span>${esc(q.items[ix].t)}</div>`}).join('');
   return `<div class="slots"><span class="end">${esc(q.from)}</span>${slots}<span class="end">${esc(q.to)}</span></div>
@@ -1649,6 +2623,7 @@ function questionHTML(){
   const kindTag={double:'Double points','steal-open':'Steal attempt','steal-medal':`Medal steal from ${q.targetId?esc(byId(q.targetId).name):''}`,final:'Final question',
     challenge:S.ch?`Challenge, question ${Math.floor((S.ch.round-(reveal?1:0))/2)+1} of ${S.ch.total/2}`:''}[q.kind];
   const fmtTag={tf:'True or false',order:'Put in order'}[q.type];
+  const turf=q.kind!=='steal-open'&&who.home===q.cat;
   let bottom='';
   if(reveal){
     const m=q.msg,labels={again:'Spin again',pass:`Pass to ${esc(nextName())}`,challenge:S.ch&&S.ch.round>=S.ch.total?'See who won':'Next question',win:'Celebrate'};
@@ -1659,7 +2634,7 @@ function questionHTML(){
       <div class="thieves">${thievesFor(q).map(p=>`<button class="thief" style="--pc:${p.color}" data-act="thief" data-id="${p.id}">${esc(p.name)}</button>`).join('')}<button class="ghost" data-act="nosteal">No steal</button></div></div>`;
   }else bottom=controlsHTML(q);
   return `<div class="qwrap" style="--cc:var(--${q.cat});--you:${who.color}">
-    <div class="qhead"><span class="catpill ${q.cat}">${c.icon} ${c.name}</span>${kindTag?`<span class="tag hot">${kindTag}</span>`:''}${fmtTag?`<span class="tag">${fmtTag}</span>`:''}
+    <div class="qhead"><span class="catpill ${q.cat}">${c.icon} ${c.name}</span>${kindTag?`<span class="tag hot">${kindTag}</span>`:''}${turf?'<span class="tag">🏠 Home turf</span>':''}${fmtTag?`<span class="tag">${fmtTag}</span>`:''}
     <span class="forwho">For <b>${esc(who.name)}</b>, ${LEVELS[q.level].name} level</span></div>
     ${q.vis?`<div class="qvis" role="img" aria-label="Picture for the question">${q.vis}</div>`:''}
     <h2 class="qtext">${esc(q.text)}</h2>
@@ -1682,7 +2657,7 @@ function pickHTML(){
 function stealTargetHTML(){
   const p=cur(),by={};
   stealTargets(p).forEach(x=>(by[x.id]=by[x.id]||[]).push(x.cat));
-  return `<div class="pickwrap"><h2>🧲 Steal a medal</h2><p class="sub">${esc(p.name)}, pick a medal you don’t have yet. You’ll get a ${LEVELS[nextLevel(p.level)].name}-level question. Get it right and the medal is yours.</p>
+  return `<div class="pickwrap"><h2>🧲 Steal a medal</h2><p class="sub">${esc(p.name)}, pick a medal you don’t have yet. You’ll get a harder question than usual. Get it right and the medal is yours.</p>
   <div class="opps">${Object.keys(by).map(id=>{const o=byId(id);return `<div class="opp card" style="--pc:${o.color}"><div style="display:flex;align-items:center;gap:.7rem">${ringSVG(o,52)}<b>${esc(o.name)}</b></div>
     <div class="mbtns">${by[id].map(c=>`<button class="mbtn ${c}" style="--cc:var(--${c})" data-act="stealmedal" data-id="${id}" data-c="${c}">${CAT[c].icon} ${CAT[c].name}</button>`).join('')}</div></div>`}).join('')}</div></div>`;
 }
@@ -1704,7 +2679,7 @@ function challengeResultHTML(){
   return `<div class="pickwrap center">${ch.medal?`<div class="medalpop" style="--cc:var(--${ch.medal})">${CAT[ch.medal].icon}</div>`:''}
   <h2>${esc(ch.head)}</h2><p class="sub">${esc(ch.result)}</p><button class="btn big" data-act="pass">Pass to ${esc(nextName())}</button></div>`;
 }
-const sdQ=sd=>`<p class="sdq">${esc(sd.text)}</p><p class="sdunit">${sd.unit?`Answer in ${esc(sd.unit)}. `:''}Somewhere between ${fmt(sd.lo)} and ${fmt(sd.hi)}.</p>`;
+const sdQ=sd=>`<p class="sdq">${esc(sd.text)}</p><p class="sdunit">${sd.unit?`Answer in ${esc(sd.unit)}. `:'Answer with a year. '}Somewhere between ${sdFmt(sd,sd.lo)} and ${sdFmt(sd,sd.hi)}.</p>`;
 function sdIntroHTML(){
   return `<div class="pickwrap center"><div class="sdtitle">Showdown!</div>
   <p class="sub">Everyone plays. Closest guess wins a free point in any category. Exactly right wins two.</p>
@@ -1726,8 +2701,8 @@ function sdEntryHTML(){
 function sdRevealHTML(){
   const sd=S.sd,{rows,best}=sdResults(),step=.8;
   return `<div class="pickwrap center sdrev"><p class="sdq">${esc(sd.text)}</p>
-  <div class="answerbig later">${fmt(sd.answer)} <span style="font-size:.35em;color:var(--muted)">${esc(sd.unit)}</span></div>
-  <div class="sdlist">${rows.map((r,i)=>{const p=byId(r.id);return `<div class="sdrow ${r.win?'top1':''}" style="--pc:${p.color};animation-delay:${(i+1)*step}s"><span class="pc"></span><b>${esc(p.name)}${r.win?' 🏆':''}</b><span class="g">${fmt(r.g)}</span><span class="off">${r.d===0?'Exactly right!':'off by '+fmt(r.d)}</span></div>`}).join('')}</div>
+  <div class="answerbig later">${sdFmt(sd,sd.answer)} <span style="font-size:.35em;color:var(--muted)">${esc(sd.unit)}</span></div>
+  <div class="sdlist">${rows.map((r,i)=>{const p=byId(r.id);return `<div class="sdrow ${r.win?'top1':''}" style="--pc:${p.color};animation-delay:${(i+1)*step}s"><span class="pc"></span><b>${esc(p.name)}${r.win?' 🏆':''}</b><span class="g">${sdFmt(sd,r.g)}</span><span class="off">${r.d===0?'Exactly right!':'off by '+fmt(r.d)+(sd.unit===''?(r.d===1?' year':' years'):'')}</span></div>`}).join('')}</div>
   <div class="later" style="animation-delay:${(rows.length+1)*step}s"><button class="btn big go" data-act="sdcont">${best===0?'Bullseye! Claim two points':'Claim the point'}</button></div></div>`;
 }
 function winHTML(){
@@ -1812,7 +2787,9 @@ document.addEventListener('click',e=>{
       if(i>=0){if(draft.cats.length<=4){toast('Keep at least 4 categories.');return}draft.cats.splice(i,1)}
       else{if(draft.cats.length>=6){toast('You can pick up to 6 categories.');return}draft.cats.push(d.c)}
       draft.cats=ALL_CATS.map(c=>c.id).filter(id=>draft.cats.includes(id));render();break}
-    case 'start':prefs.lastSetup=draft;store.set(PREFS,prefs);newGame(draft);break;
+    case 'turf':draft.players[+d.i].home=d.c;render();break;
+    case 'start':if(draft.players.some(p=>!draft.cats.includes(p.home))){toast('Pick a home turf for everyone first: the category where they want harder questions.');return}
+      prefs.lastSetup=draft;store.set(PREFS,prefs);newGame(draft);break;
     case 'spin':spin();break;
     case 'opt':choose(+d.i);break;
     case 'lock':lockIn();break;
@@ -1823,16 +2800,16 @@ document.addEventListener('click',e=>{
     case 'thief':startSteal(d.id);break;
     case 'nosteal':noSteal();break;
     case 'choose':pickCat(d.c);break;
-    case 'stealmedal':askQuestion({kind:'steal-medal',cat:d.c,level:nextLevel(cur().level),playerId:cur().id,targetId:d.id});break;
+    case 'stealmedal':askQuestion({kind:'steal-medal',cat:d.c,level:nextLevel(levelFor(cur(),d.c)),playerId:cur().id,targetId:d.id});break;
     case 'opp':{const n=S.target===2?4:6;S.ch={a:cur().id,b:d.id,cat:null,round:0,total:n,scores:{[cur().id]:0,[d.id]:0}};S.pickFor='challenge';S.phase='pick';render();break}
-    case 'chq':{const pid=chPlayer();askQuestion({kind:'challenge',cat:S.ch.cat,level:byId(pid).level,playerId:pid});break}
+    case 'chq':{const pid=chPlayer();askQuestion({kind:'challenge',cat:S.ch.cat,level:levelFor(byId(pid),S.ch.cat),playerId:pid});break}
     case 'pass':nextTurn();break;
     case 'sdstart':S.phase='sd-pass';render();break;
     case 'sdready':S.phase='sd-entry';render();break;
     case 'key':sdKey(d.k);break;
     case 'sdlock':sdLock();break;
     case 'sdcont':sdContinue();break;
-    case 'again':newGame({cats:S.cats,mode:S.settings.mode,length:S.settings.length,timer:S.settings.timer,players:S.players.map(p=>({name:p.name,level:p.level}))});break;
+    case 'again':newGame({cats:S.cats,mode:S.settings.mode,length:S.settings.length,timer:S.settings.timer,players:S.players.map(p=>({name:p.name,level:p.level,home:p.home}))});break;
     case 'menu':if(spinning||(S.q&&S.q.locked))return;menuOpen=true;confirmEnd=false;render();break;
     case 'closemenu':menuOpen=false;render();break;
     case 'refright':referee(true);break;
