@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Showdown">
+<meta name="theme-color" content="#0a3c78">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAFYklEQVR4Xu3cu7LbVBTGcSmTynoSblVa0gYGHoFMGG4z3JKaHoZQJ0wykwt3XiJtaNMAIU+innEUnMOxZWnJe+/1ra3/b1Kk0LHlreVvr2UfnXbz5lcNcMgFlgVjLjZty+qA5IANyYFR9Byg54AdyQGSA3YkB0gO2JEcIDlgR3KA5IAdyQGSA3YkB0gO2JEcIDlgR3IgYHL0139fz3Xrbr8n+GLbzVtfS53Wqmpin1SVXNj+9rnMv5VXRtM8f2/IXI528/Y3CsnRf/mbwmno6L6/6n4yEslBZezbrol3hPhPK/0Xv7q/RTS5r4z2fStXHmtetsQeXR59QNf7EdvNO98mfqkW/ee/HD58JWVx1kiJdHeuWVY0pXbz7s2Uj2fRf/bzgcNXWBZTJdLdfd+yrsn49xyQJdZzrDw2mma7Avv7i1Pn4ZYc/ac/yb5j1HitlVJyEBsDmfBwSw7oU0oOHOHRdpAcGEVyBEFyQArJEQTJASkkRxAkB6SQHEGQHJBCcgRBckAKyREEyQEpfvetaLp1SfO8XO5h4VtZjCI5zhhiQzM8PO5+IzkwimklCKYVT2d3E82dpTiSIwiSA1KYVp7b30fUdhamFUghOcY/2JAKD5IDUphWgmBacXB875DaWYojOYIgOSBl3dPKnF1jzjEFMK1ACj1HEPQcRc3fL+YfWReSIwiSA1LWOq1Ydwrr8ckxrUDKKpNjWQws+6lUSA5IYVoJgmmlhFN2h1N+NiCSIwiP5LgYZG2OKvmGNj3XjSehl1c1OUzXQJbpVRyvJI/kUL1XNvh7zkzy9aomR9O8WC/Tmy+imWVBchwwc+2C0n51ET4h1V7B5Uyvy+MT0iDTyrCO1WwxprLwEyE5doKs6YRlr8IjOVSnlTHLVlZHqPMXnlaO10e4LebEsmBaMThxrQuLdbb/CdVznBNlxZOcp0fPEWRaCbrFJCkLP5GTQ3yKSVsZHskRbVqJMsWkrQwnAacV8S0mU1kwrSSQ6drM5PvsqVXRc4hMMVkrw6PnCD6tiGwxWcvCT43JUXiKKVMZHslRy7SCDKpOjjLfv5R5FpIDUir6nKNufM4BKfX2HGVagUGB56LngBR6jiDoOSCl0p6jQBNwTu5npOeAFHqOIOg5/JX5Fi2IGpNj2fa/K4vFt17eupSxtkgON/uBQYQ0tU4rJmN1IFUfTCsJmPaUG08mKmDygMIDbVmVfs4xx/xgmH9kPiRHOdbrbT2+CjVOK8ctvsyLp5gkmFZONdlwLK6MnclHmDyHONbUc0xe15lSPY6JR89R6X0r5yS/nL5bTCkrSI7klTF/i0nIIzkqum/l4GafrzIGBx+/lraj3mkld1mcy4/cBcG0kkyxynDZYkqpsecoXxlHtphU6DmWG1Ld+lVIcrsTyL3LFFFRcngFxr4cZ0JyLJfjepxC7XwWqXdaqQzTCqSQHEGQHJBCcgRBckAKyREEyQEpJEcQJAekkBxBkByQQnIEQXJACskRBMkBKSRHEGtPjkeXg1yozGTWwe13SLs/72Ve43ps14rfIdV507iRiY2moecIwaPhaJqm3dx87Lg+/RufHH72K55n5WMkM7q/7vucz7Y4vvvD67kH/esfj57ASkpkfCvp/n7geHW0/z6H0ga8Qv6fc3RPH/avfbTCpZ/UPX3YtJNHZSTx9zm2q4D/U1gT/+QYdP/8sO0/Xv2QIhmWwjczBhLJsfNiXVZMagVUkuNlfTz7cfh//8oH6ymS3atWCIwd3Wnl5XrBiVxyQIdWzwEpJAdGkRwYRXKA5IAdyQGSA3YkB0gO2JEcIDlgR3KA5IAdyQGSA3YkB0gO2JEcIDlg9y/E6PSpVJeyjAAAAABJRU5ErkJggg==">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAFYklEQVR4Xu3cu7LbVBTGcSmTynoSblVa0gYGHoFMGG4z3JKaHoZQJ0wykwt3XiJtaNMAIU+innEUnMOxZWnJe+/1ra3/b1Kk0LHlreVvr2UfnXbz5lcNcMgFlgVjLjZty+qA5IANyYFR9Byg54AdyQGSA3YkB0gO2JEcIDlgR3KA5IAdyQGSA3YkB0gO2JEcIDlgR3IgYHL0139fz3Xrbr8n+GLbzVtfS53Wqmpin1SVXNj+9rnMv5VXRtM8f2/IXI528/Y3CsnRf/mbwmno6L6/6n4yEslBZezbrol3hPhPK/0Xv7q/RTS5r4z2fStXHmtetsQeXR59QNf7EdvNO98mfqkW/ee/HD58JWVx1kiJdHeuWVY0pXbz7s2Uj2fRf/bzgcNXWBZTJdLdfd+yrsn49xyQJdZzrDw2mma7Avv7i1Pn4ZYc/ac/yb5j1HitlVJyEBsDmfBwSw7oU0oOHOHRdpAcGEVyBEFyQArJEQTJASkkRxAkB6SQHEGQHJBCcgRBckAKyREEyQEpfvetaLp1SfO8XO5h4VtZjCI5zhhiQzM8PO5+IzkwimklCKYVT2d3E82dpTiSIwiSA1KYVp7b30fUdhamFUghOcY/2JAKD5IDUphWgmBacXB875DaWYojOYIgOSBl3dPKnF1jzjEFMK1ACj1HEPQcRc3fL+YfWReSIwiSA1LWOq1Ydwrr8ckxrUDKKpNjWQws+6lUSA5IYVoJgmmlhFN2h1N+NiCSIwiP5LgYZG2OKvmGNj3XjSehl1c1OUzXQJbpVRyvJI/kUL1XNvh7zkzy9aomR9O8WC/Tmy+imWVBchwwc+2C0n51ET4h1V7B5Uyvy+MT0iDTyrCO1WwxprLwEyE5doKs6YRlr8IjOVSnlTHLVlZHqPMXnlaO10e4LebEsmBaMThxrQuLdbb/CdVznBNlxZOcp0fPEWRaCbrFJCkLP5GTQ3yKSVsZHskRbVqJMsWkrQwnAacV8S0mU1kwrSSQ6drM5PvsqVXRc4hMMVkrw6PnCD6tiGwxWcvCT43JUXiKKVMZHslRy7SCDKpOjjLfv5R5FpIDUir6nKNufM4BKfX2HGVagUGB56LngBR6jiDoOSCl0p6jQBNwTu5npOeAFHqOIOg5/JX5Fi2IGpNj2fa/K4vFt17eupSxtkgON/uBQYQ0tU4rJmN1IFUfTCsJmPaUG08mKmDygMIDbVmVfs4xx/xgmH9kPiRHOdbrbT2+CjVOK8ctvsyLp5gkmFZONdlwLK6MnclHmDyHONbUc0xe15lSPY6JR89R6X0r5yS/nL5bTCkrSI7klTF/i0nIIzkqum/l4GafrzIGBx+/lraj3mkld1mcy4/cBcG0kkyxynDZYkqpsecoXxlHtphU6DmWG1Ld+lVIcrsTyL3LFFFRcngFxr4cZ0JyLJfjepxC7XwWqXdaqQzTCqSQHEGQHJBCcgRBckAKyREEyQEpJEcQJAekkBxBkByQQnIEQXJACskRBMkBKSRHEGtPjkeXg1yozGTWwe13SLs/72Ve43ps14rfIdV507iRiY2moecIwaPhaJqm3dx87Lg+/RufHH72K55n5WMkM7q/7vucz7Y4vvvD67kH/esfj57ASkpkfCvp/n7geHW0/z6H0ga8Qv6fc3RPH/avfbTCpZ/UPX3YtJNHZSTx9zm2q4D/U1gT/+QYdP/8sO0/Xv2QIhmWwjczBhLJsfNiXVZMagVUkuNlfTz7cfh//8oH6ymS3atWCIwd3Wnl5XrBiVxyQIdWzwEpJAdGkRwYRXKA5IAdyQGSA3YkB0gO2JEcIDlgR3KA5IAdyQGSA3YkB0gO2JEcIDlg9y/E6PSpVJeyjAAAAABJRU5ErkJggg==">
+<title>Sea Creature Showdown</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;position:fixed;inset:0;
+  font-family:ui-rounded,"SF Pro Rounded",-apple-system,system-ui,"Segoe UI",sans-serif;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;
+  background:#06284f;color:#fff}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+.screen{position:absolute;inset:0;display:none}
+.screen.on{display:flex}
+
+/* ---------- SETUP ---------- */
+#setup{flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;
+  background:radial-gradient(ellipse at 50% 0%,#2a8fd8 0%,#0b4d8f 45%,#06284f 100%);overflow:auto}
+.logo{font-size:clamp(34px,7vw,64px);font-weight:900;text-align:center;line-height:1;
+  text-shadow:0 4px 0 #04213f,0 8px 20px rgba(0,0,0,.4);letter-spacing:.5px}
+.logo small{display:block;font-size:.38em;font-weight:700;color:#ffd166;margin-top:10px;letter-spacing:2px}
+.emojis{font-size:clamp(30px,6vw,48px);letter-spacing:6px}
+.panel{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.25);border-radius:22px;
+  padding:18px 20px;width:min(560px,100%);display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row label{font-weight:800;min-width:110px;font-size:17px}
+.row input{flex:1;min-width:140px;font:inherit;font-size:20px;font-weight:700;padding:10px 14px;border-radius:14px;border:0;
+  background:#fff;color:#06284f;-webkit-user-select:text;user-select:text}
+.seg{display:flex;flex:1;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;padding:12px 8px;border-radius:14px;background:rgba(255,255,255,.15);font-weight:800;font-size:16px;min-width:90px}
+.seg button.on{background:#ffd166;color:#06284f;box-shadow:0 4px 0 #c99a2e}
+.big{font-size:26px;font-weight:900;padding:16px 40px;border-radius:20px;background:#ff8c2a;box-shadow:0 6px 0 #b65a0c;}
+.big:active{transform:translateY(4px);box-shadow:0 2px 0 #b65a0c}
+.link{background:rgba(255,255,255,.15);padding:12px 22px;border-radius:16px;font-weight:800;font-size:17px}
+.hint{font-size:14px;opacity:.8;text-align:center;max-width:560px;line-height:1.4}
+
+/* ---------- GAME ---------- */
+#game{flex-direction:column;background:linear-gradient(#0b4d8f,#06284f 50%,#0b4d8f)}
+.half{flex:1;min-height:0;display:flex;flex-direction:column;padding:10px 14px;gap:8px;position:relative}
+.half.p1{transform:rotate(180deg)}
+.mid{height:40px;flex:none;display:flex;align-items:center;justify-content:center;gap:16px;
+  background:repeating-linear-gradient(90deg,#1c7fd1 0 30px,#1670bd 30px 60px);border-block:3px solid #7fd3ff;}
+.mid button{background:rgba(0,0,0,.25);width:34px;height:30px;border-radius:10px;font-size:18px}
+.mid .wave{font-size:18px;opacity:.85}
+
+.hud{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:clamp(14px,2.2vh,19px);flex:none}
+.hud .me{color:#ffd166}
+.pill{background:rgba(0,0,0,.25);padding:4px 12px;border-radius:999px}
+.banner{flex:none;text-align:center;font-weight:900;font-size:clamp(16px,2.6vh,24px);min-height:1.3em}
+.banner .sub{display:block;font-size:.65em;font-weight:700;opacity:.85}
+
+.stage{flex:1;min-height:0;display:flex;gap:12px;align-items:stretch;justify-content:center}
+.cardwrap{container-type:size;flex:1;min-width:0;max-width:640px;min-height:0;display:flex;perspective:900px}
+.stage.reveal .cardwrap{max-width:none;flex:1.1}
+
+.card{flex:1;display:flex;border-radius:22px;overflow:hidden;background:#fffaf0;color:#1b2a3a;
+  border:5px solid var(--c);box-shadow:0 8px 0 rgba(0,0,0,.25);transition:filter .3s,transform .3s}
+.card .art{width:38%;flex:none;background:radial-gradient(circle at 50% 40%,var(--l),var(--c));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:6px}
+.card .emo{font-size:min(26cqw,46cqh);line-height:1;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+.card .type{position:absolute;bottom:8px;background:rgba(255,255,255,.9);color:#1b2a3a;font-weight:800;
+  font-size:min(3.4cqw,13px);padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:1px}
+.card .body{flex:1;display:flex;flex-direction:column;padding:8px 10px;min-width:0;gap:4px}
+.card .name{font-weight:900;font-size:min(6cqw,9cqh,30px);color:var(--d);line-height:1.1;padding:2px 4px}
+.stats{flex:1;display:flex;flex-direction:column;gap:5px;min-height:0}
+.stat{flex:1;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:12px;background:#eef3f8;
+  color:#1b2a3a;font-weight:800;font-size:min(4.4cqw,7cqh,22px);min-height:0;text-align:left;border:3px solid transparent}
+.stat .ic{width:1.4em;text-align:center}
+.stat .lb{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .v{font-variant-numeric:tabular-nums;white-space:nowrap}
+.chooser .stat{background:#e2effc;box-shadow:0 3px 0 #b8cde3}
+.chooser .stat:active{transform:translateY(2px);box-shadow:none}
+.stat.sel{background:#ffd166 !important;border-color:#e09a00;box-shadow:none}
+.card.win{box-shadow:0 0 0 5px #ffd166,0 0 30px 8px rgba(255,209,102,.8)}
+.card.lose{filter:saturate(.35) brightness(.8)}
+@container (max-aspect-ratio: 1.15/1){
+  .card{flex-direction:column}
+  .card .art{width:100%;height:30%}
+  .card .emo{font-size:min(20cqh,30cqw)}
+  .card .name{font-size:min(7.5cqw,5cqh,30px)}
+  .stat{font-size:min(5.2cqw,4.2cqh,22px)}
+}
+
+.back{flex:1;border-radius:22px;border:5px solid #ffd166;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:repeating-radial-gradient(circle at 50% 120%,#1a74c4 0 18px,#135fa6 18px 36px);box-shadow:0 8px 0 rgba(0,0,0,.25)}
+.back .b1{font-size:min(16cqh,16cqw)}
+.back .b2{font-weight:900;font-size:min(6cqh,6cqw);text-align:center;color:#ffd166;text-shadow:0 3px 0 #04213f}
+.flip{animation:flip .55s ease-out both}
+@keyframes flip{0%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+.pop{animation:pop .45s ease-out both}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+
+.controls{flex:none;display:flex;gap:10px;justify-content:center;align-items:stretch;min-height:56px}
+.hl{flex:1;max-width:220px;border-radius:16px;font-weight:900;font-size:clamp(15px,2.3vh,20px);padding:8px;
+  background:rgba(255,255,255,.14);border:3px solid rgba(255,255,255,.3)}
+.hl.on.hi{background:#2ecc71;border-color:#bff5d4;box-shadow:0 4px 0 #1a8a4a}
+.hl.on.lo{background:#9b59f6;border-color:#e2cdff;box-shadow:0 4px 0 #6a2fc0}
+.go{flex:1.2;max-width:260px;border-radius:16px;font-weight:900;font-size:clamp(17px,2.6vh,24px);background:#ff8c2a;box-shadow:0 5px 0 #b65a0c}
+.go:disabled,.hl:disabled{opacity:.35;box-shadow:none}
+.wait{align-self:center;font-weight:700;opacity:.85;font-size:clamp(14px,2.2vh,18px);text-align:center}
+
+.result{flex:1;min-width:0;max-width:440px;display:flex;flex-direction:column;gap:8px;justify-content:center;
+  background:rgba(0,0,0,.28);border-radius:20px;padding:12px 14px;overflow:hidden}
+.result .t{font-size:clamp(20px,3.4vh,34px);font-weight:900;text-align:center;line-height:1.1}
+.result .rule{text-align:center;font-weight:800;font-size:clamp(13px,2vh,17px);opacity:.9}
+.vs{display:flex;flex-direction:column;gap:5px}
+.vsrow{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:12px;padding:5px 10px;font-weight:800;font-size:clamp(13px,2.1vh,18px)}
+.vsrow.w{background:#ffd166;color:#06284f}
+.vsrow .e{font-size:1.5em}
+.vsrow .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fact{font-size:clamp(12px,1.85vh,16px);line-height:1.3;background:rgba(255,255,255,.1);border-radius:12px;padding:7px 10px}
+.next{border-radius:16px;font-weight:900;font-size:clamp(16px,2.5vh,22px);padding:10px;background:#2ecc71;box-shadow:0 5px 0 #1a8a4a}
+
+.over{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.over .trophy{font-size:min(15vh,110px)}
+.over .t{font-size:clamp(26px,5vh,48px);font-weight:900}
+.over .s{font-weight:700;opacity:.9;font-size:clamp(15px,2.4vh,20px)}
+.over .btns{display:flex;gap:12px}
+
+/* ---------- MENU / BOOK ---------- */
+#menu{align-items:center;justify-content:center;background:rgba(3,20,40,.8);z-index:20}
+#menu .panel{background:#0b4d8f;align-items:stretch}
+#menu h2{margin:0;text-align:center}
+#book{flex-direction:column;background:#06284f;z-index:30}
+#book header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;flex:none;background:#0b4d8f}
+#book header h2{margin:0}
+.grid{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:16px}
+.grid .cardwrap{height:330px;max-width:none}
+.grid .fact{color:#1b2a3a;background:#eef3f8;margin-top:4px}
+.confetti{position:fixed;top:-20px;font-size:26px;pointer-events:none;z-index:50;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+</style>
+</head>
+<body>
+
+<div id="setup" class="screen on">
+  <div class="emojis">🐋🦈🐙🦦🦀</div>
+  <div class="logo">Sea Creature Showdown<small>▲ HIGH OR LOW? YOU DECIDE ▼</small></div>
+  <div class="panel">
+    <div class="row"><label>🔻 Near side</label><input id="n0" placeholder="Player 1" maxlength="12"></div>
+    <div class="row"><label>🔺 Far side</label><input id="n1" placeholder="Player 2" maxlength="12"></div>
+    <div class="row"><label>Game length</label>
+      <div class="seg" data-k="mode"><button data-v="5">Quick<br><small>first to 5</small></button><button data-v="10" class="on">Normal<br><small>first to 10</small></button><button data-v="deck">Full deck<br><small>win all cards</small></button></div></div>
+    <div class="row"><label>Who starts</label>
+      <div class="seg" data-k="first"><button data-v="0">Near</button><button data-v="r" class="on">Random 🎲</button><button data-v="1">Far</button></div></div>
+    <div class="row"><label>Units</label>
+      <div class="seg" data-k="units"><button data-v="imp" class="on">feet · lbs · mph</button><button data-v="met">m · kg · km/h</button></div></div>
+  </div>
+  <button class="big" id="start">Start! 🌊</button>
+  <button class="link" id="openBook">📖 Card Book</button>
+  <div class="hint">Lay the iPad flat between you. Each player gets the half of the screen facing them.<br>Your opponent's card stays face-down until the Showdown.</div>
+</div>
+
+<div id="game" class="screen">
+  <div class="half p1" id="h1"></div>
+  <div class="mid"><span class="wave">〰️</span><button id="menuBtn">☰</button><span class="wave">〰️</span></div>
+  <div class="half p0" id="h0"></div>
+</div>
+
+<div id="menu" class="screen">
+  <div class="panel">
+    <h2>Paused</h2>
+    <button class="big" data-m="resume">Keep playing</button>
+    <button class="link" data-m="book">📖 Card Book</button>
+    <button class="link" data-m="sound">🔊 Sound: on</button>
+    <button class="link" data-m="quit">🏠 Quit to menu</button>
+  </div>
+</div>
+
+<div id="book" class="screen">
+  <header><h2>📖 Card Book</h2><button class="link" id="closeBook">Close ✕</button></header>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+// ---------- DATA (approximate record / large-adult values, metric) ----------
+// danger = risk to people 1-10 · len m, wt kg, spd km/h (top speed: swimming, running or flying), dep m (deepest dive / depth found), life years
+const T={
+  whale:{n:'Whale',c:'#1f6fc5',l:'#8fd0ff',d:'#0d4a8f'},
+  dolphin:{n:'Dolphin',c:'#2397b8',l:'#a5ecff',d:'#11637d'},
+  seal:{n:'Seal & Otter',c:'#7b5a3c',l:'#e6c9a5',d:'#5a3e24'},
+  shark:{n:'Shark',c:'#5b5f8f',l:'#c5c9ef',d:'#373a63'},
+  fish:{n:'Fish',c:'#1e9a5a',l:'#a6f0c6',d:'#0f6a3b'},
+  inv:{n:'No Backbone',c:'#e0632a',l:'#ffc9a6',d:'#a33d0e'},
+  jelly:{n:'Jelly',c:'#c84fb0',l:'#ffc8f1',d:'#8a2577'},
+  bird:{n:'Seabird',c:'#d9a400',l:'#fff0a8',d:'#8a6800'},
+  reptile:{n:'Reptile',c:'#5f9a1e',l:'#d6f5a6',d:'#3f6a0f'}
+};
+const C=[
+ ['Blue Whale','🐋','whale',30,150000,33,500,90,2,'The biggest animal that has ever lived, bigger than any dinosaur! Its heart is as big as a small car.'],
+ ['Gray Whale','🐳','whale',14.9,41000,16,170,70,2,'Swims about 10,000 miles a year between Alaska and Mexico, right past the Pacific coast in winter!'],
+ ['Humpback Whale','🐋','whale',16,36000,27,240,50,2,'Male humpbacks sing songs that last up to 20 minutes and travel miles through the water.'],
+ ['Orca','🐋','dolphin',9.8,6000,56,760,90,4,'Orcas are actually the biggest dolphins! Families near Seattle have their own "accent" of calls.'],
+ ['Sperm Whale','🐳','whale',18,45000,37,2250,70,3,'Has the biggest brain of any animal ever and dives into the dark to hunt giant squid.'],
+ ['Pacific White-sided Dolphin','🐬','dolphin',2.5,180,50,215,40,1,'Loves to leap, flip and surf boat waves in groups of over 100.'],
+ ["Dall's Porpoise",'🐬','dolphin',2.3,220,55,500,20,1,'So fast it makes a "rooster tail" of spray when it zooms along the surface.'],
+ ['Great White Shark','🦈','shark',6.1,2000,56,1200,70,9,'Has about 300 teeth in rows. Lost teeth get replaced its whole life!'],
+ ['Bluntnose Sixgill Shark','🦈','shark',5.5,590,8,2500,80,3,'Lives in Puget Sound near Seattle! Its family is older than the dinosaurs.'],
+ ['Spiny Dogfish','🦈','shark',1.2,9,15,900,80,2,'A mom dogfish carries her babies for almost 2 years, longer than an elephant!'],
+ ['Leopard Shark','🦈','shark',1.8,18,10,90,30,1,'Totally harmless to people. Swims in big spotted schools in shallow bays.'],
+ ['Ocean Sunfish','🐡','fish',3.1,2300,3,800,10,1,'The heaviest bony fish in the world. One mom can lay 300 million eggs!'],
+ ['Chinook Salmon','🐟','fish',1.5,57,25,300,7,1,'Swims hundreds of miles up rivers to the exact stream where it was born.'],
+ ['Pacific Halibut','🐟','fish',2.7,230,14,1100,55,2,'Born with an eye on each side, then one eye slides over so both are on top!'],
+ ['Rougheye Rockfish','🐠','fish',0.97,6.7,5,900,205,2,'One was found that was 205 years old! It was born before the Civil War.'],
+ ['Wolf Eel','🐟','fish',2.4,18,2,225,28,3,'Not really an eel! Wolf eel couples live together in a rocky den for life.'],
+ ['Pacific Sardine','🐟','fish',0.3,0.2,12,120,13,1,'Travels in giant schools of millions. A favorite snack of whales and sea lions.'],
+ ['Humboldt Squid','🦑','inv',1.6,50,24,1200,2,6,'Can flash from red to white in a split second. Fishermen call them "red devils."'],
+ ['Giant Pacific Octopus','🐙','inv',6,71,10,1500,4,3,'Has 3 hearts, blue blood and about 2,000 suckers that can taste things!'],
+ ['Moon Jellyfish','🪼','jelly',0.4,0.3,0.1,200,1,1,'No brain, no heart, no bones, and it is about 95% water!'],
+ ["Lion's Mane Jellyfish",'🪼','jelly',36.5,100,0.2,60,1,6,'Its tentacles can be longer than a blue whale!'],
+ ['Dungeness Crab','🦀','inv',0.25,1.4,1.5,230,10,2,'Walks sideways and can grow back a lost leg!'],
+ ['Spot Prawn','🦐','inv',0.27,0.1,2,500,6,1,'Every spot prawn starts life as a boy and turns into a girl when it grows up!'],
+ ['Ochre Sea Star','⭐','inv',0.25,0.8,0.005,90,20,1,'Eats mussels by pushing its stomach out of its mouth!'],
+ ['Giant Green Anemone','🪸','inv',0.3,1,0.0002,15,80,2,'Gets its green color from tiny algae living inside it. Can live 80+ years.'],
+ ['Geoduck','🐚','inv',1,1.5,0,110,168,1,'Say it "gooey-duck"! A giant clam that can live more than 160 years.'],
+ ['Sea Otter','🦦','seal',1.4,45,9,100,20,3,'Holds hands with friends while sleeping so they don\'t drift apart. Thickest fur of any animal!'],
+ ['Harbor Seal','🦭','seal',1.9,130,24,480,30,3,'Can sleep underwater and hold its breath for 30 minutes.'],
+ ['Steller Sea Lion','🦭','seal',3.3,1100,30,420,30,5,'The biggest sea lion. Big males really do roar like lions!'],
+ ['California Sea Lion','🦭','seal',2.35,390,40,540,25,4,'The loud barkers you see lounging on docks and buoys.'],
+ ['Northern Elephant Seal','🦭','seal',5,2500,10,1700,20,5,'Dives almost a mile deep and can stay down for 2 hours!'],
+ ['Leatherback Sea Turtle','🐢','reptile',2.2,900,35,1280,50,2,'The biggest turtle on Earth. Swims across the whole Pacific to eat jellyfish.'],
+ ['Tufted Puffin','🐦','bird',0.38,0.75,77,60,25,1,'Flaps its wings to "fly" underwater while it chases fish.'],
+ ['Brown Pelican','🐦','bird',1.3,4.5,64,10,30,2,'Dive-bombs into the sea from 60 feet up to scoop fish in its pouch!']
+].map((a,i)=>({id:i,name:a[0],emo:a[1],type:a[2],len:a[3],wt:a[4],spd:a[5],dep:a[6],life:a[7],danger:a[8],fact:a[9]}));
+
+const STATS=[
+ {k:'len',ic:'📏',lb:'Length'},
+ {k:'wt',ic:'⚖️',lb:'Weight'},
+ {k:'spd',ic:'💨',lb:'Top speed'},
+ {k:'dep',ic:'🌊',lb:'Deepest dive'},
+ {k:'life',ic:'⏳',lb:'Lifespan'},
+ {k:'danger',ic:'⚠️',lb:'Danger'}
+];
+const statByK=Object.fromEntries(STATS.map(s=>[s.k,s]));
+
+// ---------- STATE ----------
+const opt={mode:'10',first:'r',units:'imp'};
+let S=null, sound=true;
+
+function fmtNum(x){
+  if(x===0) return '0';
+  if(x>=1000) return Math.round(x).toLocaleString('en-US');
+  if(x>=100) return String(Math.round(x));
+  if(x>=10) return String(Math.round(x*10)/10).replace(/\.0$/,'');
+  if(x>=1) return String(Math.round(x*10)/10).replace(/\.0$/,'');
+  return String(Number(x.toPrecision(2)));
+}
+function fmt(card,k){
+  const v=card[k], imp=opt.units==='imp';
+  switch(k){
+    case 'len': return imp? fmtNum(v*3.281)+' ft' : fmtNum(v)+' m';
+    case 'wt':  return imp? fmtNum(v*2.205)+' lb' : fmtNum(v)+' kg';
+    case 'spd': return imp? fmtNum(v*0.6214)+' mph' : fmtNum(v)+' km/h';
+    case 'dep': return imp? fmtNum(v*3.281)+' ft' : fmtNum(v)+' m';
+    case 'life':return fmtNum(v)+' yrs';
+    case 'danger':return v+' / 10';
+  }
+}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function newGame(){
+  const names=[document.getElementById('n0').value.trim()||'Player 1',document.getElementById('n1').value.trim()||'Player 2'];
+  S={names,mode:opt.mode,scores:[0,0],piles:[[],[]],deck:[],cur:[null,null],pool:[],pot:0,
+     chooser: opt.first==='r'? (Math.random()<.5?0:1) : +opt.first, stat:null,dir:null,phase:'choose',winner:null,round:0};
+  if(S.mode==='deck'){
+    const d=shuffle(C.map(c=>c.id));
+    d.forEach((id,i)=>S.piles[i%2].push(id));
+  }
+  deal();
+  show('game'); render(); wake();
+}
+function deal(){
+  S.stat=null;S.dir=null;S.phase='choose';S.winner=null;S.round++;
+  if(S.mode==='deck'){S.cur=[S.piles[0][0],S.piles[1][0]];return;}
+  if(S.deck.length<2) S.deck=shuffle(C.map(c=>c.id));
+  S.cur=[S.deck.pop(),S.deck.pop()];
+}
+function target(){return S.mode==='deck'?null:+S.mode}
+
+function showdown(){
+  const a=C[S.cur[0]][S.stat], b=C[S.cur[1]][S.stat];
+  let w=null;
+  if(a!==b) w = (S.dir==='hi') === (a>b) ? 0 : 1;
+  S.winner=w; S.phase='reveal';
+  if(S.mode==='deck'){
+    const c0=S.piles[0].shift(), c1=S.piles[1].shift();
+    if(w===null){S.pool.push(c0,c1);}
+    else{
+      const wc = w===0?[c0,c1]:[c1,c0];
+      S.piles[w].push(...wc,...shuffle(S.pool)); S.pool=[];
+      S.chooser=w;
+    }
+    if(S.piles[0].length===0||S.piles[1].length===0) S.ended=true;
+  }else{
+    if(w===null){S.pot++;}
+    else{S.scores[w]+=1+S.pot;S.pot=0;S.chooser=w;}
+    if(S.scores[0]>=target()||S.scores[1]>=target()) S.ended=true;
+  }
+  if(w===null) sfx('tie'); else sfx('win');
+  render(true);
+  if(w!==null) confetti(w);
+}
+function nextRound(){
+  if(S.ended){S.phase='over';S.ended=false;sfx('over');render();confetti(overWinner(),40);return;}
+  deal(); render();
+}
+function overWinner(){
+  if(S.mode==='deck'){const a=S.piles[0].length,b=S.piles[1].length;return a===b?null:(a>b?0:1)}
+  return S.scores[0]===S.scores[1]?null:(S.scores[0]>S.scores[1]?0:1);
+}
+
+// ---------- RENDER ----------
+function cardHTML(card,{chooser=false,sel=null,cls=''}={}){
+  const t=T[card.type];
+  return `<div class="card ${chooser?'chooser':''} ${cls}" style="--c:${t.c};--l:${t.l};--d:${t.d}">
+   <div class="art"><div class="emo">${card.emo}</div><div class="type">${t.n}</div></div>
+   <div class="body"><div class="name">${esc(card.name)}</div><div class="stats">
+   ${STATS.map(s=>`<button class="stat ${sel===s.k?'sel':''}" data-stat="${s.k}"><span class="ic">${s.ic}</span><span class="lb">${s.lb}</span><span class="v">${fmt(card,s.k)}</span></button>`).join('')}
+   </div></div></div>`;
+}
+function backHTML(){return `<div class="back"><div class="b1">🌊</div><div class="b2">Sea Creature<br>Showdown</div></div>`}
+
+function hudHTML(p){
+  const o=1-p, n=S.names;
+  if(S.mode==='deck')
+    return `<div class="hud"><span class="pill me">${esc(n[p])}: ${S.piles[p].length} cards</span>${S.pool.length?`<span class="pill">🌀 Tide pool: ${S.pool.length}</span>`:''}<span class="pill">${esc(n[o])}: ${S.piles[o].length} cards</span></div>`;
+  return `<div class="hud"><span class="pill me">${esc(n[p])}: ${S.scores[p]}</span><span class="pill">First to ${target()}${S.pot?` · 🌀 +${S.pot} bonus`:''}</span><span class="pill">${esc(n[o])}: ${S.scores[o]}</span></div>`;
+}
+
+function renderHalf(p,flipNow){
+  const el=document.getElementById('h'+p), o=1-p, me=C[S.cur[p]], them=C[S.cur[o]], n=S.names;
+  if(S.phase==='over'){
+    const w=overWinner();
+    const score = S.mode==='deck'?`${S.piles[p].length} – ${S.piles[o].length} cards`:`${S.scores[p]} – ${S.scores[o]}`;
+    el.innerHTML=`<div class="over pop"><div class="trophy">${w===null?'🤝':w===p?'🏆':'🌊'}</div>
+      <div class="t">${w===null?"It's a tie!":w===p?'You win the Showdown!':esc(n[w])+' wins!'}</div>
+      <div class="s">${score}</div>
+      <div class="btns"><button class="big" data-act="again">Play again</button><button class="link" data-act="home">Menu</button></div></div>`;
+    return;
+  }
+  let banner='',stage='',controls='';
+  if(S.phase==='choose'){
+    const mine=S.chooser===p;
+    if(mine){
+      banner=`Your turn! <span class="sub">${!S.stat?'Tap a stat on your card':!S.dir?'Now: should HIGH or LOW win?':'Ready? Hit Showdown!'}</span>`;
+      stage=`<div class="cardwrap">${cardHTML(me,{chooser:true,sel:S.stat})}</div>`;
+      controls=`<button class="hl hi ${S.dir==='hi'?'on':''}" data-dir="hi" ${S.stat?'':'disabled'}>▲ Highest wins</button>
+        <button class="hl lo ${S.dir==='lo'?'on':''}" data-dir="lo" ${S.stat?'':'disabled'}>▼ Lowest wins</button>
+        <button class="go" data-act="go" ${S.stat&&S.dir?'':'disabled'}>⚡ Showdown!</button>`;
+    }else{
+      banner=`${esc(n[o])} is choosing… <span class="sub">Your card is hidden until the Showdown</span>`;
+      stage=`<div class="cardwrap">${backHTML()}</div>`;
+      controls=`<div class="wait">${S.stat?`${esc(n[o])} picked <b>${statByK[S.stat].ic} ${statByK[S.stat].lb}</b>${S.dir?` · <b>${S.dir==='hi'?'▲ Highest':'▼ Lowest'} wins</b>`:''}`:'🤫 Get ready…'}</div>`;
+    }
+  }else{ // reveal
+    const w=S.winner, st=statByK[S.stat];
+    const title = w===null?'🌀 Tide! It\'s a tie':w===p?'🎉 You win the round!':`😮 ${esc(n[w])} wins the round`;
+    const extra = w===null?(S.mode==='deck'?'Both cards go to the tide pool. Next winner takes them!':'Next round is worth a bonus point!'):'';
+    const rows=[[p,me],[o,them]].map(([q,c])=>`<div class="vsrow ${w===q?'w':''}"><span class="e">${c.emo}</span><span class="n">${q===p?'You':esc(n[q])}: ${esc(c.name)}</span><span>${fmt(c,S.stat)}</span></div>`).join('');
+    const showFact = w===null?me:C[S.cur[w]];
+    banner=hudHTML(p);
+    const cls = w===null?'':(w===p?'win':'lose');
+    stage=`<div class="cardwrap">${cardHTML(me,{sel:S.stat,cls:cls+(flipNow&&p!==S.prevChooser?' flip':'')})}</div>
+      <div class="result pop"><div class="t">${title}</div>
+      <div class="rule">${st.ic} ${st.lb} · ${S.dir==='hi'?'▲ Highest':'▼ Lowest'} wins</div>
+      <div class="vs">${rows}</div>
+      ${extra?`<div class="fact">${extra}</div>`:`<div class="fact">💡 <b>${esc(showFact.name)}:</b> ${esc(showFact.fact)}</div>`}
+      <button class="next" data-act="next">${S.ended?'See who won 🏆':'Next round ▶'}</button></div>`;
+    el.innerHTML=`<div class="stage reveal">${stage}</div>`;
+    return;
+  }
+  el.innerHTML=`<div class="banner">${banner}</div><div class="stage">${stage}</div><div class="controls">${controls}</div>${hudHTML(p)}`;
+}
+function render(flipNow){
+  renderHalf(0,flipNow);renderHalf(1,flipNow);
+}
+
+// ---------- INPUT ----------
+document.getElementById('game').addEventListener('click',e=>{
+  const half=e.target.closest('.half'); if(!half) return;
+  const p= half.id==='h0'?0:1;
+  const b=e.target.closest('button'); if(!b) return;
+  if(S.phase==='choose' && S.chooser===p){
+    if(b.dataset.stat){S.stat=b.dataset.stat;sfx('tap');render();return;}
+    if(b.dataset.dir){S.dir=b.dataset.dir;sfx('tap');render();return;}
+    if(b.dataset.act==='go' && S.stat && S.dir){S.prevChooser=S.chooser;showdown();return;}
+  }
+  if(b.dataset.act==='next' && S.phase==='reveal'){sfx('tap');nextRound();return;}
+  if(b.dataset.act==='again'){newGame();return;}
+  if(b.dataset.act==='home'){show('setup');return;}
+});
+document.querySelectorAll('.seg').forEach(seg=>seg.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  opt[seg.dataset.k]=b.dataset.v; sfx('tap');
+}));
+document.getElementById('start').onclick=()=>{unlockAudio();newGame();};
+document.getElementById('menuBtn').onclick=()=>{document.getElementById('menu').classList.add('on')};
+document.getElementById('menu').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const m=b.dataset.m, menu=document.getElementById('menu');
+  if(m==='resume') menu.classList.remove('on');
+  if(m==='book'){openBook();}
+  if(m==='sound'){sound=!sound;b.textContent=sound?'🔊 Sound: on':'🔈 Sound: off';}
+  if(m==='quit'){menu.classList.remove('on');show('setup');}
+});
+let bookFrom='setup';
+function openBook(){
+  document.getElementById('grid').innerHTML=C.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<div><div class="cardwrap">${cardHTML(c)}</div><div class="fact">💡 ${esc(c.fact)}</div></div>`).join('');
+  document.getElementById('book').classList.add('on');
+}
+document.getElementById('openBook').onclick=openBook;
+document.getElementById('closeBook').onclick=()=>{document.getElementById('book').classList.remove('on');if(S&&S.phase)render();};
+function show(id){['setup','game'].forEach(x=>document.getElementById(x).classList.toggle('on',x===id));}
+
+// ---------- FX ----------
+let ac=null;
+function unlockAudio(){try{if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)()}if(ac.state==='suspended')ac.resume()}catch(e){}}
+function tone(f,t0,d,type='sine',v=.15){
+  if(!ac)return;const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(v,ac.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t0+d);
+  o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+t0);o.stop(ac.currentTime+t0+d+.02);
+}
+function sfx(k){
+  if(!sound||!ac)return;
+  if(k==='tap')tone(660,0,.08,'triangle',.1);
+  if(k==='win'){[523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.18,'triangle'))}
+  if(k==='tie'){[400,300,400,300].forEach((f,i)=>tone(f,i*.1,.12,'sine'))}
+  if(k==='over'){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.12,.25,'square',.08))}
+}
+function confetti(w,n=16){
+  if(w===null||w===undefined)return;
+  const items=['🐟','⭐','🫧','🐚','🦀','🌊'];
+  const half=document.getElementById('h'+w).getBoundingClientRect();
+  for(let i=0;i<n;i++){
+    const s=document.createElement('div');s.className='confetti';s.textContent=items[i%items.length];
+    s.style.left=(Math.random()*100)+'vw';s.style.top=(half.top-20)+'px';
+    s.style.animationDuration=(1.2+Math.random()*1.3)+'s';
+    s.style.setProperty('--h',half.height+'px');
+    s.animate([{transform:'translateY(0) rotate(0)',opacity:1},{transform:`translateY(${half.height}px) rotate(${360+Math.random()*360}deg)`,opacity:.2}],{duration:1400+Math.random()*1200,easing:'ease-in',fill:'forwards'});
+    s.style.animation='none';
+    document.body.appendChild(s);setTimeout(()=>s.remove(),2800);
+  }
+}
+// keep screen awake during play
+let lock=null;
+async function wake(){try{if('wakeLock' in navigator&&!lock){lock=await navigator.wakeLock.request('screen');lock.addEventListener('release',()=>lock=null)}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S)wake()});
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>e.preventDefault());
+
+// offline support
+if('serviceWorker' in navigator && location.protocol==='https:'){
+  navigator.serviceWorker.register('sea-creature-showdown-sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
